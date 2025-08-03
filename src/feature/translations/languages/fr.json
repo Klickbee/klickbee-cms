@@ -36,6 +36,28 @@
 			"Success": "Demande de réinitialisation envoyée avec succès"
 		}
 	},
+	"Builder": {
+		"RightSidebar": {
+			"Layout": {
+				"AlignContent": "Aligner le contenu",
+				"AlignItems": "Aligner les éléments",
+				"Direction": "Direction",
+				"DisplayType": "Type d'affichage",
+				"FlexGrow": "Flex Grow",
+				"FlexShrink": "Flex Shrink",
+				"FlexWrap": "Wrap",
+				"Gap": "Gap",
+				"GridAutoColumns": "Colonnes Auto Grid",
+				"GridAutoFlow": "Flux Auto Grid",
+				"GridAutoRows": "Lignes Auto Grid",
+				"GridColumns": "Colonnes Grid",
+				"GridRows": "Lignes Grid",
+				"JustifyContent": "Justifier le contenu",
+				"JustifyItems": "Justifier les éléments",
+				"Layout": "Mise en page"
+			}
+		}
+	},
 	"BuilderSettings": {
 		"Colors": "Couleurs",
 		"ColorsDescription": "Définissez la palette de couleurs de votre site.",

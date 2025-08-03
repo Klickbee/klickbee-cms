@@ -36,6 +36,28 @@
 			"Success": "Password reset request sent successfully"
 		}
 	},
+	"Builder": {
+		"RightSidebar": {
+			"Layout": {
+				"AlignContent": "Align Content",
+				"AlignItems": "Align Items",
+				"Direction": "Direction",
+				"DisplayType": "Display Type",
+				"FlexGrow": "Flex Grow",
+				"FlexShrink": "Flex Shrink",
+				"FlexWrap": "Wrap",
+				"Gap": "Gap",
+				"GridAutoColumns": "Grid Auto Columns",
+				"GridAutoFlow": "Grid Auto Flow",
+				"GridAutoRows": "Grid Auto Rows",
+				"GridColumns": "Grid Columns",
+				"GridRows": "Grid Rows",
+				"JustifyContent": "Justify Content",
+				"JustifyItems": "Justify Items",
+				"Layout": "Layout"
+			}
+		}
+	},
 	"BuilderSettings": {
 		"Colors": "Colors",
 		"ColorsDescription": "Define the color palette of your site.",
