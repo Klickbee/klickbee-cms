@@ -61,6 +61,22 @@ export type JustifyContent = z.infer<typeof justifyContentSchema>;
 export const alignItemsSchema = z.enum(["start", "center", "end", "stretch"]);
 export type AlignItems = z.infer<typeof alignItemsSchema>;
 
+// Align content schema
+export const alignContentSchema = z.enum([
+	"start",
+	"center",
+	"end",
+	"stretch",
+	"space-between",
+	"space-around",
+	"space-evenly",
+]);
+export type AlignContent = z.infer<typeof alignContentSchema>;
+
+// Justify items schema (for grid)
+export const justifyItemsSchema = z.enum(["start", "center", "end", "stretch"]);
+export type JustifyItems = z.infer<typeof justifyItemsSchema>;
+
 // Flex direction schema
 export const flexDirectionSchema = z.enum(["row", "column"]);
 export type FlexDirection = z.infer<typeof flexDirectionSchema>;
@@ -75,6 +91,10 @@ export const gridAutoSchema = z.union([
 	z.string().regex(/^\d+fr$/, "Must be in format '1fr', '2fr', etc."),
 ]);
 export type GridAuto = z.infer<typeof gridAutoSchema>;
+
+// Grid auto flow schema
+export const gridAutoFlowSchema = z.enum(["row", "column", "dense"]);
+export type GridAutoFlow = z.infer<typeof gridAutoFlowSchema>;
 
 // Side schema
 export const sideSchema = z.enum(["top", "right", "bottom", "left"]);
@@ -169,6 +189,7 @@ export const layoutStyleSchema = z
 		display: displayTypeSchema.optional(),
 		flex: z
 			.object({
+				alignContent: alignContentSchema.optional(),
 				alignItems: alignItemsSchema.optional(),
 				direction: flexDirectionSchema.optional(),
 				gap: sectionGapSchema.optional(),
@@ -180,8 +201,15 @@ export const layoutStyleSchema = z
 			.optional(),
 		grid: z
 			.object({
+				alignContent: alignContentSchema.optional(),
+				alignItems: alignItemsSchema.optional(),
+				autoColumns: gridAutoSchema.optional(),
+				autoFlow: gridAutoFlowSchema.optional(),
+				autoRows: gridAutoSchema.optional(),
 				columns: gridAutoSchema.optional(),
 				gap: sectionGapSchema.optional(),
+				justifyContent: justifyContentSchema.optional(),
+				justifyItems: justifyItemsSchema.optional(),
 				rows: gridAutoSchema.optional(),
 			})
 			.optional(),

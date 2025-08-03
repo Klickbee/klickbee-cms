@@ -9,7 +9,7 @@ export default function BuilderHeader() {
 	const currentPage = useCurrentPageStore((state) => state.currentPage);
 	const adminKey = useAdminKeyStore((state) => state.adminKey);
 	return (
-		<header className="flex items-center justify-between px-4 py-6 border-b">
+		<header className="flex items-center justify-between p-4 border-b h-16">
 			<div className="flex items-center gap-6">
 				<Button
 					asChild

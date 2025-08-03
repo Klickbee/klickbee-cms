@@ -1,23 +1,36 @@
-import BuilderStyleAdvanced from "./_partials/Advanced";
-import BuilderStyleBackground from "./_partials/Background";
-import BuilderStyleBordersAndCorners from "./_partials/BordersAndCorners";
-import BuilderStyleContent from "./_partials/Content";
-import BuilderStyleEffects from "./_partials/Effects";
-import BuilderStyleLayout from "./_partials/Layout";
-import BuilderStyleSizeAndSpacing from "./_partials/SizeAndSpacing";
-import BuilderStyleTypography from "./_partials/Typography";
+import { useTranslations } from "next-intl";
+import BuilderStyleLayout from "@/components/builder/ui/_partials/Sidebars/Right/_partials/Layout";
+import {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger,
+} from "@/components/ui/accordion";
 
 export default function BuilderStyleProperties() {
+	const t = useTranslations("Builder.RightSidebar");
 	return (
-		<>
-			<BuilderStyleContent />
-			<BuilderStyleBackground />
-			<BuilderStyleTypography />
-			<BuilderStyleSizeAndSpacing />
-			<BuilderStyleLayout />
-			<BuilderStyleEffects />
-			<BuilderStyleBordersAndCorners />
-			<BuilderStyleAdvanced />
-		</>
+		<Accordion
+			className="w-full h-full"
+			collapsible
+			defaultValue="style-content"
+			type="single"
+		>
+			<AccordionItem value="style-content">
+				<AccordionTrigger className="border-b p-4">
+					{t("Layout.Layout")}
+				</AccordionTrigger>
+				<AccordionContent asChild>
+					<BuilderStyleLayout />
+				</AccordionContent>
+			</AccordionItem>
+			{/*<BuilderStyleContent />*/}
+			{/*<BuilderStyleBackground />*/}
+			{/*<BuilderStyleTypography />*/}
+			{/*<BuilderStyleSizeAndSpacing />*/}
+			{/*<BuilderStyleEffects />*/}
+			{/*<BuilderStyleBordersAndCorners />*/}
+			{/*<BuilderStyleAdvanced />*/}
+		</Accordion>
 	);
 }

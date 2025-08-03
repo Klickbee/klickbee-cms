@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import BuilderSearchComponent from "@/components/builder/ui/_partials/Sidebars/Left/Search";
 import BuilderTabContent from "@/components/builder/ui/_partials/Sidebars/Left/TabContent";
