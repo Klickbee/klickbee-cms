@@ -12,6 +12,7 @@ import {
 } from "@dnd-kit/core";
 import { File, Home, MoreHorizontal, Plus } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import EditableSlug from "@/components/builder/ui/_partials/Sidebars/Left/_partials/Tabs/_partials/Pages/_partials/EditableSlug";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +21,13 @@ import {
 	ContextMenuItem,
 	ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogTitle,
+} from "@/components/ui/dialog";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -71,6 +79,10 @@ export default function BuilderTabPagesPages() {
 
 	// State for drag and drop
 	const [activeId, setActiveId] = useState<number | null>(null);
+	const [confirmDelete, setConfirmDelete] = useState<{
+		open: boolean;
+		pageId: number | null;
+	}>({ open: false, pageId: null });
 
 	// Configure sensors for drag detection
 	const sensors = useSensors(
@@ -215,9 +227,12 @@ export default function BuilderTabPagesPages() {
 				<ContextMenuTrigger>
 					<div
 						ref={setNodeRef}
-						{...attributes}
 						{...(isEditingSlug.state &&
-						isEditingSlug.pageId === page.id
+						isEditingSlug.pageId == page.id
+							? {}
+							: attributes)}
+						{...(isEditingSlug.state &&
+						isEditingSlug.pageId == page.id
 							? {}
 							: listeners)}
 						className={`group flex items-center justify-between py-1 px-2 rounded-md cursor-pointer ${
@@ -303,42 +318,19 @@ export default function BuilderTabPagesPages() {
 								<DropdownMenuItem
 									className={"text-destructive"}
 									onClick={() => {
-										// Prevent deleting the home page
 										if (
 											Number(currentHomepage?.value) ===
 											page.id
 										) {
-											alert(
+											toast.error(
 												"Cannot delete the home page. Set another page as home first.",
 											);
 											return;
 										}
-
-										if (
-											confirm(
-												"Are you sure you want to delete this page?",
-											)
-										) {
-											deletePage.mutate(page.id);
-
-											// If the deleted page is the current page, switch to another page
-											if (
-												currentPage?.id === page.id &&
-												Array.isArray(pages) &&
-												pages.length > 0
-											) {
-												const otherPage = pages.find(
-													(p) => p.id !== page.id,
-												);
-												if (otherPage) {
-													handleCurrentPageSwitch({
-														id: otherPage.id,
-														slug: otherPage.slug,
-														title: otherPage.title,
-													});
-												}
-											}
-										}
+										setConfirmDelete({
+											open: true,
+											pageId: page.id,
+										});
 									}}
 								>
 									Delete
@@ -429,7 +421,7 @@ export default function BuilderTabPagesPages() {
 			<DndContext
 				onDragEnd={handleDragEnd}
 				onDragStart={handleDragStart}
-				sensors={sensors}
+				sensors={isEditingSlug.state ? [] : sensors}
 			>
 				<RootContainer>
 					{sortedPages.length > 0 ? (
@@ -455,6 +447,41 @@ export default function BuilderTabPagesPages() {
 					) : null}
 				</DragOverlay>
 			</DndContext>
+			<Dialog
+				onOpenChange={(open: boolean) =>
+					setConfirmDelete({ open, pageId: confirmDelete.pageId })
+				}
+				open={confirmDelete.open}
+			>
+				<DialogContent>
+					<DialogTitle>Delete Page</DialogTitle>
+					<DialogDescription>
+						Are you sure you want to delete this page?
+					</DialogDescription>
+					<DialogFooter>
+						<Button
+							onClick={() =>
+								setConfirmDelete({ open: false, pageId: null })
+							}
+							variant="outline"
+						>
+							Cancel
+						</Button>
+						<Button
+							onClick={() => {
+								if (confirmDelete.pageId) {
+									deletePage.mutate(confirmDelete.pageId);
+									toast.success("Page deleted successfully");
+								}
+								setConfirmDelete({ open: false, pageId: null });
+							}}
+							variant="destructive"
+						>
+							Delete
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 		</div>
 	);
 }
