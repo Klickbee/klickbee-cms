@@ -136,7 +136,7 @@ model Page {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   parentId  Int?
-  parent    Page?    @relation("PageHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  parent    Page?    @relation("PageHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
   children  Page[]   @relation("PageHierarchy")
 
   // SEO fields
