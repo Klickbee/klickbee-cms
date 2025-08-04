@@ -91,3 +91,16 @@ export const createPage = async (data: {
 		},
 	});
 };
+
+export const getLastPageId = async () => {
+	return prisma.page
+		.findFirst({
+			orderBy: {
+				id: "desc",
+			},
+			select: {
+				id: true,
+			},
+		})
+		.then((page) => page?.id || 0);
+};
