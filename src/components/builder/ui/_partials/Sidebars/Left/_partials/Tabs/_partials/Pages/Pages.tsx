@@ -1,5 +1,17 @@
 "use client";
+import {
+	DndContext,
+	DragEndEvent,
+	DragOverlay,
+	DragStartEvent,
+	PointerSensor,
+	useDraggable,
+	useDroppable,
+	useSensor,
+	useSensors,
+} from "@dnd-kit/core";
 import { File, Home, MoreHorizontal, Plus } from "lucide-react";
+import { useState } from "react";
 import EditableSlug from "@/components/builder/ui/_partials/Sidebars/Left/_partials/Tabs/_partials/Pages/_partials/EditableSlug";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,6 +28,7 @@ import {
 	useDeletePage,
 	useDuplicatePage,
 	useSetAsHomePage,
+	useUpdatePageParent,
 } from "@/feature/page/queries/usePageActions";
 import { usePages } from "@/feature/page/queries/usePages";
 import { Page, PageLight } from "@/feature/page/types/page";
@@ -41,6 +54,86 @@ export default function BuilderTabPagesPages() {
 	const duplicatePage = useDuplicatePage();
 	const deletePage = useDeletePage();
 	const setAsHomePage = useSetAsHomePage();
+	const updatePageParent = useUpdatePageParent();
+
+	// State for drag and drop
+	const [activeId, setActiveId] = useState<number | null>(null);
+
+	// Configure sensors for drag detection
+	const sensors = useSensors(
+		useSensor(PointerSensor, {
+			// Require a drag distance of 8px before activating
+			activationConstraint: {
+				distance: 8,
+			},
+		}),
+	);
+
+	// Handle drag start
+	const handleDragStart = (event: DragStartEvent) => {
+		const { active } = event;
+		setActiveId(Number(active.id));
+	};
+
+	// Helper function to check if a page is a descendant of another page
+	const isDescendantOf = (
+		childId: number,
+		potentialAncestorId: number,
+	): boolean => {
+		if (!Array.isArray(pages)) return false;
+
+		// Direct child check
+		if (childId === potentialAncestorId) return true;
+
+		// Find all children of the potential ancestor
+		const children = pages.filter(
+			(page) => page.parentId === potentialAncestorId,
+		);
+
+		// Recursively check if any of these children are the child we're looking for
+		// or if they have children that are the child we're looking for
+		return children.some((child) => isDescendantOf(childId, child.id));
+	};
+
+	// Handle drag end
+	const handleDragEnd = (event: DragEndEvent) => {
+		const { active, over } = event;
+
+		if (over && active.id !== over.id) {
+			const draggedPageId = Number(active.id);
+
+			// If dropped on a page, make it a child of that page
+			if (over.id.toString().startsWith("page-")) {
+				const parentPageId = Number(
+					over.id.toString().replace("page-", ""),
+				);
+
+				// Don't allow a page to become its own child or parent of its parent
+				// Also don't allow a page to become a child of its own descendant (would create circular reference)
+				if (
+					draggedPageId !== parentPageId &&
+					!isDescendantOf(parentPageId, draggedPageId)
+				) {
+					updatePageParent.mutate({
+						pageId: draggedPageId,
+						parentId: parentPageId,
+					});
+				} else {
+					// Optionally show an error message
+					console.warn("Cannot create circular page references");
+				}
+			}
+			// If dropped on the root container, make it a root page
+			else if (over.id === "root-container") {
+				updatePageParent.mutate({
+					pageId: draggedPageId,
+					parentId: null,
+				});
+			}
+		}
+
+		setActiveId(null);
+	};
 
 	const handleCurrentPageSwitch = (page: PageLight) => {
 		setCurrentPage(page);
@@ -71,18 +164,52 @@ export default function BuilderTabPagesPages() {
 		});
 	};
 
-	const renderPage = (page: Page, isChild = false) => {
+	// Draggable page component
+	const DraggablePage = ({
+		page,
+		isChild = false,
+	}: {
+		page: Page;
+		isChild?: boolean;
+	}) => {
 		const isHome = Number(currentHomepage?.value) === page.id;
 		const isSelected = currentPage?.id === page.id;
 
+		// Set up draggable
+		const {
+			attributes,
+			listeners,
+			setNodeRef: setDragNodeRef,
+			isDragging,
+		} = useDraggable({
+			id: page.id,
+		});
+
+		// Set up droppable (so other pages can be dropped on this page to become children)
+		const { setNodeRef: setDropNodeRef } = useDroppable({
+			id: `page-${page.id}`,
+		});
+
+		// Combine the refs
+		const setNodeRef = (node: HTMLElement | null) => {
+			setDragNodeRef(node);
+			setDropNodeRef(node);
+		};
+
 		return (
 			<div
+				ref={setNodeRef}
+				{...attributes}
+				{...listeners}
 				className={`group flex items-center justify-between py-1 px-2 rounded-md cursor-pointer ${
 					isSelected
 						? "bg-primary text-background"
 						: "text-foreground"
+				} ${isDragging ? "opacity-50" : "opacity-100"} ${
+					activeId !== null && activeId !== page.id
+						? "border border-dashed border-gray-300"
+						: ""
 				}`}
-				key={page.id}
 			>
 				<Button
 					className={`flex items-center w-9/10 justify-start truncate text-sm font-normal hover:no-underline ${
@@ -104,7 +231,6 @@ export default function BuilderTabPagesPages() {
 						<File className="w-3 h-3" />
 					)}
 
-					{/*className={`${isSelected ? "font-semibold" : ""}`}*/}
 					<EditableSlug
 						cleanSlug={page.slug}
 						initialSlug={isHome ? `${page.slug}/` : `/${page.slug}`}
@@ -198,11 +324,51 @@ export default function BuilderTabPagesPages() {
 		);
 	};
 
+	const renderPageWithChildren = (
+		page: Page,
+		allPages: Page[],
+		depth = 0,
+	) => {
+		const children = allPages.filter((p) => p.parentId === page.id);
+		return (
+			<div key={page.id}>
+				<DraggablePage isChild={depth > 0} page={page} />
+				{children.length > 0 && (
+					<div className="ml-4 border-l border-muted pl-2">
+						{children.map((child) =>
+							renderPageWithChildren(child, allPages, depth + 1),
+						)}
+					</div>
+				)}
+			</div>
+		);
+	};
+
 	// Sort pages with home page first
 	const sortedPages =
 		Array.isArray(pages) && pages
 			? sortPagesWithHomeFirst(pages, currentHomepage?.value)
 			: [];
+
+	// Root container component
+	const RootContainer = ({ children }: { children: React.ReactNode }) => {
+		const { setNodeRef } = useDroppable({
+			id: "root-container",
+		});
+
+		return (
+			<div
+				className={`flex flex-col gap-1 ${
+					activeId !== null
+						? "border-2 border-dashed border-gray-200 rounded-md p-1"
+						: ""
+				}`}
+				ref={setNodeRef}
+			>
+				{children}
+			</div>
+		);
+	};
 
 	return (
 		<div className="flex flex-col gap-1">
@@ -212,24 +378,35 @@ export default function BuilderTabPagesPages() {
 					<Plus className="w-4 h-4" />
 				</Button>
 			</div>
-
-			{sortedPages.length > 0 ? (
-				sortedPages
-					.filter((p: Page) => p && !p.parentId)
-					.map((page: Page) => (
-						<div key={page.id}>
-							{renderPage(page)}
-							{sortedPages
-								.filter(
-									(child: Page) =>
-										child && child.parentId === page.id,
-								)
-								.map((child: Page) => renderPage(child, true))}
+			<DndContext
+				onDragEnd={handleDragEnd}
+				onDragStart={handleDragStart}
+				sensors={sensors}
+			>
+				<RootContainer>
+					{sortedPages.length > 0 ? (
+						sortedPages
+							.filter((p: Page) => p && !p.parentId)
+							.map((page: Page) =>
+								renderPageWithChildren(page, sortedPages),
+							)
+					) : (
+						<div className="px-2 py-2 text-sm">
+							No pages available
 						</div>
-					))
-			) : (
-				<div className="px-2 py-2 text-sm">No pages available</div>
-			)}
+					)}
+				</RootContainer>
+
+				{/* Drag overlay to show the dragged item */}
+				<DragOverlay>
+					{activeId ? (
+						<div className="bg-background border border-primary rounded-md p-2 opacity-80 shadow-md">
+							{sortedPages.find((page) => page.id === activeId)
+								?.title || "Page"}
+						</div>
+					) : null}
+				</DragOverlay>
+			</DndContext>
 		</div>
 	);
 }

@@ -223,3 +223,86 @@ export const updatePageTitle = async (pageId: number, title: string) => {
 		throw error; // Re-throw to be caught by the client
 	}
 };
+
+/**
+ * Updates a page's parent relationship
+ */
+export const updatePageParent = async (
+	pageId: number,
+	parentId: number | null,
+) => {
+	try {
+		const authError = await isAuthenticatedGuard();
+		if (authError) {
+			return authError;
+		}
+
+		// Check if the page exists
+		const page = await prisma.page.findUnique({
+			where: { id: pageId },
+		});
+
+		if (!page) {
+			throw new Error(`Page with ID ${pageId} not found`);
+		}
+
+		// If parentId is provided, check if the parent page exists
+		if (parentId !== null) {
+			// Prevent setting a page as its own parent
+			if (pageId === parentId) {
+				throw new Error("A page cannot be its own parent");
+			}
+
+			const parentPage = await prisma.page.findUnique({
+				where: { id: parentId },
+			});
+
+			if (!parentPage) {
+				throw new Error(`Parent page with ID ${parentId} not found`);
+			}
+
+			// Prevent circular references (parent can't be a child of this page)
+			// This is a simple check for direct circular references
+			if (parentPage.parentId === pageId) {
+				throw new Error("Cannot create circular page references");
+			}
+
+			// Check if the parent page is the homepage
+			const homepageSetting = await prisma.settings.findUnique({
+				where: { key: "current_homepage_id" },
+			});
+
+			if (homepageSetting && Number(homepageSetting.value) === parentId) {
+				throw new Error("Homepage cannot have children");
+			}
+
+			// Check if the parent page already has a parent (to limit nesting depth to 1)
+			if (parentPage.parentId !== null) {
+				throw new Error("Maximum nesting depth is 1 level");
+			}
+		}
+
+		// Update the page's parent
+		return prisma.page.update({
+			data: { parentId },
+			select: {
+				content: true,
+				createdAt: true,
+				id: true,
+				isPublished: true,
+				metaDescription: true,
+				metaKeywords: true,
+				metaTitle: true,
+				parentId: true,
+				publishedAt: true,
+				slug: true,
+				title: true,
+				updatedAt: true,
+			},
+			where: { id: pageId },
+		});
+	} catch (error) {
+		console.error("Error updating page parent:", error);
+		throw error; // Re-throw to be caught by the client
+	}
+};

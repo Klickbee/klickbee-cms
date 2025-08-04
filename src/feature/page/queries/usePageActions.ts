@@ -3,6 +3,7 @@ import {
 	deletePage,
 	duplicatePage,
 	setAsHomePage,
+	updatePageParent,
 	updatePageSlug,
 	updatePageTitle,
 } from "@/feature/page/actions/pageActions";
@@ -81,6 +82,27 @@ export function useUpdatePageTitle() {
 	return useMutation({
 		mutationFn: ({ pageId, title }: { pageId: number; title: string }) =>
 			updatePageTitle(pageId, title),
+		onSuccess: () => {
+			// Invalidate the pages query to refetch the updated list
+			queryClient.invalidateQueries({ queryKey: ["pages"] });
+		},
+	});
+}
+
+/**
+ * Hook for updating a page's parent
+ */
+export function useUpdatePageParent() {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: ({
+			pageId,
+			parentId,
+		}: {
+			pageId: number;
+			parentId: number | null;
+		}) => updatePageParent(pageId, parentId),
 		onSuccess: () => {
 			// Invalidate the pages query to refetch the updated list
 			queryClient.invalidateQueries({ queryKey: ["pages"] });
