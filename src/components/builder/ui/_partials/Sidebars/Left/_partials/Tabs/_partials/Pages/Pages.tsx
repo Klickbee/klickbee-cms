@@ -15,6 +15,12 @@ import { useState } from "react";
 import EditableSlug from "@/components/builder/ui/_partials/Sidebars/Left/_partials/Tabs/_partials/Pages/_partials/EditableSlug";
 import { Button } from "@/components/ui/button";
 import {
+	ContextMenu,
+	ContextMenuContent,
+	ContextMenuItem,
+	ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
@@ -38,6 +44,13 @@ import {
 } from "@/feature/settings/queries/useSettings";
 
 export default function BuilderTabPagesPages() {
+	const [isEditingSlug, setIsEditingSlug] = useState<{
+		state: boolean;
+		pageId: number | null;
+	}>({
+		pageId: null,
+		state: false,
+	});
 	const { data: pages } = usePages();
 	const currentPage = useCurrentPageStore((state) => state.currentPage);
 	const setCurrentPage = useCurrentPageStore((state) => state.setCurrentPage);
@@ -182,6 +195,7 @@ export default function BuilderTabPagesPages() {
 			setNodeRef: setDragNodeRef,
 			isDragging,
 		} = useDraggable({
+			disabled: isHome,
 			id: page.id,
 		});
 
@@ -197,130 +211,164 @@ export default function BuilderTabPagesPages() {
 		};
 
 		return (
-			<div
-				ref={setNodeRef}
-				{...attributes}
-				{...listeners}
-				className={`group flex items-center justify-between py-1 px-2 rounded-md cursor-pointer ${
-					isSelected
-						? "bg-primary text-background"
-						: "text-foreground"
-				} ${isDragging ? "opacity-50" : "opacity-100"} ${
-					activeId !== null && activeId !== page.id
-						? "border border-dashed border-gray-300"
-						: ""
-				}`}
-			>
-				<Button
-					className={`flex items-center w-9/10 justify-start truncate text-sm font-normal hover:no-underline ${
-						isChild ? "pl-6" : ""
-					} ${isSelected ? "text-background" : ""}`}
-					onClick={() =>
-						handleCurrentPageSwitch({
-							id: page.id,
-							slug: page.slug,
-							title: page.title,
-						})
-					}
-					size="sm"
-					variant="link"
-				>
-					{isHome ? (
-						<Home className="w-3 h-3" />
-					) : (
-						<File className="w-3 h-3" />
-					)}
-
-					<EditableSlug
-						cleanSlug={page.slug}
-						initialSlug={isHome ? `${page.slug}/` : `/${page.slug}`}
-						pageId={page.id}
-					/>
-				</Button>
-
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
+			<ContextMenu>
+				<ContextMenuTrigger>
+					<div
+						ref={setNodeRef}
+						{...attributes}
+						{...(isEditingSlug.state &&
+						isEditingSlug.pageId === page.id
+							? {}
+							: listeners)}
+						className={`group flex items-center justify-between py-1 px-2 rounded-md cursor-pointer ${
+							isSelected
+								? "bg-primary text-background"
+								: "text-foreground"
+						} ${isDragging ? "opacity-50" : "opacity-100"} ${
+							activeId !== null && activeId !== page.id
+								? "border border-dashed border-gray-300"
+								: ""
+						}`}
+					>
 						<Button
-							className="w-5 h-5 p-0 hover:bg-transparent"
-							onClick={(e) => e.stopPropagation()}
-							size="icon"
-							variant="ghost"
+							className={`flex items-center w-9/10 justify-start truncate text-sm font-normal hover:no-underline ${
+								isChild ? "pl-6" : ""
+							} ${isSelected ? "text-background" : ""}`}
+							onClick={() =>
+								handleCurrentPageSwitch({
+									id: page.id,
+									slug: page.slug,
+									title: page.title,
+								})
+							}
+							size="sm"
+							variant="link"
 						>
-							<MoreHorizontal
-								className={`w-3 h-3 ${isSelected ? "text-background" : ""}`}
+							{isHome ? (
+								<Home className="w-3 h-3" />
+							) : (
+								<File className="w-3 h-3" />
+							)}
+
+							<EditableSlug
+								cleanSlug={page.slug}
+								initialSlug={
+									isHome ? `${page.slug}/` : `/${page.slug}`
+								}
+								isEditingSlug={isEditingSlug}
+								pageId={page.id}
+								setIsEditingSlug={setIsEditingSlug}
 							/>
 						</Button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent align="end" sideOffset={4}>
-						<DropdownMenuItem
-							onClick={() => {
-								duplicatePage.mutate(page.id);
-							}}
-						>
-							Duplicate
-						</DropdownMenuItem>
-						<DropdownMenuItem
-							onClick={() => {
-								console.warn("to do");
-							}}
-						>
-							Preview
-						</DropdownMenuItem>
-						<DropdownMenuItem
-							disabled={
-								Number(currentHomepage?.value) === page.id
-							}
-							onClick={() => {
-								setAsHomePage.mutate(page.id);
-							}}
-						>
-							Set as home page
-						</DropdownMenuItem>
-						<DropdownMenuItem
-							className={"text-destructive"}
-							onClick={() => {
-								// Prevent deleting the home page
-								if (
-									Number(currentHomepage?.value) === page.id
-								) {
-									alert(
-										"Cannot delete the home page. Set another page as home first.",
-									);
-									return;
-								}
 
-								if (
-									confirm(
-										"Are you sure you want to delete this page?",
-									)
-								) {
-									deletePage.mutate(page.id);
-
-									// If the deleted page is the current page, switch to another page
-									if (
-										currentPage?.id === page.id &&
-										Array.isArray(pages) &&
-										pages.length > 0
-									) {
-										const otherPage = pages.find(
-											(p) => p.id !== page.id,
-										);
-										if (otherPage) {
-											handleCurrentPageSwitch({
-												id: otherPage.id,
-												slug: otherPage.slug,
-												title: otherPage.title,
-											});
-										}
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button
+									className="w-5 h-5 p-0 hover:bg-transparent"
+									onClick={(e) => e.stopPropagation()}
+									size="icon"
+									variant="ghost"
+								>
+									<MoreHorizontal
+										className={`w-3 h-3 ${isSelected ? "text-background" : ""}`}
+									/>
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align="end" sideOffset={4}>
+								<DropdownMenuItem
+									onClick={() => {
+										duplicatePage.mutate(page.id);
+									}}
+								>
+									Duplicate
+								</DropdownMenuItem>
+								<DropdownMenuItem
+									onClick={() => {
+										console.warn("to do");
+									}}
+								>
+									Preview
+								</DropdownMenuItem>
+								<DropdownMenuItem
+									disabled={
+										Number(currentHomepage?.value) ===
+										page.id
 									}
-								}
+									onClick={() => {
+										setAsHomePage.mutate(page.id);
+									}}
+								>
+									Set as home page
+								</DropdownMenuItem>
+								<DropdownMenuItem
+									className={"text-destructive"}
+									onClick={() => {
+										// Prevent deleting the home page
+										if (
+											Number(currentHomepage?.value) ===
+											page.id
+										) {
+											alert(
+												"Cannot delete the home page. Set another page as home first.",
+											);
+											return;
+										}
+
+										if (
+											confirm(
+												"Are you sure you want to delete this page?",
+											)
+										) {
+											deletePage.mutate(page.id);
+
+											// If the deleted page is the current page, switch to another page
+											if (
+												currentPage?.id === page.id &&
+												Array.isArray(pages) &&
+												pages.length > 0
+											) {
+												const otherPage = pages.find(
+													(p) => p.id !== page.id,
+												);
+												if (otherPage) {
+													handleCurrentPageSwitch({
+														id: otherPage.id,
+														slug: otherPage.slug,
+														title: otherPage.title,
+													});
+												}
+											}
+										}
+									}}
+								>
+									Delete
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
+					</div>
+				</ContextMenuTrigger>
+				<ContextMenuContent>
+					<ContextMenuItem
+						onClick={() => {
+							setIsEditingSlug({ pageId: page.id, state: true });
+						}}
+					>
+						Edit Slug
+					</ContextMenuItem>
+					{page.parentId ? (
+						<ContextMenuItem
+							onClick={() => {
+								updatePageParent.mutate({
+									pageId: page.id,
+									parentId: null,
+								});
 							}}
 						>
-							Delete
-						</DropdownMenuItem>
-					</DropdownMenuContent>
-				</DropdownMenu>
-			</div>
+							Make Root Page
+						</ContextMenuItem>
+					) : null}
+				</ContextMenuContent>
+			</ContextMenu>
 		);
 	};
 

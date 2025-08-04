@@ -1,5 +1,5 @@
 import { Loader2 } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useUpdatePageSlug } from "@/feature/page/queries/usePageActions";
 import { PageLight } from "@/feature/page/types/page";
@@ -8,34 +8,51 @@ export default function EditableSlug({
 	initialSlug,
 	cleanSlug,
 	pageId,
+	isEditingSlug = { pageId: null, state: false },
+	setIsEditingSlug = (isEditingSlug: {
+		state: boolean;
+		pageId: number | null;
+	}) => {
+		/* no-op */
+	},
 }: {
 	initialSlug: string;
 	cleanSlug: string;
 	pageId?: number;
+	isEditingSlug?: { state: boolean; pageId: number | null };
+	setIsEditingSlug?: (isEditing: {
+		state: boolean;
+		pageId: number | null;
+	}) => void;
 }) {
-	const [isEditing, setIsEditing] = useState(false);
 	const [slug, setSlug] = useState(initialSlug);
 	const [cleanedSlug, setCleanedSlug] = useState(cleanSlug);
 	const inputRef = useRef<HTMLInputElement>(null);
 	const updateSlug = useUpdatePageSlug();
 
-	const handleDoubleClick = () => {
-		// Don't allow editing if already processing a mutation
-		if (updateSlug.isPending) return;
-
-		setIsEditing(true);
-		setTimeout(() => inputRef.current?.focus(), 0); // auto-focus
-	};
+	// Focus the input field when editing starts
+	useEffect(() => {
+		if (
+			isEditingSlug.state &&
+			pageId === isEditingSlug.pageId &&
+			inputRef.current
+		) {
+			// Use setTimeout to ensure the input is rendered before focusing
+			setTimeout(() => {
+				inputRef.current?.focus();
+			}, 0);
+		}
+	}, [isEditingSlug.state, isEditingSlug.pageId, pageId]);
 
 	const saveSlug = () => {
 		if (!pageId) {
-			setIsEditing(false);
+			setIsEditingSlug({ pageId: null, state: false });
 			return;
 		}
 
 		// Don't update if slug hasn't changed
 		if (cleanedSlug === cleanSlug) {
-			setIsEditing(false);
+			setIsEditingSlug({ pageId: null, state: false });
 			return;
 		}
 
@@ -65,7 +82,7 @@ export default function EditableSlug({
 								: `${updatedPage.slug}/`,
 						);
 						setCleanedSlug(updatedPage.slug);
-						setIsEditing(false);
+						setIsEditingSlug({ pageId: null, state: false });
 						toast.success("Slug updated successfully");
 					} else {
 						// Handle unexpected response
@@ -80,7 +97,7 @@ export default function EditableSlug({
 
 	const handleBlur = () => {
 		// Only process blur if we're editing and not already processing a mutation
-		if (isEditing && !updateSlug.isPending) {
+		if (isEditingSlug.state && !updateSlug.isPending) {
 			saveSlug();
 		}
 	};
@@ -92,7 +109,7 @@ export default function EditableSlug({
 		} else if (e.key === "Escape") {
 			// Cancel editing and revert to original slug
 			setCleanedSlug(cleanSlug);
-			setIsEditing(false);
+			setIsEditingSlug({ pageId: null, state: false });
 		}
 	};
 
@@ -101,7 +118,7 @@ export default function EditableSlug({
 			{updateSlug.isPending && (
 				<Loader2 className="w-3 h-3 mr-1 animate-spin" />
 			)}
-			{isEditing ? (
+			{isEditingSlug.state && pageId == isEditingSlug.pageId ? (
 				<input
 					className="bg-transparent text-white border border-white rounded px-1 w-full"
 					disabled={updateSlug.isPending}
@@ -114,7 +131,6 @@ export default function EditableSlug({
 			) : (
 				<span
 					className={`cursor-pointer ${updateSlug.isPending ? "opacity-50" : ""}`}
-					onDoubleClick={handleDoubleClick}
 				>
 					{slug}
 				</span>
