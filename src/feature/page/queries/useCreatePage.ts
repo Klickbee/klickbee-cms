@@ -10,7 +10,7 @@ export function useCreatePage() {
 			title: string;
 			slug: string;
 			content?: JsonValue;
-			parentId?: string | null;
+			parentId?: number | null;
 		}) => {
 			const res = await fetch("/api/admin/pages", {
 				body: JSON.stringify(data),
