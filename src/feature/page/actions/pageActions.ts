@@ -23,7 +23,6 @@ export const duplicatePage = async (pageId: number) => {
 	}
 
 	// Create a duplicate with a new title and slug
-	const timestamp = Date.now();
 	return prisma.page.create({
 		data: {
 			content: originalPage.content ?? {},
@@ -32,7 +31,7 @@ export const duplicatePage = async (pageId: number) => {
 			metaKeywords: originalPage.metaKeywords,
 			metaTitle: originalPage.metaTitle,
 			parentId: originalPage.parentId,
-			slug: `${originalPage.slug}-copy-${timestamp}`,
+			slug: `${originalPage.slug}-copy`,
 			title: `${originalPage.title} (Copy)`,
 		},
 		select: {
@@ -96,4 +95,131 @@ export const setAsHomePage = async (pageId: number) => {
 	});
 
 	return { success: true };
+};
+
+/**
+ * Updates a page's slug
+ */
+export const updatePageSlug = async (pageId: number, slug: string) => {
+	try {
+		const authError = await isAuthenticatedGuard();
+		if (authError) {
+			return authError;
+		}
+
+		// Validate slug
+		if (!slug || slug.trim() === "") {
+			throw new Error("Slug cannot be empty");
+		}
+
+		// Sanitize slug - remove special characters, replace spaces with hyphens
+		const sanitizedSlug = slug
+			.toLowerCase()
+			.trim()
+			.replace(/[^\w\s-]/g, "") // Remove special characters
+			.replace(/\s+/g, "-") // Replace spaces with hyphens
+			.replace(/-+/g, "-"); // Replace multiple hyphens with single hyphen
+
+		if (sanitizedSlug === "") {
+			throw new Error("Slug contains only invalid characters");
+		}
+
+		// Check if the page exists
+		const page = await prisma.page.findUnique({
+			where: { id: pageId },
+		});
+
+		if (!page) {
+			throw new Error(`Page with ID ${pageId} not found`);
+		}
+
+		// Check if slug is already in use by another page
+		const existingPage = await prisma.page.findFirst({
+			where: {
+				id: { not: pageId }, // Exclude the current page
+				slug: sanitizedSlug,
+			},
+		});
+
+		if (existingPage) {
+			throw new Error(
+				`Slug '${sanitizedSlug}' is already in use by another page`,
+			);
+		}
+
+		// Update the page's slug
+		return prisma.page.update({
+			data: { slug: sanitizedSlug },
+			select: {
+				content: true,
+				createdAt: true,
+				id: true,
+				isPublished: true,
+				metaDescription: true,
+				metaKeywords: true,
+				metaTitle: true,
+				parentId: true,
+				publishedAt: true,
+				slug: true,
+				title: true,
+				updatedAt: true,
+			},
+			where: { id: pageId },
+		});
+	} catch (error) {
+		console.error("Error updating page slug:", error);
+		throw error; // Re-throw to be caught by the client
+	}
+};
+
+/**
+ * Updates a page's title
+ */
+export const updatePageTitle = async (pageId: number, title: string) => {
+	try {
+		const authError = await isAuthenticatedGuard();
+		if (authError) {
+			return authError;
+		}
+
+		// Validate title
+		if (!title || title.trim() === "") {
+			throw new Error("Title cannot be empty");
+		}
+
+		// Trim the title to remove leading/trailing whitespace
+		const trimmedTitle = title.trim();
+
+		// Check if the page exists
+		const page = await prisma.page.findUnique({
+			where: { id: pageId },
+		});
+
+		if (!page) {
+			throw new Error(`Page with ID ${pageId} not found`);
+		}
+
+		// Update the page's title
+		return prisma.page.update({
+			data: { title: trimmedTitle },
+			select: {
+				content: true,
+				createdAt: true,
+				id: true,
+				isPublished: true,
+				metaDescription: true,
+				metaKeywords: true,
+				metaTitle: true,
+				parentId: true,
+				publishedAt: true,
+				slug: true,
+				title: true,
+				updatedAt: true,
+			},
+			where: { id: pageId },
+		});
+	} catch (error) {
+		console.error("Error updating page title:", error);
+		throw error; // Re-throw to be caught by the client
+	}
 };
