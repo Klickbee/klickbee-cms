@@ -1,4 +1,6 @@
+"use client";
 import { File, Home, MoreHorizontal, Plus } from "lucide-react";
+import EditableSlug from "@/components/builder/ui/_partials/Sidebars/Left/_partials/Tabs/_partials/Pages/_partials/EditableSlug";
 import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
@@ -9,6 +11,7 @@ import {
 import { useCurrentPageStore } from "@/feature/builder/store/storeCurrentPage";
 import { sortPagesWithHomeFirst } from "@/feature/page/lib/pagesClient";
 import { useCreatePage } from "@/feature/page/queries/useCreatePage";
+import { useLastPageId } from "@/feature/page/queries/useLastPageId";
 import {
 	useDeletePage,
 	useDuplicatePage,
@@ -32,6 +35,8 @@ export default function BuilderTabPagesPages() {
 		value: Number(currentHomepageRaw?.value),
 	};
 
+	const { data: lastPageId } = useLastPageId();
+
 	// Initialize page action hooks
 	const duplicatePage = useDuplicatePage();
 	const deletePage = useDeletePage();
@@ -44,8 +49,8 @@ export default function BuilderTabPagesPages() {
 	const handleAddPage = async () => {
 		const newPage = await createPage.mutateAsync({
 			content: {},
-			slug: `page-${Date.now()}`,
-			title: "New Page " + (Number(currentPage.id) + 1),
+			slug: `page-${lastPageId}`,
+			title: "New Page " + lastPageId,
 		});
 
 		if (
@@ -98,9 +103,13 @@ export default function BuilderTabPagesPages() {
 					) : (
 						<File className="w-3 h-3" />
 					)}
-					<span className={`${isSelected ? "font-semibold" : ""}`}>
-						{isHome ? `${page.slug}/` : `/${page.slug}`}
-					</span>
+
+					{/*className={`${isSelected ? "font-semibold" : ""}`}*/}
+					<EditableSlug
+						cleanSlug={page.slug}
+						initialSlug={isHome ? `${page.slug}/` : `/${page.slug}`}
+						pageId={page.id}
+					/>
 				</Button>
 
 				<DropdownMenu>
