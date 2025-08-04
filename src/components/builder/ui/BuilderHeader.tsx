@@ -1,6 +1,7 @@
 "use client";
 import { LayoutDashboard, Play, Save, Send } from "lucide-react";
 import Link from "next/link";
+import EditableName from "@/components/builder/ui/_partials/EditableName";
 import { Button } from "@/components/ui/button";
 import { useAdminKeyStore } from "@/feature/admin-key/stores/storeAdminKey";
 import { useCurrentPageStore } from "@/feature/builder/store/storeCurrentPage";
@@ -24,7 +25,9 @@ export default function BuilderHeader() {
 			</div>
 
 			<div className="flex items-center gap-1 text-sm text-muted-foreground m-auto">
-				<p className="text-blue-600 font-medium">{currentPage.title}</p>
+				<EditableName className={`bold text-primary`}>
+					{currentPage.title}
+				</EditableName>
 			</div>
 
 			<div className="flex items-center gap-2">
