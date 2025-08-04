@@ -1,3 +1,4 @@
+import { getSession } from "better-auth/api";
 import { NextRequest, NextResponse } from "next/server";
 
 const ADMIN_KEY = process.env.ADMIN_GENERATED_KEY || "admin";
@@ -11,6 +12,7 @@ const publicPages = [
 
 export function middleware(req: NextRequest) {
 	const { pathname } = req.nextUrl;
+	const session = getSession();
 
 	const response = NextResponse.next();
 
@@ -24,7 +26,9 @@ export function middleware(req: NextRequest) {
 	}
 
 	const isPublicPage = publicPages.some((page) => pathname.startsWith(page));
-	const isAuthenticated = Boolean(req.cookies.get(AUTH_COOKIE_NAME));
+	const isAuthenticated = Boolean(
+		req.cookies.get(AUTH_COOKIE_NAME) && session,
+	);
 
 	if (!isAuthenticated && !isPublicPage) {
 		return NextResponse.redirect(
