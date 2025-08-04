@@ -3,6 +3,8 @@ import {
 	deletePage,
 	duplicatePage,
 	setAsHomePage,
+	updatePageSlug,
+	updatePageTitle,
 } from "@/feature/page/actions/pageActions";
 import { PageLight } from "@/feature/page/types/page";
 
@@ -50,6 +52,38 @@ export function useSetAsHomePage() {
 			queryClient.invalidateQueries({
 				queryKey: ["settings", "current_homepage_id"],
 			});
+		},
+	});
+}
+
+/**
+ * Hook for updating a page's slug
+ */
+export function useUpdatePageSlug() {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: ({ pageId, slug }: { pageId: number; slug: string }) =>
+			updatePageSlug(pageId, slug),
+		onSuccess: () => {
+			// Invalidate the pages query to refetch the updated list
+			queryClient.invalidateQueries({ queryKey: ["pages"] });
+		},
+	});
+}
+
+/**
+ * Hook for updating a page's title
+ */
+export function useUpdatePageTitle() {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: ({ pageId, title }: { pageId: number; title: string }) =>
+			updatePageTitle(pageId, title),
+		onSuccess: () => {
+			// Invalidate the pages query to refetch the updated list
+			queryClient.invalidateQueries({ queryKey: ["pages"] });
 		},
 	});
 }

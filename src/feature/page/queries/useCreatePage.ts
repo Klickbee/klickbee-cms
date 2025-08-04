@@ -23,6 +23,7 @@ export function useCreatePage() {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries(allPagesOptions);
+			queryClient.invalidateQueries({ queryKey: ["lastPageId"] });
 		},
 	});
 }
