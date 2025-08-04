@@ -121,7 +121,7 @@ export default function EditableName({
 				/>
 			) : (
 				<span
-					className={cn(`cursor-pointer` + className)}
+					className={cn(`cursor-pointer`, className)}
 					onDoubleClick={handleDoubleClick}
 				>
 					{title}
