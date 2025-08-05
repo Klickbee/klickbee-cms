@@ -31,12 +31,16 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { handleCreateCollection } from "@/feature/collection/handlers/handleCreateCollection";
-import { useCollections } from "@/feature/collection/queries/useCollections";
+import {
+	useCollections,
+	useCreateCollection,
+} from "@/feature/collection/queries/useCollections";
 
 export default function AdminContentPage() {
 	const { data: collections, isLoading, error } = useCollections();
 	const [newCollection, setNewCollection] = useState({ name: "", slug: "" });
 	const [isCreatingCollection, setIsCreatingCollection] = useState(false);
+	const createCollectionMutation = useCreateCollection();
 
 	const handleCreate = () => {
 		handleCreateCollection(
@@ -46,6 +50,7 @@ export default function AdminContentPage() {
 			},
 			setIsCreatingCollection,
 			setNewCollection,
+			createCollectionMutation,
 		);
 	};
 

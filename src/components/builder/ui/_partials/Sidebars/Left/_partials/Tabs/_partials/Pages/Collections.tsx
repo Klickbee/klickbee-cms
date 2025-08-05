@@ -66,6 +66,7 @@ export default function BuilderTabPagesCollections() {
 
 	const { data: collections, isLoading, error } = useCollections();
 	const deleteCollectionMutation = useDeleteCollection();
+	const createCollectionMutation = useCreateCollection();
 	const createTemplateMutation = useCreateTemplate();
 	const deleteTemplateMutation = useDeleteTemplate();
 
@@ -78,6 +79,7 @@ export default function BuilderTabPagesCollections() {
 			{ name: newCollection.name, slug: newCollection.slug },
 			setIsCreatingCollection,
 			setNewCollection,
+			createCollectionMutation,
 		);
 	};
 

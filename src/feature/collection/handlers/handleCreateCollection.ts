@@ -1,6 +1,8 @@
+"use client";
+import { UseMutationResult } from "@tanstack/react-query";
 import { Dispatch, SetStateAction } from "react";
 import { toast } from "sonner";
-import { useCreateCollection } from "@/feature/collection/queries/useCollections";
+import { Collection } from "@/feature/collection/types/collection";
 import { slugify } from "@/lib/utils";
 
 export const handleCreateCollection = async (
@@ -18,8 +20,13 @@ export const handleCreateCollection = async (
 			slug: string;
 		}>
 	>,
+	createCollectionMutation: UseMutationResult<
+		Collection,
+		Error,
+		{ name: string; slug: string },
+		unknown
+	>,
 ) => {
-	const createCollectionMutation = useCreateCollection();
 	if (!name || !slug) {
 		toast.error("Name and slug are required");
 		return;
@@ -27,6 +34,13 @@ export const handleCreateCollection = async (
 
 	editingStateManager(true);
 	try {
+		if (
+			!createCollectionMutation ||
+			typeof createCollectionMutation.mutateAsync !== "function"
+		) {
+			throw new Error("Collection mutation is not properly initialized");
+		}
+
 		await createCollectionMutation.mutateAsync({
 			name: name,
 			slug: slugify(slug),
