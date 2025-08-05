@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { handleCreateCollection } from "@/feature/collection/handlers/handleCreateCollection";
 import {
 	useCollections,
 	useCreateCollection,
@@ -64,7 +65,6 @@ export default function BuilderTabPagesCollections() {
 		useState<{ open: boolean; id?: number }>({ open: false });
 
 	const { data: collections, isLoading, error } = useCollections();
-	const createCollectionMutation = useCreateCollection();
 	const deleteCollectionMutation = useDeleteCollection();
 	const createTemplateMutation = useCreateTemplate();
 	const deleteTemplateMutation = useDeleteTemplate();
@@ -73,26 +73,12 @@ export default function BuilderTabPagesCollections() {
 		setOpenMap((prev) => ({ ...prev, [id]: !prev[id] }));
 	};
 
-	const handleCreateCollection = async () => {
-		if (!newCollection.name || !newCollection.slug) {
-			toast.error("Name and slug are required");
-			return;
-		}
-
-		setIsCreatingCollection(true);
-		try {
-			await createCollectionMutation.mutateAsync({
-				name: newCollection.name,
-				slug: slugify(newCollection.slug),
-			});
-			setNewCollection({ name: "", slug: "" });
-			toast.success("Collection created successfully");
-		} catch (error) {
-			toast.error("Failed to create collection");
-			console.error(error);
-		} finally {
-			setIsCreatingCollection(false);
-		}
+	const handleCreate = () => {
+		handleCreateCollection(
+			{ name: newCollection.name, slug: newCollection.slug },
+			setIsCreatingCollection,
+			setNewCollection,
+		);
 	};
 
 	const handleDeleteCollection = async (id: number) => {
@@ -232,7 +218,7 @@ export default function BuilderTabPagesCollections() {
 							</DialogClose>
 							<Button
 								disabled={isCreatingCollection}
-								onClick={handleCreateCollection}
+								onClick={handleCreate}
 							>
 								{isCreatingCollection && (
 									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
