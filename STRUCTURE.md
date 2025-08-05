@@ -25,6 +25,7 @@ Each feature lives in its own directory under `src/feature/`:
 
 ```
 src/feature/<feature-name>/
+├── actions/            → Actions for server-side logic
 ├── api/                → API client functions
 ├── client/             → Client-side logic
 ├── components/         → Feature-specific components
