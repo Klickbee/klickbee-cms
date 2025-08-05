@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useUpdatePageSlug } from "@/feature/page/queries/usePageActions";
 import { PageLight } from "@/feature/page/types/page";
+import { slugify } from "@/lib/utils";
 
 export default function EditableSlug({
 	initialSlug,
@@ -76,12 +77,8 @@ export default function EditableSlug({
 						// Data is a PageLight object
 						const updatedPage = data as PageLight;
 						// Update the displayed slug
-						setSlug(
-							initialSlug.startsWith("/")
-								? `/${updatedPage.slug}`
-								: `${updatedPage.slug}/`,
-						);
-						setCleanedSlug(updatedPage.slug);
+						setSlug(slugify(updatedPage.slug));
+						setCleanedSlug(slugify(updatedPage.slug));
 						setIsEditingSlug({ pageId: null, state: false });
 						toast.success("Slug updated successfully");
 					} else {
