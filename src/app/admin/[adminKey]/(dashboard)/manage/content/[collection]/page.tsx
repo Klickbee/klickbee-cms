@@ -5,6 +5,11 @@ export default function AdminContentItemsPage({
 }: {
 	params: Usable<unknown>;
 }) {
-	// const paramsSynced = React.use(params);
-	// console.log(paramsSynced);
+	const paramsSynced = React.use(params) as { slug: string };
+
+	return (
+		<div>
+			<p>Will show items for collection:{paramsSynced.slug}</p>
+		</div>
+	);
 }
