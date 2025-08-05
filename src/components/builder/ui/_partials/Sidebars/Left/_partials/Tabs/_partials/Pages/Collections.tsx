@@ -3,15 +3,21 @@
 import {
 	ChevronDown,
 	ChevronUp,
-	Edit,
+	Diamond,
+	File,
 	Loader2,
 	MoreHorizontal,
 	Plus,
-	Trash,
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import {
+	ContextMenu,
+	ContextMenuContent,
+	ContextMenuItem,
+	ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 import {
 	Dialog,
 	DialogClose,
@@ -49,6 +55,13 @@ export default function BuilderTabPagesCollections() {
 	});
 	const [isCreatingCollection, setIsCreatingCollection] = useState(false);
 	const [isCreatingTemplate, setIsCreatingTemplate] = useState(false);
+	const [showDeleteDialog, setShowDeleteDialog] = useState<{
+		open: boolean;
+		id?: number;
+		collectionId?: number;
+	}>({ open: false });
+	const [showDeleteCollectionDialog, setShowDeleteCollectionDialog] =
+		useState<{ open: boolean; id?: number }>({ open: false });
 
 	const { data: collections, isLoading, error } = useCollections();
 	const createCollectionMutation = useCreateCollection();
@@ -83,15 +96,21 @@ export default function BuilderTabPagesCollections() {
 	};
 
 	const handleDeleteCollection = async (id: number) => {
-		if (!confirm("Are you sure you want to delete this collection?"))
-			return;
+		setShowDeleteCollectionDialog({ id, open: true });
+	};
 
+	const confirmDeleteCollection = async () => {
+		if (!showDeleteCollectionDialog.id) return;
 		try {
-			await deleteCollectionMutation.mutateAsync(id);
+			await deleteCollectionMutation.mutateAsync(
+				showDeleteCollectionDialog.id,
+			);
 			toast.success("Collection deleted successfully");
 		} catch (error) {
 			toast.error("Failed to delete collection");
 			console.error(error);
+		} finally {
+			setShowDeleteCollectionDialog({ open: false });
 		}
 	};
 
@@ -119,15 +138,22 @@ export default function BuilderTabPagesCollections() {
 	};
 
 	const handleDeleteTemplate = async (id: number, collectionId: number) => {
-		if (!confirm("Are you sure you want to delete this template?")) return;
+		setShowDeleteDialog({ collectionId, id, open: true });
+	};
 
+	const confirmDeleteTemplate = async () => {
+		if (!showDeleteDialog.id || !showDeleteDialog.collectionId) return;
 		try {
-			// Pass the id directly to the server action, but keep collectionId for cache invalidation
-			await deleteTemplateMutation.mutateAsync({ collectionId, id });
+			await deleteTemplateMutation.mutateAsync({
+				collectionId: showDeleteDialog.collectionId,
+				id: showDeleteDialog.id,
+			});
 			toast.success("Template deleted successfully");
 		} catch (error) {
 			toast.error("Failed to delete template");
 			console.error(error);
+		} finally {
+			setShowDeleteDialog({ open: false });
 		}
 	};
 
@@ -150,7 +176,7 @@ export default function BuilderTabPagesCollections() {
 	return (
 		<div className="flex flex-col gap-1">
 			<div className="flex items-center justify-between px-4 pt-6 pb-2 text-sm font-medium text-muted-foreground">
-				<span>Content Collections</span>
+				<span>Content Collection</span>
 				<Dialog>
 					<DialogTrigger asChild>
 						<Button
@@ -221,47 +247,51 @@ export default function BuilderTabPagesCollections() {
 			{collections?.map((collection) => {
 				const isOpen = openMap[collection.id] ?? true;
 				return (
-					<div className="flex flex-col" key={collection.id}>
-						<div className="group flex items-center justify-between px-4 py-1.5 text-sm text-muted-foreground hover:bg-muted rounded-sm">
-							<div
-								className="flex-1 cursor-pointer flex items-center"
-								onClick={() => toggleOpen(collection.id)}
-							>
-								<span className="truncate">
-									{collection.slug}
-								</span>
-								{isOpen ? (
-									<ChevronUp className="w-4 h-4 ml-1 text-muted-foreground" />
-								) : (
-									<ChevronDown className="w-4 h-4 ml-1 text-muted-foreground" />
-								)}
-							</div>
-							<DropdownMenu>
-								<DropdownMenuTrigger asChild>
-									<Button
-										className="h-8 w-8 p-0"
-										variant="ghost"
+					<div className="flex flex-col w-full" key={collection.id}>
+						<div className="group flex items-center justify-between w-full px-4 py-1.5 text-sm text-muted-foreground hover:bg-muted rounded-sm">
+							<ContextMenu>
+								<ContextMenuTrigger
+									className={"justify-between w-full"}
+								>
+									<div
+										className="flex-row cursor-pointer flex items-center gap-2 justify-between w-full"
+										onClick={() =>
+											toggleOpen(collection.id)
+										}
 									>
-										<MoreHorizontal className="h-4 w-4" />
-									</Button>
-								</DropdownMenuTrigger>
-								<DropdownMenuContent align="end">
-									<DropdownMenuItem>
-										<Edit className="mr-2 h-4 w-4" />
+										<div
+											className={
+												"flex flex-row gap-2 items-center"
+											}
+										>
+											<Diamond className="w-4 h-4 text-muted-foreground" />
+											<span className="truncate">
+												{collection.name}
+											</span>
+										</div>
+										{isOpen ? (
+											<ChevronUp className="w-4 h-4 ml-auto text-muted-foreground" />
+										) : (
+											<ChevronDown className="w-4 h-4 ml-auto text-muted-foreground" />
+										)}
+									</div>
+								</ContextMenuTrigger>
+								<ContextMenuContent>
+									<ContextMenuItem>
 										<span>Edit</span>
-									</DropdownMenuItem>
-									<DropdownMenuItem
+									</ContextMenuItem>
+									<ContextMenuItem
+										className={"text-destructive"}
 										onClick={() =>
 											handleDeleteCollection(
 												collection.id,
 											)
 										}
 									>
-										<Trash className="mr-2 h-4 w-4" />
-										<span>Delete</span>
-									</DropdownMenuItem>
-								</DropdownMenuContent>
-							</DropdownMenu>
+										Delete Collection
+									</ContextMenuItem>
+								</ContextMenuContent>
+							</ContextMenu>
 						</div>
 
 						{isOpen && (
@@ -271,7 +301,8 @@ export default function BuilderTabPagesCollections() {
 										className="group flex items-center justify-between px-4 py-1.5 text-sm text-muted-foreground hover:bg-muted rounded-sm"
 										key={template.id}
 									>
-										<span className="pl-6 before:content-['—'] before:mr-1 truncate">
+										<span className="flex items-center gap-2 pl-6 truncate">
+											<File className="w-4 h-4 text-muted-foreground" />
 											{template.name}
 										</span>
 										<DropdownMenu>
@@ -285,10 +316,12 @@ export default function BuilderTabPagesCollections() {
 											</DropdownMenuTrigger>
 											<DropdownMenuContent align="end">
 												<DropdownMenuItem>
-													<Edit className="mr-2 h-4 w-4" />
 													<span>Edit</span>
 												</DropdownMenuItem>
 												<DropdownMenuItem
+													className={
+														"text-destructive"
+													}
 													onClick={() =>
 														handleDeleteTemplate(
 															template.id,
@@ -296,26 +329,26 @@ export default function BuilderTabPagesCollections() {
 														)
 													}
 												>
-													<Trash className="mr-2 h-4 w-4" />
 													<span>Delete</span>
 												</DropdownMenuItem>
 											</DropdownMenuContent>
 										</DropdownMenu>
 									</div>
 								))}
+
 								<Dialog>
 									<DialogTrigger asChild>
 										<Button
-											className="pl-6 py-1.5 px-4 text-sm text-blue-600 hover:underline justify-start h-auto"
+											className="pl-6 py-1.5 text-sm text-muted-foreground hover:text-primary hover:bg-transparent justify-start h-auto"
 											onClick={() =>
 												setNewTemplate({
 													...newTemplate,
 													collectionId: collection.id,
 												})
 											}
-											variant="link"
+											variant="ghost"
 										>
-											Create template
+											+ Add Template
 										</Button>
 									</DialogTrigger>
 									<DialogContent>
@@ -369,6 +402,65 @@ export default function BuilderTabPagesCollections() {
 					</div>
 				);
 			})}
+
+			{/* Dialogs */}
+			{showDeleteDialog.open && (
+				<Dialog
+					onOpenChange={() => setShowDeleteDialog({ open: false })}
+					open={showDeleteDialog.open}
+				>
+					<DialogContent>
+						<DialogHeader>Delete Template</DialogHeader>
+						<DialogFooter>
+							<Button
+								onClick={() =>
+									setShowDeleteDialog({ open: false })
+								}
+								variant="outline"
+							>
+								Cancel
+							</Button>
+							<Button
+								onClick={confirmDeleteTemplate}
+								variant="destructive"
+							>
+								Delete
+							</Button>
+						</DialogFooter>
+					</DialogContent>
+				</Dialog>
+			)}
+
+			{showDeleteCollectionDialog.open && (
+				<Dialog
+					onOpenChange={() =>
+						setShowDeleteCollectionDialog({ open: false })
+					}
+					open={showDeleteCollectionDialog.open}
+				>
+					<DialogContent>
+						<DialogHeader>Delete Collection</DialogHeader>
+						<DialogFooter>
+							<Button
+								onClick={() =>
+									setShowDeleteCollectionDialog({
+										open: false,
+									})
+								}
+								variant="outline"
+							>
+								Cancel
+							</Button>
+							<Button
+								onClick={confirmDeleteCollection}
+								variant="destructive"
+							>
+								Delete
+							</Button>
+						</DialogFooter>
+					</DialogContent>
+				</Dialog>
+			)}
 		</div>
 	);
 }
