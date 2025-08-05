@@ -16,6 +16,8 @@ import {
 	Video,
 } from "lucide-react";
 import { useState } from "react";
+import BuilderSearchComponent from "@/components/builder/ui/_partials/Sidebars/Left/Search";
+import BuilderTabContent from "@/components/builder/ui/_partials/Sidebars/Left/TabContent";
 
 type ComponentItem = {
 	id: string;
@@ -85,47 +87,50 @@ export default function BuilderTabComponents() {
 	};
 
 	return (
-		<div className="flex flex-col gap-1 px-4 py-2 text-sm">
-			{groups.map((group) => {
-				const isOpen = openGroups[group.id] ?? false;
+		<>
+			<BuilderSearchComponent />
+			<div className="flex flex-col gap-1 px-4 py-2 text-sm">
+				{groups.map((group) => {
+					const isOpen = openGroups[group.id] ?? false;
 
-				return (
-					<div className="flex flex-col" key={group.id}>
-						{/* Group title */}
-						<div
-							className="flex items-center justify-between py-2 font-medium cursor-pointer"
-							onClick={() => toggleGroup(group.id)}
-						>
-							<span
-								className={
-									isOpen && group.id === "layout"
-										? "text-blue-600"
-										: "text-muted-foreground"
-								}
+					return (
+						<div className="flex flex-col" key={group.id}>
+							{/* Group title */}
+							<div
+								className="flex items-center justify-between py-2 font-medium cursor-pointer"
+								onClick={() => toggleGroup(group.id)}
 							>
-								{group.label}
-							</span>
-							{isOpen ? (
-								<ChevronDown className="w-4 h-4 text-muted-foreground" />
-							) : (
-								<ChevronRight className="w-4 h-4 text-muted-foreground" />
-							)}
-						</div>
-
-						{/* Items */}
-						{isOpen &&
-							group.items.map((item) => (
-								<div
-									className="flex items-center gap-2 pl-6 py-1 text-muted-foreground hover:text-foreground cursor-pointer"
-									key={item.id}
+								<span
+									className={
+										isOpen && group.id === "layout"
+											? "text-blue-600"
+											: "text-muted-foreground"
+									}
 								>
-									{item.icon}
-									<span>{item.label}</span>
-								</div>
-							))}
-					</div>
-				);
-			})}
-		</div>
+									{group.label}
+								</span>
+								{isOpen ? (
+									<ChevronDown className="w-4 h-4 text-muted-foreground" />
+								) : (
+									<ChevronRight className="w-4 h-4 text-muted-foreground" />
+								)}
+							</div>
+
+							{/* Items */}
+							{isOpen &&
+								group.items.map((item) => (
+									<div
+										className="flex items-center gap-2 pl-6 py-1 text-muted-foreground hover:text-foreground cursor-pointer"
+										key={item.id}
+									>
+										{item.icon}
+										<span>{item.label}</span>
+									</div>
+								))}
+						</div>
+					);
+				})}
+			</div>
+		</>
 	);
 }

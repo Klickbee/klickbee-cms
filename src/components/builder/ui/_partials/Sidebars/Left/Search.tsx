@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 
 export default function BuilderSearchComponent() {
 	return (
-		<div className="flex items-center gap-2  px-3 py-4 ">
+		<div className="flex items-center gap-2  p-4 ">
 			<div
 				className={
 					"bg-muted text-muted-foreground  flex items-center gap-1.5 border m-auto rounded-md shadow-sm px-3 py-0.5"

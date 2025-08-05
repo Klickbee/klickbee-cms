@@ -113,7 +113,9 @@ export default function BuilderTabLayers() {
 	return (
 		<div className="flex flex-col gap-2 px-4 py-2 text-sm">
 			{/* Page name */}
-			<div className="text-blue-600 font-medium pt-2">{currentPage}</div>
+			<div className="text-blue-600 font-medium pt-2">
+				{currentPage.title}
+			</div>
 
 			{/* Tree */}
 			<div>
