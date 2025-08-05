@@ -35,7 +35,7 @@ export default async function AdminLayout({
 			<UserProvider>
 				<NextIntlClientProvider locale={locale} messages={messages}>
 					<ZodTranslationProvider>
-						<div className="flex min-h-screen">
+						<div className="flex min-h-dvh">
 							<SidebarProvider>
 								{currentUser && <Sidebar />}
 								<main className="flex-1">

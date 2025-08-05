@@ -2,9 +2,9 @@
 
 import {
 	ChevronRight,
-	ChevronsUpDown,
 	FileText,
 	Home,
+	LayoutDashboard,
 	Mail,
 	Settings as SettingsIcon,
 	User,
@@ -47,6 +47,11 @@ export function Sidebar() {
 	const pathname = usePathname();
 	const { data: user } = useCurrentUser();
 	const items = [
+		{
+			href: `/admin/${adminKey}/manage/dashboard`,
+			icon: LayoutDashboard,
+			label: t("Dashboard"),
+		},
 		{
 			href: `/admin/${adminKey}/manage/content`,
 			icon: Home,
@@ -92,22 +97,22 @@ export function Sidebar() {
 
 	return (
 		<ShadcnSidebar>
-			<SidebarHeader className="p-4 border-b">
+			<SidebarHeader className="p-4 ">
 				<div className="flex items-center gap-3 w-full hover:bg-gray-50 rounded-lg p-2 -m-2 cursor-pointer">
-					<div className="w-8 h-8 rounded-lg flex items-center justify-center">
+					<div className="w-9 h-9 rounded-lg flex items-center justify-center">
 						<Image
 							alt="Klickbee Logo"
 							className="w-full h-full rounded-lg"
-							height={32}
-							src="/logo-square-default.png"
-							width={32}
+							height={36}
+							src="/KlickbeeLogo.png"
+							width={36}
 						/>
 					</div>
 					<div className="flex flex-col min-w-0 flex-1">
-						<p className="text-lg font-bold text-black truncate">
+						<p className="text-base font-semibold text-black truncate">
 							Klickbee
 						</p>
-						<p className="text-xs text-gray-600 truncate">
+						<p className="text-xs text-muted-foreground truncate">
 							KlickBee.com
 						</p>
 					</div>
