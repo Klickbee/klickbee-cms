@@ -29,6 +29,7 @@ src/feature/<feature-name>/
 ├── api/                → API client functions
 ├── client/             → Client-side logic
 ├── components/         → Feature-specific components
+├── handlers/           → handlers for specific logic
 ├── languages/          → Localization files (only for translations feature)
 ├── lib/                → Server actions and utilities
 ├── options/            → React Query options
