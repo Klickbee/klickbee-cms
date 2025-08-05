@@ -3,6 +3,7 @@
 import { Loader2, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+import { toast } from "sonner";
 import EmptyStateImage from "@/../public/empty_state.png";
 import EmptyStateCollectionComponent from "@/components/admin/manage/content/EmptyState";
 import { Button } from "@/components/ui/button";
@@ -36,14 +37,35 @@ import { handleCreateCollection } from "@/feature/collection/handlers/handleCrea
 import {
 	useCollections,
 	useCreateCollection,
+	useDeleteCollection,
+	useUpdateCollection,
 } from "@/feature/collection/queries/useCollections";
+import { Collection } from "@/feature/collection/types/collection";
+import { slugify } from "@/lib/utils";
 
 export default function AdminContentPage() {
 	const { data: collections, isLoading, error } = useCollections();
 	const [newCollection, setNewCollection] = useState({ name: "", slug: "" });
+	const [editCollection, setEditCollection] = useState({
+		id: 0,
+		name: "",
+		slug: "",
+	});
 	const [isCreatingCollection, setIsCreatingCollection] = useState(false);
+	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+	const [isBulkDeleteDialogOpen, setIsBulkDeleteDialogOpen] = useState(false);
+	const [collectionToDelete, setCollectionToDelete] = useState<number | null>(
+		null,
+	);
+	const [isUpdatingCollection, setIsUpdatingCollection] = useState(false);
+	const [isDeletingCollection, setIsDeletingCollection] = useState(false);
+	const [isDeletingMultipleCollections, setIsDeletingMultipleCollections] =
+		useState(false);
 	const [checkedRows, setCheckedRows] = useState<number[]>([]);
 	const createCollectionMutation = useCreateCollection();
+	const updateCollectionMutation = useUpdateCollection();
+	const deleteCollectionMutation = useDeleteCollection();
 
 	const allIds = collections?.map((c) => c.id) || [];
 	const allChecked =
@@ -59,6 +81,80 @@ export default function AdminContentPage() {
 			setNewCollection,
 			createCollectionMutation,
 		);
+	};
+
+	const handleUpdate = async () => {
+		if (!editCollection.name || !editCollection.slug) {
+			toast.error("Name and slug are required");
+			return;
+		}
+
+		setIsUpdatingCollection(true);
+		try {
+			await updateCollectionMutation.mutateAsync({
+				data: {
+					name: editCollection.name,
+					slug: slugify(editCollection.slug),
+				},
+				id: editCollection.id,
+			});
+			setIsEditDialogOpen(false);
+			toast.success("Collection updated successfully");
+		} catch (error) {
+			toast.error("Failed to update collection");
+			console.error(error);
+		} finally {
+			setIsUpdatingCollection(false);
+		}
+	};
+
+	const handleDelete = async (id: number) => {
+		setIsDeletingCollection(true);
+		try {
+			await deleteCollectionMutation.mutateAsync(id);
+			setIsDeleteDialogOpen(false);
+			setCollectionToDelete(null);
+			toast.success("Collection deleted successfully");
+		} catch (error) {
+			toast.error("Failed to delete collection");
+			console.error(error);
+		} finally {
+			setIsDeletingCollection(false);
+		}
+	};
+
+	const handleBulkDelete = async () => {
+		setIsDeletingMultipleCollections(true);
+		try {
+			// Delete collections one by one
+			for (const id of checkedRows) {
+				await deleteCollectionMutation.mutateAsync(id);
+			}
+			setIsBulkDeleteDialogOpen(false);
+			setCheckedRows([]);
+			toast.success(
+				`${checkedRows.length} collections deleted successfully`,
+			);
+		} catch (error) {
+			toast.error("Failed to delete collections");
+			console.error(error);
+		} finally {
+			setIsDeletingMultipleCollections(false);
+		}
+	};
+
+	const openEditDialog = (collection: Collection) => {
+		setEditCollection({
+			id: collection.id,
+			name: collection.name,
+			slug: collection.slug,
+		});
+		setIsEditDialogOpen(true);
+	};
+
+	const openDeleteDialog = (id: number) => {
+		setCollectionToDelete(id);
+		setIsDeleteDialogOpen(true);
 	};
 
 	const handleHeaderCheck = (checked: boolean) => {
@@ -83,7 +179,10 @@ export default function AdminContentPage() {
 					</p>
 				</div>
 				{checkedRows.length > 0 ? (
-					<Button variant="destructive">
+					<Button
+						onClick={() => setIsBulkDeleteDialogOpen(true)}
+						variant="destructive"
+					>
 						<Trash2 className="w-4 h-4 mr-2" />
 						Delete Collections
 					</Button>
@@ -238,12 +337,25 @@ export default function AdminContentPage() {
 													</Button>
 												</DropdownMenuTrigger>
 												<DropdownMenuContent align="end">
-													<DropdownMenuItem>
-														<Pencil className="mr-2 h-4 w-4" />
+													<DropdownMenuItem
+														onClick={() =>
+															openEditDialog(
+																collection,
+															)
+														}
+													>
+														<Pencil className="h-4 w-4 mr-2" />
 														Edit
 													</DropdownMenuItem>
-													<DropdownMenuItem className="text-destructive">
-														<Trash2 className="mr-2 h-4 w-4" />
+													<DropdownMenuItem
+														className="text-destructive"
+														onClick={() =>
+															openDeleteDialog(
+																collection.id,
+															)
+														}
+													>
+														<Trash2 className="h-4 w-4 mr-2" />
 														Delete
 													</DropdownMenuItem>
 												</DropdownMenuContent>
@@ -267,6 +379,141 @@ export default function AdminContentPage() {
 					</div>
 				</div>
 			)}
+
+			{/* Edit Collection Dialog */}
+			<Dialog onOpenChange={setIsEditDialogOpen} open={isEditDialogOpen}>
+				<DialogContent className="sm:max-w-md">
+					<DialogHeader>
+						<DialogTitle>Edit Collection</DialogTitle>
+						<DialogDescription>
+							Update the collection details.
+						</DialogDescription>
+					</DialogHeader>
+					<div className="grid gap-4 py-4">
+						<div className="grid gap-2">
+							<label
+								className="text-sm font-medium"
+								htmlFor="edit-name"
+							>
+								Collection Name
+							</label>
+							<Input
+								id="edit-name"
+								onChange={(e) =>
+									setEditCollection({
+										...editCollection,
+										name: e.target.value,
+									})
+								}
+								placeholder="Enter collection name"
+								value={editCollection.name}
+							/>
+						</div>
+						<div className="grid gap-2">
+							<label
+								className="text-sm font-medium"
+								htmlFor="edit-slug"
+							>
+								Slug
+							</label>
+							<Input
+								id="edit-slug"
+								onChange={(e) =>
+									setEditCollection({
+										...editCollection,
+										slug: e.target.value,
+									})
+								}
+								placeholder="Enter collection slug"
+								value={editCollection.slug}
+							/>
+						</div>
+					</div>
+					<DialogFooter>
+						<Button
+							disabled={isUpdatingCollection}
+							onClick={handleUpdate}
+							type="submit"
+						>
+							{isUpdatingCollection && (
+								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+							)}
+							Update Collection
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
+
+			{/* Delete Collection Confirmation Dialog */}
+			<Dialog
+				onOpenChange={setIsDeleteDialogOpen}
+				open={isDeleteDialogOpen}
+			>
+				<DialogContent className="sm:max-w-md">
+					<DialogHeader>
+						<DialogTitle>Delete Collection</DialogTitle>
+						<DialogDescription>
+							Are you sure you want to delete this collection?
+							This action cannot be undone.
+						</DialogDescription>
+					</DialogHeader>
+					<DialogFooter>
+						<Button
+							onClick={() => setIsDeleteDialogOpen(false)}
+							variant="outline"
+						>
+							Cancel
+						</Button>
+						<Button
+							disabled={isDeletingCollection}
+							onClick={() =>
+								collectionToDelete &&
+								handleDelete(collectionToDelete)
+							}
+							variant="destructive"
+						>
+							{isDeletingCollection && (
+								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+							)}
+							Delete
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
+
+			{/* Bulk Delete Collections Confirmation Dialog */}
+			<Dialog
+				onOpenChange={setIsBulkDeleteDialogOpen}
+				open={isBulkDeleteDialogOpen}
+			>
+				<DialogContent className="sm:max-w-md">
+					<DialogHeader>
+						<DialogTitle>Delete Multiple Collections</DialogTitle>
+						<DialogDescription>
+							Are you sure you want to delete {checkedRows.length}{" "}
+							collections? This action cannot be undone.
+						</DialogDescription>
+					</DialogHeader>
+					<DialogFooter>
+						<Button
+							onClick={() => setIsBulkDeleteDialogOpen(false)}
+							variant="outline"
+						>
+							Cancel
+						</Button>
+						<Button
+							disabled={isDeletingMultipleCollections}
+							onClick={handleBulkDelete}
+							variant="destructive"
+						>
+							{isDeletingMultipleCollections && (
+								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+							)}
+							Delete {checkedRows.length} Collections
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 		</div>
 	);
 }
