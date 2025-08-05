@@ -38,6 +38,7 @@ import {
 	useCreateTemplate,
 	useDeleteTemplate,
 } from "@/feature/collection/queries/useTemplates";
+import { slugify } from "@/lib/utils";
 
 export default function BuilderTabPagesCollections() {
 	const [openMap, setOpenMap] = useState<Record<string, boolean>>({});
@@ -69,9 +70,7 @@ export default function BuilderTabPagesCollections() {
 		try {
 			await createCollectionMutation.mutateAsync({
 				name: newCollection.name,
-				slug: newCollection.slug.startsWith("/")
-					? newCollection.slug
-					: `/${newCollection.slug}`,
+				slug: slugify(newCollection.slug),
 			});
 			setNewCollection({ name: "", slug: "" });
 			toast.success("Collection created successfully");
@@ -196,7 +195,7 @@ export default function BuilderTabPagesCollections() {
 											slug: e.target.value,
 										})
 									}
-									placeholder="/my-collection"
+									placeholder="my-collection"
 									value={newCollection.slug}
 								/>
 							</div>
