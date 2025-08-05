@@ -125,10 +125,8 @@ export default function AdminContentItemsPage({
 				</Button>
 			</DefaultHeader>
 
-			<Card className={"mx-8 my-6"}>
-				<CardHeader
-					className={"border-b [.border-b]:pb-0 px-3 py-4 pb-0 pt-0"}
-				>
+			<Card className={"mx-8 my-6 p-0"}>
+				<CardHeader className={"border-b [.border-b]:pb-0 px-3 py-4"}>
 					<div className="flex flex-row items-center justify-between">
 						<DefaultCardTitle>{collectionName}</DefaultCardTitle>
 						<div className="flex items-center gap-2">
