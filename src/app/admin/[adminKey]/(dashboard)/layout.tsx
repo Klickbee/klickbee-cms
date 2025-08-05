@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { Sidebar } from "@/components/admin/_partials/sidebar";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { userServerOptions } from "@/feature/user/options/userServerOptions";
 import { getQueryClient } from "@/lib/getQueryClient";
@@ -39,7 +39,6 @@ export default async function AdminLayout({
 							<SidebarProvider>
 								{currentUser && <Sidebar />}
 								<main className="flex-1">
-									<SidebarTrigger className="mx-10 mt-4" />
 									{children}
 									<Toaster />
 								</main>
