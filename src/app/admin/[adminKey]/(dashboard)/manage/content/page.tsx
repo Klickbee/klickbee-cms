@@ -4,6 +4,7 @@ import { Loader2, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import EmptyStateImage from "@/../public/empty_state.png";
+import EmptyStateCollectionComponent from "@/components/admin/manage/content/EmptyState";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -30,6 +31,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import { generateAdminLink } from "@/feature/admin-key/lib/utils";
 import { handleCreateCollection } from "@/feature/collection/handlers/handleCreateCollection";
 import {
 	useCollections,
@@ -40,7 +42,12 @@ export default function AdminContentPage() {
 	const { data: collections, isLoading, error } = useCollections();
 	const [newCollection, setNewCollection] = useState({ name: "", slug: "" });
 	const [isCreatingCollection, setIsCreatingCollection] = useState(false);
+	const [checkedRows, setCheckedRows] = useState<number[]>([]);
 	const createCollectionMutation = useCreateCollection();
+
+	const allIds = collections?.map((c) => c.id) || [];
+	const allChecked =
+		checkedRows.length === allIds.length && allIds.length > 0;
 
 	const handleCreate = () => {
 		handleCreateCollection(
@@ -54,6 +61,17 @@ export default function AdminContentPage() {
 		);
 	};
 
+	const handleHeaderCheck = (checked: boolean) => {
+		setCheckedRows(checked ? allIds : []);
+	};
+	const handleRowCheck = (id: number, checked: boolean) => {
+		setCheckedRows((prev) =>
+			checked ? [...prev, id] : prev.filter((rowId) => rowId !== id),
+		);
+	};
+
+	// console.log(generateAdminLink(`/collections/project`))
+
 	return (
 		<div className="flex flex-col p-6">
 			{/* Header */}
@@ -64,107 +82,16 @@ export default function AdminContentPage() {
 						Manage all the pages of your site.
 					</p>
 				</div>
-				<Dialog>
-					<DialogTrigger asChild>
-						<Button>
-							<Plus className="w-4 h-4 mr-2" />
-							Create New Collection
-						</Button>
-					</DialogTrigger>
-					<DialogContent className="sm:max-w-md">
-						<DialogHeader>
-							<DialogTitle>Create New Collection</DialogTitle>
-							<DialogDescription>
-								Create a new collection to organize your
-								content.
-							</DialogDescription>
-						</DialogHeader>
-						<div className="grid gap-4 py-4">
-							<div className="grid gap-2">
-								<label
-									className="text-sm font-medium"
-									htmlFor="name"
-								>
-									Collection Name
-								</label>
-								<Input
-									id="name"
-									onChange={(e) =>
-										setNewCollection({
-											...newCollection,
-											name: e.target.value,
-										})
-									}
-									placeholder="Enter collection name"
-									value={newCollection.name}
-								/>
-							</div>
-							<div className="grid gap-2">
-								<label
-									className="text-sm font-medium"
-									htmlFor="slug"
-								>
-									Slug
-								</label>
-								<Input
-									id="slug"
-									onChange={(e) =>
-										setNewCollection({
-											...newCollection,
-											slug: e.target.value,
-										})
-									}
-									placeholder="Enter collection slug"
-									value={newCollection.slug}
-								/>
-							</div>
-						</div>
-						<DialogFooter>
-							<Button
-								disabled={isCreatingCollection}
-								onClick={handleCreate}
-								type="submit"
-							>
-								{isCreatingCollection && (
-									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-								)}
-								Create Collection
-							</Button>
-						</DialogFooter>
-					</DialogContent>
-				</Dialog>
-			</div>
-
-			{/* Loading state */}
-			{isLoading ? (
-				<div className="flex justify-center items-center h-40">
-					<Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
-				</div>
-			) : error ? (
-				<div className="flex justify-center items-center h-40 text-destructive">
-					Error loading collections
-				</div>
-			) : collections?.length === 0 ? (
-				<div className="border rounded-md p-6 flex flex-col items-center justify-center text-center">
-					<div className="mb-4">
-						<Image
-							alt="No collections"
-							height={141}
-							src={EmptyStateImage}
-							width={200}
-						/>
-					</div>
-					<h2 className="text-base font-semibold mb-1">
-						You don&apos;t have any collections yet
-					</h2>
-					<p className="text-sm text-muted-foreground mb-4 max-w-md">
-						Organize your content easily with collections. Group
-						similar pages, posts, or products to manage them more
-						efficiently — all in one place.
-					</p>
+				{checkedRows.length > 0 ? (
+					<Button variant="destructive">
+						<Trash2 className="w-4 h-4 mr-2" />
+						Delete Collections
+					</Button>
+				) : (
 					<Dialog>
 						<DialogTrigger asChild>
-							<Button variant="outline">
+							<Button>
+								<Plus className="w-4 h-4 mr-2" />
 								Create New Collection
 							</Button>
 						</DialogTrigger>
@@ -186,28 +113,64 @@ export default function AdminContentPage() {
 									</label>
 									<Input
 										id="name"
+										onChange={(e) =>
+											setNewCollection({
+												...newCollection,
+												name: e.target.value,
+											})
+										}
 										placeholder="Enter collection name"
+										value={newCollection.name}
 									/>
 								</div>
 								<div className="grid gap-2">
 									<label
 										className="text-sm font-medium"
-										htmlFor="description"
+										htmlFor="slug"
 									>
-										Description
+										Slug
 									</label>
 									<Input
-										id="description"
-										placeholder="Enter collection description"
+										id="slug"
+										onChange={(e) =>
+											setNewCollection({
+												...newCollection,
+												slug: e.target.value,
+											})
+										}
+										placeholder="Enter collection slug"
+										value={newCollection.slug}
 									/>
 								</div>
 							</div>
 							<DialogFooter>
-								<Button type="submit">Create Collection</Button>
+								<Button
+									disabled={isCreatingCollection}
+									onClick={handleCreate}
+									type="submit"
+								>
+									{isCreatingCollection && (
+										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+									)}
+									Create Collection
+								</Button>
 							</DialogFooter>
 						</DialogContent>
 					</Dialog>
+				)}
+			</div>
+
+			{/* Loading state */}
+			{isLoading ? (
+				<div className="flex justify-center items-center h-40">
+					<Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
 				</div>
+			) : error ? (
+				<div className="flex justify-center items-center h-40 text-destructive">
+					Error loading collections
+				</div>
+			) : collections?.length === 0 ? (
+				<EmptyStateCollectionComponent />
 			) : (
 				<div className="border rounded-md">
 					{/* Search input */}
@@ -221,7 +184,10 @@ export default function AdminContentPage() {
 							<TableHeader>
 								<TableRow>
 									<TableHead className="w-12">
-										<Checkbox />
+										<Checkbox
+											checked={allChecked}
+											onCheckedChange={handleHeaderCheck}
+										/>
 									</TableHead>
 									<TableHead>Collection Name ⬍</TableHead>
 									<TableHead className="text-right">
@@ -234,9 +200,30 @@ export default function AdminContentPage() {
 								{collections?.map((collection) => (
 									<TableRow key={collection.id}>
 										<TableCell>
-											<Checkbox />
+											<Checkbox
+												checked={checkedRows.includes(
+													collection.id,
+												)}
+												onCheckedChange={(
+													checked: boolean,
+												) =>
+													handleRowCheck(
+														collection.id,
+														checked,
+													)
+												}
+											/>
 										</TableCell>
-										<TableCell>{collection.name}</TableCell>
+										<TableCell>
+											<a
+												className="flex items-center space-x-2"
+												href={generateAdminLink(
+													`/manage/content/${collection.slug}`,
+												)}
+											>
+												{collection.name}
+											</a>
+										</TableCell>
 										<TableCell className="text-right">
 											0
 										</TableCell>
@@ -270,7 +257,7 @@ export default function AdminContentPage() {
 
 					{/* Footer */}
 					<div className="p-4 flex items-center justify-between text-sm text-muted-foreground">
-						<p>{`0 of ${collections?.length || 0} row(s) selected.`}</p>
+						<p>{`${checkedRows.length} of ${collections?.length || 0} row(s) selected.`}</p>
 						<div className="flex items-center space-x-6 lg:space-x-8">
 							<div className="flex items-center space-x-2">
 								<Button variant="outline">Previous</Button>
