@@ -3,8 +3,11 @@
 import {
 	ChevronRight,
 	ChevronsUpDown,
+	Files,
 	FileText,
 	Home,
+	Images,
+	Layers,
 	Mail,
 	Settings as SettingsIcon,
 	User,
@@ -48,19 +51,29 @@ export function Sidebar() {
 	const { data: user } = useCurrentUser();
 	const items = [
 		{
-			href: `/admin/${adminKey}/manage/content`,
+			href: `/admin/${adminKey}/`,
 			icon: Home,
+			label: t("Dashboard"),
+		},
+		{
+			href: `/admin/${adminKey}/manage/media`,
+			icon: Images,
+			label: t("Media"),
+		},
+		{
+			href: `/admin/${adminKey}/manage/pages`,
+			icon: Files,
+			label: t("Pages"),
+		},
+		{
+			href: `/admin/${adminKey}/manage/content`,
+			icon: Layers,
 			label: t("Content"),
 		},
 		{
 			href: `/admin/${adminKey}/manage/contact`,
 			icon: Mail,
 			label: t("Contact"),
-		},
-		{
-			href: `/admin/${adminKey}/manage/pages`,
-			icon: FileText,
-			label: t("Pages"),
 		},
 		{
 			children: [
@@ -92,7 +105,7 @@ export function Sidebar() {
 
 	return (
 		<ShadcnSidebar>
-			<SidebarHeader className="p-4 border-b">
+			<SidebarHeader className="p-4">
 				<div className="flex items-center gap-3 w-full hover:bg-gray-50 rounded-lg p-2 -m-2 cursor-pointer">
 					<div className="w-8 h-8 rounded-lg flex items-center justify-center">
 						<Image
@@ -138,7 +151,7 @@ export function Sidebar() {
 												>
 													<SidebarMenuSubButton
 														asChild
-														className="text-black data-[active=true]:bg-blue-500 data-[active=true]:text-white"
+														className="text-black data-[active=true]:bg-primary data-[active=true]:text-secondary"
 														data-active={
 															pathname ===
 															subItem.href
@@ -160,7 +173,7 @@ export function Sidebar() {
 							<SidebarMenuItem key={item.label}>
 								<SidebarMenuButton
 									asChild
-									className="text-black data-[active=true]:bg-blue-500 data-[active=true]:text-white"
+									className="text-black data-[active=true]:bg-primary data-[active=true]:text-secondary"
 									data-active={pathname === item.href}
 								>
 									<Link href={item.href}>
