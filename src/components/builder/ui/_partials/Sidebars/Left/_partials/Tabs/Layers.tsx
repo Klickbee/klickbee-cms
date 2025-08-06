@@ -1,52 +1,21 @@
-import {
-	Box,
-	ChevronDown,
-	ChevronRight,
-	FormInputIcon,
-	GalleryVertical,
-	Heading as HeadingIcon,
-	Image as ImageIcon,
-	LayoutGrid,
-	Mail,
-	Minus,
-	MoveVertical,
-	Text as TextIcon,
-	Video,
-} from "lucide-react";
+import { Box, ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
+import {
+	ComponentItem,
+	componentsList,
+} from "@/builder/definitions/componentsList";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
-import { Breakpoint } from "@/builder/types/breakpoint";
-import { Component, ComponentType } from "@/builder/types/components/component";
-import { useSetting } from "@/feature/settings/queries/useSettings";
 import { cn } from "@/lib/utils";
 
-// Map component types to icons
-const componentIcons: Record<ComponentType, React.ReactNode> = {
-	container: <Box size={16} />,
-	divider: <Minus size={16} />,
-	email: <Mail size={16} />,
-	grid: <LayoutGrid size={16} />,
-	heading: <HeadingIcon size={16} />,
-	image: <ImageIcon size={16} />,
-	input: <FormInputIcon size={16} />,
-	section: <GalleryVertical size={16} />,
-	spacer: <MoveVertical size={16} />,
-	text: <TextIcon size={16} />,
-	video: <Video size={16} />,
-};
-
 function TreeNode({
-	component,
+	node,
 	level = 0,
-	breakpoint,
 }: {
-	component: Component;
+	node: ComponentItem;
 	level?: number;
-	breakpoint: string;
 }) {
 	const [expanded, setExpanded] = useState(true);
-	const hasChildren = component.children && component.children.length > 0;
-	const icon = componentIcons[component.type] || <Box size={16} />;
+	const hasChildren = node.children && node.children.length > 0;
 
 	return (
 		<div className="ml-2">
@@ -66,22 +35,12 @@ function TreeNode({
 				) : (
 					<span className="w-4 h-4" />
 				)}
-				{icon}
-				<span className="ml-2">{component.label}</span>
-				{breakpoint && level === 0 && (
-					<span className="ml-2 text-xs text-gray-400">
-						({breakpoint})
-					</span>
-				)}
+				{node.icon}
+				<span className="ml-2">{node.label}</span>
 			</div>
 			{expanded &&
-				component.children?.map((child) => (
-					<TreeNode
-						breakpoint={breakpoint}
-						component={child}
-						key={child.id}
-						level={level + 1}
-					/>
+				node.children?.map((child: ComponentItem) => (
+					<TreeNode key={child.id} level={level + 1} node={child} />
 				))}
 		</div>
 	);
@@ -90,52 +49,48 @@ function TreeNode({
 export default function BuilderTabLayers() {
 	const currentPage = useCurrentPageStore((state) => state.currentPage);
 
-	// Function to get all components from all breakpoints
-	const getAllComponents = () => {
-		if (!currentPage.content) return [];
-
-		const result: { component: Component; breakpoint: string }[] = [];
-
-		// For each breakpoint, get all components
-		Object.keys(
-			currentPage.content as unknown as Record<string, Component[]>,
-		).forEach((breakpointName) => {
-			const components = (
-				currentPage.content as unknown as Record<string, Component[]>
-			)[breakpointName];
-			if (Array.isArray(components)) {
-				components.forEach((component) => {
-					result.push({ breakpoint: breakpointName, component });
-				});
-			}
+	const mapContentToTree = (content: ComponentItem[]): ComponentItem[] => {
+		return content.map((component) => {
+			const base = componentsList.find(
+				(c) => c.id === component.group,
+			) || {
+				group: component.group || "",
+				icon: <Box size={16} />,
+				id: component.id,
+				label: component.label || component.group,
+			};
+			return {
+				...base,
+				children: component.children
+					? mapContentToTree(component.children)
+					: [],
+				id: component.id,
+				label: component.label || base.label,
+			};
 		});
-
-		return result;
 	};
 
-	const allComponents = getAllComponents();
+	const contentNodes: ComponentItem[] =
+		currentPage.content && Array.isArray(currentPage.content)
+			? mapContentToTree(currentPage.content as ComponentItem[])
+			: [];
 
 	return (
 		<div className="flex flex-col gap-2 px-4 py-2 text-sm">
 			{/* Page name */}
 			<div className="text-blue-600 font-medium pt-2">
-				{currentPage.title || "Untitled Page"}
+				{currentPage.title}
 			</div>
 
 			{/* Tree */}
 			<div>
-				{allComponents.length > 0 ? (
-					allComponents.map(({ component, breakpoint }) => (
-						<TreeNode
-							breakpoint={breakpoint}
-							component={component}
-							key={`${breakpoint}-${component.id}`}
-						/>
+				{contentNodes.length > 0 ? (
+					contentNodes.map((contentNode: ComponentItem) => (
+						<TreeNode key={contentNode.id} node={contentNode} />
 					))
 				) : (
-					<div className="text-muted-foreground py-2">
-						No components added yet. Drag components from the
-						Components tab to add them to the page.
+					<div className="text-muted-foreground text-sm py-2">
+						No components added yet
 					</div>
 				)}
 			</div>

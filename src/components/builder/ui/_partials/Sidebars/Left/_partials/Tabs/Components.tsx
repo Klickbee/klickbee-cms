@@ -1,29 +1,12 @@
 "use client";
 
-import {
-	Box,
-	ChevronDown,
-	ChevronRight,
-	GalleryVertical,
-	Heading,
-	Image,
-	FormInputIcon as InputIcon,
-	LayoutGrid,
-	Mail,
-	Minus,
-	MoveVertical,
-	Text,
-	Video,
-} from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
+import {
+	ComponentItem,
+	componentsList,
+} from "@/builder/definitions/componentsList";
 import BuilderSearchComponent from "@/components/builder/ui/_partials/Sidebars/Left/Search";
-import BuilderTabContent from "@/components/builder/ui/_partials/Sidebars/Left/TabContent";
-
-type ComponentItem = {
-	id: string;
-	label: string;
-	icon: React.ReactNode;
-};
 
 type ComponentGroup = {
 	id: string;
@@ -31,51 +14,20 @@ type ComponentGroup = {
 	items: ComponentItem[];
 };
 
-const groups: ComponentGroup[] = [
-	{
-		id: "layout",
-		items: [
-			{
-				icon: <GalleryVertical size={16} />,
-				id: "section",
-				label: "Section",
-			},
-			{ icon: <Box size={16} />, id: "container", label: "Container" },
-			{
-				icon: <LayoutGrid size={16} />,
-				id: "grid",
-				label: "Grid/Column",
-			},
-			{ icon: <MoveVertical size={16} />, id: "spacer", label: "Spacer" },
-			{ icon: <Minus size={16} />, id: "divider", label: "Divider" },
-		],
-		label: "Layout",
-	},
-	{
-		id: "text",
-		items: [
-			{ icon: <Heading size={16} />, id: "heading", label: "Heading" },
-			{ icon: <Text size={16} />, id: "text", label: "Text" },
-		],
-		label: "Text & Content",
-	},
-	{
-		id: "media",
-		items: [
-			{ icon: <Image size={16} />, id: "image", label: "Image" },
-			{ icon: <Video size={16} />, id: "video", label: "Video" },
-		],
-		label: "Media",
-	},
-	{
-		id: "form",
-		items: [
-			{ icon: <InputIcon size={16} />, id: "input", label: "Input" },
-			{ icon: <Mail size={16} />, id: "email", label: "Email" },
-		],
-		label: "Form",
-	},
-];
+const groupLabels: Record<string, string> = {
+	form: "Form",
+	layout: "Layout",
+	media: "Media",
+	text: "Text",
+};
+
+const groups: ComponentGroup[] = Object.entries(groupLabels).map(
+	([groupId, label]) => ({
+		id: groupId,
+		items: componentsList.filter((c) => c.group === groupId),
+		label,
+	}),
+);
 
 export default function BuilderTabComponents() {
 	const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
