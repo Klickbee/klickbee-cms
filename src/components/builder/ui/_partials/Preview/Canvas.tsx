@@ -83,8 +83,14 @@ export default function BuilderPreviewCanvas() {
 	}, []);
 
 	const handleMouseDown = (e: React.MouseEvent) => {
-		setIsDragging(true);
-		start.current = { x: e.clientX - offset.x, y: e.clientY - offset.y };
+		// Only set dragging to true when middle mouse button is pressed (button === 1)
+		if (e.button === 1) {
+			setIsDragging(true);
+			start.current = {
+				x: e.clientX - offset.x,
+				y: e.clientY - offset.y,
+			};
+		}
 	};
 
 	const handleMouseMove = (e: React.MouseEvent) => {
@@ -122,7 +128,7 @@ export default function BuilderPreviewCanvas() {
 				<div
 					className="absolute top-0 left-0"
 					style={{
-						cursor: isDragging ? "grabbing" : "grab",
+						cursor: isDragging ? "grabbing" : "default",
 						transform: `translate(${offset.x}px, ${offset.y}px)`,
 					}}
 				>
