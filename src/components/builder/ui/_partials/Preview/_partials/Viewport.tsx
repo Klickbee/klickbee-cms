@@ -5,7 +5,7 @@ import { ComponentRenderer } from "@/builder/lib/renderers/ComponentRenderer";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
 import {
 	BaseComponent,
-	Component,
+	BuilderComponent,
 	canHaveChildren,
 } from "@/builder/types/components/component";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,6 @@ export default function BuilderPreviewViewport({
 	handleRemoveBreakpoint: (breakpointName: string) => void;
 }) {
 	const { currentPage, setCurrentPage } = useCurrentPageStore();
-	const [isDragOver, setIsDragOver] = useState(false);
 	const [targetComponent, setTargetComponent] = useState<string | null>(null);
 
 	return (
@@ -63,38 +62,31 @@ export default function BuilderPreviewViewport({
 
 			{/* Viewport */}
 			<div
-				className={`bg-white rounded-md border overflow-hidden shadow-md ${isDragOver ? "ring-2 ring-blue-500" : ""}`}
-				onDragLeave={() => {
-					setIsDragOver(false);
-				}}
+				className={`bg-white rounded-md border overflow-hidden shadow-md`}
 				onDragOver={(e) => {
 					e.preventDefault();
 					e.dataTransfer.dropEffect = "copy";
-					setIsDragOver(true);
 				}}
 				onDrop={(e) => {
 					e.preventDefault();
-					setIsDragOver(false);
 					try {
 						const componentData = JSON.parse(
 							e.dataTransfer.getData("application/json"),
 						);
 
-						// Create a new content object based on the current content
-						const newContent: Record<string, Component[]> = {
-							...((currentPage.content as unknown as Record<
-								string,
-								Component[]
-							>) || {}),
-						};
-
-						// Initialize the breakpoint array if it doesn't exist
-						if (!newContent[bp.name]) {
-							newContent[bp.name] = [];
-						}
+						// Get the current content as an array or initialize a new one
+						const currentContent = Array.isArray(
+							currentPage.content,
+						)
+							? [
+									...(currentPage.content as unknown as BuilderComponent[]),
+								]
+							: [];
 
 						// Create the new component
 						const newComponent = {
+							// Add breakpoint information
+							breakpoint: bp.name,
 							groupId: componentData.groupId,
 							id: `${componentData.type}-${Date.now()}`, // Generate a unique ID
 							label: componentData.label,
@@ -108,9 +100,9 @@ export default function BuilderPreviewViewport({
 
 						// If dropping onto a container component, add as a child
 						if (targetComponent) {
-							// Find the target component in the breakpoint array
+							// Find the target component in the content array
 							const findAndAddChild = (
-								components: Component[],
+								components: BuilderComponent[],
 							) => {
 								for (let i = 0; i < components.length; i++) {
 									if (components[i].id === targetComponent) {
@@ -140,18 +132,18 @@ export default function BuilderPreviewViewport({
 							};
 
 							// Try to add as a child, if not found add to root
-							if (!findAndAddChild(newContent[bp.name])) {
-								newContent[bp.name].push(newComponent);
+							if (!findAndAddChild(currentContent)) {
+								currentContent.push(newComponent);
 							}
 						} else {
 							// Add to root level
-							newContent[bp.name].push(newComponent);
+							currentContent.push(newComponent);
 						}
 
 						// Update the current page with the new content
 						const updatedPage = {
 							...currentPage,
-							content: newContent as unknown as JsonValue,
+							content: currentContent as unknown as JsonValue,
 						};
 						setCurrentPage(updatedPage);
 						setTargetComponent(null);
@@ -160,8 +152,8 @@ export default function BuilderPreviewViewport({
 					}
 				}}
 				style={{
-					backgroundColor: isDragOver ? "#f0f9ff" : "white",
-					height: "1000px",
+					backgroundColor: "white",
+					minHeight: "1000px",
 					position: "relative",
 					transition: "all 0.2s ease",
 					width: `${bp.width / 1.5}px`,
@@ -169,35 +161,27 @@ export default function BuilderPreviewViewport({
 			>
 				{/* Render components for this breakpoint */}
 				{currentPage.content &&
-					(
-						currentPage.content as unknown as Record<
-							string,
-							Component[]
-						>
-					)[bp.name] &&
-					(
-						currentPage.content as unknown as Record<
-							string,
-							Component[]
-						>
-					)[bp.name].map((component) => (
-						<div
-							key={component.id}
-							onDragLeave={() => {
-								setTargetComponent(null);
-							}}
-							onDragOver={(e) => {
-								// Only allow dropping onto container components
-								if (canHaveChildren(component.type)) {
-									e.stopPropagation();
-									e.preventDefault();
-									setTargetComponent(component.id);
-								}
-							}}
-						>
-							<ComponentRenderer component={component} />
-						</div>
-					))}
+					Array.isArray(currentPage.content) &&
+					(currentPage.content as unknown as BuilderComponent[]).map(
+						(component) => (
+							<div
+								key={component.id}
+								onDragLeave={() => {
+									setTargetComponent(null);
+								}}
+								onDragOver={(e) => {
+									// Only allow dropping onto container components
+									if (canHaveChildren(component.type)) {
+										e.stopPropagation();
+										e.preventDefault();
+										setTargetComponent(component.id);
+									}
+								}}
+							>
+								<ComponentRenderer component={component} />
+							</div>
+						),
+					)}
 			</div>
 		</div>
 	);
