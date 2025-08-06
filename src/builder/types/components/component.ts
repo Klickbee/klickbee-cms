@@ -24,11 +24,12 @@ export interface BaseComponent {
 		x: number;
 		y: number;
 	};
-	children?: Component[];
+	children?: BuilderComponent[];
 	props?: Record<string, unknown>;
+	icon?: React.ReactNode;
 }
 
-export type Component = BaseComponent;
+export type BuilderComponent = BaseComponent;
 
 // Define which components can have children
 export const CONTAINER_COMPONENTS: ComponentType[] = [
