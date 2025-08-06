@@ -20,9 +20,7 @@ const DefaultComponent: React.FC<{ component: BuilderComponent }> = ({
 		<div
 			className="relative border border-dashed border-gray-300 p-4 bg-white"
 			style={{
-				left: component.position?.x,
-				position: component.position ? "absolute" : "relative",
-				top: component.position?.y,
+				order: component.order || 0, // Use order property for positioning
 			}}
 		>
 			<div className="absolute top-0 left-0 bg-gray-500 text-white text-xs px-2 py-1">
