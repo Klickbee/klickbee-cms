@@ -121,7 +121,21 @@ export default function BuilderTabComponents() {
 								group.items.map((item) => (
 									<div
 										className="flex items-center gap-2 pl-6 py-1 text-muted-foreground hover:text-foreground cursor-pointer"
+										draggable
 										key={item.id}
+										onDragStart={(e) => {
+											const componentData = {
+												groupId: group.id,
+												label: item.label,
+												type: item.id,
+											};
+											e.dataTransfer.setData(
+												"application/json",
+												JSON.stringify(componentData),
+											);
+											e.dataTransfer.effectAllowed =
+												"copy";
+										}}
 									>
 										{item.icon}
 										<span>{item.label}</span>
