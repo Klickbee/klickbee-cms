@@ -6,10 +6,14 @@ import { Image } from "@/builder/components/ui/Image";
 import { Section } from "@/builder/components/ui/Section";
 import { Spacer } from "@/builder/components/ui/Spacer";
 import { Text } from "@/builder/components/ui/Text";
-import { Component, ComponentType } from "@/builder/types/components/component";
+import { Video } from "@/builder/components/ui/Video";
+import {
+	BuilderComponent,
+	ComponentType,
+} from "@/builder/types/components/component";
 
 // Default component for types that haven't been implemented yet
-const DefaultComponent: React.FC<{ component: Component }> = ({
+const DefaultComponent: React.FC<{ component: BuilderComponent }> = ({
 	component,
 }) => {
 	return (
@@ -32,7 +36,7 @@ const DefaultComponent: React.FC<{ component: Component }> = ({
 // Component registry mapping component types to React components
 const componentMap: Record<
 	ComponentType,
-	React.FC<{ component: Component }>
+	React.FC<{ component: BuilderComponent }>
 > = {
 	container: Container,
 	divider: DefaultComponent,
@@ -44,11 +48,11 @@ const componentMap: Record<
 	section: Section,
 	spacer: Spacer,
 	text: Text,
-	video: DefaultComponent,
+	video: Video,
 };
 
 interface ComponentRendererProps {
-	component: Component;
+	component: BuilderComponent;
 }
 
 export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
