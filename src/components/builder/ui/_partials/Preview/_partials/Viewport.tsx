@@ -8,6 +8,7 @@ import {
 	BuilderComponent,
 	canHaveChildren,
 } from "@/builder/types/components/component";
+import { componentMap } from "@/builder/types/components/componentMap";
 import { Button } from "@/components/ui/button";
 
 export default function BuilderPreviewViewport({
@@ -84,17 +85,24 @@ export default function BuilderPreviewViewport({
 							: [];
 
 						// Create the new component
+						const componentType =
+							componentData.type as keyof typeof componentMap;
+						const componentDef = componentMap[componentType];
+
 						const newComponent = {
+							// Add content and style props from component definition
+							contentProps: componentDef
+								? { ...componentDef.contentProps }
+								: {},
 							// Add breakpoint information
-							breakpoint: bp.name,
 							groupId: componentData.groupId,
 							id: `${componentData.type}-${Date.now()}`, // Generate a unique ID
 							label: componentData.label,
-							// Add position based on drop coordinates
-							position: {
-								x: e.nativeEvent.offsetX,
-								y: e.nativeEvent.offsetY,
-							},
+							// Add order based on position in the array
+							order: currentContent.length + 1, // Root level components get order based on their position
+							styleProps: componentDef
+								? { ...componentDef.styleProps }
+								: {},
 							type: componentData.type,
 						};
 
@@ -113,6 +121,9 @@ export default function BuilderPreviewViewport({
 										// Add the new component as a child
 										components[i].children?.push({
 											...newComponent,
+											order:
+												Array(components[i].children)
+													.length + 1 || 1, // Set order based on position in children array
 											position: undefined, // Remove position for children
 										});
 										return true;
@@ -162,8 +173,10 @@ export default function BuilderPreviewViewport({
 				{/* Render components for this breakpoint */}
 				{currentPage.content &&
 					Array.isArray(currentPage.content) &&
-					(currentPage.content as unknown as BuilderComponent[]).map(
-						(component) => (
+					(currentPage.content as unknown as BuilderComponent[])
+						.slice() // Create a copy of the array to avoid mutating the original
+						.sort((a, b) => (a.order || 0) - (b.order || 0)) // Sort by order
+						.map((component) => (
 							<div
 								key={component.id}
 								onDragLeave={() => {
@@ -180,8 +193,7 @@ export default function BuilderPreviewViewport({
 							>
 								<ComponentRenderer component={component} />
 							</div>
-						),
-					)}
+						))}
 			</div>
 		</div>
 	);
