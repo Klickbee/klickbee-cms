@@ -2,81 +2,51 @@ import {
 	Box,
 	ChevronDown,
 	ChevronRight,
+	FormInputIcon,
 	GalleryVertical,
-	Heading,
-	Search,
+	Heading as HeadingIcon,
+	Image as ImageIcon,
+	LayoutGrid,
+	Mail,
+	Minus,
+	MoveVertical,
+	Text as TextIcon,
+	Video,
 } from "lucide-react";
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { useCurrentPageStore } from "@/feature/builder/store/storeCurrentPage";
+import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
+import { Breakpoint } from "@/builder/types/breakpoint";
+import { Component, ComponentType } from "@/builder/types/components/component";
+import { useSetting } from "@/feature/settings/queries/useSettings";
 import { cn } from "@/lib/utils";
 
-type Node = {
-	content: NodeContent[];
+// Map component types to icons
+const componentIcons: Record<ComponentType, React.ReactNode> = {
+	container: <Box size={16} />,
+	divider: <Minus size={16} />,
+	email: <Mail size={16} />,
+	grid: <LayoutGrid size={16} />,
+	heading: <HeadingIcon size={16} />,
+	image: <ImageIcon size={16} />,
+	input: <FormInputIcon size={16} />,
+	section: <GalleryVertical size={16} />,
+	spacer: <MoveVertical size={16} />,
+	text: <TextIcon size={16} />,
+	video: <Video size={16} />,
 };
 
-type NodeContent = {
-	id: string;
-	type: "section" | "container" | "title";
-	label: string;
-	icon: React.ReactNode;
-	children?: NodeContent[];
-};
-
-const mockTree: Node[] = [
-	{
-		content: [
-			{
-				children: [
-					{
-						children: [
-							{
-								icon: <Heading size={16} />,
-								id: "title-1",
-								label: "Title",
-								type: "title",
-							},
-						],
-						icon: <Box size={16} />,
-						id: "container-1",
-						label: "Container",
-						type: "container",
-					},
-				],
-				icon: <GalleryVertical size={16} />,
-				id: "section-1",
-				label: "Section",
-				type: "section",
-			},
-			{
-				children: [
-					{
-						children: [
-							{
-								icon: <Heading size={16} />,
-								id: "title-2",
-								label: "Title",
-								type: "title",
-							},
-						],
-						icon: <Box size={16} />,
-						id: "container-2",
-						label: "Container",
-						type: "container",
-					},
-				],
-				icon: <GalleryVertical size={16} />,
-				id: "section-2",
-				label: "Section",
-				type: "section",
-			},
-		],
-	},
-];
-
-function TreeNode({ node, level = 0 }: { node: NodeContent; level?: number }) {
+function TreeNode({
+	component,
+	level = 0,
+	breakpoint,
+}: {
+	component: Component;
+	level?: number;
+	breakpoint: string;
+}) {
 	const [expanded, setExpanded] = useState(true);
-	const hasChildren = node.children && node.children.length > 0;
+	const hasChildren = component.children && component.children.length > 0;
+	const icon = componentIcons[component.type] || <Box size={16} />;
 
 	return (
 		<div className="ml-2">
@@ -96,12 +66,22 @@ function TreeNode({ node, level = 0 }: { node: NodeContent; level?: number }) {
 				) : (
 					<span className="w-4 h-4" />
 				)}
-				{node.icon}
-				<span className="ml-2">{node.label}</span>
+				{icon}
+				<span className="ml-2">{component.label}</span>
+				{breakpoint && level === 0 && (
+					<span className="ml-2 text-xs text-gray-400">
+						({breakpoint})
+					</span>
+				)}
 			</div>
 			{expanded &&
-				node.children?.map((child) => (
-					<TreeNode key={child.id} level={level + 1} node={child} />
+				component.children?.map((child) => (
+					<TreeNode
+						breakpoint={breakpoint}
+						component={child}
+						key={child.id}
+						level={level + 1}
+					/>
 				))}
 		</div>
 	);
@@ -110,19 +90,53 @@ function TreeNode({ node, level = 0 }: { node: NodeContent; level?: number }) {
 export default function BuilderTabLayers() {
 	const currentPage = useCurrentPageStore((state) => state.currentPage);
 
+	// Function to get all components from all breakpoints
+	const getAllComponents = () => {
+		if (!currentPage.content) return [];
+
+		const result: { component: Component; breakpoint: string }[] = [];
+
+		// For each breakpoint, get all components
+		Object.keys(
+			currentPage.content as unknown as Record<string, Component[]>,
+		).forEach((breakpointName) => {
+			const components = (
+				currentPage.content as unknown as Record<string, Component[]>
+			)[breakpointName];
+			if (Array.isArray(components)) {
+				components.forEach((component) => {
+					result.push({ breakpoint: breakpointName, component });
+				});
+			}
+		});
+
+		return result;
+	};
+
+	const allComponents = getAllComponents();
+
 	return (
 		<div className="flex flex-col gap-2 px-4 py-2 text-sm">
 			{/* Page name */}
 			<div className="text-blue-600 font-medium pt-2">
-				{currentPage.title}
+				{currentPage.title || "Untitled Page"}
 			</div>
 
 			{/* Tree */}
 			<div>
-				{mockTree.flatMap((node) =>
-					node.content.map((contentNode) => (
-						<TreeNode key={contentNode.id} node={contentNode} />
-					)),
+				{allComponents.length > 0 ? (
+					allComponents.map(({ component, breakpoint }) => (
+						<TreeNode
+							breakpoint={breakpoint}
+							component={component}
+							key={`${breakpoint}-${component.id}`}
+						/>
+					))
+				) : (
+					<div className="text-muted-foreground py-2">
+						No components added yet. Drag components from the
+						Components tab to add them to the page.
+					</div>
 				)}
 			</div>
 		</div>

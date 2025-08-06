@@ -12,9 +12,17 @@ export default function BuilderComponent() {
 		<>
 			<Toaster position={"bottom-center"} />
 			<BuilderHeader />
-			<BuilderLeftSidebar />
-			{/*<BuilderPreview />*/}
-			{/*<BuilderRightSidebar />*/}
+			<div className={"flex flex-row w-screen"}>
+				<div className="w-15/100  bg-background divide-y border-r border-t border-gray-200 h-full flex flex-col">
+					<BuilderLeftSidebar />
+				</div>
+				<div className="w-70/100  bg-background divide-y border-r border-t border-gray-200 h-full flex flex-col">
+					<BuilderPreview />
+				</div>
+				<div className="w-15/100  bg-background divide-y border-r border-t border-gray-200 h-full flex flex-col">
+					{/*<BuilderRightSidebar/>*/}
+				</div>
+			</div>
 			{/*<BuilderFloatingActions />*/}
 		</>
 	);
