@@ -27,12 +27,16 @@ export const getCollections = async (): Promise<CollectionWithTemplates[]> => {
 	try {
 		const collections = await prisma.collection.findMany({
 			include: {
+				items: true,
 				templates: true,
 			},
 		});
 
 		return collections.map((collection) => ({
 			...mapPrismaCollectionToCollection(collection),
+			items: collection.items.map(
+				mapPrismaCollectionItemToCollectionItem,
+			),
 			templates: collection.templates.map(
 				mapPrismaCollectionTemplateToCollectionTemplate,
 			),

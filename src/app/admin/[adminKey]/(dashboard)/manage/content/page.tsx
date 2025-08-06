@@ -17,7 +17,6 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-	DialogTrigger,
 } from "@/components/ui/dialog";
 import {
 	DropdownMenu,
@@ -238,6 +237,7 @@ export default function AdminContentPage() {
 												<TableHead>
 													Collection Name ⬍
 												</TableHead>
+												<TableHead>Base URL</TableHead>
 												<TableHead className="text-right">
 													Number of Items
 												</TableHead>
@@ -262,7 +262,9 @@ export default function AdminContentPage() {
 															}
 														/>
 													</TableCell>
-													<TableCell>
+													<TableCell
+														className={"w-4/10"}
+													>
 														<a
 															className="flex items-center space-x-2"
 															href={generateAdminLink(
@@ -272,8 +274,12 @@ export default function AdminContentPage() {
 															{collection.name}
 														</a>
 													</TableCell>
+													<TableCell>
+														{collection.slug}
+													</TableCell>
 													<TableCell className="text-center w-1/15">
-														0
+														{collection.items
+															?.length || 0}
 													</TableCell>
 													<TableCell
 														className={"w-fit"}

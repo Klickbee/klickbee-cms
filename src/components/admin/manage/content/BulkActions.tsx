@@ -16,14 +16,18 @@ const BulkActions: React.FC<BulkActionsProps> = ({
 	onCreate,
 }) => {
 	return checkedRows.length > 0 ? (
-		<Button onClick={onBulkDelete} variant="destructive">
+		<Button
+			className={"flex flex-row gap-0"}
+			onClick={onBulkDelete}
+			variant="destructive"
+		>
 			<Trash2 className="w-4 h-4 mr-2" />
-			Delete Collections
+			Delete
 		</Button>
 	) : (
-		<Button onClick={onCreate}>
+		<Button className={"flex flex-row gap-0"} onClick={onCreate}>
 			<Plus className="w-4 h-4 mr-2" />
-			Create New Collection
+			Create New
 		</Button>
 	);
 };

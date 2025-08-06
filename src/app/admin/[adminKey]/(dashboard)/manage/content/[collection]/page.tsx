@@ -1,14 +1,33 @@
 "use client";
 
 import { format } from "date-fns";
-import { ChevronLast, ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import {
+	ChevronLast,
+	ChevronLeft,
+	ChevronRight,
+	Loader2,
+	Plus,
+} from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { Usable, useEffect, useState } from "react";
+import { toast } from "sonner";
 import DefaultCardTitle from "@/components/admin/manage/CardTitle";
+import BulkActions from "@/components/admin/manage/content/BulkActions";
 import DefaultHeader from "@/components/admin/manage/DefaultHeader";
+import EmptyStateComponent from "@/components/admin/manage/EmptyState";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -30,7 +49,10 @@ import {
 	getCollectionBySlug,
 	getCollections,
 } from "@/feature/collection/actions/collectionActions";
-import { getCollectionItemsBySlug } from "@/feature/collection/actions/collectionItemsActions";
+import {
+	deleteCollectionItemAction,
+	getCollectionItemsBySlug,
+} from "@/feature/collection/actions/collectionItemsActions";
 import { CollectionItem } from "@/feature/collection/types/collection";
 
 type statusColor = {
@@ -53,6 +75,7 @@ export default function AdminContentItemsPage({
 		collection: string;
 		adminKey: string;
 	};
+	const router = useRouter();
 	const [statusFilter, setStatusFilter] = useState<string>("All");
 	const [search, setSearch] = useState<string>("");
 	const [collectionItems, setCollectionItems] = useState<CollectionItem[]>(
@@ -63,6 +86,15 @@ export default function AdminContentItemsPage({
 	);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
+	const [isBulkDeleteDialogOpen, setIsBulkDeleteDialogOpen] =
+		useState<boolean>(false);
+	const [isDeletingMultipleItems, setIsDeletingMultipleItems] =
+		useState<boolean>(false);
+
+	const [checkedRows, setCheckedRows] = useState<number[]>([]);
+	const allIds = collectionItems?.map((c) => c.id) || [];
+	const allChecked =
+		checkedRows.length === allIds.length && allIds.length > 0;
 
 	useEffect(() => {
 		async function fetchData() {
@@ -88,6 +120,10 @@ export default function AdminContentItemsPage({
 		fetchData();
 	}, [paramsSynced.collection]);
 
+	const handleHeaderCheck = (checked: boolean) => {
+		setCheckedRows(checked ? allIds : []);
+	};
+
 	const filteredData = collectionItems.filter((item) => {
 		const itemStatus = item.isPublished
 			? item.publishedAt && new Date(item.publishedAt) > new Date()
@@ -100,6 +136,39 @@ export default function AdminContentItemsPage({
 			item.title.toLowerCase().includes(search.toLowerCase())
 		);
 	});
+
+	const handleRowCheck = (id: number, checked: boolean) => {
+		setCheckedRows((prev) =>
+			checked ? [...prev, id] : prev.filter((rowId) => rowId !== id),
+		);
+	};
+
+	const handleBulkDelete = async () => {
+		setIsDeletingMultipleItems(true);
+		try {
+			// Store the number of items to be deleted
+			const itemsCount = checkedRows.length;
+
+			// Delete collection items one by one
+			for (const id of checkedRows) {
+				await deleteCollectionItemAction(id, paramsSynced.collection);
+			}
+			setIsBulkDeleteDialogOpen(false);
+			setCheckedRows([]);
+			toast.success(`${itemsCount} items deleted successfully`);
+
+			// Refresh the collection items
+			const items = await getCollectionItemsBySlug(
+				paramsSynced.collection,
+			);
+			setCollectionItems(items);
+		} catch (error) {
+			toast.error("Failed to delete items");
+			console.error(error);
+		} finally {
+			setIsDeletingMultipleItems(false);
+		}
+	};
 
 	return (
 		<>
@@ -125,26 +194,23 @@ export default function AdminContentItemsPage({
 				</Button>
 			</DefaultHeader>
 
-			<Card className={"mx-8 my-6 p-0"}>
-				<CardHeader className={"border-b [.border-b]:pb-0 px-3 py-4"}>
+			<Card className={"mx-8 my-6 p-0 gap-0 pb-4"}>
+				<CardHeader className={"border-b [.border-b]:pb-3 p-3 gap-0"}>
 					<div className="flex flex-row items-center justify-between">
 						<DefaultCardTitle>{collectionName}</DefaultCardTitle>
-						<div className="flex items-center gap-2">
-							<Button
-								asChild
-								className={"flex flex-row items-center gap-2"}
-							>
-								<Link
-									className={"text-primary"}
-									href={`/admin/${paramsSynced.adminKey}/manage/content/${paramsSynced.collection}/create`}
-								>
-									<span>+</span> Create {collectionName}
-								</Link>
-							</Button>
-						</div>
+						<BulkActions
+							checkedRows={checkedRows}
+							collectionsLength={collectionItems?.length || 0}
+							onBulkDelete={() => setIsBulkDeleteDialogOpen(true)}
+							onCreate={() =>
+								router.push(
+									`/admin/${paramsSynced.adminKey}/manage/content/${paramsSynced.collection}/create`,
+								)
+							}
+						/>
 					</div>
 				</CardHeader>
-				<CardContent>
+				<CardContent className={"px-3"}>
 					<div
 						className={
 							"py-4 flex flex-row items-center justify-between gap-4"
@@ -181,19 +247,37 @@ export default function AdminContentItemsPage({
 								Loading collection items...
 							</div>
 						) : error ? (
-							<div className="p-8 text-center text-red-500">
+							<div className="p-8 text-center text-destructive">
 								{error}
 							</div>
 						) : filteredData.length === 0 ? (
-							<div className="p-8 text-center">
-								No items found in this collection.
-							</div>
+							<EmptyStateComponent
+								buttonText={`Create New ${collectionName} Item`}
+								description={
+									"Organize your content easily with collections. Group similar pages, posts, or " +
+									"products to manage them more efficiently — all in one place."
+								}
+								onButtonClick={() =>
+									router.push(
+										`/admin/${paramsSynced.adminKey}/manage/content/${paramsSynced.collection}/create`,
+									)
+								}
+								title={`You've didn't created any ${collectionName} items yet.`}
+							/>
 						) : (
 							<Table>
 								<TableHeader>
 									<TableRow>
+										<TableHead>
+											<Checkbox
+												checked={allChecked}
+												onCheckedChange={
+													handleHeaderCheck
+												}
+											/>
+										</TableHead>
 										<TableHead>Title</TableHead>
-										<TableHead>Slug</TableHead>
+										<TableHead>URL</TableHead>
 										<TableHead>Status</TableHead>
 										<TableHead>Created</TableHead>
 										<TableHead>Updated</TableHead>
@@ -229,6 +313,21 @@ export default function AdminContentItemsPage({
 
 										return (
 											<TableRow key={item.id}>
+												<TableCell>
+													<Checkbox
+														checked={checkedRows.includes(
+															item.id,
+														)}
+														onCheckedChange={(
+															checked: boolean,
+														) =>
+															handleRowCheck(
+																item.id,
+																checked,
+															)
+														}
+													/>
+												</TableCell>
 												<TableCell>
 													{item.title}
 												</TableCell>
@@ -278,6 +377,40 @@ export default function AdminContentItemsPage({
 					</ScrollArea>
 				</CardContent>
 			</Card>
+
+			{/* Bulk Delete Items Confirmation Dialog */}
+			<Dialog
+				onOpenChange={setIsBulkDeleteDialogOpen}
+				open={isBulkDeleteDialogOpen}
+			>
+				<DialogContent className="sm:max-w-md">
+					<DialogHeader>
+						<DialogTitle>Delete Multiple Items</DialogTitle>
+						<DialogDescription>
+							Are you sure you want to delete {checkedRows.length}{" "}
+							items? This action cannot be undone.
+						</DialogDescription>
+					</DialogHeader>
+					<DialogFooter>
+						<Button
+							onClick={() => setIsBulkDeleteDialogOpen(false)}
+							variant="outline"
+						>
+							Cancel
+						</Button>
+						<Button
+							disabled={isDeletingMultipleItems}
+							onClick={handleBulkDelete}
+							variant="destructive"
+						>
+							{isDeletingMultipleItems && (
+								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+							)}
+							Delete {checkedRows.length} Items
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 		</>
 	);
 }
