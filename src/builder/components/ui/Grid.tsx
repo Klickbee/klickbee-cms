@@ -1,9 +1,9 @@
 import React from "react";
 import { ComponentRenderer } from "../../lib/renderers/ComponentRenderer";
-import { Component } from "../../types/components/component";
+import { BuilderComponent } from "../../types/components/component";
 
 interface GridProps {
-	component: Component;
+	component: BuilderComponent;
 }
 
 export const Grid: React.FC<GridProps> = ({ component }) => {
@@ -20,10 +20,6 @@ export const Grid: React.FC<GridProps> = ({ component }) => {
 				...((component.props?.style as Record<string, unknown>) || {}),
 			}}
 		>
-			<div className="absolute top-0 left-0 bg-purple-500 text-white text-xs px-2 py-1">
-				{component.label}
-			</div>
-
 			{/* Render children in a grid layout */}
 			{component.children && component.children.length > 0 && (
 				<div

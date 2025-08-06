@@ -1,8 +1,8 @@
 import React from "react";
-import { Component } from "../../types/components/component";
+import { BuilderComponent } from "../../types/components/component";
 
 interface SpacerProps {
-	component: Component;
+	component: BuilderComponent;
 }
 
 export const Spacer: React.FC<SpacerProps> = ({ component }) => {
@@ -21,9 +21,7 @@ export const Spacer: React.FC<SpacerProps> = ({ component }) => {
 				...((component.props?.style as Record<string, unknown>) || {}),
 			}}
 		>
-			<div className="absolute top-0 left-0 bg-gray-500 text-white text-xs px-2 py-1">
-				{component.label} ({height}px)
-			</div>
+			<div className="absolute top-0 left-0 text-white text-xs px-2 py-1"></div>
 		</div>
 	);
 };

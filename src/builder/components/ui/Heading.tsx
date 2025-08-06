@@ -1,8 +1,8 @@
 import React from "react";
-import { Component } from "../../types/components/component";
+import { BuilderComponent } from "../../types/components/component";
 
 interface HeadingProps {
-	component: Component;
+	component: BuilderComponent;
 }
 
 export const Heading: React.FC<HeadingProps> = ({ component }) => {
@@ -39,10 +39,6 @@ export const Heading: React.FC<HeadingProps> = ({ component }) => {
 				...((component.props?.style as Record<string, unknown>) || {}),
 			}}
 		>
-			<div className="absolute top-0 left-0 bg-yellow-500 text-white text-xs px-2 py-1">
-				{component.label}
-			</div>
-
 			<div className="mt-6">{renderHeading()}</div>
 		</div>
 	);

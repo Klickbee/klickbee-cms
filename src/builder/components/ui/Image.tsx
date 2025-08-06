@@ -1,8 +1,8 @@
 import React from "react";
-import { Component } from "../../types/components/component";
+import { BuilderComponent } from "../../types/components/component";
 
 interface ImageProps {
-	component: Component;
+	component: BuilderComponent;
 }
 
 export const Image: React.FC<ImageProps> = ({ component }) => {
@@ -24,10 +24,6 @@ export const Image: React.FC<ImageProps> = ({ component }) => {
 				...((component.props?.style as Record<string, unknown>) || {}),
 			}}
 		>
-			<div className="absolute top-0 left-0 bg-red-500 text-white text-xs px-2 py-1 z-10">
-				{component.label}
-			</div>
-
 			<div className="mt-6">
 				<img
 					alt={alt}

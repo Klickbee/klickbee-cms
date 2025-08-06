@@ -1,9 +1,9 @@
 import React from "react";
-import { Component } from "@/builder/types/components/component";
+import { BuilderComponent } from "@/builder/types/components/component";
 import { ComponentRenderer } from "../../lib/renderers/ComponentRenderer";
 
 interface ContainerProps {
-	component: Component;
+	component: BuilderComponent;
 }
 
 export const Container: React.FC<ContainerProps> = ({ component }) => {
@@ -17,10 +17,6 @@ export const Container: React.FC<ContainerProps> = ({ component }) => {
 				...((component.props?.style as Record<string, unknown>) || {}),
 			}}
 		>
-			<div className="absolute top-0 left-0 bg-green-500 text-white text-xs px-2 py-1">
-				{component.label}
-			</div>
-
 			{/* Render children if they exist */}
 			{component.children && component.children.length > 0 && (
 				<div className="mt-6">
