@@ -48,6 +48,10 @@ function TreeNode({
 
 export default function BuilderTabLayers() {
 	const currentPage = useCurrentPageStore((state) => state.currentPage);
+	const getComponentIcon = (component: ComponentItem) => {
+		const componentDef = componentsList.find((c) => c.id === component.id);
+		return componentDef ? componentDef.icon : <Box className="w-4 h-4" />;
+	};
 
 	const mapContentToTree = (content: ComponentItem[]): ComponentItem[] => {
 		return content.map((component) => {
@@ -55,7 +59,7 @@ export default function BuilderTabLayers() {
 				(c) => c.id === component.group,
 			) || {
 				group: component.group || "",
-				icon: <Box size={16} />,
+				icon: getComponentIcon(component),
 				id: component.id,
 				label: component.label || component.group,
 			};
