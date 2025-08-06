@@ -24,6 +24,7 @@ export interface BaseComponent {
 		x: number;
 		y: number;
 	};
+	order?: number; // Order-based positioning
 	children?: BuilderComponent[];
 	props?: Record<string, unknown>;
 	icon?: React.ReactNode;
