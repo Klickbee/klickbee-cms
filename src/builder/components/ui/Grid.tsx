@@ -14,9 +14,7 @@ export const Grid: React.FC<GridProps> = ({ component }) => {
 		<div
 			className="relative border border-dashed border-gray-300 p-4 bg-white"
 			style={{
-				left: component.position?.x,
-				position: component.position ? "absolute" : "relative",
-				top: component.position?.y,
+				order: component.order || 0, // Use order property for positioning
 				...((component.props?.style as Record<string, unknown>) || {}),
 			}}
 		>
@@ -28,14 +26,17 @@ export const Grid: React.FC<GridProps> = ({ component }) => {
 						gridTemplateColumns: `repeat(${columns}, 1fr)`,
 					}}
 				>
-					{component.children.map((child) => (
-						<div
-							className="border border-dotted border-gray-200 p-2"
-							key={child.id}
-						>
-							<ComponentRenderer component={child} />
-						</div>
-					))}
+					{component.children
+						.slice() // Create a copy of the array to avoid mutating the original
+						.sort((a, b) => (a.order || 0) - (b.order || 0)) // Sort by order
+						.map((child) => (
+							<div
+								className="border border-dotted border-gray-200 p-2"
+								key={child.id}
+							>
+								<ComponentRenderer component={child} />
+							</div>
+						))}
 				</div>
 			)}
 		</div>

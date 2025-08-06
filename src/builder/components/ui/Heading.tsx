@@ -33,9 +33,7 @@ export const Heading: React.FC<HeadingProps> = ({ component }) => {
 		<div
 			className="relative border border-dashed border-gray-300 p-4 bg-white"
 			style={{
-				left: component.position?.x,
-				position: component.position ? "absolute" : "relative",
-				top: component.position?.y,
+				order: component.order || 0, // Use order property for positioning
 				...((component.props?.style as Record<string, unknown>) || {}),
 			}}
 		>

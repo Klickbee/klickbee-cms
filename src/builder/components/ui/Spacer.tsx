@@ -14,9 +14,7 @@ export const Spacer: React.FC<SpacerProps> = ({ component }) => {
 			className="relative border border-dashed border-gray-300 bg-gray-100"
 			style={{
 				height: `${height}px`,
-				left: component.position?.x,
-				position: component.position ? "absolute" : "relative",
-				top: component.position?.y,
+				order: component.order || 0, // Use order property for positioning
 				width: "100%",
 				...((component.props?.style as Record<string, unknown>) || {}),
 			}}
