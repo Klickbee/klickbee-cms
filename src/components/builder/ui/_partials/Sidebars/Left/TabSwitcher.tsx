@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useCurrentTabStore } from "@/feature/builder/store/storeCurrentTabsSidebar";
+import { useCurrentTabStore } from "@/builder/store/storeCurrentTabsSidebar";
 import { cn } from "@/lib/utils";
 
 const tabs = ["Pages", "Layers", "Components"];
