@@ -1,9 +1,9 @@
 import { create } from "zustand";
-import { ComponentItem } from "@/builder/definitions/componentsList";
+import { BaseComponent } from "@/builder/types/components/component";
 
 type CurrentComponentStore = {
-	currentComponent: ComponentItem;
-	setCurrentComponent: (componentItem: ComponentItem) => void;
+	currentComponent: BaseComponent;
+	setCurrentComponent: (componentItem: BaseComponent) => void;
 	clearCurrentComponent: () => void;
 };
 
@@ -13,7 +13,7 @@ export const useCurrentComponentStore = create<CurrentComponentStore>(
 			set({
 				currentComponent: {
 					children: [],
-					group: "",
+					groupId: "",
 					icon: null,
 					id: "none",
 					label: "",
@@ -22,13 +22,13 @@ export const useCurrentComponentStore = create<CurrentComponentStore>(
 			}),
 		currentComponent: {
 			children: [],
-			group: "",
+			groupId: "",
 			icon: null,
 			id: "none",
 			label: "",
 			type: "undefined",
 		},
-		setCurrentComponent: (componentItem: ComponentItem) =>
+		setCurrentComponent: (componentItem: BaseComponent) =>
 			set({ currentComponent: componentItem }),
 	}),
 );

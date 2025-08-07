@@ -23,35 +23,29 @@ import {
 	Upload,
 	Video,
 } from "lucide-react";
-import { ComponentType } from "@/builder/types/components/component";
+import {
+	BaseComponent,
+	ComponentType,
+} from "@/builder/types/components/component";
 
-export type ComponentItem = {
-	id: string;
-	label: string;
-	icon: React.ReactNode;
-	group: string;
-	children?: ComponentItem[];
-	type: ComponentType;
-};
-
-export const componentsList: ComponentItem[] = [
+export const componentsList: BaseComponent[] = [
 	// Layout components
 	{
-		group: "layout",
+		groupId: "layout",
 		icon: <GalleryVertical size={16} />,
 		id: "section",
 		label: "Section",
 		type: "section",
 	},
 	{
-		group: "layout",
+		groupId: "layout",
 		icon: <Box size={16} />,
 		id: "container",
 		label: "Container",
 		type: "container",
 	},
 	{
-		group: "layout",
+		groupId: "layout",
 		icon: <LayoutGrid size={16} />,
 		id: "grid",
 		label: "Grid/Column",
@@ -60,56 +54,56 @@ export const componentsList: ComponentItem[] = [
 
 	// Text & Content components
 	{
-		group: "text",
+		groupId: "text",
 		icon: <Heading size={16} />,
 		id: "heading",
 		label: "Heading",
 		type: "heading",
 	},
 	{
-		group: "text",
+		groupId: "text",
 		icon: <Text size={16} />,
 		id: "text",
 		label: "Text",
 		type: "text",
 	},
 	{
-		group: "text",
+		groupId: "text",
 		icon: <Type size={16} />,
 		id: "paragraph",
 		label: "Paragraph",
 		type: "paragraph",
 	},
 	{
-		group: "text",
+		groupId: "text",
 		icon: <FileText size={16} />,
 		id: "richtext",
 		label: "Rich Text",
 		type: "richtext",
 	},
 	{
-		group: "text",
+		groupId: "text",
 		icon: <LinkIcon size={16} />,
 		id: "link",
 		label: "Link",
 		type: "link",
 	},
 	{
-		group: "text",
+		groupId: "text",
 		icon: <Rectangle size={16} />,
 		id: "button",
 		label: "Button",
 		type: "button",
 	},
 	{
-		group: "text",
+		groupId: "text",
 		icon: <MoveVertical size={16} />,
 		id: "spacer",
 		label: "Spacer",
 		type: "spacer",
 	},
 	{
-		group: "text",
+		groupId: "text",
 		icon: <Minus size={16} />,
 		id: "divider",
 		label: "Divider",
@@ -118,28 +112,28 @@ export const componentsList: ComponentItem[] = [
 
 	// Media components
 	{
-		group: "media",
+		groupId: "media",
 		icon: <Image size={16} />,
 		id: "image",
 		label: "Image",
 		type: "image",
 	},
 	{
-		group: "media",
+		groupId: "media",
 		icon: <Video size={16} />,
 		id: "video",
 		label: "Video",
 		type: "video",
 	},
 	{
-		group: "media",
+		groupId: "media",
 		icon: <Embed size={16} />,
 		id: "embed",
 		label: "Embed",
 		type: "embed",
 	},
 	{
-		group: "media",
+		groupId: "media",
 		icon: <Upload size={16} />,
 		id: "fileupload",
 		label: "File Upload",
@@ -149,77 +143,77 @@ export const componentsList: ComponentItem[] = [
 	// Form components
 
 	{
-		group: "form",
+		groupId: "form",
 		icon: <FileText size={16} />,
 		id: "formrichtext",
 		label: "Rich Text",
 		type: "richtext",
 	},
 	{
-		group: "form",
+		groupId: "form",
 		icon: <Box size={16} />,
 		id: "formblock",
 		label: "Form Block",
 		type: "formblock",
 	},
 	{
-		group: "form",
+		groupId: "form",
 		icon: <FormInput size={16} />,
 		id: "textfield",
 		label: "Text Field",
 		type: "textfield",
 	},
 	{
-		group: "form",
+		groupId: "form",
 		icon: <ListIcon size={16} />,
 		id: "list",
 		label: "List",
 		type: "list",
 	},
 	{
-		group: "form",
+		groupId: "form",
 		icon: <CheckSquare size={16} />,
 		id: "checkbox",
 		label: "Checkbox",
 		type: "checkbox",
 	},
 	{
-		group: "form",
+		groupId: "form",
 		icon: <CircleCheck size={16} />,
 		id: "radiogroup",
-		label: "Radio Group",
+		label: "Radio groupId",
 		type: "radiogroup",
 	},
 	{
-		group: "form",
+		groupId: "form",
 		icon: <Box size={16} />,
 		id: "dropdown",
 		label: "Dropdown",
 		type: "dropdown",
 	},
 	{
-		group: "form",
+		groupId: "form",
 		icon: <FileUp size={16} />,
 		id: "formfileupload",
 		label: "File Upload",
 		type: "fileupload",
 	},
 	{
-		group: "form",
+		groupId: "form",
 		icon: <Send size={16} />,
 		id: "submitbutton",
 		label: "Submit Button",
 		type: "submitbutton",
 	},
 	{
-		group: "form",
+		groupId: "form",
 		icon: <InputIcon size={16} />,
 		id: "input",
 		label: "Input",
 		type: "input",
 	},
 	{
-		group: "form",
+		groupId: "form",
 		icon: <Mail size={16} />,
 		id: "email",
 		label: "Email",

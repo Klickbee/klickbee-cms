@@ -10,22 +10,7 @@ import {
 	canHaveChildren,
 } from "@/builder/types/components/component";
 import { componentMap } from "@/builder/types/components/componentMap";
-import { DragDropContext } from "@/components/builder/_partials/DragAndDropContext";
 import { Button } from "@/components/ui/button";
-import {
-	ContextMenu,
-	ContextMenuContent,
-	ContextMenuItem,
-	ContextMenuTrigger,
-} from "@/components/ui/context-menu";
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-} from "@/components/ui/dialog";
 
 export default function BuilderPreviewViewport({
 	bp,
@@ -34,7 +19,7 @@ export default function BuilderPreviewViewport({
 	handleRemoveBreakpoint,
 }: {
 	bp: { name: string; width: number };
-	content: JsonValue | null;
+	content: BaseComponent[];
 	handleAddBreakpoint: () => void;
 	handleRemoveBreakpoint: (breakpointName: string) => void;
 }) {
@@ -171,7 +156,7 @@ export default function BuilderPreviewViewport({
 						// Update the current page with the new content
 						const updatedPage = {
 							...currentPage,
-							content: currentContent as unknown as JsonValue,
+							content: currentContent,
 						};
 						setCurrentPage(updatedPage);
 						setTargetComponent(null);

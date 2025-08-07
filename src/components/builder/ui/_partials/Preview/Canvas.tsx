@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
 import { Breakpoint } from "@/builder/types/breakpoint";
+import { BaseComponent } from "@/builder/types/components/component";
 import BuilderPreviewViewport from "@/components/builder/ui/_partials/Preview/_partials/Viewport";
 import { Button } from "@/components/ui/button";
 import {
@@ -142,7 +143,7 @@ export default function BuilderPreviewCanvas() {
 						{breakpoints.map((bp: Breakpoint) => (
 							<BuilderPreviewViewport
 								bp={bp}
-								content={currentPage.content}
+								content={currentPage.content as BaseComponent[]}
 								handleAddBreakpoint={handleAddBreakpoint}
 								handleRemoveBreakpoint={
 									initiateRemoveBreakpoint

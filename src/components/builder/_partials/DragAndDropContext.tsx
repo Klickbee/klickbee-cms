@@ -1,11 +1,11 @@
 import React from "react";
-import { ComponentItem } from "@/builder/definitions/componentsList";
+import { BaseComponent } from "@/builder/types/components/component";
 
 export const DragDropContext = React.createContext<{
 	targetComponent: string | null;
 	setTargetComponent: (id: string | null) => void;
-	sourceComponent: ComponentItem | null;
-	setSourceComponent: (component: ComponentItem | null) => void;
+	sourceComponent: BaseComponent | null;
+	setSourceComponent: (component: BaseComponent | null) => void;
 	reorderComponents: (
 		parentId: string | null,
 		sourceId: string,

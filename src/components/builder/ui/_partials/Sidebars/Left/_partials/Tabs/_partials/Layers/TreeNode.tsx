@@ -1,8 +1,11 @@
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { useDroppable } from "@dnd-kit/core";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { ChevronDown, ChevronRight, GripVertical } from "lucide-react";
 import { useState } from "react";
 import { useDeleteComponentContext } from "@/builder/contexts/DeleteComponentContext";
-import { ComponentItem } from "@/builder/definitions/componentsList";
 import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent";
+import { BaseComponent } from "@/builder/types/components/component";
 import {
 	ContextMenu,
 	ContextMenuContent,
@@ -12,16 +15,22 @@ import {
 import { cn } from "@/lib/utils";
 
 interface TreeNodeProps {
-	node: ComponentItem;
+	id: string;
+	node: BaseComponent;
 	level?: number;
 	parentId?: string | null;
+	isDragging?: boolean;
 }
 
-export function TreeNode({ node, level = 0, parentId = null }: TreeNodeProps) {
+export function TreeNode({
+	id,
+	node,
+	level = 0,
+	parentId = null,
+	isDragging = false,
+}: TreeNodeProps) {
 	const { confirmDelete } = useDeleteComponentContext();
 	const [expanded, setExpanded] = useState(true);
-	const [isDragging] = useState(false);
-	const [isOver] = useState(false);
 	const setCurrentComponent = useCurrentComponentStore(
 		(state) => state.setCurrentComponent,
 	);
@@ -30,6 +39,44 @@ export function TreeNode({ node, level = 0, parentId = null }: TreeNodeProps) {
 		(state) => state.currentComponent,
 	);
 
+	// Check if this node is a valid container type
+	const validContainerTypes = ["section", "grid", "container"];
+	const isValidContainer = validContainerTypes.includes(node.type);
+
+	// Make valid containers droppable
+	const { isOver: isDroppableOver, setNodeRef: setDroppableRef } =
+		useDroppable({
+			data: {
+				containerId: id,
+				isContainer: isValidContainer,
+			},
+			disabled: !isValidContainer,
+			id: `droppable-${id}`,
+		});
+
+	const {
+		attributes,
+		listeners,
+		setNodeRef: setSortableRef,
+		transform,
+		transition,
+		isDragging: isSortableDragging,
+		isOver: isSortableOver,
+	} = useSortable({ id });
+
+	// Combine the refs
+	const setNodeRef = (element: HTMLElement | null) => {
+		setSortableRef(element);
+		if (isValidContainer) {
+			setDroppableRef(element);
+		}
+	};
+
+	const style = {
+		transform: CSS.Transform.toString(transform),
+		transition,
+	};
+
 	const isCurrentComponent = (id: string) => {
 		return currentComponent.id === id;
 	};
@@ -37,7 +84,7 @@ export function TreeNode({ node, level = 0, parentId = null }: TreeNodeProps) {
 	return (
 		<ContextMenu>
 			<ContextMenuTrigger>
-				<div className="ml-2 py-0.5">
+				<div className="ml-2 py-0.5" ref={setNodeRef} style={style}>
 					<div
 						className={cn(
 							"flex items-center gap-1 py-1.5 px-0.5 cursor-pointer text-sm text-primary hover:text-background hover:bg-foreground rounded-md",
@@ -45,8 +92,13 @@ export function TreeNode({ node, level = 0, parentId = null }: TreeNodeProps) {
 							isCurrentComponent(node.id)
 								? "bg-foreground text-background"
 								: "",
-							isDragging && "opacity-50",
-							isOver && "border-2 border-dashed border-primary",
+							(isDragging || isSortableDragging) && "opacity-50",
+							isSortableOver &&
+								"border-2 border-dashed border-primary",
+							// isValidContainer && "ring-1 ring-inset ring-blue-300",
+							isValidContainer &&
+								isDroppableOver &&
+								"ring-2 ring-inset ring-blue-500 bg-blue-50 text-primary",
 						)}
 						onClick={() => {
 							setExpanded(
@@ -55,6 +107,13 @@ export function TreeNode({ node, level = 0, parentId = null }: TreeNodeProps) {
 							setCurrentComponent(node);
 						}}
 					>
+						<div
+							className="cursor-grab active:cursor-grabbing mr-1"
+							{...attributes}
+							{...listeners}
+						>
+							<GripVertical className="w-4 h-4" />
+						</div>
 						{hasChildren ? (
 							expanded ? (
 								<ChevronDown className="w-4 h-4" />
@@ -69,8 +128,9 @@ export function TreeNode({ node, level = 0, parentId = null }: TreeNodeProps) {
 					</div>
 					<div className="ml-4">
 						{expanded &&
-							node.children?.map((child: ComponentItem) => (
+							node.children?.map((child: BaseComponent) => (
 								<TreeNode
+									id={child.id}
 									key={child.id}
 									level={level + 1}
 									node={child}

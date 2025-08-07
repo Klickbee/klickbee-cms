@@ -1,4 +1,5 @@
 import React from "react";
+import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent";
 import { BuilderComponent } from "../../types/components/component";
 
 interface HeadingProps {
@@ -9,8 +10,10 @@ export const Heading: React.FC<HeadingProps> = ({ component }) => {
 	// Default heading content and level if not provided
 	const content = (component.props?.content?.text as string) || "Heading";
 	const level: number = (component.props?.content?.level as number) || 2;
-
-	const renderHeading = () => {
+	const currentComponent = useCurrentComponentStore(
+		(state) => state.currentComponent,
+	);
+	const renderHeading = (isCurrent: boolean) => {
 		switch (level) {
 			case 1:
 				return <h1 className="text-3xl font-bold">{content}</h1>;
@@ -29,15 +32,17 @@ export const Heading: React.FC<HeadingProps> = ({ component }) => {
 		}
 	};
 
+	const isCurrent = currentComponent.id === component.id;
+
 	return (
 		<div
-			className="relative   bg-white"
+			className="relative  bg-white"
 			style={{
 				order: component.order || 0, // Use order property for positioning
 				...((component.props?.style as Record<string, unknown>) || {}),
 			}}
 		>
-			<div className="">{renderHeading()}</div>
+			<div className="">{renderHeading(isCurrent)}</div>
 		</div>
 	);
 };

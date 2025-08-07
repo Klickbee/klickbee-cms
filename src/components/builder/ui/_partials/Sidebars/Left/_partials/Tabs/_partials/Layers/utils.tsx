@@ -1,8 +1,5 @@
 import { Box } from "lucide-react";
-import {
-	ComponentItem,
-	componentsList,
-} from "@/builder/definitions/componentsList";
+import { componentsList } from "@/builder/definitions/componentsList";
 import { BaseComponent } from "@/builder/types/components/component";
 
 /**
@@ -10,7 +7,7 @@ import { BaseComponent } from "@/builder/types/components/component";
  */
 export const getComponentIcon = (component: BaseComponent) => {
 	const componentDef = componentsList.find(
-		(c: ComponentItem) => c.id === component.type,
+		(c: BaseComponent) => c.id === component.type,
 	);
 	return componentDef ? componentDef.icon : <Box className="w-4 h-4" />;
 };
@@ -18,13 +15,14 @@ export const getComponentIcon = (component: BaseComponent) => {
 /**
  * Maps content items to a tree structure
  */
-export const mapContentToTree = (content: ComponentItem[]): ComponentItem[] => {
+export const mapContentToTree = (content: BaseComponent[]): BaseComponent[] => {
 	return content.map((component) => {
-		const base = componentsList.find((c) => c.id === component.group) || {
-			group: component.group || "",
-			icon: getComponentIcon(component as unknown as BaseComponent),
+		const base = componentsList.find((c) => c.id === component.groupId) || {
+			group: component.groupId || "",
+			icon: getComponentIcon(component),
 			id: component.id,
-			label: component.label || component.group,
+			label: component.label || component.groupId,
+			order: component.order || 0,
 			type: component.type || "undefined",
 		};
 		return {
@@ -32,6 +30,7 @@ export const mapContentToTree = (content: ComponentItem[]): ComponentItem[] => {
 			children: component.children
 				? mapContentToTree(component.children)
 				: [],
+			groupId: component.groupId,
 			id: component.id,
 			label: component.label || base.label,
 		};

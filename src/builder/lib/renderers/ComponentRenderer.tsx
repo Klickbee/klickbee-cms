@@ -21,9 +21,9 @@ import { Text } from "@/builder/components/ui/Text";
 import { TextField } from "@/builder/components/ui/TextField";
 import { Video } from "@/builder/components/ui/Video";
 import { useDeleteComponentContext } from "@/builder/contexts/DeleteComponentContext";
-import { ComponentItem } from "@/builder/definitions/componentsList";
 import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent";
 import {
+	BaseComponent,
 	BuilderComponent,
 	ComponentType,
 } from "@/builder/types/components/component";
@@ -138,9 +138,7 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 					className={className}
 					onClick={(e) => {
 						e.stopPropagation(); // Stop event propagation to parent components
-						setCurrentComponent(
-							component as unknown as ComponentItem,
-						);
+						setCurrentComponent(component as BaseComponent);
 					}}
 					onDragLeave={onDragLeave}
 					onDragOver={onDragOver}
