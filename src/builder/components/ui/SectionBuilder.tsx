@@ -16,7 +16,7 @@ export const SectionBuilder: React.FC<SectionProps> = ({ component }) => {
 	const dragDropContext = useContext(DragDropContext);
 
 	return (
-		<section className="relative bg-white w-full">
+		<section className="relative bg-white w-full p-2">
 			{!component.children || component.children.length === 0 ? (
 				<EmptyChildrenPlaceholder />
 			) : (
