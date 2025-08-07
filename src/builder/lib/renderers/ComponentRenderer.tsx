@@ -20,6 +20,7 @@ import { SubmitButton } from "@/builder/components/ui/SubmitButton";
 import { Text } from "@/builder/components/ui/Text";
 import { TextField } from "@/builder/components/ui/TextField";
 import { Video } from "@/builder/components/ui/Video";
+import { ComponentItem } from "@/builder/definitions/componentsList";
 import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent";
 import {
 	BuilderComponent,
@@ -96,6 +97,9 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 	const currentComponent = useCurrentComponentStore(
 		(state) => state.currentComponent,
 	);
+	const setCurrentComponent = useCurrentComponentStore(
+		(state) => state.setCurrentComponent,
+	);
 	// Get the component from the registry or use the default component
 	const ComponentToRender = componentMap[component.type] || DefaultComponent;
 
@@ -103,7 +107,12 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 	const isSelected = currentComponent.id === component.id;
 
 	return (
-		<div className={`${isSelected ? "border-2 border-blue-500" : ""}`}>
+		<div
+			className={`${isSelected ? "border-2 border-blue-500" : "hover:border-2 hover:border-blue-500"}`}
+			onClick={() =>
+				setCurrentComponent(component as unknown as ComponentItem)
+			}
+		>
 			<ComponentToRender component={component} />
 		</div>
 	);
