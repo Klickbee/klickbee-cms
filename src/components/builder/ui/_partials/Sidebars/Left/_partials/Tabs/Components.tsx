@@ -18,7 +18,7 @@ const groupLabels: Record<string, string> = {
 	form: "Form",
 	layout: "Layout",
 	media: "Media",
-	text: "Text",
+	text: "Text & Content",
 };
 
 const groups: ComponentGroup[] = Object.entries(groupLabels).map(
@@ -79,7 +79,7 @@ export default function BuilderTabComponents() {
 											const componentData = {
 												groupId: group.id,
 												label: item.label,
-												type: item.id,
+												type: item.type, // use type from componentsList
 											};
 											e.dataTransfer.setData(
 												"application/json",
