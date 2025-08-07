@@ -1,6 +1,7 @@
 import { JsonValue } from "@prisma/client/runtime/library";
 import { Play, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { useDeleteComponent } from "@/builder/hooks/useDeleteComponent";
 import { ComponentRenderer } from "@/builder/lib/renderers/ComponentRenderer";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
 import {
@@ -11,6 +12,20 @@ import {
 import { componentMap } from "@/builder/types/components/componentMap";
 import { DragDropContext } from "@/components/builder/_partials/DragAndDropContext";
 import { Button } from "@/components/ui/button";
+import {
+	ContextMenu,
+	ContextMenuContent,
+	ContextMenuItem,
+	ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function BuilderPreviewViewport({
 	bp,
@@ -25,13 +40,23 @@ export default function BuilderPreviewViewport({
 }) {
 	const { currentPage, setCurrentPage } = useCurrentPageStore();
 	const [targetComponent, setTargetComponent] = useState<string | null>(null);
+	const {
+		confirmDelete,
+		cancelDelete,
+		handleDelete,
+		componentTypeToDelete,
+		isConfirmDialogOpen,
+		setIsConfirmDialogOpen,
+	} = useDeleteComponent({ showNotifications: true });
 
 	return (
 		<div className="flex flex-col gap-2" key={bp.name}>
 			{/* Header */}
 			<div className="flex items-center justify-between bg-white rounded-md border px-3 py-2 text-sm shadow-sm">
 				<div className="flex items-center gap-2 font-medium">
-					<Play className="w-4 h-4 text-muted-foreground" />
+					<Button className={"bg-foreground text-background"}>
+						<Play className="w-4 h-4" />
+					</Button>
 					{bp.name}
 					<span className="text-muted-foreground ml-2 text-xs">
 						{bp.width}
@@ -177,27 +202,78 @@ export default function BuilderPreviewViewport({
 						.slice() // Create a copy of the array to avoid mutating the original
 						.sort((a, b) => (a.order || 0) - (b.order || 0)) // Sort by order
 						.map((component) => (
-							<div key={component.id}>
-								<ComponentRenderer
-									component={component}
-									isDropTarget={
-										targetComponent === component.id
-									}
-									onDragLeave={() => {
-										setTargetComponent(null);
-									}}
-									onDragOver={(e) => {
-										// Only allow dropping onto container components
-										if (canHaveChildren(component.type)) {
-											e.stopPropagation();
-											e.preventDefault();
-											setTargetComponent(component.id);
+							<ContextMenu key={component.id}>
+								<ContextMenuTrigger>
+									<div>
+										<ComponentRenderer
+											component={component}
+											isDropTarget={
+												targetComponent === component.id
+											}
+											onDragLeave={() => {
+												setTargetComponent(null);
+											}}
+											onDragOver={(e) => {
+												// Only allow dropping onto container components
+												if (
+													canHaveChildren(
+														component.type,
+													)
+												) {
+													e.stopPropagation();
+													e.preventDefault();
+													setTargetComponent(
+														component.id,
+													);
+												}
+											}}
+										/>
+									</div>
+								</ContextMenuTrigger>
+								<ContextMenuContent>
+									<ContextMenuItem
+										className={"text-destructive"}
+										onClick={() =>
+											confirmDelete(
+												component.id,
+												null,
+												component.type,
+											)
 										}
-									}}
-								/>
-							</div>
+									>
+										Delete
+									</ContextMenuItem>
+								</ContextMenuContent>
+							</ContextMenu>
 						))}
 			</div>
+
+			{/* Confirmation Dialog */}
+			<Dialog
+				onOpenChange={setIsConfirmDialogOpen}
+				open={isConfirmDialogOpen}
+			>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Confirm Deletion</DialogTitle>
+						<DialogDescription>
+							Are you sure you want to delete this{" "}
+							{componentTypeToDelete
+								? `${componentTypeToDelete} component`
+								: "component"}
+							? This action cannot be undone.
+						</DialogDescription>
+					</DialogHeader>
+					<DialogFooter>
+						<Button onClick={cancelDelete} variant="outline">
+							Cancel
+						</Button>
+						<Button onClick={handleDelete} variant="destructive">
+							Delete
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 		</div>
 	);
 }
