@@ -124,7 +124,6 @@ export default function BuilderPreviewViewport({
 											order:
 												Array(components[i].children)
 													.length + 1 || 1, // Set order based on position in children array
-											position: undefined, // Remove position for children
 										});
 										return true;
 									}
