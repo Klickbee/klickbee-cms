@@ -1,12 +1,26 @@
 import React from "react";
+import { Checkbox } from "@/builder/components/ui/Checkbox";
 import { Container } from "@/builder/components/ui/Container";
+import { Dropdown } from "@/builder/components/ui/Dropdown";
+import { Embed } from "@/builder/components/ui/Embed";
+import { FileUpload } from "@/builder/components/ui/FileUpload";
+import { FormBlock } from "@/builder/components/ui/FormBlock";
+import { FormFileUpload } from "@/builder/components/ui/FormFileUpload";
 import { Grid } from "@/builder/components/ui/Grid";
 import { Heading } from "@/builder/components/ui/Heading";
 import { Image } from "@/builder/components/ui/Image";
+import { Link } from "@/builder/components/ui/Link";
+import { List } from "@/builder/components/ui/List";
+import { Paragraph } from "@/builder/components/ui/Paragraph";
+import { RadioGroup } from "@/builder/components/ui/RadioGroup";
+import { RichText } from "@/builder/components/ui/RichText";
 import { Section } from "@/builder/components/ui/Section";
 import { Spacer } from "@/builder/components/ui/Spacer";
+import { SubmitButton } from "@/builder/components/ui/SubmitButton";
 import { Text } from "@/builder/components/ui/Text";
+import { TextField } from "@/builder/components/ui/TextField";
 import { Video } from "@/builder/components/ui/Video";
+import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent";
 import {
 	BuilderComponent,
 	ComponentType,
@@ -36,16 +50,39 @@ const componentMap: Record<
 	ComponentType,
 	React.FC<{ component: BuilderComponent }>
 > = {
+	button: DefaultComponent,
+	checkbox: Checkbox,
 	container: Container,
 	divider: DefaultComponent,
+	dropdown: Dropdown,
 	email: DefaultComponent,
+	embed: Embed,
+	fileupload: FileUpload,
+	formblock: FormBlock,
 	grid: Grid,
+
+	// Text & Content components
 	heading: Heading,
+
+	// Media components
 	image: Image,
+
+	// Form components
 	input: DefaultComponent,
+	link: Link,
+	list: List,
+	paragraph: Paragraph,
+	radiogroup: RadioGroup,
+	richtext: RichText,
+	// Layout components
 	section: Section,
 	spacer: Spacer,
+	submitbutton: SubmitButton,
 	text: Text,
+	textfield: TextField,
+
+	// Default for undefined
+	undefined: DefaultComponent,
 	video: Video,
 };
 
@@ -56,8 +93,18 @@ interface ComponentRendererProps {
 export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 	component,
 }) => {
+	const currentComponent = useCurrentComponentStore(
+		(state) => state.currentComponent,
+	);
 	// Get the component from the registry or use the default component
 	const ComponentToRender = componentMap[component.type] || DefaultComponent;
 
-	return <ComponentToRender component={component} />;
+	// Check if this component is the currently selected one
+	const isSelected = currentComponent.id === component.id;
+
+	return (
+		<div className={`${isSelected ? "border-2 border-blue-500" : ""}`}>
+			<ComponentToRender component={component} />
+		</div>
+	);
 };
