@@ -1,12 +1,19 @@
-import React from "react";
-import { BuilderComponent } from "@/builder/types/components/component";
+import React, { useContext } from "react";
+import {
+	BuilderComponent,
+	canHaveChildren,
+} from "@/builder/types/components/component";
 import { ComponentRenderer } from "../../lib/renderers/ComponentRenderer";
+import { DragDropContext } from "./Section";
 
 interface ContainerProps {
 	component: BuilderComponent;
 }
 
 export const Container: React.FC<ContainerProps> = ({ component }) => {
+	// Get the setTargetComponent function from context
+	const dragDropContext = useContext(DragDropContext);
+
 	return (
 		<div
 			className="relative   max-w-screen-lg mx-auto bg-white"
@@ -24,7 +31,31 @@ export const Container: React.FC<ContainerProps> = ({ component }) => {
 						.map((child) => (
 							<ComponentRenderer
 								component={child}
+								isDropTarget={
+									dragDropContext?.targetComponent ===
+									child.id
+								}
 								key={child.id}
+								onDragLeave={() => {
+									if (dragDropContext) {
+										dragDropContext.setTargetComponent(
+											null,
+										);
+									}
+								}}
+								onDragOver={(e) => {
+									// Only allow dropping onto container components
+									if (
+										canHaveChildren(child.type) &&
+										dragDropContext
+									) {
+										e.stopPropagation();
+										e.preventDefault();
+										dragDropContext.setTargetComponent(
+											child.id,
+										);
+									}
+								}}
 							/>
 						))}
 				</div>

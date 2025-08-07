@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
+import EmptyChildrenPlaceholder from "@/builder/components/ui/_partials/EmptyChildrenPlaceholder";
 import { ComponentRenderer } from "../../lib/renderers/ComponentRenderer";
-import { BuilderComponent } from "../../types/components/component";
+import {
+	BuilderComponent,
+	canHaveChildren,
+} from "../../types/components/component";
+import { DragDropContext } from "./Section";
 
 interface GridProps {
 	component: BuilderComponent;
@@ -9,6 +14,8 @@ interface GridProps {
 export const Grid: React.FC<GridProps> = ({ component }) => {
 	// Default to 2 columns if not specified
 	const columns = component.props?.style?.layout?.grid?.columns || 2;
+	// Get the setTargetComponent function from context
+	const dragDropContext = useContext(DragDropContext);
 
 	return (
 		<div
@@ -19,9 +26,11 @@ export const Grid: React.FC<GridProps> = ({ component }) => {
 			}}
 		>
 			{/* Render children in a grid layout */}
-			{component.children && component.children.length > 0 && (
+			{!component.children || component.children.length === 0 ? (
+				<EmptyChildrenPlaceholder />
+			) : (
 				<div
-					className=" grid ga"
+					className="grid ga"
 					style={{
 						gridTemplateColumns: `repeat(${columns}, 1fr)`,
 					}}
@@ -34,7 +43,33 @@ export const Grid: React.FC<GridProps> = ({ component }) => {
 								className="border border-dotted border-gray-200 p-2"
 								key={child.id}
 							>
-								<ComponentRenderer component={child} />
+								<ComponentRenderer
+									component={child}
+									isDropTarget={
+										dragDropContext?.targetComponent ===
+										child.id
+									}
+									onDragLeave={() => {
+										if (dragDropContext) {
+											dragDropContext.setTargetComponent(
+												null,
+											);
+										}
+									}}
+									onDragOver={(e) => {
+										// Only allow dropping onto container components
+										if (
+											canHaveChildren(child.type) &&
+											dragDropContext
+										) {
+											e.stopPropagation();
+											e.preventDefault();
+											dragDropContext.setTargetComponent(
+												child.id,
+											);
+										}
+									}}
+								/>
 							</div>
 						))}
 				</div>
