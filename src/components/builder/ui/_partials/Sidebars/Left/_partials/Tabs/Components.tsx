@@ -1,6 +1,11 @@
 "use client";
 
-import { ChevronDown, ChevronRight } from "lucide-react";
+import {
+	ChevronDown,
+	ChevronRight,
+	ChevronUp,
+	ComponentIcon,
+} from "lucide-react";
 import { useState } from "react";
 import {
 	ComponentItem,
@@ -52,19 +57,26 @@ export default function BuilderTabComponents() {
 								className="flex items-center justify-between py-2 font-medium cursor-pointer"
 								onClick={() => toggleGroup(group.id)}
 							>
-								<span
+								<div
 									className={
-										isOpen && group.id === "layout"
-											? "text-blue-600"
-											: "text-muted-foreground"
+										"flex flex-row gap-2 items-center"
 									}
 								>
-									{group.label}
-								</span>
+									<ComponentIcon size={16} />
+									<span
+										className={
+											isOpen
+												? "text-primary"
+												: "text-muted-foreground"
+										}
+									>
+										{group.label}
+									</span>
+								</div>
 								{isOpen ? (
 									<ChevronDown className="w-4 h-4 text-muted-foreground" />
 								) : (
-									<ChevronRight className="w-4 h-4 text-muted-foreground" />
+									<ChevronUp className="w-4 h-4 text-muted-foreground" />
 								)}
 							</div>
 
@@ -72,7 +84,7 @@ export default function BuilderTabComponents() {
 							{isOpen &&
 								group.items.map((item) => (
 									<div
-										className="flex items-center gap-2 pl-6 py-1 text-muted-foreground hover:text-foreground cursor-pointer"
+										className="border-l flex items-center gap-2 pl-6 py-1 text-primary hover:text-background hover:bg-foreground rounded-md cursor-pointer"
 										draggable
 										key={item.id}
 										onDragStart={(e) => {
