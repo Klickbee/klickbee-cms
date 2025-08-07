@@ -1,24 +1,17 @@
-import { Plus } from "lucide-react";
 import React, { useContext } from "react";
+import { DragDropContext } from "@/builder/components/ui/_partials/DragAndDropContext";
 import EmptyChildrenPlaceholder from "@/builder/components/ui/_partials/EmptyChildrenPlaceholder";
-import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
 import {
 	BuilderComponent,
 	canHaveChildren,
 } from "@/builder/types/components/component";
 import { ComponentRenderer } from "../../lib/renderers/ComponentRenderer";
 
-// Create a context to pass down the targetComponent state and setTargetComponent function
-export const DragDropContext = React.createContext<{
-	targetComponent: string | null;
-	setTargetComponent: (id: string | null) => void;
-} | null>(null);
-
 interface SectionProps {
 	component: BuilderComponent;
 }
 
-export const Section: React.FC<SectionProps> = ({ component }) => {
+export const SectionBuilder: React.FC<SectionProps> = ({ component }) => {
 	// Get the setTargetComponent function from context
 	const dragDropContext = useContext(DragDropContext);
 
