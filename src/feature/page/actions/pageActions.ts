@@ -1,5 +1,4 @@
 "use server";
-
 import { isAuthenticatedGuard } from "@/feature/auth/lib/session";
 import { PageLight } from "@/feature/page/types/page";
 import { Prisma } from "@/generated/prisma";
@@ -8,6 +7,11 @@ import { prisma } from "@/lib/prisma";
 import JsonNull = Prisma.NullTypes.JsonNull;
 
 import { InputJsonValue } from "@prisma/client/runtime/library";
+
+import JsonArray = Prisma.JsonArray;
+import JsonObject = Prisma.JsonObject;
+
+import { BaseComponent } from "@/builder/types/components/component";
 
 /**
  * Duplicates a page with a new title and slug
@@ -317,7 +321,7 @@ export const updatePageParent = async (
  */
 export const updatePageContent = async (
 	pageId: number,
-	content: JsonNull | InputJsonValue,
+	content: BaseComponent[],
 ) => {
 	try {
 		const authError = await isAuthenticatedGuard();
@@ -333,7 +337,6 @@ export const updatePageContent = async (
 		if (!page) {
 			throw new Error(`Page with ID ${pageId} not found`);
 		}
-
 		// Update the page's content
 		return prisma.page.update({
 			data: { content },

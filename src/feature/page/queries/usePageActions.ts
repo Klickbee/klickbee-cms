@@ -15,6 +15,10 @@ import JsonNull = Prisma.NullTypes.JsonNull;
 
 import { InputJsonValue } from "@prisma/client/runtime/library";
 
+import JsonValue = Prisma.JsonValue;
+
+import { BaseComponent } from "@/builder/types/components/component";
+
 /**
  * Hook for duplicating a page
  */
@@ -128,7 +132,7 @@ export function useUpdatePageContent() {
 			content,
 		}: {
 			pageId: number;
-			content: InputJsonValue | JsonNull;
+			content: BaseComponent[];
 		}) => updatePageContent(pageId, content),
 		onSuccess: () => {
 			// Invalidate the pages query to refetch the updated list
