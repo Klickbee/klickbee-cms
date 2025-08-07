@@ -3,8 +3,8 @@ import {
 	BuilderComponent,
 	canHaveChildren,
 } from "@/builder/types/components/component";
+import { DragDropContext } from "../../../components/builder/_partials/DragAndDropContext";
 import { ComponentRenderer } from "../../lib/renderers/ComponentRenderer";
-import { DragDropContext } from "./_partials/DragAndDropContext";
 
 interface ContainerProps {
 	component: BuilderComponent;

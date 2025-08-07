@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
-import { DragDropContext } from "@/builder/components/ui/_partials/DragAndDropContext";
 import EmptyChildrenPlaceholder from "@/builder/components/ui/_partials/EmptyChildrenPlaceholder";
 import {
 	BuilderComponent,
 	canHaveChildren,
 } from "@/builder/types/components/component";
+import { DragDropContext } from "@/components/builder/_partials/DragAndDropContext";
 import { ComponentRenderer } from "../../lib/renderers/ComponentRenderer";
 
 interface SectionProps {
