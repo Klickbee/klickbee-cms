@@ -170,42 +170,33 @@ export default function BuilderPreviewViewport({
 					width: `${bp.width / 1.5}px`,
 				}}
 			>
-				{/* Provide DragDropContext to all components */}
-				<DragDropContext.Provider
-					value={{ setTargetComponent, targetComponent }}
-				>
-					{/* Render components for this breakpoint */}
-					{currentPage.content &&
-						Array.isArray(currentPage.content) &&
-						(currentPage.content as unknown as BuilderComponent[])
-							.slice() // Create a copy of the array to avoid mutating the original
-							.sort((a, b) => (a.order || 0) - (b.order || 0)) // Sort by order
-							.map((component) => (
-								<div key={component.id}>
-									<ComponentRenderer
-										component={component}
-										isDropTarget={
-											targetComponent === component.id
+				{/* Render components for this breakpoint */}
+				{currentPage.content &&
+					Array.isArray(currentPage.content) &&
+					(currentPage.content as unknown as BuilderComponent[])
+						.slice() // Create a copy of the array to avoid mutating the original
+						.sort((a, b) => (a.order || 0) - (b.order || 0)) // Sort by order
+						.map((component) => (
+							<div key={component.id}>
+								<ComponentRenderer
+									component={component}
+									isDropTarget={
+										targetComponent === component.id
+									}
+									onDragLeave={() => {
+										setTargetComponent(null);
+									}}
+									onDragOver={(e) => {
+										// Only allow dropping onto container components
+										if (canHaveChildren(component.type)) {
+											e.stopPropagation();
+											e.preventDefault();
+											setTargetComponent(component.id);
 										}
-										onDragLeave={() => {
-											setTargetComponent(null);
-										}}
-										onDragOver={(e) => {
-											// Only allow dropping onto container components
-											if (
-												canHaveChildren(component.type)
-											) {
-												e.stopPropagation();
-												e.preventDefault();
-												setTargetComponent(
-													component.id,
-												);
-											}
-										}}
-									/>
-								</div>
-							))}
-				</DragDropContext.Provider>
+									}}
+								/>
+							</div>
+						))}
 			</div>
 		</div>
 	);
