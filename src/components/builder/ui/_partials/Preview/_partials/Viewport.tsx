@@ -1,7 +1,7 @@
 import { JsonValue } from "@prisma/client/runtime/library";
 import { Play, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { useDeleteComponent } from "@/builder/hooks/useDeleteComponent";
+import { useDeleteComponentContext } from "@/builder/contexts/DeleteComponentContext";
 import { ComponentRenderer } from "@/builder/lib/renderers/ComponentRenderer";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
 import {
@@ -40,14 +40,6 @@ export default function BuilderPreviewViewport({
 }) {
 	const { currentPage, setCurrentPage } = useCurrentPageStore();
 	const [targetComponent, setTargetComponent] = useState<string | null>(null);
-	const {
-		confirmDelete,
-		cancelDelete,
-		handleDelete,
-		componentTypeToDelete,
-		isConfirmDialogOpen,
-		setIsConfirmDialogOpen,
-	} = useDeleteComponent({ showNotifications: true });
 
 	return (
 		<div className="flex flex-col gap-2" key={bp.name}>
@@ -202,78 +194,27 @@ export default function BuilderPreviewViewport({
 						.slice() // Create a copy of the array to avoid mutating the original
 						.sort((a, b) => (a.order || 0) - (b.order || 0)) // Sort by order
 						.map((component) => (
-							<ContextMenu key={component.id}>
-								<ContextMenuTrigger>
-									<div>
-										<ComponentRenderer
-											component={component}
-											isDropTarget={
-												targetComponent === component.id
-											}
-											onDragLeave={() => {
-												setTargetComponent(null);
-											}}
-											onDragOver={(e) => {
-												// Only allow dropping onto container components
-												if (
-													canHaveChildren(
-														component.type,
-													)
-												) {
-													e.stopPropagation();
-													e.preventDefault();
-													setTargetComponent(
-														component.id,
-													);
-												}
-											}}
-										/>
-									</div>
-								</ContextMenuTrigger>
-								<ContextMenuContent>
-									<ContextMenuItem
-										className={"text-destructive"}
-										onClick={() =>
-											confirmDelete(
-												component.id,
-												null,
-												component.type,
-											)
+							<div key={component.id}>
+								<ComponentRenderer
+									component={component}
+									isDropTarget={
+										targetComponent === component.id
+									}
+									onDragLeave={() => {
+										setTargetComponent(null);
+									}}
+									onDragOver={(e) => {
+										// Only allow dropping onto container components
+										if (canHaveChildren(component.type)) {
+											e.stopPropagation();
+											e.preventDefault();
+											setTargetComponent(component.id);
 										}
-									>
-										Delete
-									</ContextMenuItem>
-								</ContextMenuContent>
-							</ContextMenu>
+									}}
+								/>
+							</div>
 						))}
 			</div>
-
-			{/* Confirmation Dialog */}
-			<Dialog
-				onOpenChange={setIsConfirmDialogOpen}
-				open={isConfirmDialogOpen}
-			>
-				<DialogContent>
-					<DialogHeader>
-						<DialogTitle>Confirm Deletion</DialogTitle>
-						<DialogDescription>
-							Are you sure you want to delete this{" "}
-							{componentTypeToDelete
-								? `${componentTypeToDelete} component`
-								: "component"}
-							? This action cannot be undone.
-						</DialogDescription>
-					</DialogHeader>
-					<DialogFooter>
-						<Button onClick={cancelDelete} variant="outline">
-							Cancel
-						</Button>
-						<Button onClick={handleDelete} variant="destructive">
-							Delete
-						</Button>
-					</DialogFooter>
-				</DialogContent>
-			</Dialog>
 		</div>
 	);
 }

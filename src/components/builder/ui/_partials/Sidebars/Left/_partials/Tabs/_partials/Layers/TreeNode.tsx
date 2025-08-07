@@ -1,5 +1,6 @@
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
+import { useDeleteComponentContext } from "@/builder/contexts/DeleteComponentContext";
 import { ComponentItem } from "@/builder/definitions/componentsList";
 import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent";
 import {
@@ -14,19 +15,10 @@ interface TreeNodeProps {
 	node: ComponentItem;
 	level?: number;
 	parentId?: string | null;
-	onDeleteRequest?: (
-		componentId: string,
-		parentId: string | null,
-		componentType?: string | null,
-	) => void;
 }
 
-export function TreeNode({
-	node,
-	level = 0,
-	parentId = null,
-	onDeleteRequest,
-}: TreeNodeProps) {
+export function TreeNode({ node, level = 0, parentId = null }: TreeNodeProps) {
+	const { confirmDelete } = useDeleteComponentContext();
 	const [expanded, setExpanded] = useState(true);
 	const [isDragging] = useState(false);
 	const [isOver] = useState(false);
@@ -82,7 +74,6 @@ export function TreeNode({
 									key={child.id}
 									level={level + 1}
 									node={child}
-									onDeleteRequest={onDeleteRequest}
 									parentId={node.id}
 								/>
 							))}
@@ -92,10 +83,7 @@ export function TreeNode({
 			<ContextMenuContent>
 				<ContextMenuItem
 					className={"text-destructive"}
-					onClick={() =>
-						onDeleteRequest &&
-						onDeleteRequest(node.id, parentId, node.type)
-					}
+					onClick={() => confirmDelete(node.id, parentId, node.type)}
 				>
 					Delete
 				</ContextMenuItem>
