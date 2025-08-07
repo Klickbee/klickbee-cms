@@ -20,12 +20,19 @@ import { SubmitButton } from "@/builder/components/ui/SubmitButton";
 import { Text } from "@/builder/components/ui/Text";
 import { TextField } from "@/builder/components/ui/TextField";
 import { Video } from "@/builder/components/ui/Video";
+import { useDeleteComponentContext } from "@/builder/contexts/DeleteComponentContext";
 import { ComponentItem } from "@/builder/definitions/componentsList";
 import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent";
 import {
 	BuilderComponent,
 	ComponentType,
 } from "@/builder/types/components/component";
+import {
+	ContextMenu,
+	ContextMenuContent,
+	ContextMenuItem,
+	ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 
 // Default component for types that haven't been implemented yet
 const DefaultComponent: React.FC<{ component: BuilderComponent }> = ({
@@ -106,6 +113,8 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 	const setCurrentComponent = useCurrentComponentStore(
 		(state) => state.setCurrentComponent,
 	);
+	const { confirmDelete } = useDeleteComponentContext();
+
 	// Get the component from the registry or use the default component
 	const ComponentToRender = componentMap[component.type] || DefaultComponent;
 
@@ -123,16 +132,33 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 	}
 
 	return (
-		<div
-			className={className}
-			onClick={(e) => {
-				e.stopPropagation(); // Stop event propagation to parent components
-				setCurrentComponent(component as unknown as ComponentItem);
-			}}
-			onDragLeave={onDragLeave}
-			onDragOver={onDragOver}
-		>
-			<ComponentToRender component={component} />
-		</div>
+		<ContextMenu>
+			<ContextMenuTrigger>
+				<div
+					className={className}
+					onClick={(e) => {
+						e.stopPropagation(); // Stop event propagation to parent components
+						setCurrentComponent(
+							component as unknown as ComponentItem,
+						);
+					}}
+					onDragLeave={onDragLeave}
+					onDragOver={onDragOver}
+				>
+					<ComponentToRender component={component} />
+				</div>
+			</ContextMenuTrigger>
+			<ContextMenuContent onClick={(e) => e.stopPropagation()}>
+				<ContextMenuItem
+					className={"text-destructive"}
+					onClick={(e) => {
+						e.stopPropagation();
+						confirmDelete(component.id, null, component.type);
+					}}
+				>
+					Delete
+				</ContextMenuItem>
+			</ContextMenuContent>
+		</ContextMenu>
 	);
 };
