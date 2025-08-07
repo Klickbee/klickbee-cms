@@ -71,7 +71,7 @@ export const mapPrismaCollectionTemplateToCollectionTemplate = (
 ): CollectionTemplate => {
 	return {
 		collectionId: prismaTemplate.collectionId,
-		content: prismaTemplate.content,
+		content: prismaTemplate.content as JsonValue,
 		createdAt: prismaTemplate.createdAt,
 		id: prismaTemplate.id,
 		name: prismaTemplate.name,
@@ -84,7 +84,7 @@ export const mapPrismaCollectionItemToCollectionItem = (
 ): CollectionItem => {
 	return {
 		collectionId: prismaItem.collectionId,
-		content: prismaItem.content,
+		content: prismaItem.content as JsonValue,
 		createdAt: prismaItem.createdAt,
 		id: prismaItem.id,
 		isPublished: prismaItem.isPublished,
