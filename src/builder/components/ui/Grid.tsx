@@ -5,7 +5,7 @@ import {
 	BuilderComponent,
 	canHaveChildren,
 } from "../../types/components/component";
-import { DragDropContext } from "./Section";
+import { DragDropContext } from "./_partials/DragAndDropContext";
 
 interface GridProps {
 	component: BuilderComponent;

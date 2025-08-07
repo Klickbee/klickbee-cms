@@ -4,7 +4,7 @@ import {
 	canHaveChildren,
 } from "@/builder/types/components/component";
 import { ComponentRenderer } from "../../lib/renderers/ComponentRenderer";
-import { DragDropContext } from "./Section";
+import { DragDropContext } from "./_partials/DragAndDropContext";
 
 interface ContainerProps {
 	component: BuilderComponent;
