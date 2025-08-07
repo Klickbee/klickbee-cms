@@ -1,6 +1,7 @@
 import { JsonValue } from "@prisma/client/runtime/library";
 import { Play, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { DragDropContext } from "@/builder/components/ui/Section";
 import { ComponentRenderer } from "@/builder/lib/renderers/ComponentRenderer";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
 import {
@@ -122,8 +123,8 @@ export default function BuilderPreviewViewport({
 										components[i].children?.push({
 											...newComponent,
 											order:
-												Array(components[i].children)
-													.length + 1 || 1, // Set order based on position in children array
+												(components[i].children
+													?.length || 0) + 1, // Set order based on position in children array
 										});
 										return true;
 									}
@@ -169,30 +170,42 @@ export default function BuilderPreviewViewport({
 					width: `${bp.width / 1.5}px`,
 				}}
 			>
-				{/* Render components for this breakpoint */}
-				{currentPage.content &&
-					Array.isArray(currentPage.content) &&
-					(currentPage.content as unknown as BuilderComponent[])
-						.slice() // Create a copy of the array to avoid mutating the original
-						.sort((a, b) => (a.order || 0) - (b.order || 0)) // Sort by order
-						.map((component) => (
-							<div
-								key={component.id}
-								onDragLeave={() => {
-									setTargetComponent(null);
-								}}
-								onDragOver={(e) => {
-									// Only allow dropping onto container components
-									if (canHaveChildren(component.type)) {
-										e.stopPropagation();
-										e.preventDefault();
-										setTargetComponent(component.id);
-									}
-								}}
-							>
-								<ComponentRenderer component={component} />
-							</div>
-						))}
+				{/* Provide DragDropContext to all components */}
+				<DragDropContext.Provider
+					value={{ setTargetComponent, targetComponent }}
+				>
+					{/* Render components for this breakpoint */}
+					{currentPage.content &&
+						Array.isArray(currentPage.content) &&
+						(currentPage.content as unknown as BuilderComponent[])
+							.slice() // Create a copy of the array to avoid mutating the original
+							.sort((a, b) => (a.order || 0) - (b.order || 0)) // Sort by order
+							.map((component) => (
+								<div key={component.id}>
+									<ComponentRenderer
+										component={component}
+										isDropTarget={
+											targetComponent === component.id
+										}
+										onDragLeave={() => {
+											setTargetComponent(null);
+										}}
+										onDragOver={(e) => {
+											// Only allow dropping onto container components
+											if (
+												canHaveChildren(component.type)
+											) {
+												e.stopPropagation();
+												e.preventDefault();
+												setTargetComponent(
+													component.id,
+												);
+											}
+										}}
+									/>
+								</div>
+							))}
+				</DragDropContext.Provider>
 			</div>
 		</div>
 	);
