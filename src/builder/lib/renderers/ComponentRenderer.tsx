@@ -14,7 +14,7 @@ import { List } from "@/builder/components/ui/List";
 import { Paragraph } from "@/builder/components/ui/Paragraph";
 import { RadioGroup } from "@/builder/components/ui/RadioGroup";
 import { RichText } from "@/builder/components/ui/RichText";
-import { Section } from "@/builder/components/ui/Section";
+import { SectionBuilder } from "@/builder/components/ui/SectionBuilder";
 import { Spacer } from "@/builder/components/ui/Spacer";
 import { SubmitButton } from "@/builder/components/ui/SubmitButton";
 import { Text } from "@/builder/components/ui/Text";
@@ -76,7 +76,7 @@ const componentMap: Record<
 	radiogroup: RadioGroup,
 	richtext: RichText,
 	// Layout components
-	section: Section,
+	section: SectionBuilder,
 	spacer: Spacer,
 	submitbutton: SubmitButton,
 	text: Text,
