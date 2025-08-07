@@ -89,10 +89,16 @@ const componentMap: Record<
 
 interface ComponentRendererProps {
 	component: BuilderComponent;
+	onDragOver?: (e: React.DragEvent<HTMLDivElement>) => void;
+	onDragLeave?: () => void;
+	isDropTarget?: boolean;
 }
 
 export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 	component,
+	onDragOver,
+	onDragLeave,
+	isDropTarget,
 }) => {
 	const currentComponent = useCurrentComponentStore(
 		(state) => state.currentComponent,
@@ -106,12 +112,25 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 	// Check if this component is the currently selected one
 	const isSelected = currentComponent.id === component.id;
 
+	// Determine the appropriate class based on component state
+	let className = "";
+	if (isSelected) {
+		className = "border-2 border-blue-500";
+	} else if (isDropTarget) {
+		className = "border-2 border-green-500 bg-green-50";
+	} else {
+		className = "hover:border-2 hover:border-blue-500";
+	}
+
 	return (
 		<div
-			className={`${isSelected ? "border-2 border-blue-500" : "hover:border-2 hover:border-blue-500"}`}
-			onClick={() =>
-				setCurrentComponent(component as unknown as ComponentItem)
-			}
+			className={className}
+			onClick={(e) => {
+				e.stopPropagation(); // Stop event propagation to parent components
+				setCurrentComponent(component as unknown as ComponentItem);
+			}}
+			onDragLeave={onDragLeave}
+			onDragOver={onDragOver}
 		>
 			<ComponentToRender component={component} />
 		</div>
