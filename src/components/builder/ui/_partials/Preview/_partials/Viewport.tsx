@@ -1,7 +1,7 @@
 import { JsonValue } from "@prisma/client/runtime/library";
 import { Play, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { DragDropContext } from "@/builder/components/ui/Section";
+import { DragDropContext } from "@/builder/components/ui/_partials/DragAndDropContext";
 import { ComponentRenderer } from "@/builder/lib/renderers/ComponentRenderer";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
 import {
