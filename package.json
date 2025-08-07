@@ -67,6 +67,7 @@
 		"add": "^2.0.6",
 		"jest": "^30.0.0",
 		"lefthook": "^1.12.2",
+		"prisma-json-types-generator": "^3.5.2",
 		"semantic-release": "^24.2.5",
 		"tailwindcss": "^4",
 		"ts-jest": "^29.4.0",
