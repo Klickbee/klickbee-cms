@@ -1,3 +1,4 @@
+import { Plus } from "lucide-react";
 import React from "react";
 import { BuilderComponent } from "@/builder/types/components/component";
 import { ComponentRenderer } from "../../lib/renderers/ComponentRenderer";
@@ -9,8 +10,11 @@ interface SectionProps {
 export const Section: React.FC<SectionProps> = ({ component }) => {
 	return (
 		<section className="relative bg-white w-full">
-			{/* Render children if they exist */}
-			{component.children && component.children.length > 0 && (
+			{!component.children || component.children.length === 0 ? (
+				<div className={"h-[50px] flex items-center justify-center"}>
+					<Plus size={18} />
+				</div>
+			) : (
 				<div className="">
 					{component.children
 						.slice() // Create a copy of the array to avoid mutating the original
