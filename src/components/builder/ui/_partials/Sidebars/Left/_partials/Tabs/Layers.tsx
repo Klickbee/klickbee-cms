@@ -6,7 +6,6 @@ import {
 } from "@/builder/definitions/componentsList";
 import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
-import { useCurrentTabStore } from "@/builder/store/storeCurrentTabsSidebar";
 import { BaseComponent } from "@/builder/types/components/component";
 import { cn } from "@/lib/utils";
 
@@ -32,14 +31,13 @@ function TreeNode({
 		<div className="ml-2 py-0.5">
 			<div
 				className={cn(
-					"flex items-center gap-1 py-1.5 px-0.5 cursor-pointer text-sm text-muted-foreground hover:text-background hover:bg-foreground rounded-md",
+					"flex items-center gap-1 py-1.5 px-0.5 cursor-pointer text-sm text-primary hover:text-background hover:bg-foreground rounded-md",
 					level > 0 && "pl-4",
 					isCurrentComponent(node.id)
 						? "bg-foreground text-background"
 						: "",
 				)}
 				onClick={() => {
-					hasChildren;
 					setExpanded(!expanded);
 					setCurrentComponent(node);
 				}}
