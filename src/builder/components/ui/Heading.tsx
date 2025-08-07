@@ -7,8 +7,8 @@ interface HeadingProps {
 
 export const Heading: React.FC<HeadingProps> = ({ component }) => {
 	// Default heading content and level if not provided
-	const content = (component.props?.content as string) || "Heading";
-	const level: number = (component.props?.level as number) || 2;
+	const content = (component.props?.content?.text as string) || "Heading";
+	const level: number = (component.props?.content?.level as number) || 2;
 
 	const renderHeading = () => {
 		switch (level) {
@@ -31,13 +31,13 @@ export const Heading: React.FC<HeadingProps> = ({ component }) => {
 
 	return (
 		<div
-			className="relative border border-dashed border-gray-300 p-4 bg-white"
+			className="relative   bg-white"
 			style={{
 				order: component.order || 0, // Use order property for positioning
 				...((component.props?.style as Record<string, unknown>) || {}),
 			}}
 		>
-			<div className="mt-6">{renderHeading()}</div>
+			<div className="">{renderHeading()}</div>
 		</div>
 	);
 };

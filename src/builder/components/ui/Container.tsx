@@ -9,7 +9,7 @@ interface ContainerProps {
 export const Container: React.FC<ContainerProps> = ({ component }) => {
 	return (
 		<div
-			className="relative border border-dashed border-gray-300 p-4 max-w-screen-lg mx-auto bg-white"
+			className="relative   max-w-screen-lg mx-auto bg-white"
 			style={{
 				order: component.order || 0, // Use order property for positioning
 				...((component.props?.style as Record<string, unknown>) || {}),
@@ -17,7 +17,7 @@ export const Container: React.FC<ContainerProps> = ({ component }) => {
 		>
 			{/* Render children if they exist */}
 			{component.children && component.children.length > 0 && (
-				<div className="mt-6">
+				<div className="">
 					{component.children
 						.slice() // Create a copy of the array to avoid mutating the original
 						.sort((a, b) => (a.order || 0) - (b.order || 0)) // Sort by order

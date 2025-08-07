@@ -8,27 +8,33 @@ interface ImageProps {
 export const Image: React.FC<ImageProps> = ({ component }) => {
 	// Default image source and alt text if not provided
 	const src =
-		(component.props?.src as string) ||
+		(component.props?.content?.src as string) ||
 		"https://via.placeholder.com/400x300";
-	const alt = (component.props?.alt as string) || "Image";
-	const width = (component.props?.width as number) || 400;
-	const height = (component.props?.height as number) || 300;
+	const alt = (component.props?.content?.alt as string) || "Image";
+	const width = component.props?.style?.sizeAndSpacing?.width || {
+		number: 400,
+		unit: "px",
+	};
+	const height = component.props?.style?.sizeAndSpacing?.height || {
+		number: 300,
+		unit: "px",
+	};
 
 	return (
 		<div
-			className="relative border border-dashed border-gray-300 p-4 bg-white"
+			className="relative   bg-white"
 			style={{
 				order: component.order || 0, // Use order property for positioning
 				...((component.props?.style as Record<string, unknown>) || {}),
 			}}
 		>
-			<div className="mt-6">
+			<div className="">
 				<img
 					alt={alt}
 					className="max-w-full h-auto"
-					height={height}
+					height={height.number}
 					src={src}
-					width={width}
+					width={width.number}
 				/>
 			</div>
 		</div>

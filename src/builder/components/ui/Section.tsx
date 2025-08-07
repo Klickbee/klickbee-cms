@@ -8,10 +8,10 @@ interface SectionProps {
 
 export const Section: React.FC<SectionProps> = ({ component }) => {
 	return (
-		<section className="relative border border-dashed border-gray-300 p-4 min-h-[100px] bg-white w-full">
+		<section className="relative bg-white w-full">
 			{/* Render children if they exist */}
 			{component.children && component.children.length > 0 && (
-				<div className="mt-6">
+				<div className="">
 					{component.children
 						.slice() // Create a copy of the array to avoid mutating the original
 						.sort((a, b) => (a.order || 0) - (b.order || 0)) // Sort by order

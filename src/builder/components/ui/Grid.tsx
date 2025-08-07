@@ -8,11 +8,11 @@ interface GridProps {
 
 export const Grid: React.FC<GridProps> = ({ component }) => {
 	// Default to 2 columns if not specified
-	const columns = component.props?.columns || 2;
+	const columns = component.props?.style?.layout?.grid?.columns || 2;
 
 	return (
 		<div
-			className="relative border border-dashed border-gray-300 p-4 bg-white"
+			className="relative   bg-white"
 			style={{
 				order: component.order || 0, // Use order property for positioning
 				...((component.props?.style as Record<string, unknown>) || {}),
@@ -21,7 +21,7 @@ export const Grid: React.FC<GridProps> = ({ component }) => {
 			{/* Render children in a grid layout */}
 			{component.children && component.children.length > 0 && (
 				<div
-					className="mt-6 grid gap-4"
+					className=" grid ga"
 					style={{
 						gridTemplateColumns: `repeat(${columns}, 1fr)`,
 					}}
