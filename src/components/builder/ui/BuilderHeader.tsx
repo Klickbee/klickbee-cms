@@ -1,7 +1,7 @@
 "use client";
 import { LayoutDashboard, Play, Save, Send } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
 import EditableName from "@/components/builder/ui/_partials/EditableName";
@@ -38,6 +38,19 @@ export default function BuilderHeader() {
 			setIsSaving(false);
 		}
 	};
+
+	useEffect(() => {
+		const handleKeyDown = (e: KeyboardEvent) => {
+			if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+				e.preventDefault();
+				handleSave();
+			}
+		};
+		document.addEventListener("keydown", handleKeyDown);
+		return () => {
+			document.removeEventListener("keydown", handleKeyDown);
+		};
+	}, [currentPage, isSaving]);
 
 	return (
 		<header className="flex items-center justify-between px-4 py-6 border-b">
