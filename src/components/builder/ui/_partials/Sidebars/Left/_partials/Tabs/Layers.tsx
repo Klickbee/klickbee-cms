@@ -4,7 +4,7 @@ import {
 	mapContentToTree,
 	PageTitle,
 	TreeView,
-} from "@/components/builder/ui/_partials/Sidebars/Left/_partials/Tabs/_partials/Layers/index";
+} from "@/components/builder/ui/_partials/Sidebars/Left/_partials/Tabs/_partials/Layers";
 
 export default function BuilderTabLayers() {
 	const currentPage = useCurrentPageStore((state) => state.currentPage);
