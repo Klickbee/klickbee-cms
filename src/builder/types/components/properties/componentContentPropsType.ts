@@ -7,7 +7,7 @@ export interface ComponentContentProps {
 	level?: 1 | 2 | 3 | 4 | 5 | 6; // Heading level (H1–H6)
 	href?: string; // Link or action URL
 	openInNewTab?: boolean; // Open link in new tab
-	icon?: string; // Icon reference
+	icon?: React.ReactNode | string; // Icon reference
 	src?: string; // Media source (image/video)
 	alt?: string; // Alternative text for accessibility
 	autoplay?: boolean; // Autoplay for video
