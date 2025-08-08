@@ -1,46 +1,47 @@
 name: Test
 
 on:
-    workflow_call:
+  workflow_call:
 
 jobs:
-    test:
-        runs-on: ubuntu-24.04
-        services:
-            postgres:
-                image: postgres:15
-                ports:
-                    - 5432:5432
-                env:
-                    POSTGRES_USER: postgres
-                    POSTGRES_PASSWORD: root
-                    POSTGRES_DB: klickbee-cms
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        ports:
+          - 5432:5432
         env:
-            DATABASE_URL: "postgres://postgres:root@localhost:5432/klickbee-cms"
-        steps:
-            -   name: Checkout code
-                uses: actions/checkout@v4
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: root
+          POSTGRES_DB: klickbee-cms
+    env:
+      DATABASE_URL: "postgres://postgres:root@localhost:5432/klickbee-cms"
 
-            -   name: Setup Node.js
-                uses: actions/setup-node@v4
-                with:
-                    node-version: 22
-                    cache: npm
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-            -   name: Install dependencies
-                run: npm ci
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
 
-            -   name: Wait for PostgreSQL
-                run: |
-                    for i in {1..10}; do
-                      pg_isready -h localhost -p 5432 && echo "Postgres is ready!" && break
-                      echo "Waiting for Postgres..." && sleep 2
-                    done
+      - name: Install dependencies
+        run: npm ci
 
-            -   name: Deploy DB schema
-                run: |
-                    npx prisma db push --accept-data-loss
-                    npx prisma generate
+      - name: Wait for PostgreSQL
+        run: |
+          for i in {1..10}; do
+            pg_isready -h localhost -p 5432 && echo "Postgres is ready!" && break
+            echo "Waiting for Postgres..." && sleep 2
+          done
 
-            -   name: Run tests
-                run: npm run test
+      - name: Deploy DB schema
+        run: |
+          npx prisma db push --accept-data-loss
+          npx prisma generate
+
+      - name: Run tests
+        run: npm run test

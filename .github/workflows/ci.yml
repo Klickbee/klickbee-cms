@@ -5,15 +5,24 @@ on:
 
 jobs:
   format:
-    name: Check code format
-    uses: ./.github/workflows/format.yml
+    name: Format
+    uses: ./.github/workflows/fmt.yml
 
   build:
     needs: format
-    name: Build project
+    name: Build
     uses: ./.github/workflows/build.yml
 
   test:
     needs: build
-    name: Run tests
+    name: Test
     uses: ./.github/workflows/test.yml
+
+  security:
+    needs: build
+    name: Security
+    uses: ./.github/workflows/security.yml
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
