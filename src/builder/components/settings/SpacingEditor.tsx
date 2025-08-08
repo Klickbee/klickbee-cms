@@ -149,7 +149,7 @@ const SpacingEditor = React.memo(function SpacingEditor({
 											}
 										/>
 										<span className="text-xs text-muted-foreground">
-											{pad?.[side]?.widthUnit}
+											px
 										</span>
 									</div>
 								))}
@@ -177,7 +177,6 @@ const SpacingEditor = React.memo(function SpacingEditor({
 									maxWidth: 1440,
 									min: 1,
 									sizeUnit: "rem",
-									widthUnit: "px",
 								},
 								key: "",
 								left: {
@@ -185,21 +184,18 @@ const SpacingEditor = React.memo(function SpacingEditor({
 									maxWidth: 1440,
 									min: 1,
 									sizeUnit: "rem",
-									widthUnit: "px",
 								},
 								right: {
 									max: 2,
 									maxWidth: 1440,
 									min: 1,
 									sizeUnit: "rem",
-									widthUnit: "px",
 								},
 								top: {
 									max: 2,
 									maxWidth: 1440,
 									min: 1,
 									sizeUnit: "rem",
-									widthUnit: "px",
 								},
 							})
 						}
@@ -270,7 +266,6 @@ const SpacingEditor = React.memo(function SpacingEditor({
 									maxWidth: 1440,
 									min: 1,
 									sizeUnit: "rem",
-									widthUnit: "px",
 								},
 								key: "",
 								row: {
@@ -278,7 +273,6 @@ const SpacingEditor = React.memo(function SpacingEditor({
 									maxWidth: 1440,
 									min: 1,
 									sizeUnit: "rem",
-									widthUnit: "px",
 								},
 							})
 						}
