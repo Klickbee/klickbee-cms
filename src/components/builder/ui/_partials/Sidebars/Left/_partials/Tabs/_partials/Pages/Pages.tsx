@@ -13,6 +13,7 @@ import {
 import { File, Home, MoreHorizontal, Plus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
 import EditableSlug from "@/components/builder/ui/_partials/Sidebars/Left/_partials/Tabs/_partials/Pages/_partials/EditableSlug";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,7 +35,6 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useCurrentPageStore } from "@/feature/builder/store/storeCurrentPage";
 import { sortPagesWithHomeFirst } from "@/feature/page/lib/pagesClient";
 import { useCreatePage } from "@/feature/page/queries/useCreatePage";
 import { useLastPageId } from "@/feature/page/queries/useLastPageId";
@@ -183,6 +183,7 @@ export default function BuilderTabPagesPages() {
 		}
 
 		handleCurrentPageSwitch({
+			content: newPage.content,
 			id: newPage.id,
 			slug: newPage.slug,
 			title: newPage.title,
@@ -251,6 +252,7 @@ export default function BuilderTabPagesPages() {
 							} ${isSelected ? "text-background" : ""}`}
 							onClick={() =>
 								handleCurrentPageSwitch({
+									content: page.content,
 									id: page.id,
 									slug: page.slug,
 									title: page.title,

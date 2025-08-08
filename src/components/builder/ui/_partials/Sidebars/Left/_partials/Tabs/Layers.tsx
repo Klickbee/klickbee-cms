@@ -7,8 +7,7 @@ import {
 	Search,
 } from "lucide-react";
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { useCurrentPageStore } from "@/feature/builder/store/storeCurrentPage";
+import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
 import { cn } from "@/lib/utils";
 
 type Node = {

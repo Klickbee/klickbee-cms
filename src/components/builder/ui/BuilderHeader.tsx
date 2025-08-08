@@ -1,10 +1,10 @@
 "use client";
 import { LayoutDashboard, Play, Save, Send } from "lucide-react";
 import Link from "next/link";
+import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
 import EditableName from "@/components/builder/ui/_partials/EditableName";
 import { Button } from "@/components/ui/button";
 import { useAdminKeyStore } from "@/feature/admin-key/stores/storeAdminKey";
-import { useCurrentPageStore } from "@/feature/builder/store/storeCurrentPage";
 
 export default function BuilderHeader() {
 	const currentPage = useCurrentPageStore((state) => state.currentPage);

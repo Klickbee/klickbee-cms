@@ -1,7 +1,7 @@
 import { Loader2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { useCurrentPageStore } from "@/feature/builder/store/storeCurrentPage";
+import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
 import { useUpdatePageTitle } from "@/feature/page/queries/usePageActions";
 import { PageLight } from "@/feature/page/types/page";
 import { cn } from "@/lib/utils";
