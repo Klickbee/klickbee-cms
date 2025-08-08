@@ -1,0 +1,176 @@
+name: Security
+
+on:
+  workflow_call:
+
+jobs:
+  vulnerability-scan:
+    name: Vulnerability assessment
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+
+    strategy:
+      matrix:
+        scanner: [npm-audit, trivy]
+      fail-fast: true
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+
+      - name: Install Trivy
+        uses: aquasecurity/setup-trivy@v0.2.3
+        with:
+          cache: true
+          version: v0.65.0
+
+      - name: Install dependencies
+        run: npm ci --production
+
+      - name: NPM audit scan
+        if: matrix.scanner == 'npm-audit'
+        run: |
+          echo "Running NPM Audit..."
+          npm audit --audit-level=high --json > npm-audit-results.json || true
+
+          HIGH_VULNS=$(cat npm-audit-results.json | jq '.metadata.vulnerabilities.high // 0')
+          CRITICAL_VULNS=$(cat npm-audit-results.json | jq '.metadata.vulnerabilities.critical // 0')
+
+          echo "High vulnerabilities: $HIGH_VULNS"
+          echo "Critical vulnerabilities: $CRITICAL_VULNS"
+
+          if [ "$CRITICAL_VULNS" -gt 0 ]; then
+            echo "Critical vulnerabilities found: $CRITICAL_VULNS"
+            exit 1
+          elif [ "$HIGH_VULNS" -gt 5 ]; then
+            echo "Multiple high vulnerabilities found: $HIGH_VULNS"
+          fi
+
+      - name: Trivy filesystem scan
+        if: matrix.scanner == 'trivy'
+        uses: aquasecurity/trivy-action@0.32.0
+        with:
+          scan-type: "fs"
+          scan-ref: "."
+          format: "sarif"
+          output: "trivy-fs-results.sarif"
+          severity: "HIGH,CRITICAL"
+          skip-setup-trivy: true
+
+      - name: Upload Trivy results
+        if: matrix.scanner == 'trivy'
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: "trivy-fs-results.sarif"
+
+  secret-scan:
+    name: Secret detection
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Secret Scanning
+        uses: trufflesecurity/trufflehog@main
+        with:
+          extra_args: --debug --only-verified
+
+  code-analysis:
+    name: Code security analysis
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: root
+          POSTGRES_DB: klickbee-cms
+    env:
+      DATABASE_URL: "postgres://postgres:root@localhost:5432/klickbee-cms"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript,typescript
+          queries: security-and-quality,security-extended
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Wait for PostgreSQL
+        run: |
+          for i in {1..10}; do
+            pg_isready -h localhost -p 5432 && echo "Postgres is ready!" && break
+            echo "Waiting for Postgres..." && sleep 2
+          done
+
+      - name: Deploy DB schema
+        run: |
+          npx prisma db push --accept-data-loss
+          npx prisma generate
+
+      - name: Build application
+        run: npm run build
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:javascript"
+
+  dependency-review:
+    name: Dependency review
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: critical
+
+  report:
+    name: Security Report
+    runs-on: ubuntu-latest
+    needs: [vulnerability-scan, secret-scan, code-analysis]
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v5
+
+      - name: Generate Security Summary
+        run: |
+          echo "# Security Scan Summary" >> $GITHUB_STEP_SUMMARY
+          echo "## Scan Results" >> $GITHUB_STEP_SUMMARY
+          echo "- Vulnerability Scan: ${{ needs.vulnerability-scan.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Secret Scan: ${{ needs.secret-scan.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Code Analysis: ${{ needs.code-analysis.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check the Security tab for detailed results." >> $GITHUB_STEP_SUMMARY
