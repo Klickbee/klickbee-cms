@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import EmptyChildrenPlaceholder from "@/builder/components/ui/_partials/EmptyChildrenPlaceholder";
 import {
 	BuilderComponent,
 	canHaveChildren,
@@ -23,7 +24,7 @@ export const Container: React.FC<ContainerProps> = ({ component }) => {
 			}}
 		>
 			{/* Render children if they exist */}
-			{component.children && component.children.length > 0 && (
+			{component.children && component.children.length > 0 ? (
 				<div className="">
 					{component.children
 						.slice() // Create a copy of the array to avoid mutating the original
@@ -59,6 +60,8 @@ export const Container: React.FC<ContainerProps> = ({ component }) => {
 							/>
 						))}
 				</div>
+			) : (
+				<EmptyChildrenPlaceholder />
 			)}
 		</div>
 	);
