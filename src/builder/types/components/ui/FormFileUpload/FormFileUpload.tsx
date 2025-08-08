@@ -9,7 +9,7 @@ export const FormFileUploadBC: FormFileUploadBCDI = {
 	props: {
 		content: {
 			maxFileSize: 5,
-			mimeTypes: ["image/*", "application/pdf"],
+			mimeTypes: ["image/*", "application/pdf"].join(","),
 			name: "file",
 		},
 		style: {

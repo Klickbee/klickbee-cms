@@ -1,8 +1,17 @@
 "use server";
-
 import { isAuthenticatedGuard } from "@/feature/auth/lib/session";
 import { PageLight } from "@/feature/page/types/page";
+import { Prisma } from "@/generated/prisma";
 import { prisma } from "@/lib/prisma";
+
+import JsonNull = Prisma.NullTypes.JsonNull;
+
+import { InputJsonValue } from "@prisma/client/runtime/library";
+
+import JsonArray = Prisma.JsonArray;
+import JsonObject = Prisma.JsonObject;
+
+import { BaseComponent } from "@/builder/types/components/component";
 
 /**
  * Duplicates a page with a new title and slug
@@ -303,6 +312,52 @@ export const updatePageParent = async (
 		});
 	} catch (error) {
 		console.error("Error updating page parent:", error);
+		throw error; // Re-throw to be caught by the client
+	}
+};
+
+/**
+ * Updates a page's content
+ */
+export const updatePageContent = async (
+	pageId: number,
+	content: BaseComponent[],
+) => {
+	try {
+		const authError = await isAuthenticatedGuard();
+		if (authError) {
+			return authError;
+		}
+
+		// Check if the page exists
+		const page = await prisma.page.findUnique({
+			where: { id: pageId },
+		});
+
+		if (!page) {
+			throw new Error(`Page with ID ${pageId} not found`);
+		}
+		// Update the page's content
+		return prisma.page.update({
+			data: { content },
+			select: {
+				content: true,
+				createdAt: true,
+				id: true,
+				isPublished: true,
+				metaDescription: true,
+				metaKeywords: true,
+				metaTitle: true,
+				parentId: true,
+				publishedAt: true,
+				slug: true,
+				title: true,
+				updatedAt: true,
+			},
+			where: { id: pageId },
+		});
+	} catch (error) {
+		console.error("Error updating page content:", error);
 		throw error; // Re-throw to be caught by the client
 	}
 };

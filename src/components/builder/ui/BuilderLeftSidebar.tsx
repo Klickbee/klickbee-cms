@@ -14,9 +14,9 @@ export default function BuilderLeftSidebar() {
 	}, []);
 
 	return (
-		<div className="w-68  bg-background divide-y border-r border-t border-gray-200 h-full flex flex-col">
+		<>
 			<BuilderTabSwitcher />
 			<BuilderTabContent />
-		</div>
+		</>
 	);
 }

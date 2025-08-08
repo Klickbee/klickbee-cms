@@ -11,14 +11,14 @@ export const useCurrentPageStore = create<CurrentPageStore>((set) => ({
 	clearCurrentPage: () =>
 		set({
 			currentPage: {
-				content: {},
+				content: [],
 				id: -1,
 				slug: "",
 				title: "",
 			},
 		}),
 	currentPage: {
-		content: {},
+		content: [],
 		id: -1,
 		slug: "",
 		title: "",
