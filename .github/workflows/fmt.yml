@@ -4,21 +4,20 @@ on:
   workflow_call:
 
 jobs:
-  format:
-    runs-on: ubuntu-24.04
+  fmt:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
 
       - name: Check code format
         run: npm run format:check
-
