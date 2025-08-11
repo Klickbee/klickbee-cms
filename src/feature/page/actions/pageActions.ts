@@ -1,17 +1,8 @@
 "use server";
+
+import { BuilderComponent } from "@/builder/types/components/components";
 import { isAuthenticatedGuard } from "@/feature/auth/lib/session";
-import { PageLight } from "@/feature/page/types/page";
-import { Prisma } from "@/generated/prisma";
 import { prisma } from "@/lib/prisma";
-
-import JsonNull = Prisma.NullTypes.JsonNull;
-
-import { InputJsonValue } from "@prisma/client/runtime/library";
-
-import JsonArray = Prisma.JsonArray;
-import JsonObject = Prisma.JsonObject;
-
-import { BaseComponent } from "@/builder/types/components/component";
 
 /**
  * Duplicates a page with a new title and slug
@@ -321,7 +312,7 @@ export const updatePageParent = async (
  */
 export const updatePageContent = async (
 	pageId: number,
-	content: BaseComponent[],
+	content: BuilderComponent[],
 ) => {
 	try {
 		const authError = await isAuthenticatedGuard();

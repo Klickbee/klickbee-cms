@@ -17,7 +17,7 @@ import { InputJsonValue } from "@prisma/client/runtime/library";
 
 import JsonValue = Prisma.JsonValue;
 
-import { BaseComponent } from "@/builder/types/components/component";
+import { BuilderComponent } from "@/builder/types/components/components";
 
 /**
  * Hook for duplicating a page
@@ -132,7 +132,7 @@ export function useUpdatePageContent() {
 			content,
 		}: {
 			pageId: number;
-			content: BaseComponent[];
+			content: BuilderComponent[];
 		}) => updatePageContent(pageId, content),
 		onSuccess: () => {
 			// Invalidate the pages query to refetch the updated list
