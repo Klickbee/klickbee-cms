@@ -9,7 +9,6 @@ import EditableName from "@/components/builder/ui/_partials/EditableName";
 import { Button } from "@/components/ui/button";
 import { useAdminKeyStore } from "@/feature/admin-key/stores/storeAdminKey";
 import { useUpdatePageContent } from "@/feature/page/queries/usePageActions";
-import { Prisma } from "@/generated/prisma";
 
 export default function BuilderHeader() {
 	const currentPage = useCurrentPageStore((state) => state.currentPage);
