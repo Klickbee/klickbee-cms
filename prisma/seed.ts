@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { getSetting, setSetting } from "../src/feature/settings/lib/settings";
+
 import prisma from "../src/lib/prisma";
 
 async function main() {
