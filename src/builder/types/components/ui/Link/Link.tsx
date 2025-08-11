@@ -1,7 +1,7 @@
 import { LinkIcon } from "lucide-react";
-import { LinkBCDI } from "./LinkType";
+import { LinkBCI } from "./LinkType";
 
-export const LinkBC: LinkBCDI = {
+export const LinkBC: LinkBCI = {
 	groupId: "text",
 	icon: <LinkIcon size={16} />,
 	id: "link",
@@ -17,4 +17,4 @@ export const LinkBC: LinkBCDI = {
 		},
 	},
 	type: "link",
-} satisfies LinkBCDI;
+} satisfies LinkBCI;

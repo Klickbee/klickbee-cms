@@ -1,7 +1,7 @@
 import { CheckSquare } from "lucide-react";
-import { CheckboxBCDI } from "./CheckboxType";
+import { CheckboxBCI } from "./CheckboxType";
 
-export const CheckboxBC: CheckboxBCDI = {
+export const CheckboxBC: CheckboxBCI = {
 	groupId: "form",
 	icon: <CheckSquare size={16} />,
 	id: "checkbox",
@@ -18,4 +18,4 @@ export const CheckboxBC: CheckboxBCDI = {
 		},
 	},
 	type: "checkbox",
-} satisfies CheckboxBCDI;
+} satisfies CheckboxBCI;

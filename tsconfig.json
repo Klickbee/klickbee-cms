@@ -32,5 +32,11 @@
 		"**/*.spec.tsx",
 		"prisma/roles-seed.ts"
 	],
-	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"]
+	"include": [
+		"next-env.d.ts",
+		"**/*.ts",
+		"**/*.tsx",
+		".next/types/**/*.ts",
+		"src/feature/page/types/page.ts"
+	]
 }

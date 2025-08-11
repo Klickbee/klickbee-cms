@@ -1,8 +1,4 @@
-import {
-	BuilderComponent,
-	BuilderComponentDisplay,
-} from "@/builder/types/components/components";
-import { ComponentContentProps } from "@/builder/types/components/properties/componentContentPropsType";
+import { BuilderComponent } from "@/builder/types/components/components";
 import { ComponentStyleProps } from "@/builder/types/components/properties/componentStylePropsType";
 
 export interface DividerBcStyleProps
@@ -19,7 +15,3 @@ export interface DividerBCI extends BuilderComponent {
 		content: DividerBcContentProps;
 	};
 }
-
-export interface DividerBCDI
-	extends DividerBCI,
-		Pick<BuilderComponentDisplay, "icon"> {}

@@ -1,4 +1,4 @@
-import { InputJsonValue, JsonValue } from "@prisma/client/runtime/library";
+import { InputJsonValue } from "@prisma/client/runtime/library";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Prisma } from "@/generated/prisma";
 import {
@@ -6,7 +6,6 @@ import {
 	deleteTemplate,
 	updateTemplate,
 } from "../actions/collectionActions";
-import { CollectionTemplate } from "../types/collection";
 
 import JsonNull = Prisma.NullTypes.JsonNull;
 

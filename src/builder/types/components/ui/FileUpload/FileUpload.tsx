@@ -1,7 +1,7 @@
 import { FileUp } from "lucide-react";
-import { FileUploadBCDI } from "./FileUploadType";
+import { FileUploadBCI } from "./FileUploadType";
 
-export const FileUploadBC: FileUploadBCDI = {
+export const FileUploadBC: FileUploadBCI = {
 	groupId: "form",
 	icon: <FileUp size={16} />,
 	id: "fileupload",
@@ -18,4 +18,4 @@ export const FileUploadBC: FileUploadBCDI = {
 		},
 	},
 	type: "fileupload",
-} satisfies FileUploadBCDI;
+} satisfies FileUploadBCI;

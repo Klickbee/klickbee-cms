@@ -1,7 +1,7 @@
 import { MoveVertical } from "lucide-react";
-import { SpacerBCDI } from "./SpacerType";
+import { SpacerBCI } from "./SpacerType";
 
-export const SpacerBC: SpacerBCDI = {
+export const SpacerBC: SpacerBCI = {
 	groupId: "text",
 	icon: <MoveVertical size={16} />,
 	id: "spacer",
@@ -13,4 +13,4 @@ export const SpacerBC: SpacerBCDI = {
 		},
 	},
 	type: "spacer",
-} satisfies SpacerBCDI;
+} satisfies SpacerBCI;

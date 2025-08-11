@@ -1,7 +1,7 @@
 import { LayoutGrid } from "lucide-react";
-import { GridBCDI } from "./GridType";
+import { GridBCI } from "./GridType";
 
-export const GridBC: GridBCDI = {
+export const GridBC: GridBCI = {
 	groupId: "layout",
 	icon: <LayoutGrid size={16} />,
 	id: "grid",
@@ -17,4 +17,4 @@ export const GridBC: GridBCDI = {
 		},
 	},
 	type: "grid",
-} satisfies GridBCDI;
+} satisfies GridBCI;

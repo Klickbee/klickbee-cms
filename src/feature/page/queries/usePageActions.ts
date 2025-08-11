@@ -3,11 +3,16 @@ import {
 	deletePage,
 	duplicatePage,
 	setAsHomePage,
+	updatePageContent,
 	updatePageParent,
 	updatePageSlug,
 	updatePageTitle,
 } from "@/feature/page/actions/pageActions";
-import { PageLight } from "@/feature/page/types/page";
+import { Prisma } from "@/generated/prisma";
+
+import JsonNull = Prisma.NullTypes.JsonNull;
+
+import { BuilderComponent } from "@/builder/types/components/components";
 
 /**
  * Hook for duplicating a page
@@ -103,6 +108,27 @@ export function useUpdatePageParent() {
 			pageId: number;
 			parentId: number | null;
 		}) => updatePageParent(pageId, parentId),
+		onSuccess: () => {
+			// Invalidate the pages query to refetch the updated list
+			queryClient.invalidateQueries({ queryKey: ["pages"] });
+		},
+	});
+}
+
+/**
+ * Hook for updating a page's content
+ */
+export function useUpdatePageContent() {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: ({
+			pageId,
+			content,
+		}: {
+			pageId: number;
+			content: BuilderComponent[];
+		}) => updatePageContent(pageId, content),
 		onSuccess: () => {
 			// Invalidate the pages query to refetch the updated list
 			queryClient.invalidateQueries({ queryKey: ["pages"] });

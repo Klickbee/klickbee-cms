@@ -1,7 +1,7 @@
 import { FileText } from "lucide-react";
-import { RichTextBCDI } from "./RichTextType";
+import { RichTextBCI } from "./RichTextType";
 
-export const RichTextBC: RichTextBCDI = {
+export const RichTextBC: RichTextBCI = {
 	groupId: "text",
 	icon: <FileText size={16} />,
 	id: "richtext",
@@ -20,4 +20,4 @@ export const RichTextBC: RichTextBCDI = {
 		},
 	},
 	type: "richtext",
-} satisfies RichTextBCDI;
+} satisfies RichTextBCI;

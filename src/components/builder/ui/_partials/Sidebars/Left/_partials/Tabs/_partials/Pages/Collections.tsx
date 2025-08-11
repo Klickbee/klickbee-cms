@@ -45,7 +45,6 @@ import {
 	useCreateTemplate,
 	useDeleteTemplate,
 } from "@/feature/collection/queries/useTemplates";
-import { slugify } from "@/lib/utils";
 
 export default function BuilderTabPagesCollections() {
 	const [openMap, setOpenMap] = useState<Record<string, boolean>>({});

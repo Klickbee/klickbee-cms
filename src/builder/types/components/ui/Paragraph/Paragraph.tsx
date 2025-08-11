@@ -1,7 +1,7 @@
 import { Type } from "lucide-react";
-import { ParagraphBCDI } from "./ParagraphType";
+import { ParagraphBCI } from "./ParagraphType";
 
-export const ParagraphBC: ParagraphBCDI = {
+export const ParagraphBC: ParagraphBCI = {
 	groupId: "text",
 	icon: <Type size={16} />,
 	id: "paragraph",
@@ -16,4 +16,4 @@ export const ParagraphBC: ParagraphBCDI = {
 		},
 	},
 	type: "paragraph",
-} satisfies ParagraphBCDI;
+} satisfies ParagraphBCI;

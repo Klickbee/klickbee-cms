@@ -1,7 +1,7 @@
 import { Text as TextIcon } from "lucide-react";
-import { TextBCDI } from "./TextType";
+import { TextBCI } from "./TextType";
 
-export const TextBC: TextBCDI = {
+export const TextBC: TextBCI = {
 	groupId: "text",
 	icon: <TextIcon size={16} />,
 	id: "text",
@@ -19,4 +19,4 @@ export const TextBC: TextBCDI = {
 		},
 	},
 	type: "text",
-} satisfies TextBCDI;
+} satisfies TextBCI;

@@ -1,8 +1,26 @@
 import bcrypt from "bcrypt";
+
 import prisma from "../src/lib/prisma";
 
 async function main() {
 	// Create admin user (only in development)
+	const builderBreakpoints = await prisma.settings.findUnique({
+		where: { key: "builder_breakpoints" },
+	});
+	if (!builderBreakpoints) {
+		const breakpoints = [
+			{ icon: "Monitor", name: "Desktop", width: 1440 },
+			{ icon: "Tablet", name: "Tablet", width: 768 },
+			{ icon: "Mobile", name: "Mobile", width: 390 },
+		];
+		await prisma.settings.create({
+			data: {
+				key: "builder_breakpoints",
+				value: JSON.stringify(breakpoints),
+			},
+		});
+		console.warn("✅ Breakpoints par défaut créés");
+	}
 	if (process.env.NODE_ENV === "development") {
 		const adminUser = await prisma.user.findFirst({
 			where: { role: "admin" },

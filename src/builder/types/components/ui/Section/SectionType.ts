@@ -1,8 +1,4 @@
-import {
-	BuilderComponent,
-	BuilderComponentDisplay,
-} from "@/builder/types/components/components";
-import { ComponentContentProps } from "@/builder/types/components/properties/componentContentPropsType";
+import { BuilderComponent } from "@/builder/types/components/components";
 import { ComponentStyleProps } from "@/builder/types/components/properties/componentStylePropsType";
 
 export interface SectionBcStyleProps
@@ -23,7 +19,3 @@ export interface SectionBCI extends BuilderComponent {
 		content: SectionBcContentProps;
 	};
 }
-
-export interface SectionBCDI
-	extends SectionBCI,
-		Pick<BuilderComponentDisplay, "icon"> {}

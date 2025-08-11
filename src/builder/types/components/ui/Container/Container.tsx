@@ -1,7 +1,7 @@
 import { Box } from "lucide-react";
-import { ContainerBCDI } from "@/builder/types/components/ui/Container/ContainerType";
+import { ContainerBCI } from "@/builder/types/components/ui/Container/ContainerType";
 
-export const ContainerBC: ContainerBCDI = {
+export const ContainerBC: ContainerBCI = {
 	groupId: "layout",
 	icon: <Box size={16} />,
 	id: "container",
@@ -17,4 +17,4 @@ export const ContainerBC: ContainerBCDI = {
 		},
 	},
 	type: "container",
-} satisfies ContainerBCDI;
+} satisfies ContainerBCI;

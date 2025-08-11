@@ -1,7 +1,7 @@
 "use server";
 
+import { BuilderComponent } from "@/builder/types/components/components";
 import { isAuthenticatedGuard } from "@/feature/auth/lib/session";
-import { PageLight } from "@/feature/page/types/page";
 import { prisma } from "@/lib/prisma";
 
 /**
@@ -303,6 +303,52 @@ export const updatePageParent = async (
 		});
 	} catch (error) {
 		console.error("Error updating page parent:", error);
+		throw error; // Re-throw to be caught by the client
+	}
+};
+
+/**
+ * Updates a page's content
+ */
+export const updatePageContent = async (
+	pageId: number,
+	content: BuilderComponent[],
+) => {
+	try {
+		const authError = await isAuthenticatedGuard();
+		if (authError) {
+			return authError;
+		}
+
+		// Check if the page exists
+		const page = await prisma.page.findUnique({
+			where: { id: pageId },
+		});
+
+		if (!page) {
+			throw new Error(`Page with ID ${pageId} not found`);
+		}
+		// Update the page's content
+		return prisma.page.update({
+			data: { content },
+			select: {
+				content: true,
+				createdAt: true,
+				id: true,
+				isPublished: true,
+				metaDescription: true,
+				metaKeywords: true,
+				metaTitle: true,
+				parentId: true,
+				publishedAt: true,
+				slug: true,
+				title: true,
+				updatedAt: true,
+			},
+			where: { id: pageId },
+		});
+	} catch (error) {
+		console.error("Error updating page content:", error);
 		throw error; // Re-throw to be caught by the client
 	}
 };

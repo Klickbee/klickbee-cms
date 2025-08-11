@@ -1,7 +1,7 @@
 import { Box } from "lucide-react";
-import { FormBlockBCDI } from "./FormBlockType";
+import { FormBlockBCI } from "./FormBlockType";
 
-export const FormBlockBC: FormBlockBCDI = {
+export const FormBlockBC: FormBlockBCI = {
 	groupId: "form",
 	icon: <Box size={16} />,
 	id: "formblock",
@@ -17,4 +17,4 @@ export const FormBlockBC: FormBlockBCDI = {
 		},
 	},
 	type: "formblock",
-} satisfies FormBlockBCDI;
+} satisfies FormBlockBCI;

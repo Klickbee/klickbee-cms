@@ -6,6 +6,10 @@ generator client {
   output   = "../src/generated/prisma"
 }
 
+generator json {
+  provider = "prisma-json-types-generator"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -132,6 +136,7 @@ model Page {
   id        Int      @id @default(autoincrement())
   title     String
   slug      String   @unique
+  /// [PageContentMetaType]
   content   Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

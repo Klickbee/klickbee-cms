@@ -1,7 +1,7 @@
 import { Plane, RectangleHorizontal as Rectangle } from "lucide-react";
-import { ButtonBCDI } from "./ButtonType";
+import { ButtonBCI } from "./ButtonType";
 
-export const ButtonBC: ButtonBCDI = {
+export const ButtonBC: ButtonBCI = {
 	groupId: "text",
 	icon: <Rectangle size={16} />,
 	id: "button",
@@ -64,4 +64,4 @@ export const ButtonBC: ButtonBCDI = {
 		},
 	},
 	type: "button",
-} satisfies ButtonBCDI;
+} satisfies ButtonBCI;

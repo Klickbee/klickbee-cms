@@ -1,7 +1,7 @@
 import { FileText } from "lucide-react";
-import { FormRichTextBCDI } from "./FormRichTextType";
+import { FormRichTextBCI } from "./FormRichTextType";
 
-export const FormRichTextBC: FormRichTextBCDI = {
+export const FormRichTextBC: FormRichTextBCI = {
 	groupId: "form",
 	icon: <FileText size={16} />,
 	id: "formrichtext",
@@ -19,4 +19,4 @@ export const FormRichTextBC: FormRichTextBCDI = {
 		},
 	},
 	type: "richtext",
-} satisfies FormRichTextBCDI;
+} satisfies FormRichTextBCI;

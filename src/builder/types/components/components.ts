@@ -43,15 +43,11 @@ export interface BuilderComponent {
 		style?: ComponentStyleProps;
 		content?: ComponentContentProps;
 	};
-}
-
-export interface BuilderComponentDisplay extends BuilderComponent {
-	icon: React.ReactNode;
+	icon?: React.ReactNode; // Optional icon for display
 }
 
 export interface ParentBuilderComponent extends BuilderComponent {
 	children: BuilderComponent[];
-	icon?: React.ReactNode;
 }
 
 // Define which components can have children

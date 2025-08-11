@@ -1,4 +1,4 @@
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { pageByIdOptions } from "@/feature/page/options/pageByIdOptions";
 
 export function usePageById(pageId: number) {

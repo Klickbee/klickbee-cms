@@ -1,7 +1,7 @@
 import { FormInput } from "lucide-react";
-import { TextAreaBCDI } from "./TextAreaType";
+import { TextAreaBCI } from "./TextAreaType";
 
-export const TextAreaBC: TextAreaBCDI = {
+export const TextAreaBC: TextAreaBCI = {
 	groupId: "form",
 	icon: <FormInput size={16} />,
 	id: "textarea",
@@ -18,4 +18,4 @@ export const TextAreaBC: TextAreaBCDI = {
 		},
 	},
 	type: "text",
-} satisfies TextAreaBCDI;
+} satisfies TextAreaBCI;

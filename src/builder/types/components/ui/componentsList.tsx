@@ -1,4 +1,4 @@
-import { BuilderComponentDisplay } from "@/builder/types/components/components";
+import { BuilderComponent } from "@/builder/types/components/components";
 
 // Import all component definitions
 import { ButtonBC } from "./Button/Button";
@@ -29,7 +29,7 @@ import { TextAreaBC } from "./TextArea/TextArea";
 import { TextFieldBC } from "./TextField/TextField";
 import { VideoBC } from "./Video/Video";
 
-export const componentsList: BuilderComponentDisplay[] = [
+export const componentsList: BuilderComponent[] = [
 	// Layout components
 	SectionBC,
 	ContainerBC,

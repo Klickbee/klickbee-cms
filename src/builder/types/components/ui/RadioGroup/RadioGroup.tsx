@@ -1,7 +1,7 @@
 import { CircleCheck } from "lucide-react";
-import { RadioGroupBCDI } from "./RadioGroupType";
+import { RadioGroupBCI } from "./RadioGroupType";
 
-export const RadioGroupBC: RadioGroupBCDI = {
+export const RadioGroupBC: RadioGroupBCI = {
 	groupId: "form",
 	icon: <CircleCheck size={16} />,
 	id: "radiogroup",
@@ -18,4 +18,4 @@ export const RadioGroupBC: RadioGroupBCDI = {
 		},
 	},
 	type: "radiogroup",
-} satisfies RadioGroupBCDI;
+} satisfies RadioGroupBCI;
