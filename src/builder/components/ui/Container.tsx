@@ -3,7 +3,7 @@ import EmptyChildrenPlaceholder from "@/builder/components/ui/_partials/EmptyChi
 import {
 	BuilderComponent,
 	canHaveChildren,
-} from "@/builder/types/components/component";
+} from "@/builder/types/components/components";
 import { DragDropContext } from "../../../components/builder/_partials/DragAndDropContext";
 import { ComponentRenderer } from "../../lib/renderers/ComponentRenderer";
 

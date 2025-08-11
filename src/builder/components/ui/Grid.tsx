@@ -1,11 +1,11 @@
 import React, { useContext } from "react";
 import EmptyChildrenPlaceholder from "@/builder/components/ui/_partials/EmptyChildrenPlaceholder";
-import { DragDropContext } from "../../../components/builder/_partials/DragAndDropContext";
+import { DragDropContext } from "@/components/builder/_partials/DragAndDropContext";
 import { ComponentRenderer } from "../../lib/renderers/ComponentRenderer";
 import {
 	BuilderComponent,
 	canHaveChildren,
-} from "../../types/components/component";
+} from "../../types/components/components";
 
 interface GridProps {
 	component: BuilderComponent;

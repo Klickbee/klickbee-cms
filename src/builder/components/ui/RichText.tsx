@@ -1,5 +1,5 @@
 import React from "react";
-import { BuilderComponent } from "../../types/components/component";
+import { BuilderComponent } from "../../types/components/components";
 
 interface RichTextProps {
 	component: BuilderComponent;

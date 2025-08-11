@@ -1,6 +1,6 @@
 import React from "react";
 import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent";
-import { BuilderComponent } from "../../types/components/component";
+import { BuilderComponent } from "../../types/components/components";
 
 interface HeadingProps {
 	component: BuilderComponent;

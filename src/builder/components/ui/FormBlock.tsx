@@ -2,7 +2,7 @@ import React from "react";
 import {
 	BuilderComponent,
 	canHaveChildren,
-} from "../../types/components/component";
+} from "../../types/components/components";
 
 interface FormBlockProps {
 	component: BuilderComponent;
