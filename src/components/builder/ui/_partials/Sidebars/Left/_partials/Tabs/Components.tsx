@@ -1,6 +1,5 @@
 "use client";
 
-import { JsonValue } from "@prisma/client/runtime/library";
 import {
 	Box,
 	ChevronDown,
