@@ -15,7 +15,6 @@ import JsonNull = Prisma.NullTypes.JsonNull;
 
 import { InputJsonValue } from "@prisma/client/runtime/library";
 
-
 import { BuilderComponent } from "@/builder/types/components/components";
 
 /**
