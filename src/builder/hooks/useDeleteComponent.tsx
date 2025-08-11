@@ -1,4 +1,3 @@
-import { JsonValue } from "@prisma/client/runtime/library";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
@@ -28,7 +27,6 @@ export function useDeleteComponent(options: UseDeleteComponentOptions = {}) {
 		if (!Array.isArray(currentPage.content)) {
 			return;
 		}
-
 		const currentContent: BuilderComponent[] = [...currentPage.content];
 
 		// Function to find and delete a component within the hierarchy
@@ -36,28 +34,36 @@ export function useDeleteComponent(options: UseDeleteComponentOptions = {}) {
 			components: BuilderComponent[],
 			parent: BuilderComponent | null,
 		): boolean => {
-			// If we're looking at the right parent (or root level)
-			if (
-				(parent === null && parentId === null) ||
-				(parent && parent.id === parentId)
-			) {
-				// Find the component to delete
+			// If a parentId is provided, limit deletion to that parent's direct children (or root if null)
+			if (parentId !== null) {
+				if (
+					(parent === null && parentId === null) ||
+					(parent && parent.id === parentId)
+				) {
+					const componentIndex = components.findIndex(
+						(c) => c.id === componentId,
+					);
+					if (componentIndex !== -1) {
+						components.splice(componentIndex, 1);
+						components.forEach((component, index) => {
+							component.order = index + 1;
+						});
+						return true;
+					}
+					return false;
+				}
+			} else {
+				// No parentId provided: delete by componentId wherever it is in the tree
 				const componentIndex = components.findIndex(
 					(c) => c.id === componentId,
 				);
-
 				if (componentIndex !== -1) {
-					// Remove the component
 					components.splice(componentIndex, 1);
-
-					// Update order values for all components in this parent
 					components.forEach((component, index) => {
 						component.order = index + 1;
 					});
-
 					return true;
 				}
-				return false;
 			}
 
 			// Recursively check children

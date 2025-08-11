@@ -84,15 +84,14 @@ export function TreeNode({ node, level = 0, parentId = null }: TreeNodeProps) {
 			}
 		};
 
-	// @ts-ignore
 	return (
 		<ContextMenu>
 			<ContextMenuTrigger>
-				<div className="ml-2 py-0.5" onDragOver={onDragOver}>
+				<div className={`ml-2`} onDragOver={onDragOver}>
 					{/* Drop zone: before */}
 					<div
 						className={cn(
-							"h-1 rounded",
+							"h-1 py-0.5 rounded mx-[-15px] overflow-hidden",
 							overBefore ? "bg-foreground/50" : "bg-transparent",
 						)}
 						onDragEnter={() => setOverBefore(true)}
@@ -150,7 +149,7 @@ export function TreeNode({ node, level = 0, parentId = null }: TreeNodeProps) {
 					</div>
 					<div
 						className={cn(
-							"h-1 rounded ml-4",
+							"h-1 py-0.5 rounded mx-[-15px] overflow-hidden",
 							overAfter ? "bg-foreground/50" : "bg-transparent",
 						)}
 						onDragEnter={() => setOverAfter(true)}
