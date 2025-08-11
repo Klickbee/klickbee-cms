@@ -2,9 +2,7 @@
 
 import {
 	ChevronRight,
-	ChevronsUpDown,
 	Files,
-	FileText,
 	Home,
 	Images,
 	Layers,

@@ -1,5 +1,3 @@
-import React from "react";
-
 export function EmptyState() {
 	return (
 		<div className="text-muted-foreground text-sm py-2">

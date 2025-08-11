@@ -8,12 +8,9 @@ import {
 	updatePageSlug,
 	updatePageTitle,
 } from "@/feature/page/actions/pageActions";
-import { PageLight } from "@/feature/page/types/page";
 import { Prisma } from "@/generated/prisma";
 
 import JsonNull = Prisma.NullTypes.JsonNull;
-
-import { InputJsonValue } from "@prisma/client/runtime/library";
 
 import { BuilderComponent } from "@/builder/types/components/components";
 

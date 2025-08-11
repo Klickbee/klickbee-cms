@@ -1,12 +1,6 @@
 "use client";
 
-import {
-	Box,
-	ChevronDown,
-	ChevronRight,
-	ChevronUp,
-	ComponentIcon,
-} from "lucide-react";
+import { Box, ChevronDown, ChevronUp, ComponentIcon } from "lucide-react";
 import { useState } from "react";
 import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";

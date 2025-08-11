@@ -1,6 +1,6 @@
 "use server";
 
-import { InputJsonValue, JsonValue } from "@prisma/client/runtime/library";
+import { InputJsonValue } from "@prisma/client/runtime/library";
 import { isAuthenticatedGuard } from "@/feature/auth/lib/session";
 import { Prisma } from "@/generated/prisma";
 import { prisma } from "@/lib/prisma";

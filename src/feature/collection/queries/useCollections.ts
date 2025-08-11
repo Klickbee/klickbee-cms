@@ -7,7 +7,7 @@ import {
 	getCollections,
 	updateCollection,
 } from "../actions/collectionActions";
-import { Collection, CollectionWithTemplates } from "../types/collection";
+import { CollectionWithTemplates } from "../types/collection";
 
 // Query hook to fetch all collections
 export function useCollections() {

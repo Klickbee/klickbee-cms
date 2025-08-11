@@ -1,13 +1,7 @@
 "use client";
 
 import { format } from "date-fns";
-import {
-	ChevronLast,
-	ChevronLeft,
-	ChevronRight,
-	Loader2,
-	Plus,
-} from "lucide-react";
+import { ChevronLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { Usable, useEffect, useState } from "react";
@@ -18,7 +12,7 @@ import DefaultHeader from "@/components/admin/manage/DefaultHeader";
 import EmptyStateComponent from "@/components/admin/manage/EmptyState";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
 	Dialog,
@@ -45,10 +39,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import {
-	getCollectionBySlug,
-	getCollections,
-} from "@/feature/collection/actions/collectionActions";
+import { getCollectionBySlug } from "@/feature/collection/actions/collectionActions";
 import {
 	deleteCollectionItemAction,
 	getCollectionItemsBySlug,
