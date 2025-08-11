@@ -1,7 +1,7 @@
 import { Image } from "lucide-react";
-import { ImageBCDI } from "./ImageType";
+import { ImageBCI } from "./ImageType";
 
-export const ImageBC: ImageBCDI = {
+export const ImageBC: ImageBCI = {
 	groupId: "media",
 	icon: <Image size={16} />,
 	id: "image",
@@ -19,4 +19,4 @@ export const ImageBC: ImageBCDI = {
 		},
 	},
 	type: "image",
-} satisfies ImageBCDI;
+} satisfies ImageBCI;

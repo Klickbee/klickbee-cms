@@ -1,7 +1,7 @@
 import { Code as Embed } from "lucide-react";
-import { EmbedBCDI } from "./EmbedType";
+import { EmbedBCI } from "./EmbedType";
 
-export const EmbedBC: EmbedBCDI = {
+export const EmbedBC: EmbedBCI = {
 	groupId: "media",
 	icon: <Embed size={16} />,
 	id: "embed",
@@ -14,4 +14,4 @@ export const EmbedBC: EmbedBCDI = {
 		},
 	},
 	type: "embed",
-} satisfies EmbedBCDI;
+} satisfies EmbedBCI;

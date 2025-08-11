@@ -1,7 +1,7 @@
 import { FormInputIcon as InputIcon } from "lucide-react";
-import { InputBCDI } from "./InputType";
+import { InputBCI } from "./InputType";
 
-export const InputBC: InputBCDI = {
+export const InputBC: InputBCI = {
 	groupId: "form",
 	icon: <InputIcon size={16} />,
 	id: "input",
@@ -21,4 +21,4 @@ export const InputBC: InputBCDI = {
 		},
 	},
 	type: "input",
-} satisfies InputBCDI;
+} satisfies InputBCI;

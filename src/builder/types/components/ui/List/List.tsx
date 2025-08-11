@@ -1,7 +1,7 @@
 import { ListIcon } from "lucide-react";
-import { ListBCDI } from "./ListType";
+import { ListBCI } from "./ListType";
 
-export const ListBC: ListBCDI = {
+export const ListBC: ListBCI = {
 	groupId: "text",
 	icon: <ListIcon size={16} />,
 	id: "list",
@@ -21,4 +21,4 @@ export const ListBC: ListBCDI = {
 		},
 	},
 	type: "list",
-} satisfies ListBCDI;
+} satisfies ListBCI;

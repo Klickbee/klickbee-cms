@@ -1,7 +1,7 @@
 import { Send } from "lucide-react";
-import { SubmitButtonBCDI } from "./SubmitButtonType";
+import { SubmitButtonBCI } from "./SubmitButtonType";
 
-export const SubmitButtonBC: SubmitButtonBCDI = {
+export const SubmitButtonBC: SubmitButtonBCI = {
 	groupId: "form",
 	icon: <Send size={16} />,
 	id: "submitbutton",
@@ -18,4 +18,4 @@ export const SubmitButtonBC: SubmitButtonBCDI = {
 		},
 	},
 	type: "submitbutton",
-} satisfies SubmitButtonBCDI;
+} satisfies SubmitButtonBCI;

@@ -1,7 +1,7 @@
 import { GalleryVertical } from "lucide-react";
-import { SectionBCDI } from "./SectionType";
+import { SectionBCI } from "./SectionType";
 
-export const SectionBC: SectionBCDI = {
+export const SectionBC: SectionBCI = {
 	groupId: "layout",
 	icon: <GalleryVertical size={16} />,
 	id: "section",
@@ -17,4 +17,4 @@ export const SectionBC: SectionBCDI = {
 		},
 	},
 	type: "section",
-} satisfies SectionBCDI;
+} satisfies SectionBCI;

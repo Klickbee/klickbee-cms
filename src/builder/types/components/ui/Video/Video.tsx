@@ -1,7 +1,7 @@
 import { Video } from "lucide-react";
-import { VideoBCDI } from "./VideoType";
+import { VideoBCI } from "./VideoType";
 
-export const VideoBC: VideoBCDI = {
+export const VideoBC: VideoBCI = {
 	groupId: "media",
 	icon: <Video size={16} />,
 	id: "video",
@@ -16,4 +16,4 @@ export const VideoBC: VideoBCDI = {
 		},
 	},
 	type: "video",
-} satisfies VideoBCDI;
+} satisfies VideoBCI;

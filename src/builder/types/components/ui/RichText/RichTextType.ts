@@ -1,7 +1,4 @@
-import {
-	BuilderComponent,
-	BuilderComponentDisplay,
-} from "@/builder/types/components/components";
+import { BuilderComponent } from "@/builder/types/components/components";
 import { ComponentContentProps } from "@/builder/types/components/properties/componentContentPropsType";
 import { ComponentStyleProps } from "@/builder/types/components/properties/componentStylePropsType";
 
@@ -24,7 +21,3 @@ export interface RichTextBCI extends BuilderComponent {
 		content: RichTextBcContentProps;
 	};
 }
-
-export interface RichTextBCDI
-	extends RichTextBCI,
-		Pick<BuilderComponentDisplay, "icon"> {}

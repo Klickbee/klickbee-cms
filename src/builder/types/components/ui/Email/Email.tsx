@@ -1,7 +1,7 @@
 import { Mail } from "lucide-react";
-import { EmailBCDI } from "./EmailType";
+import { EmailBCI } from "./EmailType";
 
-export const EmailBC: EmailBCDI = {
+export const EmailBC: EmailBCI = {
 	groupId: "form",
 	icon: <Mail size={16} />,
 	id: "email",
@@ -21,4 +21,4 @@ export const EmailBC: EmailBCDI = {
 		},
 	},
 	type: "email",
-} satisfies EmailBCDI;
+} satisfies EmailBCI;

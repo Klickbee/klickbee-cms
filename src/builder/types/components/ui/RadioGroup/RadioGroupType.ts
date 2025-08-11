@@ -1,7 +1,4 @@
-import {
-	BuilderComponent,
-	BuilderComponentDisplay,
-} from "@/builder/types/components/components";
+import { BuilderComponent } from "@/builder/types/components/components";
 import { ComponentContentProps } from "@/builder/types/components/properties/componentContentPropsType";
 import { ComponentStyleProps } from "@/builder/types/components/properties/componentStylePropsType";
 
@@ -25,7 +22,3 @@ export interface RadioGroupBCI extends BuilderComponent {
 		content: RadioGroupBcContentProps;
 	};
 }
-
-export interface RadioGroupBCDI
-	extends RadioGroupBCI,
-		Pick<BuilderComponentDisplay, "icon"> {}

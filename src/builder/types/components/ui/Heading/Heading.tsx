@@ -1,7 +1,7 @@
 import { Heading } from "lucide-react";
-import { HeadingBCDI } from "./HeadingType";
+import { HeadingBCI } from "./HeadingType";
 
-export const HeadingBC: HeadingBCDI = {
+export const HeadingBC: HeadingBCI = {
 	groupId: "text",
 	icon: <Heading size={16} />,
 	id: "heading",
@@ -15,4 +15,4 @@ export const HeadingBC: HeadingBCDI = {
 		},
 	},
 	type: "heading",
-} satisfies HeadingBCDI;
+} satisfies HeadingBCI;

@@ -1,7 +1,7 @@
 import { Box } from "lucide-react";
-import { DropdownBCDI } from "./DropdownType";
+import { DropdownBCI } from "./DropdownType";
 
-export const DropdownBC: DropdownBCDI = {
+export const DropdownBC: DropdownBCI = {
 	groupId: "form",
 	icon: <Box size={16} />,
 	id: "dropdown",
@@ -18,4 +18,4 @@ export const DropdownBC: DropdownBCDI = {
 		},
 	},
 	type: "dropdown",
-} satisfies DropdownBCDI;
+} satisfies DropdownBCI;
