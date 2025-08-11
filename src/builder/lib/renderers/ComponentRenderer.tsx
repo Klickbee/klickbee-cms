@@ -5,7 +5,6 @@ import { Dropdown } from "@/builder/components/ui/Dropdown";
 import { Embed } from "@/builder/components/ui/Embed";
 import { FileUpload } from "@/builder/components/ui/FileUpload";
 import { FormBlock } from "@/builder/components/ui/FormBlock";
-import { FormFileUpload } from "@/builder/components/ui/FormFileUpload";
 import { Grid } from "@/builder/components/ui/Grid";
 import { Heading } from "@/builder/components/ui/Heading";
 import { Image } from "@/builder/components/ui/Image";
