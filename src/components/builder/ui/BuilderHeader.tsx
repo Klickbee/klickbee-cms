@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
-import { BaseComponent } from "@/builder/types/components/component";
+import { BuilderComponent } from "@/builder/types/components/components";
 import EditableName from "@/components/builder/ui/_partials/EditableName";
 import { Button } from "@/components/ui/button";
 import { useAdminKeyStore } from "@/feature/admin-key/stores/storeAdminKey";
@@ -26,7 +26,7 @@ export default function BuilderHeader() {
 		setIsSaving(true);
 		try {
 			await updatePageContent.mutateAsync({
-				content: currentPage.content as BaseComponent[],
+				content: currentPage.content as BuilderComponent[],
 				pageId: currentPage.id,
 			});
 			toast.success("Page content saved successfully");

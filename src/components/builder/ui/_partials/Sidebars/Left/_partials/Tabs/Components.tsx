@@ -2,26 +2,23 @@
 
 import { JsonValue } from "@prisma/client/runtime/library";
 import {
+	Box,
 	ChevronDown,
 	ChevronRight,
 	ChevronUp,
 	ComponentIcon,
 } from "lucide-react";
 import { useState } from "react";
-import { componentsList } from "@/builder/definitions/componentsList";
 import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
-import {
-	BaseComponent,
-	BuilderComponent,
-} from "@/builder/types/components/component";
-import { componentMap } from "@/builder/types/components/componentMap";
+import { BuilderComponent } from "@/builder/types/components/components";
+import { componentsList } from "@/builder/types/components/ui/componentsList";
 import BuilderSearchComponent from "@/components/builder/ui/_partials/Sidebars/Left/Search";
 
 type ComponentGroup = {
 	id: string;
 	label: string;
-	items: BaseComponent[];
+	items: BuilderComponent[];
 };
 
 const groupLabels: Record<string, string> = {
@@ -53,7 +50,7 @@ export default function BuilderTabComponents() {
 		setOpenGroups((prev) => ({ ...prev, [id]: !prev[id] }));
 	};
 
-	function handleAddComponent(e: unknown, item: BaseComponent) {
+	function handleAddComponent(e: unknown, item: BuilderComponent) {
 		try {
 			const componentData = item;
 			// Get the current content as an array or initialize a new one
@@ -61,23 +58,17 @@ export default function BuilderTabComponents() {
 				? [...currentPage.content]
 				: [];
 
-			// Create the new component
-			const componentType =
-				componentData.type as keyof typeof componentMap;
-			const componentDef = componentMap[componentType];
-
-			const newComponent = {
-				// Add content and style props from component definition
-				contentProps: componentDef
-					? { ...componentDef.contentProps }
-					: {},
-				// Add breakpoint information
+			// Create the new component using the selected item from componentsList
+			const newComponent: BuilderComponent = {
 				groupId: componentData.groupId,
-				id: `${componentData.type}-${Date.now()}`, // Generate a unique ID
+				icon: componentData.icon || <Box className="w-4 h-4" />,
+				id: `${componentData.type}-${Date.now()}`, // Generate a unique ID for the instance
 				label: componentData.label,
-				// Add order based on position in the array
-				order: currentContent.length + 1, // Root level components get order based on their position
-				styleProps: componentDef ? { ...componentDef.styleProps } : {},
+				order: currentContent.length + 1, // Root-level order based on position
+				props: {
+					content: componentData.props?.content || {},
+					style: componentData.props?.style || {},
+				},
 				type: componentData.type,
 			};
 
@@ -95,16 +86,14 @@ export default function BuilderTabComponents() {
 							components[i].children?.push({
 								...newComponent,
 								order:
-									(components[i].children?.length || 0) + 1, // Set order based on position in children array
+									(components[i].children?.length || 0) + 1,
 							});
 							return true;
 						}
 						// Recursively check children
 						if (
 							components[i].children &&
-							findAndAddChild(
-								components[i].children as BaseComponent[],
-							)
+							findAndAddChild(components[i].children as [])
 						) {
 							return true;
 						}

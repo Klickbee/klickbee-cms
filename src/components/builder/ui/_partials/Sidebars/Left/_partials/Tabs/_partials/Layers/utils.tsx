@@ -1,13 +1,13 @@
 import { Box } from "lucide-react";
-import { componentsList } from "@/builder/definitions/componentsList";
-import { BaseComponent } from "@/builder/types/components/component";
+import { BuilderComponent } from "@/builder/types/components/components";
+import { componentsList } from "@/builder/types/components/ui/componentsList";
 
 /**
  * Gets the icon for a component based on its type
  */
-export const getComponentIcon = (component: BaseComponent) => {
+export const getComponentIcon = (component: BuilderComponent) => {
 	const componentDef = componentsList.find(
-		(c: BaseComponent) => c.id === component.label,
+		(c: BuilderComponent) => c.id === component.label,
 	);
 	return componentDef ? componentDef.icon : <Box className="w-4 h-4" />;
 };
@@ -15,7 +15,9 @@ export const getComponentIcon = (component: BaseComponent) => {
 /**
  * Maps content items to a tree structure
  */
-export const mapContentToTree = (content: BaseComponent[]): BaseComponent[] => {
+export const mapContentToTree = (
+	content: BuilderComponent[],
+): BuilderComponent[] => {
 	return content.map((component) => {
 		const base = componentsList.find((c) => c.type === component.type) || {
 			group: component.groupId || "",
@@ -23,6 +25,7 @@ export const mapContentToTree = (content: BaseComponent[]): BaseComponent[] => {
 			id: component.id,
 			label: component.label || component.groupId,
 			order: component.order || 0,
+			props: component.props || {},
 			type: component.type || "undefined",
 		};
 		return {

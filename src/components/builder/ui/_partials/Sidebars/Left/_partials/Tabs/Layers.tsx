@@ -1,5 +1,5 @@
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
-import { BaseComponent } from "@/builder/types/components/component";
+import { BuilderComponent } from "@/builder/types/components/components";
 import {
 	mapContentToTree,
 	PageTitle,
@@ -9,7 +9,7 @@ import {
 export default function BuilderTabLayers() {
 	const currentPage = useCurrentPageStore((state) => state.currentPage);
 
-	const contentNodes: BaseComponent[] =
+	const contentNodes: BuilderComponent[] =
 		currentPage.content && Array.isArray(currentPage.content)
 			? mapContentToTree(currentPage.content)
 			: [];

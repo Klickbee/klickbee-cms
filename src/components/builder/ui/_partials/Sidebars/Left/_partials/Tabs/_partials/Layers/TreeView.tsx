@@ -1,6 +1,6 @@
 import React from "react";
 import { useDeleteComponentContext } from "@/builder/contexts/DeleteComponentContext";
-import { BaseComponent } from "@/builder/types/components/component";
+import { BuilderComponent } from "@/builder/types/components/components";
 import {
 	ContextMenu,
 	ContextMenuContent,
@@ -11,7 +11,7 @@ import { EmptyState } from "./EmptyState";
 import { TreeNode } from "./TreeNode";
 
 interface TreeViewProps {
-	contentNodes: BaseComponent[];
+	contentNodes: BuilderComponent[];
 }
 
 export function TreeView({ contentNodes }: TreeViewProps) {
@@ -21,7 +21,7 @@ export function TreeView({ contentNodes }: TreeViewProps) {
 		<div>
 			{contentNodes.length > 0 ? (
 				<React.Fragment>
-					{contentNodes.map((contentNode: BaseComponent) => (
+					{contentNodes.map((contentNode: BuilderComponent) => (
 						<ContextMenu key={contentNode.id}>
 							<ContextMenuTrigger>
 								<TreeNode

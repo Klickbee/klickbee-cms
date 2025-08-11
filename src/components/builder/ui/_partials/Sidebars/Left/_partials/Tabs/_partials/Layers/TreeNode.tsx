@@ -1,8 +1,13 @@
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { useDeleteComponentContext } from "@/builder/contexts/DeleteComponentContext";
+import { useMoveComponent } from "@/builder/hooks/useMoveComponent";
 import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent";
-import { BaseComponent } from "@/builder/types/components/component";
+import {
+	BuilderComponent,
+	canHaveChildren,
+	isParentComponent,
+} from "@/builder/types/components/components";
 import {
 	ContextMenu,
 	ContextMenuContent,
@@ -13,7 +18,7 @@ import { cn } from "@/lib/utils";
 
 interface TreeNodeProps {
 	id: string;
-	node: BaseComponent;
+	node: BuilderComponent;
 	level?: number;
 	parentId?: string | null;
 	isDragging?: boolean;
@@ -22,9 +27,13 @@ interface TreeNodeProps {
 export function TreeNode({ node, level = 0, parentId = null }: TreeNodeProps) {
 	const { confirmDelete } = useDeleteComponentContext();
 	const [expanded, setExpanded] = useState(true);
+	const [overBefore, setOverBefore] = useState(false);
+	const [overInside, setOverInside] = useState(false);
+	const [overAfter, setOverAfter] = useState(false);
 	const setCurrentComponent = useCurrentComponentStore(
 		(state) => state.setCurrentComponent,
 	);
+	const { moveComponent } = useMoveComponent();
 	const hasChildren = node.children && node.children.length > 0;
 	const currentComponent = useCurrentComponentStore(
 		(state) => state.currentComponent,
@@ -34,10 +43,62 @@ export function TreeNode({ node, level = 0, parentId = null }: TreeNodeProps) {
 		return currentComponent.id === id;
 	};
 
+	// DnD helpers
+	const onDragStart = (e: React.DragEvent) => {
+		e.stopPropagation();
+		const payload = JSON.stringify({
+			sourceId: node.id,
+			sourceParentId: parentId,
+		});
+		e.dataTransfer.setData("application/x-kb-node", payload);
+		e.dataTransfer.effectAllowed = "move";
+	};
+
+	const onDragOver = (e: React.DragEvent) => {
+		e.preventDefault();
+		e.dataTransfer.dropEffect = "move";
+	};
+
+	const onDropAt =
+		(pos: "before" | "after" | "inside") => (e: React.DragEvent) => {
+			e.preventDefault();
+			e.stopPropagation();
+			try {
+				const data = e.dataTransfer.getData("application/x-kb-node");
+				if (!data) return;
+				const { sourceId, sourceParentId } = JSON.parse(data);
+				if (sourceId === node.id) return;
+				// Prevent drop inside non-container
+				if (pos === "inside" && !canHaveChildren(node.type)) return;
+				moveComponent(
+					sourceId,
+					sourceParentId ?? null,
+					node.id,
+					parentId ?? null,
+					pos,
+				);
+			} finally {
+				setOverBefore(false);
+				setOverInside(false);
+				setOverAfter(false);
+			}
+		};
+
+	// @ts-ignore
 	return (
 		<ContextMenu>
 			<ContextMenuTrigger>
-				<div className="ml-2 py-0.5">
+				<div className="ml-2 py-0.5" onDragOver={onDragOver}>
+					{/* Drop zone: before */}
+					<div
+						className={cn(
+							"h-1 rounded",
+							overBefore ? "bg-foreground/50" : "bg-transparent",
+						)}
+						onDragEnter={() => setOverBefore(true)}
+						onDragLeave={() => setOverBefore(false)}
+						onDrop={onDropAt("before")}
+					/>
 					<div
 						className={cn(
 							"flex items-center gap-1 py-1.5 px-0.5 cursor-pointer text-sm " +
@@ -46,13 +107,21 @@ export function TreeNode({ node, level = 0, parentId = null }: TreeNodeProps) {
 							isCurrentComponent(node.id)
 								? "bg-foreground text-background"
 								: "",
+							overInside && isParentComponent(node)
+								? "ring-2 ring-foreground/60"
+								: "",
 						)}
+						draggable
 						onClick={() => {
 							setExpanded(
 								!isCurrentComponent(node.id) ? true : !expanded,
 							);
 							setCurrentComponent(node);
 						}}
+						onDragEnter={() => setOverInside(true)}
+						onDragLeave={() => setOverInside(false)}
+						onDragStart={onDragStart}
+						onDrop={onDropAt("inside")}
 					>
 						{hasChildren ? (
 							expanded ? (
@@ -66,9 +135,10 @@ export function TreeNode({ node, level = 0, parentId = null }: TreeNodeProps) {
 						{node.icon}
 						<span className="ml-2">{node.label}</span>
 					</div>
+					{/* Children and after zone */}
 					<div className="ml-4">
 						{expanded &&
-							node.children?.map((child: BaseComponent) => (
+							node.children?.map((child: BuilderComponent) => (
 								<TreeNode
 									id={child.id}
 									key={child.id}
@@ -78,6 +148,15 @@ export function TreeNode({ node, level = 0, parentId = null }: TreeNodeProps) {
 								/>
 							))}
 					</div>
+					<div
+						className={cn(
+							"h-1 rounded ml-4",
+							overAfter ? "bg-foreground/50" : "bg-transparent",
+						)}
+						onDragEnter={() => setOverAfter(true)}
+						onDragLeave={() => setOverAfter(false)}
+						onDrop={onDropAt("after")}
+					/>
 				</div>
 			</ContextMenuTrigger>
 			<ContextMenuContent>

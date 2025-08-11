@@ -5,11 +5,10 @@ import { useDeleteComponentContext } from "@/builder/contexts/DeleteComponentCon
 import { ComponentRenderer } from "@/builder/lib/renderers/ComponentRenderer";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
 import {
-	BaseComponent,
 	BuilderComponent,
 	canHaveChildren,
-} from "@/builder/types/components/component";
-import { componentMap } from "@/builder/types/components/componentMap";
+} from "@/builder/types/components/components";
+import { componentsList } from "@/builder/types/components/ui/componentsList";
 import { Button } from "@/components/ui/button";
 
 export default function BuilderPreviewViewport({
@@ -19,7 +18,7 @@ export default function BuilderPreviewViewport({
 	handleRemoveBreakpoint,
 }: {
 	bp: { name: string; width: number };
-	content: BaseComponent[];
+	content: BuilderComponent[];
 	handleAddBreakpoint: () => void;
 	handleRemoveBreakpoint: (breakpointName: string) => void;
 }) {
@@ -82,30 +81,27 @@ export default function BuilderPreviewViewport({
 						const currentContent = Array.isArray(
 							currentPage.content,
 						)
-							? [
-									...(currentPage.content as unknown as BuilderComponent[]),
-								]
+							? [...currentPage.content]
 							: [];
 
-						// Create the new component
-						const componentType =
-							componentData.type as keyof typeof componentMap;
-						const componentDef = componentMap[componentType];
+						// Create the new component using componentsList definition
+						const listDef = componentsList.find(
+							(c) => c.type === componentData.type,
+						);
 
 						const newComponent = {
-							// Add content and style props from component definition
-							contentProps: componentDef
-								? { ...componentDef.contentProps }
-								: {},
-							// Add breakpoint information
-							groupId: componentData.groupId,
+							groupId:
+								(listDef?.groupId as string) ||
+								componentData.groupId,
 							id: `${componentData.type}-${Date.now()}`, // Generate a unique ID
-							label: componentData.label,
-							// Add order based on position in the array
-							order: currentContent.length + 1, // Root level components get order based on their position
-							styleProps: componentDef
-								? { ...componentDef.styleProps }
-								: {},
+							label: listDef?.label || componentData.label,
+							// Root level components get order based on their position in the current content
+							order: currentContent.length + 1,
+							// Use defaults from componentsList entry (listDef) and override with any provided data
+							props: {
+								content: listDef?.props?.content || {},
+								style: listDef?.props?.style || {},
+							},
 							type: componentData.type,
 						};
 
@@ -135,7 +131,7 @@ export default function BuilderPreviewViewport({
 										components[i].children &&
 										findAndAddChild(
 											components[i]
-												.children as BaseComponent[],
+												.children as BuilderComponent[],
 										)
 									) {
 										return true;
