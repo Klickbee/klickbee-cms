@@ -23,10 +23,9 @@ import { Video } from "@/builder/components/ui/Video";
 import { useDeleteComponentContext } from "@/builder/contexts/DeleteComponentContext";
 import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent";
 import {
-	BaseComponent,
 	BuilderComponent,
 	ComponentType,
-} from "@/builder/types/components/component";
+} from "@/builder/types/components/components";
 import {
 	ContextMenu,
 	ContextMenuContent,
@@ -138,7 +137,7 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 					className={className}
 					onClick={(e) => {
 						e.stopPropagation(); // Stop event propagation to parent components
-						setCurrentComponent(component as BaseComponent);
+						setCurrentComponent(component as BuilderComponent);
 					}}
 					onDragLeave={onDragLeave}
 					onDragOver={onDragOver}

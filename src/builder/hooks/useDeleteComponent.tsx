@@ -2,10 +2,7 @@ import { JsonValue } from "@prisma/client/runtime/library";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
-import {
-	BaseComponent,
-	BuilderComponent,
-} from "@/builder/types/components/component";
+import { BuilderComponent } from "@/builder/types/components/components";
 
 interface UseDeleteComponentOptions {
 	showNotifications?: boolean;
@@ -32,12 +29,12 @@ export function useDeleteComponent(options: UseDeleteComponentOptions = {}) {
 			return;
 		}
 
-		const currentContent: BaseComponent[] = [...currentPage.content];
+		const currentContent: BuilderComponent[] = [...currentPage.content];
 
 		// Function to find and delete a component within the hierarchy
 		const findAndDeleteComponent = (
-			components: BaseComponent[],
-			parent: BaseComponent | null,
+			components: BuilderComponent[],
+			parent: BuilderComponent | null,
 		): boolean => {
 			// If we're looking at the right parent (or root level)
 			if (
