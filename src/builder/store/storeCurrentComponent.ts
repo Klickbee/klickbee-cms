@@ -1,9 +1,9 @@
 import { create } from "zustand";
-import { BaseComponent } from "@/builder/types/components/component";
+import { BuilderComponent } from "@/builder/types/components/components";
 
 type CurrentComponentStore = {
-	currentComponent: BaseComponent;
-	setCurrentComponent: (componentItem: BaseComponent) => void;
+	currentComponent: BuilderComponent;
+	setCurrentComponent: (componentItem: BuilderComponent) => void;
 	clearCurrentComponent: () => void;
 };
 
@@ -14,21 +14,27 @@ export const useCurrentComponentStore = create<CurrentComponentStore>(
 				currentComponent: {
 					children: [],
 					groupId: "",
-					icon: null,
 					id: "none",
 					label: "",
+					props: {
+						content: {},
+						style: {},
+					},
 					type: "undefined",
 				},
 			}),
 		currentComponent: {
 			children: [],
 			groupId: "",
-			icon: null,
 			id: "none",
 			label: "",
+			props: {
+				content: {},
+				style: {},
+			},
 			type: "undefined",
 		},
-		setCurrentComponent: (componentItem: BaseComponent) =>
+		setCurrentComponent: (componentItem: BuilderComponent) =>
 			set({ currentComponent: componentItem }),
 	}),
 );
