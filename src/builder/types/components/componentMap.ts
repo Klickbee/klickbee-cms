@@ -181,7 +181,7 @@ export const componentMap: Record<ComponentName, ComponentMapEntry> = {
 
 	FileUpload: createFormElementComponent(
 		"A file upload input with configurable file types and size limits",
-		{ maxFileSize: 0, mimeTypes: [], name: "" },
+		{ maxFileSize: 0, mimeTypes: "", name: "" },
 	),
 
 	// ===== FORM COMPONENTS =====

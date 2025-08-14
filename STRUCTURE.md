@@ -25,9 +25,11 @@ Each feature lives in its own directory under `src/feature/`:
 
 ```
 src/feature/<feature-name>/
+├── actions/            → Actions for server-side logic
 ├── api/                → API client functions
 ├── client/             → Client-side logic
 ├── components/         → Feature-specific components
+├── handlers/           → handlers for specific logic
 ├── languages/          → Localization files (only for translations feature)
 ├── lib/                → Server actions and utilities
 ├── options/            → React Query options

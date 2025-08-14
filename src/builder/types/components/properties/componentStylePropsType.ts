@@ -95,7 +95,7 @@ export type TypographyStyle = {
 	lineHeight?: SpacingValue | "normal" | "inherit" | "initial" | "unset";
 	fontStyle?: TypographySettings["fontStyle"];
 	letterSpacing?: TypographySettings["letterSpacing"];
-	color?: ColorSettings;
+	color?: ColorSettings | string;
 	textAlign?: TextAlign;
 	textTransform?: TextTransform;
 	textDecoration?: TextDecoration;
@@ -104,11 +104,11 @@ export type TypographyStyle = {
 };
 
 export type BackgroundStyle = {
-	color?: ColorSettings;
+	color?: ColorSettings | string;
 	gradient?: {
 		type: GradientType;
 		angle?: { number: number; unit: "deg" | "rad" };
-		colors: [ColorSettings, ColorSettings];
+		colors: [ColorSettings | string, ColorSettings | string];
 	};
 	image?: {
 		src: string;
@@ -121,23 +121,23 @@ export type BackgroundStyle = {
 
 export type BorderCornerStyle = {
 	borderWidth?: Partial<Record<Side, SpacingValue>>;
-	borderColor?: ColorSettings;
+	borderColor?: ColorSettings | string;
 	borderStyle?: BorderStyle;
 	borderRadius?: Partial<Record<Side, SpacingValue>>;
-	outlineColor?: ColorSettings;
+	outlineColor?: ColorSettings | string;
 	outlineWidth?: SpacingValue;
 };
 
 export type EffectsStyle = {
 	boxShadow?: {
-		color: ColorSettings;
+		color: ColorSettings | string;
 		x: SpacingValue;
 		y: SpacingValue;
 		blur: SpacingValue;
 		spread: SpacingValue;
 	};
 	textShadow?: {
-		color: ColorSettings;
+		color: ColorSettings | string;
 		x: SpacingValue;
 		y: SpacingValue;
 		blur: SpacingValue;
@@ -145,7 +145,7 @@ export type EffectsStyle = {
 	opacity?: number;
 	backdropFilter?: BackdropFilter[];
 	hover?: {
-		backgroundColor?: ColorSettings;
+		backgroundColor?: ColorSettings | string;
 		boxShadow?: boolean;
 		scale?: number;
 		transition?: {

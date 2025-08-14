@@ -2,9 +2,10 @@
 
 import {
 	ChevronRight,
-	ChevronsUpDown,
-	FileText,
+	Files,
 	Home,
+	Images,
+	Layers,
 	Mail,
 	Settings as SettingsIcon,
 	User,
@@ -39,6 +40,7 @@ import {
 	SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { useAdminKeyStore } from "@/feature/admin-key/stores/storeAdminKey";
+import { useCollections } from "@/feature/collection/queries/useCollections";
 import { useCurrentUser } from "@/feature/user/queries/useUser";
 
 export function Sidebar() {
@@ -46,21 +48,42 @@ export function Sidebar() {
 	const adminKey = useAdminKeyStore((state) => state.adminKey);
 	const pathname = usePathname();
 	const { data: user } = useCurrentUser();
+	const { data: collections } = useCollections();
 	const items = [
 		{
-			href: `/admin/${adminKey}/manage/content`,
+			href: `/admin/${adminKey}/`,
 			icon: Home,
+			label: t("Dashboard"),
+		},
+		{
+			href: `/admin/${adminKey}/manage/media`,
+			icon: Images,
+			label: t("Media"),
+		},
+		{
+			href: `/admin/${adminKey}/manage/pages`,
+			icon: Files,
+			label: t("Pages"),
+		},
+		{
+			children:
+				collections?.map((collection) => ({
+					href: `/admin/${adminKey}/manage/content/${collection.slug}`,
+					label: collection.name,
+				})) || [],
+			href: `/admin/${adminKey}/manage/content`,
+			icon: Layers,
 			label: t("Content"),
+		},
+		{
+			href: `/admin/${adminKey}/manage/users`,
+			icon: User,
+			label: t("Users"),
 		},
 		{
 			href: `/admin/${adminKey}/manage/contact`,
 			icon: Mail,
 			label: t("Contact"),
-		},
-		{
-			href: `/admin/${adminKey}/manage/pages`,
-			icon: FileText,
-			label: t("Pages"),
 		},
 		{
 			children: [
@@ -92,7 +115,7 @@ export function Sidebar() {
 
 	return (
 		<ShadcnSidebar>
-			<SidebarHeader className="p-4 border-b">
+			<SidebarHeader className="p-4">
 				<div className="flex items-center gap-3 w-full hover:bg-gray-50 rounded-lg p-2 -m-2 cursor-pointer">
 					<div className="w-8 h-8 rounded-lg flex items-center justify-center">
 						<Image
@@ -122,45 +145,65 @@ export function Sidebar() {
 								defaultOpen
 								key={item.label}
 							>
-								<SidebarMenuItem>
-									<CollapsibleTrigger asChild>
-										<SidebarMenuButton className="text-black">
-											<item.icon className="h-4 w-4" />
-											{item.label}
-											<ChevronRight className="ml-auto h-4 w-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+								<SidebarMenuItem
+									className={
+										"group data-[active=true]:bg-primary data-[active=true]:text-secondary"
+									}
+								>
+									{item.href ? (
+										<SidebarMenuButton className="text-black data-[active=true]:bg-primary data-[active=true]:text-secondary">
+											<a
+												className="flex items-center w-full gap-2"
+												href={item.href}
+											>
+												<item.icon className="h-4 w-4" />
+												{item.label}
+											</a>
+											<CollapsibleTrigger
+												asChild
+												className={"cursor-pointer"}
+											>
+												<ChevronRight className="ml-auto h-4 w-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+											</CollapsibleTrigger>
 										</SidebarMenuButton>
-									</CollapsibleTrigger>
-									<CollapsibleContent className="pt-2">
-										<SidebarMenuSub>
-											{item.children.map((subItem) => (
-												<SidebarMenuSubItem
-													key={subItem.label}
-												>
-													<SidebarMenuSubButton
-														asChild
-														className="text-black data-[active=true]:bg-blue-500 data-[active=true]:text-white"
-														data-active={
-															pathname ===
-															subItem.href
-														}
-													>
-														<Link
-															href={subItem.href}
-														>
-															{subItem.label}
-														</Link>
-													</SidebarMenuSubButton>
-												</SidebarMenuSubItem>
-											))}
-										</SidebarMenuSub>
-									</CollapsibleContent>
+									) : (
+										<CollapsibleTrigger asChild>
+											<SidebarMenuButton className="text-black data-[active=true]:bg-primary data-[active=true]:text-secondary">
+												<item.icon className="h-4 w-4" />
+												{item.label}
+												<ChevronRight className="ml-auto h-4 w-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+											</SidebarMenuButton>
+										</CollapsibleTrigger>
+									)}
 								</SidebarMenuItem>
+								<CollapsibleContent className="pt-2">
+									<SidebarMenuSub>
+										{item.children.map((subItem) => (
+											<SidebarMenuSubItem
+												key={subItem.label}
+											>
+												<SidebarMenuSubButton
+													asChild
+													className="text-black data-[active=true]:bg-primary data-[active=true]:text-secondary"
+													data-active={
+														pathname ===
+														subItem.href
+													}
+												>
+													<Link href={subItem.href}>
+														{subItem.label}
+													</Link>
+												</SidebarMenuSubButton>
+											</SidebarMenuSubItem>
+										))}
+									</SidebarMenuSub>
+								</CollapsibleContent>
 							</Collapsible>
 						) : (
 							<SidebarMenuItem key={item.label}>
 								<SidebarMenuButton
 									asChild
-									className="text-black data-[active=true]:bg-blue-500 data-[active=true]:text-white"
+									className="text-black data-[active=true]:bg-primary data-[active=true]:text-secondary"
 									data-active={pathname === item.href}
 								>
 									<Link href={item.href}>

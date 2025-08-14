@@ -7,7 +7,7 @@ export interface ComponentContentProps {
 	level?: 1 | 2 | 3 | 4 | 5 | 6; // Heading level (H1–H6)
 	href?: string; // Link or action URL
 	openInNewTab?: boolean; // Open link in new tab
-	icon?: string; // Icon reference
+	icon?: React.ReactNode | string; // Icon reference
 	src?: string; // Media source (image/video)
 	alt?: string; // Alternative text for accessibility
 	autoplay?: boolean; // Autoplay for video
@@ -23,9 +23,16 @@ export interface ComponentContentProps {
 	type?: FieldType; // Field type (text, email, password)
 	defaultChecked?: boolean; // Default checked for checkbox
 	question?: string; // Label for radio group
-	options?: string[]; // List of selectable options
+	options?: { value: string; label: string }[]; // List of selectable options
 	defaultText?: string; // Placeholder option for dropdown
-	mimeTypes?: string[]; // Array of mime types (e.g., ["image/png", "image/jpeg"])
+	mimeTypes?: string;
 	maxFileSize?: number; // Numeric size limit (MB)
 	label?: string; // Label for the input
+	action?: string; // Action URL for form submission
+	formMethod?: "GET" | "POST"; // HTTP method for form submission
+	checked?: boolean; // Default checked state for checkbox
+	defaultValue?: string;
+	helperText?: string; // Additional helper text for inputs
+	multiple?: boolean; // Allow multiple file uploads
+	target?: string; // Link target (_blank, _self, etc.)
 }

@@ -6,6 +6,10 @@ generator client {
   output   = "../src/generated/prisma"
 }
 
+generator json {
+  provider = "prisma-json-types-generator"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -124,4 +128,81 @@ model Contact {
   createdAt  DateTime @default(now())
 
   @@map("contact")
+}
+
+// === Page Models ===
+
+model Page {
+  id        Int      @id @default(autoincrement())
+  title     String
+  slug      String   @unique
+  /// [PageContentMetaType]
+  content   Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  parentId  Int?
+  parent    Page?    @relation("PageHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children  Page[]   @relation("PageHierarchy")
+
+  // SEO fields
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+
+  // Additional fields
+  isPublished Boolean   @default(false)
+  publishedAt DateTime?
+
+  @@map("page")
+}
+
+// === Collection Models ===
+/**
+ * Only for dev purposes, will be enhanced later
+ */
+
+model Collection {
+  id        Int      @id @default(autoincrement())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  items     CollectionItem[]
+  templates CollectionTemplate[]
+
+  @@map("collection")
+}
+
+model CollectionItem {
+  id           Int        @id @default(autoincrement())
+  collectionId Int
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  title        String
+  slug         String     @unique
+  content      Json
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  // SEO fields
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+
+  // Additional fields
+  isPublished Boolean   @default(false)
+  publishedAt DateTime?
+
+  @@map("collection_item")
+}
+
+model CollectionTemplate {
+  id           Int        @id @default(autoincrement())
+  name         String
+  content      Json
+  collectionId Int
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
 }

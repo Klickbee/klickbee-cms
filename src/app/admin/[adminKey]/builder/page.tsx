@@ -1,5 +1,5 @@
 import BuilderComponent from "@/components/builder/Builder";
 
-export default function BuilderPage() {
+export default async function BuilderPage() {
 	return <BuilderComponent />;
 }

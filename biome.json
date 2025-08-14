@@ -6,7 +6,7 @@
 				"organizeImports": "on",
 				"useSortedAttributes": "on",
 				"useSortedKeys": "on",
-				"useSortedProperties": "on"
+				"useSortedProperties": "off"
 			}
 		},
 		"enabled": true
@@ -96,6 +96,7 @@
 				"noUnreachableSuper": "error",
 				"noUnsafeFinally": "error",
 				"noUnsafeOptionalChaining": "error",
+				"noUnusedImports": "error",
 				"noUnusedLabels": "error",
 				"noUnusedPrivateClassMembers": "error",
 				"noUnusedVariables": "error",

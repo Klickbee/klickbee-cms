@@ -4,7 +4,9 @@ import BuilderTabPagesPages from "./_partials/Pages/Pages";
 export default function BuilderTabPages() {
 	return (
 		<>
-			<BuilderTabPagesPages />
+			<div className={"px-2"}>
+				<BuilderTabPagesPages />
+			</div>
 			<BuilderTabPagesCollections />
 		</>
 	);
