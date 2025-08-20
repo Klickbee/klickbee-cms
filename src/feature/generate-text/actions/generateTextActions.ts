@@ -1,3 +1,5 @@
+"use server";
+
 import { isAuthenticatedGuard } from "@/feature/auth/lib/session";
 import { askChatgpt, askDeepseek, askMistral } from "@/lib/ai";
 
