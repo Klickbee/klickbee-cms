@@ -107,6 +107,10 @@
 		"SubmitDate": "Submit Date",
 		"ViewContact": "View Contact"
 	},
+	"Contents": {
+		"ManageContents": "Contents Manager",
+		"ManageContentsSubtitle": "Manage all the pages of your site."
+	},
 	"Errors": {
 		"GoogleFontsError": "Error retrieving Google Fonts",
 		"LoadingError": "Loading error",
