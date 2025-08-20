@@ -16,11 +16,11 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { authClient } from "@/feature/auth/lib/authClient";
 import {
+	authPasswordResetSchema,
 	UserPasswordResetFormValues,
-	userPasswordResetSchema,
-} from "@/feature/auth/types/userPasswordResetSchema";
-import { authClient } from "@/lib/authClient";
+} from "@/feature/auth/schemas/authPasswordResetSchema";
 
 export default function ResetPasswordForm() {
 	const router = useRouter();
@@ -38,7 +38,7 @@ export default function ResetPasswordForm() {
 			newPassword: "",
 			token: "",
 		},
-		resolver: zodResolver(userPasswordResetSchema),
+		resolver: zodResolver(authPasswordResetSchema),
 	});
 
 	async function onSubmit(

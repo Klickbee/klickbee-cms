@@ -5,7 +5,7 @@ import type {
 	UseFormRegister,
 	UseFormSetValue,
 } from "react-hook-form";
-import type { FormValues } from "@/app/admin/[adminKey]/builder/settings/page";
+import type { FormValues } from "@/app/admin/[adminKey]/(dashboard)/manage/settings/builder/page";
 import { ColorType, colorTypes } from "@/builder/types/settings/ColorSettings";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

@@ -1,0 +1,19 @@
+import { Minus } from "lucide-react";
+import { DividerBCI } from "@/builder/types/components/ui/Divider/DividerType";
+
+export const DividerBC: DividerBCI = {
+	groupId: "text",
+	icon: <Minus size={16} />,
+	id: "divider",
+	label: "Divider",
+	props: {
+		content: {},
+		style: {
+			bordersAndCorners: {},
+			effects: {},
+
+			sizeAndSpacing: {},
+		},
+	},
+	type: "divider",
+} satisfies DividerBCI;

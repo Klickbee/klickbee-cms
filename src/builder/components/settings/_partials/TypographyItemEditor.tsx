@@ -6,7 +6,7 @@ import {
 	UseFormSetValue,
 	useController,
 } from "react-hook-form";
-import type { FormValues } from "@/app/admin/[adminKey]/builder/settings/page";
+import type { FormValues } from "@/app/admin/[adminKey]/(dashboard)/manage/settings/builder/page";
 import { InputWithUnit } from "@/builder/components/settings/_partials/InputWithUnit";
 import { sizeUnits } from "@/builder/types/settings/FluidSize";
 import {

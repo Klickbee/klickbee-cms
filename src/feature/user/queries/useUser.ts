@@ -1,13 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
-import { authClient } from "@/lib/authClient";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { userOptions } from "@/feature/user/options/userOptions";
 
 export function useCurrentUser() {
-	return useQuery({
-		queryFn: async () => {
-			const { data: session } = await authClient.getSession();
-			return session?.user || null;
-		},
-		queryKey: ["current_user"],
-		retry: false,
-	});
+	return useSuspenseQuery(userOptions);
 }

@@ -15,14 +15,15 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useAdminKeyStore } from "@/feature/admin-key/stores/storeAdminKey";
+import { authClient } from "@/feature/auth/lib/authClient";
 import {
+	authPasswordResetRequestSchema,
 	UserPasswordResetRequestFormValues,
-	userPasswordResetRequestSchema,
-} from "@/feature/auth/types/userPasswordResetRequestSchema";
-import { authClient } from "@/lib/authClient";
+} from "@/feature/auth/schemas/authPasswordResetRequestSchema";
 
 export default function ResetPasswordRequestForm() {
 	const t = useTranslations("ResetPasswordRequest");
+	const tCommon = useTranslations("Common");
 	const adminKey = useAdminKeyStore((state) => state.adminKey);
 
 	const resetPasswordRequestForm =
@@ -30,7 +31,7 @@ export default function ResetPasswordRequestForm() {
 			defaultValues: {
 				email: "",
 			},
-			resolver: zodResolver(userPasswordResetRequestSchema),
+			resolver: zodResolver(authPasswordResetRequestSchema),
 		});
 
 	async function onSubmit(
@@ -60,12 +61,12 @@ export default function ResetPasswordRequestForm() {
 					name="email"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>{t("EmailLabel")}</FormLabel>
+							<FormLabel>{tCommon("Email")}</FormLabel>
 							<FormControl>
 								<Input
 									{...field}
 									className="w-full"
-									placeholder={t("EmailPlaceholder")}
+									placeholder={tCommon("EmailPlaceholder")}
 								/>
 							</FormControl>
 							<FormMessage />

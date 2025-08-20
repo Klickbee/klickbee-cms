@@ -1,8 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient } from "@tanstack/react-query";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -18,30 +17,29 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useAdminKeyStore } from "@/feature/admin-key/stores/storeAdminKey";
+import { authClient } from "@/feature/auth/lib/authClient";
 import {
+	authLoginSchema,
 	UserLoginFormValues,
-	userLoginSchema,
-} from "@/feature/auth/types/userLoginSchema";
-import { authClient } from "@/lib/authClient";
+} from "@/feature/auth/schemas/authLoginSchema";
 
 export default function LoginForm() {
-	const router = useRouter();
 	const { adminKey } = useParams<{ adminKey: string }>();
 	const { setAdminKey } = useAdminKeyStore();
-	const queryClient = useQueryClient();
 
 	useEffect(() => {
 		setAdminKey(adminKey);
 	}, [adminKey, setAdminKey]);
 
 	const t = useTranslations("Login");
+	const tCommon = useTranslations("Common");
 
 	const loginForm = useForm<UserLoginFormValues>({
 		defaultValues: {
 			email: "",
 			password: "",
 		},
-		resolver: zodResolver(userLoginSchema),
+		resolver: zodResolver(authLoginSchema),
 	});
 
 	async function onSubmit(loginFormValues: UserLoginFormValues) {
@@ -58,8 +56,7 @@ export default function LoginForm() {
 		}
 
 		if (data) {
-			await queryClient.refetchQueries({ queryKey: ["current_user"] });
-			router.push(`/admin/${adminKey}`);
+			window.location.href = `/admin/${adminKey}`;
 		} else {
 			toast.error(t("ConnectionFailed"));
 		}
@@ -76,10 +73,10 @@ export default function LoginForm() {
 					name="email"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>{t("Email")}</FormLabel>
+							<FormLabel>{tCommon("Email")}</FormLabel>
 							<FormControl>
 								<Input
-									placeholder="Enter your email"
+									placeholder={tCommon("EmailPlaceholder")}
 									type="email"
 									{...field}
 									className="w-full"
@@ -95,10 +92,10 @@ export default function LoginForm() {
 					name="password"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>{t("Password")}</FormLabel>
+							<FormLabel>{tCommon("Password")}</FormLabel>
 							<FormControl>
 								<Input
-									placeholder={t("PasswordPlaceholder")}
+									placeholder={tCommon("PasswordPlaceholder")}
 									type="password"
 									{...field}
 									className="w-full"

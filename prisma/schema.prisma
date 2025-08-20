@@ -6,6 +6,10 @@ generator client {
   output   = "../src/generated/prisma"
 }
 
+generator json {
+  provider = "prisma-json-types-generator"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -16,12 +20,10 @@ datasource db {
 model User {
   id            String    @id @default(uuid())
   email         String    @unique
-  role          Role      @relation(fields: [roleId], references: [id])
-  roleId        String
   name          String
   emailVerified Boolean
   image         String?
-  updatedAt     DateTime
+  updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
   createdAt     DateTime  @default(now())
@@ -29,6 +31,7 @@ model User {
   // Relations
   UserSettings UserSettings[]
 
+  role       String?   @default("user")
   banned     Boolean?
   banReason  String?
   banExpires DateTime?
@@ -41,7 +44,7 @@ model Session {
   expiresAt DateTime
   token     String
   createdAt DateTime
-  updatedAt DateTime
+  updatedAt DateTime @updatedAt
   ipAddress String?
   userAgent String?
   userId    String
@@ -66,8 +69,8 @@ model Account {
   refreshTokenExpiresAt DateTime?
   scope                 String?
   password              String?
-  createdAt             DateTime
-  updatedAt             DateTime
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 
   @@map("account")
 }
@@ -78,25 +81,9 @@ model Verification {
   value      String
   expiresAt  DateTime
   createdAt  DateTime?
-  updatedAt  DateTime?
+  updatedAt  DateTime? @updatedAt
 
   @@map("verification")
-}
-
-model Role {
-  id          String       @id @default(uuid())
-  name        String       @unique
-  permissions Permission[]
-  users       User[]
-}
-
-model Permission {
-  id     Int    @id @default(autoincrement())
-  action String
-  roleId String
-  role   Role   @relation(fields: [roleId], references: [id])
-
-  @@unique([roleId, action])
 }
 
 // === Settings Models ===
@@ -127,4 +114,95 @@ model GlobalSettings {
   logos      Json[]
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+}
+
+// === Contact Models ===
+
+model Contact {
+  id         Int      @id @default(autoincrement())
+  email      String?
+  number     String?
+  name       String?
+  submitDate DateTime @default(now())
+  content    Json?
+  createdAt  DateTime @default(now())
+
+  @@map("contact")
+}
+
+// === Page Models ===
+
+model Page {
+  id        Int      @id @default(autoincrement())
+  title     String
+  slug      String   @unique
+  /// [PageContentMetaType]
+  content   Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  parentId  Int?
+  parent    Page?    @relation("PageHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children  Page[]   @relation("PageHierarchy")
+
+  // SEO fields
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+
+  // Additional fields
+  isPublished Boolean   @default(false)
+  publishedAt DateTime?
+
+  @@map("page")
+}
+
+// === Collection Models ===
+/**
+ * Only for dev purposes, will be enhanced later
+ */
+
+model Collection {
+  id        Int      @id @default(autoincrement())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  items     CollectionItem[]
+  templates CollectionTemplate[]
+
+  @@map("collection")
+}
+
+model CollectionItem {
+  id           Int        @id @default(autoincrement())
+  collectionId Int
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  title        String
+  slug         String     @unique
+  content      Json
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  // SEO fields
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+
+  // Additional fields
+  isPublished Boolean   @default(false)
+  publishedAt DateTime?
+
+  @@map("collection_item")
+}
+
+model CollectionTemplate {
+  id           Int        @id @default(autoincrement())
+  name         String
+  content      Json
+  collectionId Int
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
 }

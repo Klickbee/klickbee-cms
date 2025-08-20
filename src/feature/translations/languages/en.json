@@ -1,0 +1,267 @@
+{
+	"AdminLayout": {
+		"Logout": "Logout"
+	},
+	"AdminSidebar": {
+		"AI": "AI",
+		"Builder": "Builder",
+		"Contact": "Contact",
+		"Content": "Content",
+		"Copyright": "© Klickbee CMS",
+		"Dashboard": "Dashboard",
+		"Email": "Email",
+		"Media": "Media",
+		"Pages": "Pages",
+		"Settings": "Settings",
+		"Title": "Klickbee CMS",
+		"Users": "Users"
+	},
+	"API": {
+		"Common": {
+			"EmailSendError": "Failed to send email",
+			"InternalServerError": "Internal server error",
+			"InvalidJsonFormat": "Invalid JSON format",
+			"MissingAdminKey": "Admin key is not configured",
+			"MissingAppUrl": "Application URL is not configured"
+		},
+		"PasswordReset": {
+			"InvalidFormValidation": "Form validation failed",
+			"InvalidToken": "Invalid token",
+			"Success": "Password reset successfully",
+			"TokenExpired": "Token expired"
+		},
+		"PasswordResetRequest": {
+			"EmailContent": "Please use this link to reset your password",
+			"EmailNotFound": "Email not found",
+			"EmailRequired": "Valid email address is required",
+			"EmailSubject": "Password Reset Request",
+			"Success": "Password reset request sent successfully"
+		}
+	},
+	"BuilderSettings": {
+		"Colors": "Colors",
+		"ColorsDescription": "Define the color palette of your site.",
+		"Error": "Error",
+		"ErrorMessage": "An error occurred while saving the settings.",
+		"FormErrors": "There are errors in the form. Please correct them before submitting.",
+		"GlobalSettings": "Global Settings",
+		"GlobalSettingsDescription": "Configure the global settings of your site, such as typography, colors, spacing, and logos.",
+		"Logos": "Logos",
+		"LogosDescription": "Upload and manage your site's logos.",
+		"SaveSettings": "Save Settings",
+		"Saving": "Saving...",
+		"Spacing": "Spacing",
+		"SpacingDescription": "Configure the spacing and margins used in the layout.",
+		"Success": "Success",
+		"SuccessMessage": "Settings have been saved successfully.",
+		"Typography": "Typography",
+		"TypographyDescription": "Define the text styles used on your site."
+	},
+	"ColorEditor": {
+		"AddColor": "Add color",
+		"ColorName": "Color name",
+		"ColorPicker": "Color picker",
+		"DeleteColor": "Delete color",
+		"SelectType": "Select a type",
+		"Title": "Colors",
+		"Type": "Type:"
+	},
+	"Common": {
+		"Back": "Back",
+		"Cancel": "Cancel",
+		"CreatedAt": "Created At",
+		"Delete": "Delete",
+		"DeleteSelected": "Delete Selected",
+		"Download": "Download",
+		"Edit": "Edit",
+		"Email": "Email",
+		"EmailPlaceholder": "Enter your email",
+		"Name": "Name",
+		"NamePlaceholder": "Enter full name",
+		"Next": "Next",
+		"Number": "Number",
+		"Of": "of",
+		"Page": "Page",
+		"Password": "Password",
+		"PasswordPlaceholder": "Your password",
+		"PhoneNumber": "Phone Number",
+		"Previous": "Previous"
+	},
+	"Contacts": {
+		"ContactTitle": "{readingId} - {name}",
+		"DeleteContactDescription": "This action cannot be undone. This will permanently delete the contact and all associated data.",
+		"DeleteContactError": "Error deleting contact",
+		"DeleteContactSuccess": "Contact deleted successfully",
+		"DeleteContactTitle": "Delete Contact",
+		"DeleteDescription": "This action cannot be undone. This will permanently delete {count} contact(s) and all associated data.",
+		"DeleteError": "Error deleting contacts",
+		"DeleteSuccess": "Successfully deleted {count} contact(s)",
+		"DeleteTitle": "Delete Contacts",
+		"FromContactAt": "From contact at {date}",
+		"ManageContacts": "Manage Contacts",
+		"ManageContactsSubtitle": "Manage contact submissions and inquiries",
+		"NameNotAvailable": "Name not available",
+		"NoContactsFound": "No contacts found",
+		"PhoneNumber": "Phone Number",
+		"SearchContacts": "Search contacts...",
+		"SubmitDate": "Submit Date",
+		"ViewContact": "View Contact"
+	},
+	"Errors": {
+		"GoogleFontsError": "Error retrieving Google Fonts",
+		"LoadingError": "Loading error",
+		"SaveError": "Save error",
+		"UploadError": "Upload error",
+		"UserFetchError": "Error retrieving user"
+	},
+	"LandingPage": {
+		"Architecture": {
+			"AdminStructure": "Admin Structure",
+			"Benefit1": "Single codebase for both front-end and admin",
+			"Benefit2": "Simplified deployment with one build process",
+			"Benefit3": "Shared types and validation between front and back",
+			"Benefit4": "Integrated authentication and permissions",
+			"Benefit5": "Better developer experience with consistent patterns",
+			"Benefits": "Key Benefits",
+			"FrontEndStructure": "Front-End Structure",
+			"Title": "Monolithic Architecture"
+		},
+		"Features": {
+			"CustomPostTypes": {
+				"Description": "Define your own content types with custom fields, validation, and relationships.",
+				"Title": "Custom Post Types"
+			},
+			"TechStack": {
+				"Description": "Built with Next.js, React, Prisma ORM, Tailwind CSS, and TypeScript for a developer-friendly experience.",
+				"Title": "Modern Tech Stack"
+			},
+			"Title": "Key Features for Developers",
+			"VisualBuilder": {
+				"Description": "Intuitive drag-and-drop interface with component validation and schema-based architecture.",
+				"Title": "Visual Page Builder"
+			}
+		},
+		"Footer": {
+			"Community": "Community",
+			"Contact": "Contact",
+			"Copyright": "© {year} Stralya. Klickbee CMS is licensed under the GNU Affero General Public License v3.0.",
+			"Resources": "Resources",
+			"Tagline": "The CMS you'd build if you had time to build one."
+		},
+		"GettingStarted": {
+			"Option1": "Option 1: With npm",
+			"Option2": "Option 2: With Docker Compose",
+			"Step1": "1. Copy the environment file and configure it:",
+			"Step2docker": "2. Start the development container:",
+			"Step2npm": "2. For first launch:",
+			"Step3npm": "3. For subsequent launches:",
+			"Title": "Getting Started"
+		},
+		"Hero": {
+			"AdminAccess": "Go to /admin/admin to access the admin panel",
+			"BuildTogether": "Let's build something great together ! 🚀",
+			"DefaultCredentials": "and use default credentials:",
+			"GetStarted": "Get Started",
+			"GitHub": "GitHub",
+			"HaveALookBuilder": "You want to have a look at the builder ? Go to /admin/admin/builder",
+			"Password": "Password: admin123",
+			"Subtitle": "Monolithic. Visual. Built for speed.",
+			"Title": "The last CMS you'll ever need",
+			"Username": "Username: admin@klickbee.com"
+		},
+		"LanguageSwitcher": {
+			"English": "English",
+			"French": "French",
+			"Label": "Change language"
+		}
+	},
+	"Login": {
+		"AdminLogin": "Admin Login",
+		"ConnectionError": "Bad credentials.",
+		"ConnectionFailed": "Connection failed. Please try again.",
+		"LoggingIn": "Logging in...",
+		"LoginButton": "Login"
+	},
+	"LogoEditor": {
+		"ClickToChoose": "Click to choose",
+		"FileTypeError": "Only PNG or JPEG files are accepted.",
+		"RectangleLogo": "Rectangle Logo",
+		"SelectLogo": "Select a logo",
+		"SquareLogo": "Square Logo",
+		"Title": "Logos",
+		"Uploading": "Uploading..."
+	},
+	"ResetPassword": {
+		"ErrorMessage": "An error occurred while resetting the password.",
+		"NewConfirmPasswordLabel": "Confirm Password",
+		"NewConfirmPasswordPlaceholder": "Confirm your new password",
+		"NewPasswordLabel": "New Password",
+		"NewPasswordPlaceholder": "Enter your new password",
+		"ResetButton": "Reset Password",
+		"ResetPassword": "Reset Password",
+		"Resetting": "Resetting...",
+		"SuccessMessage": "Your password has been reset successfully."
+	},
+	"ResetPasswordRequest": {
+		"ErrorMessage": "An error occurred while sending the reset link.",
+		"ResetPasswordRequest": "Password Reset Request",
+		"Sending": "Sending...",
+		"SendResetLink": "Send reset link",
+		"SuccessMessage": "A password reset link has been sent to your email address."
+	},
+	"SettingsUsers": {
+		"Add": "Add User",
+		"CreateUser": "Create User",
+		"CreateUserError": "Error creating user",
+		"CreateUserSubtitle": "Add a new user account",
+		"CreateUserSuccess": "User created successfully and invitation sent",
+		"DeleteDescription": "This action cannot be undone. This will permanently delete {count} user(s) and all associated data.",
+		"DeleteError": "Error deleting users",
+		"DeleteSuccess": "Successfully deleted {count} user(s)",
+		"DeleteTitle": "Delete Users",
+		"DeleteUserDescription": "This action cannot be undone. This will permanently delete the user account and all associated data.",
+		"DeleteUserError": "Error deleting user",
+		"DeleteUserSuccess": "User deleted successfully",
+		"DeleteUsersDescription": "This action cannot be undone. This will permanently delete {count, plural, =1 {# user account} other {# user accounts}} and all associated data.",
+		"DeleteUsersError": "Error deleting users",
+		"DeleteUsersSuccess": "{count, plural, =1 {# user deleted} other {# users deleted}} successfully",
+		"DeleteUsersTitle": "Delete Users",
+		"DeleteUserTitle": "Delete User",
+		"ManageUsers": "Manage Users",
+		"ManageUsersSubtitle": "Manage user accounts and permissions",
+		"NameNotAvailable": "Name not available",
+		"NoUsersFound": "No users found",
+		"Profile": "Profile",
+		"SearchUsers": "Search users...",
+		"SendInvite": "Send Invitation",
+		"SendingInvitation": "Sending invitation...",
+		"UpdateUser": "Update User",
+		"UpdateUserError": "Error updating user",
+		"UpdateUserSubtitle": "Update user information",
+		"UpdateUserSuccess": "User updated successfully",
+		"UpdatingUser": "Updating user..."
+	},
+	"SpacingEditor": {
+		"AddGap": "Add gap",
+		"AddPadding": "Add padding",
+		"DeleteGap": "Delete gap",
+		"DeletePadding": "Delete padding",
+		"Gap": "Gap",
+		"GapName": "Gap name",
+		"Key": "Key:",
+		"MaxWidth": "Max Width",
+		"Padding": "Padding",
+		"PaddingName": "Padding name",
+		"Title": "Spacings"
+	},
+	"Validation": {
+		"EmailRequired": "Email is required",
+		"InvalidEmail": "Please enter a valid email address.",
+		"InvalidToken": "Invalid token",
+		"PasswordMismatch": "Passwords do not match",
+		"PasswordRequired": "Password is required",
+		"PasswordTooShort": "Password must be at least 8 characters",
+		"RequiredField": "This field is required.",
+		"TokenRequired": "Token is required"
+	}
+}

@@ -137,7 +137,7 @@ export const defaultFluidTypographySettings: FluidTypographySettings = {
 		// Headings
 		{
 			fontFamily: "Inter",
-			fontSize: { max: 3.5, min: 2.5, sizeUnit: "rem" },
+			fontSize: { max: 3.5, maxWidth: 1440, min: 2.5, sizeUnit: "rem" },
 			fontStyle: "normal",
 			fontWeight: "700",
 			key: "Heading 1",
@@ -149,7 +149,7 @@ export const defaultFluidTypographySettings: FluidTypographySettings = {
 		},
 		{
 			fontFamily: "Inter",
-			fontSize: { max: 3, min: 2, sizeUnit: "rem" },
+			fontSize: { max: 3, maxWidth: 1440, min: 2, sizeUnit: "rem" },
 			fontStyle: "normal",
 			fontWeight: "600",
 			key: "Heading 2",
@@ -161,7 +161,7 @@ export const defaultFluidTypographySettings: FluidTypographySettings = {
 		},
 		{
 			fontFamily: "Inter",
-			fontSize: { max: 2, min: 1.5, sizeUnit: "rem" },
+			fontSize: { max: 2, maxWidth: 1440, min: 1.5, sizeUnit: "rem" },
 			fontStyle: "normal",
 			fontWeight: "600",
 			key: "Heading 3",
@@ -175,7 +175,12 @@ export const defaultFluidTypographySettings: FluidTypographySettings = {
 		// Body text
 		{
 			fontFamily: "Poppins",
-			fontSize: { max: 1.25, min: 1.125, sizeUnit: "rem" },
+			fontSize: {
+				max: 1.25,
+				maxWidth: 1440,
+				min: 1.125,
+				sizeUnit: "rem",
+			},
 			fontStyle: "normal",
 			fontWeight: "400",
 			key: "Body Large",
@@ -187,7 +192,7 @@ export const defaultFluidTypographySettings: FluidTypographySettings = {
 		},
 		{
 			fontFamily: "Poppins",
-			fontSize: { max: 1.125, min: 1, sizeUnit: "rem" },
+			fontSize: { max: 1.125, maxWidth: 1440, min: 1, sizeUnit: "rem" },
 			fontStyle: "normal",
 			fontWeight: "400",
 			key: "Body",
@@ -199,7 +204,7 @@ export const defaultFluidTypographySettings: FluidTypographySettings = {
 		},
 		{
 			fontFamily: "Poppins",
-			fontSize: { max: 1, min: 0.875, sizeUnit: "rem" },
+			fontSize: { max: 1, maxWidth: 1440, min: 0.875, sizeUnit: "rem" },
 			fontStyle: "normal",
 			fontWeight: "400",
 			key: "Body Small",
@@ -213,7 +218,7 @@ export const defaultFluidTypographySettings: FluidTypographySettings = {
 		// UI elements
 		{
 			fontFamily: "Inter",
-			fontSize: { max: 1, min: 0.875, sizeUnit: "rem" },
+			fontSize: { max: 1, maxWidth: 1440, min: 0.875, sizeUnit: "rem" },
 			fontStyle: "normal",
 			fontWeight: "500",
 			key: "Button",
@@ -225,7 +230,12 @@ export const defaultFluidTypographySettings: FluidTypographySettings = {
 		},
 		{
 			fontFamily: "Poppins",
-			fontSize: { max: 0.875, min: 0.75, sizeUnit: "rem" },
+			fontSize: {
+				max: 0.875,
+				maxWidth: 1440,
+				min: 0.75,
+				sizeUnit: "rem",
+			},
 			fontStyle: "italic",
 			fontWeight: "400",
 			key: "Caption",
@@ -237,7 +247,7 @@ export const defaultFluidTypographySettings: FluidTypographySettings = {
 		},
 		{
 			fontFamily: "Poppins",
-			fontSize: { max: 1.125, min: 1, sizeUnit: "rem" },
+			fontSize: { max: 1.125, maxWidth: 1440, min: 1, sizeUnit: "rem" },
 			fontStyle: "normal",
 			fontWeight: "500",
 			key: "Link",

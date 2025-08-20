@@ -4,11 +4,10 @@ import { useCurrentUser } from "@/feature/user/queries/useUser";
 import { useUserStore } from "@/feature/user/stores/storeUser";
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
-	const { data: user, error, isLoading } = useCurrentUser();
+	const { data: user, error } = useCurrentUser();
 	const { user: storeUser, setUser } = useUserStore();
 
 	useEffect(() => {
-		if (isLoading) return;
 		if (
 			user &&
 			(!storeUser ||
@@ -20,11 +19,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 		if ((!user || error) && storeUser !== null) {
 			setUser(null);
 		}
-	}, [user, error, isLoading, setUser, storeUser]);
-
-	if (isLoading) {
-		return <div>Chargement...</div>;
-	}
+	}, [user, error, setUser, storeUser]);
 
 	return <>{children}</>;
 }

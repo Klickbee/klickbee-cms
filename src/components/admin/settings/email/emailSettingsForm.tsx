@@ -23,7 +23,7 @@ import {
 import {
 	EmailSettingsSchema,
 	emailSettingsSchema,
-} from "@/feature/settings/types/emailSettingsSchema";
+} from "@/feature/settings/schemas/emailSettingsSchema";
 import { encryptString } from "@/lib/crypto";
 
 export default function EmailSettingsForm() {

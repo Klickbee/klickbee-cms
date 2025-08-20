@@ -18,7 +18,7 @@ import { useSendEmail } from "@/feature/send-email/queries/useSendEmail";
 import {
 	CheckConnectionSchema,
 	checkConnectionSchema,
-} from "@/feature/settings/types/emailSettingsSchema";
+} from "@/feature/settings/schemas/emailSettingsSchema";
 
 export default function CheckConnectionForm() {
 	const checkConnectionForm = useForm<CheckConnectionSchema>({

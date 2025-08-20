@@ -7,7 +7,7 @@ import {
 	UseFormWatch,
 	useFieldArray,
 } from "react-hook-form";
-import type { FormValues } from "@/app/admin/[adminKey]/builder/settings/page";
+import type { FormValues } from "@/app/admin/[adminKey]/(dashboard)/manage/settings/builder/page";
 import TypographyItemEditor from "@/builder/components/settings/_partials/TypographyItemEditor";
 import { useGoogleFonts } from "@/builder/utils/query/useGoogleFonts";
 import { Button } from "@/components/ui/button";

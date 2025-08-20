@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "account" ALTER COLUMN "createdAt" SET DEFAULT CURRENT_TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "user" ALTER COLUMN "updatedAt" DROP DEFAULT;

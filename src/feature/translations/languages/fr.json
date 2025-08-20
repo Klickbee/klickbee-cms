@@ -1,0 +1,267 @@
+{
+	"AdminLayout": {
+		"Logout": "Déconnexion"
+	},
+	"AdminSidebar": {
+		"AI": "IA",
+		"Builder": "Builder",
+		"Contact": "Contact",
+		"Content": "Contenu",
+		"Copyright": "© Klickbee CMS",
+		"Dashboard": "Tableau de bord",
+		"Email": "Email",
+		"Media": "Média",
+		"Pages": "Pages",
+		"Settings": "Paramètres",
+		"Title": "Klickbee CMS",
+		"Users": "Utilisateurs"
+	},
+	"API": {
+		"Common": {
+			"EmailSendError": "Échec de l'envoi de l'email",
+			"InternalServerError": "Erreur interne du serveur",
+			"InvalidJsonFormat": "Format JSON invalide",
+			"MissingAdminKey": "La clé admin n'est pas configurée",
+			"MissingAppUrl": "L'URL de l'application n'est pas configurée"
+		},
+		"PasswordReset": {
+			"InvalidFormValidation": "Validation du formulaire invalide",
+			"InvalidToken": "Token invalide",
+			"Success": "Mot de passe réinitialisé avec succès",
+			"TokenExpired": "Token expiré"
+		},
+		"PasswordResetRequest": {
+			"EmailContent": "Veuillez utiliser ce lien pour réinitialiser votre mot de passe",
+			"EmailNotFound": "Email non trouvé",
+			"EmailRequired": "Une adresse email valide est requise",
+			"EmailSubject": "Demande de réinitialisation de mot de passe",
+			"Success": "Demande de réinitialisation envoyée avec succès"
+		}
+	},
+	"BuilderSettings": {
+		"Colors": "Couleurs",
+		"ColorsDescription": "Définissez la palette de couleurs de votre site.",
+		"Error": "Erreur",
+		"ErrorMessage": "Une erreur est survenue lors de la sauvegarde des paramètres.",
+		"FormErrors": "Il y a des erreurs dans le formulaire. Veuillez les corriger avant de soumettre.",
+		"GlobalSettings": "Paramètres globaux",
+		"GlobalSettingsDescription": "Configurez les paramètres globaux de votre site, comme la typographie, les couleurs, les espacements et les logos.",
+		"Logos": "Logos",
+		"LogosDescription": "Téléchargez et gérez les logos de votre site.",
+		"SaveSettings": "Sauvegarder les paramètres",
+		"Saving": "Sauvegarde en cours...",
+		"Spacing": "Espacements",
+		"SpacingDescription": "Configurez les espacements et marges utilisés dans la mise en page.",
+		"Success": "Succès",
+		"SuccessMessage": "Les paramètres ont été sauvegardés avec succès.",
+		"Typography": "Typographie",
+		"TypographyDescription": "Définissez les styles de texte utilisés sur votre site."
+	},
+	"ColorEditor": {
+		"AddColor": "Ajouter une couleur",
+		"ColorName": "Nom de la couleur",
+		"ColorPicker": "Sélecteur de couleur",
+		"DeleteColor": "Supprimer la couleur",
+		"SelectType": "Sélectionner un type",
+		"Title": "Couleurs",
+		"Type": "Type :"
+	},
+	"Common": {
+		"Back": "Retour",
+		"Cancel": "Annuler",
+		"CreatedAt": "Date de création",
+		"Delete": "Supprimer",
+		"DeleteSelected": "Supprimer la sélection",
+		"Download": "Télécharger",
+		"Edit": "Modifier",
+		"Email": "Email",
+		"EmailPlaceholder": "Entrez votre email",
+		"Name": "Nom",
+		"NamePlaceholder": "Saisir le nom complet",
+		"Next": "Suivant",
+		"Number": "Numéro",
+		"Of": "sur",
+		"Page": "Page",
+		"Password": "Mot de passe",
+		"PasswordPlaceholder": "Votre mot de passe",
+		"PhoneNumber": "Numéro de téléphone",
+		"Previous": "Précédent"
+	},
+	"Contacts": {
+		"ContactTitle": "{readingId} - {name}",
+		"DeleteContactDescription": "Cette action ne peut pas être annulée. Cela supprimera définitivement le contact et toutes ses données associées.",
+		"DeleteContactError": "Erreur lors de la suppression du contact",
+		"DeleteContactSuccess": "Contact supprimé avec succès",
+		"DeleteContactTitle": "Supprimer le contact",
+		"DeleteDescription": "Cette action ne peut pas être annulée. Cela supprimera définitivement {count} contact(s) et toutes leurs données associées.",
+		"DeleteError": "Erreur lors de la suppression des contacts",
+		"DeleteSuccess": "{count} contact(s) supprimé(s) avec succès",
+		"DeleteTitle": "Supprimer les contacts",
+		"FromContactAt": "Du contact du {date}",
+		"ManageContacts": "Gérer les contacts",
+		"ManageContactsSubtitle": "Gérer les soumissions de contact et les demandes",
+		"NameNotAvailable": "Nom non disponible",
+		"NoContactsFound": "Aucun contact trouvé",
+		"PhoneNumber": "Numéro de téléphone",
+		"SearchContacts": "Rechercher des contacts...",
+		"SubmitDate": "Date de soumission",
+		"ViewContact": "Voir le contact"
+	},
+	"Errors": {
+		"GoogleFontsError": "Erreur lors de la récupération des Google Fonts",
+		"LoadingError": "Erreur de chargement",
+		"SaveError": "Erreur de sauvegarde",
+		"UploadError": "Erreur upload",
+		"UserFetchError": "Erreur lors de la récupération de l'utilisateur"
+	},
+	"LandingPage": {
+		"Architecture": {
+			"AdminStructure": "Structure Admin",
+			"Benefit1": "Base de code unique pour le front-end et l'admin",
+			"Benefit2": "Déploiement simplifié avec un seul processus de build",
+			"Benefit3": "Types et validation partagés entre le front et le back",
+			"Benefit4": "Authentification et permissions intégrées",
+			"Benefit5": "Meilleure expérience développeur avec des modèles cohérents",
+			"Benefits": "Avantages clés",
+			"FrontEndStructure": "Structure Front-End",
+			"Title": "Architecture monolithique"
+		},
+		"Features": {
+			"CustomPostTypes": {
+				"Description": "Définissez vos propres types de contenu avec des champs personnalisés, de la validation et des relations.",
+				"Title": "Types de contenu personnalisés"
+			},
+			"TechStack": {
+				"Description": "Construit avec Next.js, React, Prisma ORM, Tailwind CSS et TypeScript pour une expérience conviviale pour les développeurs.",
+				"Title": "Stack technologique moderne"
+			},
+			"Title": "Fonctionnalités clés pour les développeurs",
+			"VisualBuilder": {
+				"Description": "Interface intuitive de glisser-déposer avec validation des composants et architecture basée sur des schémas.",
+				"Title": "Constructeur de pages visuel"
+			}
+		},
+		"Footer": {
+			"Community": "Communauté",
+			"Contact": "Contact",
+			"Copyright": "© {year} Stralya. Klickbee CMS est sous licence GNU Affero General Public License v3.0.",
+			"Resources": "Ressources",
+			"Tagline": "Le CMS que vous construiriez si vous aviez le temps d'en construire un."
+		},
+		"GettingStarted": {
+			"Option1": "Option 1 : Avec npm",
+			"Option2": "Option 2 : Avec Docker Compose",
+			"Step1": "1. Copiez le fichier d'environnement et configurez-le :",
+			"Step2docker": "2. Démarrez le conteneur de développement :",
+			"Step2npm": "2. Pour le premier lancement :",
+			"Step3npm": "3. Pour les lancements suivants :",
+			"Title": "Pour commencer"
+		},
+		"Hero": {
+			"AdminAccess": "Allez sur /admin/admin pour accéder au panneau d'administration",
+			"BuildTogether": "Construisons quelque chose de génial ensemble ! 🚀",
+			"DefaultCredentials": "et utilisez les identifiants par défaut :",
+			"GetStarted": "Commencer",
+			"GitHub": "GitHub",
+			"HaveALookBuilder": "Vous souhaitez voir le builder ? Aller à /admin/admin/builder",
+			"Password": "Mot de passe : admin123",
+			"Subtitle": "Monolithique. Visuel. Conçu pour la rapidité.",
+			"Title": "Votre nouveau CMS préféré",
+			"Username": "Nom d'utilisateur : admin@klickbee.com"
+		},
+		"LanguageSwitcher": {
+			"English": "Anglais",
+			"French": "Français",
+			"Label": "Changer de langue"
+		}
+	},
+	"Login": {
+		"AdminLogin": "Connexion admin",
+		"ConnectionError": "Identifiants incorrects.",
+		"ConnectionFailed": "Échec de la connexion. Veuillez réessayer.",
+		"LoggingIn": "Connexion...",
+		"LoginButton": "Se connecter"
+	},
+	"LogoEditor": {
+		"ClickToChoose": "Cliquer pour choisir",
+		"FileTypeError": "Seuls les fichiers PNG ou JPEG sont acceptés.",
+		"RectangleLogo": "Logo rectangulaire",
+		"SelectLogo": "Sélectionner un logo",
+		"SquareLogo": "Logo carré",
+		"Title": "Logos",
+		"Uploading": "Envoi en cours…"
+	},
+	"ResetPassword": {
+		"ErrorMessage": "Une erreur est survenue lors de la réinitialisation du mot de passe.",
+		"NewConfirmPasswordLabel": "Confirmer le mot de passe",
+		"NewConfirmPasswordPlaceholder": "Confirmez votre nouveau mot de passe",
+		"NewPasswordLabel": "Nouveau mot de passe",
+		"NewPasswordPlaceholder": "Entrez votre nouveau mot de passe",
+		"ResetButton": "Réinitialiser le mot de passe",
+		"ResetPassword": "Réinitialiser le mot de passe",
+		"Resetting": "Réinitialisation en cours...",
+		"SuccessMessage": "Votre mot de passe a été réinitialisé avec succès."
+	},
+	"ResetPasswordRequest": {
+		"ErrorMessage": "Une erreur est survenue lors de l'envoi du lien de réinitialisation.",
+		"ResetPasswordRequest": "Demande de réinitialisation du mot de passe",
+		"Sending": "Envoi en cours...",
+		"SendResetLink": "Envoyer le lien de réinitialisation",
+		"SuccessMessage": "Un lien de réinitialisation a été envoyé à votre adresse email."
+	},
+	"SettingsUsers": {
+		"Add": "Ajouter un utilisateur",
+		"CreateUser": "Créer un utilisateur",
+		"CreateUserError": "Erreur lors de la création de l'utilisateur",
+		"CreateUserSubtitle": "Ajouter un nouveau compte utilisateur",
+		"CreateUserSuccess": "Utilisateur créé avec succès et invitation envoyée",
+		"DeleteDescription": "Cette action ne peut pas être annulée. Cela supprimera définitivement {count} utilisateur(s) et toutes leurs données associées.",
+		"DeleteError": "Erreur lors de la suppression des utilisateurs",
+		"DeleteSuccess": "{count} utilisateur(s) supprimé(s) avec succès",
+		"DeleteTitle": "Supprimer les utilisateurs",
+		"DeleteUserDescription": "Cette action ne peut pas être annulée. Cela supprimera définitivement le compte de l'utilisateur et toutes ses données.",
+		"DeleteUserError": "Erreur lors de la suppression de l'utilisateur",
+		"DeleteUserSuccess": "Utilisateur supprimé avec succès",
+		"DeleteUsersDescription": "Cette action ne peut pas être annulée. Cela supprimera définitivement {count, plural, =1 {# compte utilisateur} other {# comptes utilisateurs}} et toutes leurs données.",
+		"DeleteUsersError": "Erreur lors de la suppression des utilisateurs",
+		"DeleteUsersSuccess": "{count, plural, =1 {# utilisateur supprimé} other {# utilisateurs supprimés}} avec succès",
+		"DeleteUsersTitle": "Supprimer les utilisateurs",
+		"DeleteUserTitle": "Supprimer l'utilisateur",
+		"ManageUsers": "Gérer les utilisateurs",
+		"ManageUsersSubtitle": "Gérer les comptes utilisateurs et les permissions",
+		"NameNotAvailable": "Nom non disponible",
+		"NoUsersFound": "Aucun utilisateur trouvé",
+		"Profile": "Profil",
+		"SearchUsers": "Rechercher des utilisateurs...",
+		"SendInvite": "Envoyer une invitation",
+		"SendingInvitation": "Envoi de l'invitation en cours...",
+		"UpdateUser": "Modifier l'utilisateur",
+		"UpdateUserError": "Erreur lors de la modification de l'utilisateur",
+		"UpdateUserSubtitle": "Modifier les informations de l'utilisateur",
+		"UpdateUserSuccess": "Utilisateur modifié avec succès",
+		"UpdatingUser": "Modification en cours..."
+	},
+	"SpacingEditor": {
+		"AddGap": "Ajouter un gap",
+		"AddPadding": "Ajouter un padding",
+		"DeleteGap": "Supprimer le gap",
+		"DeletePadding": "Supprimer le padding",
+		"Gap": "Gap",
+		"GapName": "Nom du gap",
+		"Key": "Clé :",
+		"MaxWidth": "Largeur maximale",
+		"Padding": "Padding",
+		"PaddingName": "Nom du padding",
+		"Title": "Espacements"
+	},
+	"Validation": {
+		"EmailRequired": "L'email est requis",
+		"InvalidEmail": "Adresse email invalide",
+		"InvalidToken": "Token invalide",
+		"PasswordMismatch": "Les mots de passe ne correspondent pas",
+		"PasswordRequired": "Le mot de passe est requis",
+		"PasswordTooShort": "Le mot de passe doit contenir au moins 8 caractères",
+		"RequiredField": "Ce champ est requis",
+		"TokenRequired": "Le token est requis"
+	}
+}

@@ -2,7 +2,7 @@ import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import React from "react";
 import { FieldArrayWithId, UseFormRegister, useForm } from "react-hook-form";
-import type { FormValues } from "@/app/admin/[adminKey]/builder/settings/page";
+import type { FormValues } from "@/app/admin/[adminKey]/(dashboard)/manage/settings/builder/page";
 import {
 	SectionGap,
 	SectionPadding,
@@ -149,7 +149,7 @@ const SpacingEditor = React.memo(function SpacingEditor({
 											}
 										/>
 										<span className="text-xs text-muted-foreground">
-											{pad?.[side]?.widthUnit}
+											px
 										</span>
 									</div>
 								))}
@@ -177,7 +177,6 @@ const SpacingEditor = React.memo(function SpacingEditor({
 									maxWidth: 1440,
 									min: 1,
 									sizeUnit: "rem",
-									widthUnit: "px",
 								},
 								key: "",
 								left: {
@@ -185,21 +184,18 @@ const SpacingEditor = React.memo(function SpacingEditor({
 									maxWidth: 1440,
 									min: 1,
 									sizeUnit: "rem",
-									widthUnit: "px",
 								},
 								right: {
 									max: 2,
 									maxWidth: 1440,
 									min: 1,
 									sizeUnit: "rem",
-									widthUnit: "px",
 								},
 								top: {
 									max: 2,
 									maxWidth: 1440,
 									min: 1,
 									sizeUnit: "rem",
-									widthUnit: "px",
 								},
 							})
 						}
@@ -270,7 +266,6 @@ const SpacingEditor = React.memo(function SpacingEditor({
 									maxWidth: 1440,
 									min: 1,
 									sizeUnit: "rem",
-									widthUnit: "px",
 								},
 								key: "",
 								row: {
@@ -278,7 +273,6 @@ const SpacingEditor = React.memo(function SpacingEditor({
 									maxWidth: 1440,
 									min: 1,
 									sizeUnit: "rem",
-									widthUnit: "px",
 								},
 							})
 						}

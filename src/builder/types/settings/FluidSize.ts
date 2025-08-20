@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const sizeUnits = ["px", "em", "rem", "%", "vw", "vh", "auto"] as const;
+export const sizeUnits = ["px", "em", "rem"] as const;
 export type SizeUnit = (typeof sizeUnits)[number];
 
 /**
@@ -17,8 +17,7 @@ export type FluidSize = {
 	min: number;
 	max: number;
 	sizeUnit: SizeUnit;
-	maxWidth?: number;
-	widthUnit?: SizeUnit;
+	maxWidth: number;
 };
 
 /**
@@ -26,10 +25,7 @@ export type FluidSize = {
  */
 export const fluidSizeSchema = z.object({
 	max: z.number().min(0, "Maximum size must be a positive number"),
-	maxWidth: z
-		.number()
-		.positive("Max width must be a positive number")
-		.optional(),
+	maxWidth: z.number().positive("Max width must be a positive number"),
 	min: z.number().min(0, "Minimum size must be a positive number"),
 	sizeUnit: z.enum(sizeUnits, {
 		errorMap: () => ({ message: "Size unit must be one of: px, em, rem" }),

@@ -1,8 +1,23 @@
 services:
+  # Development service that uses setup:dev script
   frontend:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - 3000:3000
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - .:/app
+      - /app/node_modules
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
 

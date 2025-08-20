@@ -43,19 +43,19 @@ export const spacingSettingsSchema = z.object({
 export const defaultSpacingSettings: SpacingSettings = {
 	gap: [
 		{
-			column: { max: 1, min: 0.5, sizeUnit: "rem" },
+			column: { max: 1, maxWidth: 1440, min: 0.5, sizeUnit: "rem" },
 			key: "default-gap",
-			row: { max: 1, min: 0.5, sizeUnit: "rem" },
+			row: { max: 1, maxWidth: 1440, min: 0.5, sizeUnit: "rem" },
 		},
 	],
 	maxWidth: 1440,
 	sectionPadding: [
 		{
-			bottom: { max: 2, min: 1, sizeUnit: "rem" },
+			bottom: { max: 2, maxWidth: 1440, min: 1, sizeUnit: "rem" },
 			key: "default-padding",
-			left: { max: 2, min: 1, sizeUnit: "rem" },
-			right: { max: 2, min: 1, sizeUnit: "rem" },
-			top: { max: 2, min: 1, sizeUnit: "rem" },
+			left: { max: 2, maxWidth: 1440, min: 1, sizeUnit: "rem" },
+			right: { max: 2, maxWidth: 1440, min: 1, sizeUnit: "rem" },
+			top: { max: 2, maxWidth: 1440, min: 1, sizeUnit: "rem" },
 		},
 	],
 };

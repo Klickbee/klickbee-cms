@@ -108,12 +108,36 @@ front/
 
 **Option 1: With npm**
 
+1. Copy the environment file and configure it:
+```sh
+cp .env.example .env
+# Edit .env file with your configuration
+```
+
+2. For first launch:
 ```sh
 npm run setup:dev
 ```
 
+3. For subsequent launches:
+```sh
+npm run dev
+```
+
 **Option 2: With Docker Compose**
 
+1. Copy the environment file and configure it:
+```sh
+cp .env.example .env
+# Edit .env file with your configuration
+```
+
+2. Start the development container:
+```sh
+docker compose up
+```
+
+3. For background mode:
 ```sh
 docker compose up -d
 ```
@@ -140,7 +164,7 @@ This project uses [**Biome**](https://biomejs.dev/) for linting, formatting, and
 "scripts": {
   "check": "biome check --write .",
   "format": "biome format --write .",
-	"format:check": "biome format .",
+  "format:check": "biome format .",
   "lint": "biome lint --write .",
   "typecheck": "tsc --noEmit"
 }
@@ -209,7 +233,7 @@ This project is licensed under the [GNU Affero General Public License v3.0](./LI
 We build tools for digital creators.
 
 - ✉️ contact@stralya.com
-- 💬 [Discord](https://discord.gg/AetD8jjs)
+- 💬 [Discord](https://discord.gg/SmBxh4wPrv)
 - 💬 [Reddit](https://www.reddit.com/r/klickbee_cms/)
 - 🌎 [stralya.com](https://stralya.com) *(coming soon)*
 

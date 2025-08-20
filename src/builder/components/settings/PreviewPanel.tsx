@@ -1,6 +1,6 @@
 // PreviewPanel.tsx
 
-import type { FormValues } from "@/app/admin/[adminKey]/builder/settings/page";
+import type { FormValues } from "@/app/admin/[adminKey]/(dashboard)/manage/settings/builder/page";
 import ColorPreview from "./ColorPreview";
 import SpacingPreview from "./SpacingPreview";
 import TypographyPreview from "./TypographyPreview";
