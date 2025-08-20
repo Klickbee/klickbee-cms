@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { Usable, useEffect, useState } from "react";
 import { toast } from "sonner";
-import DefaultCardTitle from "@/components/admin/manage/CardTitle";
+import CardTitle from "@/components/admin/manage/CardTitle";
 import BulkActions from "@/components/admin/manage/content/BulkActions";
 import DefaultHeader from "@/components/admin/manage/DefaultHeader";
 import EmptyStateComponent from "@/components/admin/manage/EmptyState";
@@ -188,7 +188,7 @@ export default function AdminContentItemsPage({
 			<Card className={"mx-8 my-6 p-0 gap-0 pb-4"}>
 				<CardHeader className={"border-b [.border-b]:pb-3 p-3 gap-0"}>
 					<div className="flex flex-row items-center justify-between">
-						<DefaultCardTitle>{collectionName}</DefaultCardTitle>
+						<CardTitle>{collectionName}</CardTitle>
 						<BulkActions
 							checkedRows={checkedRows}
 							collectionsLength={collectionItems?.length || 0}

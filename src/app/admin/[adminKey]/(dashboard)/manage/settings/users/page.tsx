@@ -1,9 +1,11 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import DashboardTitle from "@/components/admin/_partials/dashboardTitle";
+import CardTitle from "@/components/admin/manage/CardTitle";
 import UserActionButton from "@/components/admin/settings/users/actionButton";
 import UsersPagination from "@/components/admin/settings/users/pagination";
 import UserSearchBar from "@/components/admin/settings/users/searchBar";
 import UsersTable from "@/components/admin/settings/users/usersTable";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { UsersTableProvider } from "@/feature/user/contexts/UsersTableContext";
 import { allUsersOptions } from "@/feature/user/options/allUsersOptions";
 import { getQueryClient } from "@/lib/getQueryClient";
@@ -14,22 +16,25 @@ export default function Page() {
 
 	return (
 		<HydrationBoundary state={dehydrate(queryClient)}>
-			<section className="flex flex-col gap-4">
-				<DashboardTitle
-					subtitle="ManageUsersSubtitle"
-					title="ManageUsers"
-					translationNamespace="SettingsUsers"
-				/>
-				<div className="p-12 space-y-4">
-					<UsersTableProvider>
-						<div className="flex items-center justify-between gap-4">
+			<DashboardTitle
+				subtitle="ManageUsersSubtitle"
+				title="ManageUsers"
+				translationNamespace="SettingsUsers"
+			/>
+			<section className="py-6 px-8">
+				<Card className="gap-0 py-0">
+					<CardHeader className="py-3 px-4 gap-0 flex flex-row justify-between items-center border-b">
+						<CardTitle>Users</CardTitle>
+						<UserActionButton />
+					</CardHeader>
+					<CardContent className="p-4 flex flex-col gap-4">
+						<UsersTableProvider>
 							<UserSearchBar />
-							<UserActionButton />
-						</div>
-						<UsersTable />
-						<UsersPagination />
-					</UsersTableProvider>
-				</div>
+							<UsersTable />
+							<UsersPagination />
+						</UsersTableProvider>
+					</CardContent>
+				</Card>
 			</section>
 		</HydrationBoundary>
 	);

@@ -38,7 +38,7 @@ export default async function AdminLayout({
 						<div className="flex min-h-screen">
 							<SidebarProvider>
 								{currentUser && <Sidebar />}
-								<main className="flex-1">
+								<main className="flex-1 flex flex-col">
 									{children}
 									<Toaster />
 								</main>
