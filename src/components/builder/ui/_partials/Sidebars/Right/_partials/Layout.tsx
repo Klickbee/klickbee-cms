@@ -1,204 +1,255 @@
 "use client";
 
+import {
+	AlignStartVertical,
+	AlignVerticalDistributeCenter,
+	AlignVerticalJustifyCenter,
+	AlignVerticalJustifyEnd,
+	AlignVerticalSpaceAround,
+	AlignVerticalSpaceBetween,
+	MoveHorizontal,
+	MoveVertical,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import {
-	type AlignContent,
 	type AlignItems,
-	alignContentSchema,
-	alignItemsSchema,
 	type DisplayType,
-	displayTypeSchema,
 	type FlexDirection,
-	FlexWrap,
-	flexDirectionSchema,
-	flexWrapSchema,
-	type GridAuto,
-	type GridAutoFlow,
-	gridAutoFlowSchema,
+	type FlexWrap,
 	type JustifyContent,
-	type JustifyItems,
-	justifyContentSchema,
-	justifyItemsSchema,
-} from "@/builder/types/components/properties/componentStylePropsSchema";
+} from "@/builder/types/components/properties/componentStylePropsType";
 import { type SizeUnit } from "@/builder/types/settings/FluidSize";
-import DynamicEnumSelect from "./DynamicEnumSelect";
-import GapInput from "./GapInput";
-import GridAutoInput from "./GridAutoInput";
-import NumberInput from "./NumberInput";
+import BinaryToggle from "@/components/builder/ui/BinaryToggle";
+import DualInput from "@/components/builder/ui/DualInput";
+import IconToggleGroup from "@/components/builder/ui/IconToggleGroup";
+import NumberInput from "@/components/builder/ui/NumberInput";
+import PropertyColumn from "@/components/builder/ui/PropertyColumn";
+import PropertyRow from "@/components/builder/ui/PropertyRow";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 
 export default function BuilderStyleLayout() {
 	const t = useTranslations("Builder.RightSidebar.Layout");
-	const selectedElement = true; // Replace with actual state or prop to get the selected element
 
-	const [displayType, setDisplayType] = useState<DisplayType>("block");
+	// Display state
+	const [displayType, setDisplayType] = useState<DisplayType>("flex");
 
 	// Flex states
 	const [flexDirection, setFlexDirection] = useState<FlexDirection>("row");
 	const [justifyContent, setJustifyContent] =
 		useState<JustifyContent>("start");
 	const [alignItems, setAlignItems] = useState<AlignItems>("stretch");
-	const [alignContent, setAlignContent] = useState<AlignContent>("stretch");
 	const [flexWrap, setFlexWrap] = useState<FlexWrap>("nowrap");
-	const [flexGrow, setFlexGrow] = useState<number>(0);
-	const [flexShrink, setFlexShrink] = useState<number>(1);
 
-	// Grid states
-	const [gridColumns, setGridColumns] = useState<GridAuto>(1);
-	const [gridRows, setGridRows] = useState<GridAuto>(1);
-	const [gridAutoColumns, setGridAutoColumns] = useState<GridAuto>(1);
-	const [gridAutoRows, setGridAutoRows] = useState<GridAuto>(1);
-	const [gridAutoFlow, setGridAutoFlow] = useState<GridAutoFlow>("row");
-	const [justifyItems, setJustifyItems] = useState<JustifyItems>("stretch");
-
-	// Gap states (shared)
+	// Gap states (shared between flex and grid)
 	const [gapX, setGapX] = useState<number>(0);
 	const [gapY, setGapY] = useState<number>(0);
 	const [gapUnit, setGapUnit] = useState<SizeUnit>("px");
 
+	// Grid states
+	const [gridColumns, setGridColumns] = useState<number>(1);
+	const [gridRows, setGridRows] = useState<number>(1);
+
+	// Determine if layout controls should be shown
+	const isFlexLayout =
+		displayType === "flex" || displayType === "inline-flex";
+	const isGridLayout =
+		displayType === "grid" || displayType === "inline-grid";
+	const hasLayoutControls = isFlexLayout || isGridLayout;
+
+	// Direction options for flex
+	const directionOptions = [
+		{ icon: MoveVertical, value: "column" as const },
+		{ icon: MoveHorizontal, value: "row" as const },
+	];
+
+	// Justify Content options
+	const justifyContentOptions = [
+		{ icon: AlignStartVertical, value: "start" as const },
+		{ icon: AlignVerticalJustifyCenter, value: "center" as const },
+		{ icon: AlignVerticalJustifyEnd, value: "end" as const },
+		{ icon: AlignVerticalSpaceBetween, value: "space-between" as const },
+		{ icon: AlignVerticalSpaceAround, value: "space-around" as const },
+		{
+			icon: AlignVerticalDistributeCenter,
+			value: "space-evenly" as const,
+		},
+	];
+
 	return (
-		<div className="flex flex-col gap-4 p-4">
-			{selectedElement ? (
+		<div className="flex flex-col gap-3 pt-3">
+			{/* Display Type */}
+			<PropertyRow label={t("DisplayType")}>
+				<Select
+					onValueChange={(value) =>
+						setDisplayType(value as DisplayType)
+					}
+					value={displayType}
+				>
+					<SelectTrigger className="w-full">
+						<SelectValue />
+					</SelectTrigger>
+					<SelectContent>
+						<SelectItem value="block">Block</SelectItem>
+						<SelectItem value="inline">Inline</SelectItem>
+						<SelectItem value="flex">Flex</SelectItem>
+						<SelectItem value="inline-flex">Inline Flex</SelectItem>
+						<SelectItem value="grid">Grid</SelectItem>
+						<SelectItem value="inline-grid">Inline Grid</SelectItem>
+					</SelectContent>
+				</Select>
+			</PropertyRow>
+
+			{/* Flex Layout Controls */}
+			{isFlexLayout && (
 				<>
-					<DynamicEnumSelect
-						enumSchema={displayTypeSchema}
-						label={t("DisplayType")}
-						onValueChange={setDisplayType}
-						placeholder="Block"
-						value={displayType}
-					/>
-					{(displayType === "flex" ||
-						displayType === "inline-flex") && (
-						<>
-							<DynamicEnumSelect
-								enumSchema={flexDirectionSchema}
-								label={t("Direction")}
-								onValueChange={setFlexDirection}
-								placeholder="Row"
-								value={flexDirection}
-							/>
-							<DynamicEnumSelect
-								enumSchema={flexWrapSchema}
-								label={t("FlexWrap")}
-								onValueChange={setFlexWrap}
-								placeholder="No Wrap"
-								value={flexWrap}
-							/>
-							<DynamicEnumSelect
-								enumSchema={justifyContentSchema}
-								label={t("JustifyContent")}
-								onValueChange={setJustifyContent}
-								placeholder="Start"
-								value={justifyContent}
-							/>
-							<DynamicEnumSelect
-								enumSchema={alignItemsSchema}
-								label={t("AlignItems")}
-								onValueChange={setAlignItems}
-								placeholder="Stretch"
-								value={alignItems}
-							/>
-							<DynamicEnumSelect
-								enumSchema={alignContentSchema}
-								label={t("AlignContent")}
-								onValueChange={setAlignContent}
-								placeholder="Stretch"
-								value={alignContent}
-							/>
-							<NumberInput
-								label={t("FlexGrow")}
-								min={0}
-								onValueChange={setFlexGrow}
-								placeholder="0"
-								value={flexGrow}
-							/>
-							<NumberInput
-								label={t("FlexShrink")}
-								min={0}
-								onValueChange={setFlexShrink}
-								placeholder="1"
-								value={flexShrink}
-							/>
-						</>
-					)}
-					{(displayType === "grid" ||
-						displayType === "inline-grid") && (
-						<>
-							<GridAutoInput
-								label={t("GridColumns")}
-								onValueChange={setGridColumns}
-								value={gridColumns}
-							/>
-							<GridAutoInput
-								label={t("GridRows")}
-								onValueChange={setGridRows}
-								value={gridRows}
-							/>
-							<DynamicEnumSelect
-								enumSchema={gridAutoFlowSchema}
-								label={t("GridAutoFlow")}
-								onValueChange={setGridAutoFlow}
-								placeholder="Row"
-								value={gridAutoFlow}
-							/>
-							<GridAutoInput
-								label={t("GridAutoColumns")}
-								onValueChange={setGridAutoColumns}
-								value={gridAutoColumns}
-							/>
-							<GridAutoInput
-								label={t("GridAutoRows")}
-								onValueChange={setGridAutoRows}
-								value={gridAutoRows}
-							/>
-							<DynamicEnumSelect
-								enumSchema={justifyContentSchema}
-								label={t("JustifyContent")}
-								onValueChange={setJustifyContent}
-								placeholder="Start"
-								value={justifyContent}
-							/>
-							<DynamicEnumSelect
-								enumSchema={justifyItemsSchema}
-								label={t("JustifyItems")}
-								onValueChange={setJustifyItems}
-								placeholder="Stretch"
-								value={justifyItems}
-							/>
-							<DynamicEnumSelect
-								enumSchema={alignItemsSchema}
-								label={t("AlignItems")}
-								onValueChange={setAlignItems}
-								placeholder="Stretch"
-								value={alignItems}
-							/>
-							<DynamicEnumSelect
-								enumSchema={alignContentSchema}
-								label={t("AlignContent")}
-								onValueChange={setAlignContent}
-								placeholder="Stretch"
-								value={alignContent}
-							/>
-						</>
-					)}
-					{(displayType === "flex" ||
-						displayType === "inline-flex" ||
-						displayType === "grid" ||
-						displayType === "inline-grid") && (
-						<GapInput
-							label={t("Gap")}
-							onUnitChange={setGapUnit}
+					{/* Direction */}
+					<PropertyRow label={t("Direction")}>
+						<IconToggleGroup
+							onValueChange={setFlexDirection}
+							options={directionOptions}
+							value={flexDirection}
+						/>
+					</PropertyRow>
+
+					{/* Justify Content */}
+					<PropertyColumn label={t("JustifyContent")}>
+						<IconToggleGroup
+							onValueChange={setJustifyContent}
+							options={justifyContentOptions}
+							value={justifyContent}
+						/>
+					</PropertyColumn>
+
+					{/* Gap */}
+					<PropertyColumn
+						action={
+							<Select
+								onValueChange={(value) =>
+									setGapUnit(value as SizeUnit)
+								}
+								value={gapUnit}
+							>
+								<SelectTrigger className="h-auto p-0 border-0 bg-transparent text-xs text-zinc-500 hover:text-zinc-700">
+									({gapUnit})
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="px">px</SelectItem>
+									<SelectItem value="rem">rem</SelectItem>
+									<SelectItem value="em">em</SelectItem>
+								</SelectContent>
+							</Select>
+						}
+						label={t("Gap")}
+					>
+						<DualInput
 							onValueXChange={setGapX}
 							onValueYChange={setGapY}
-							unit={gapUnit}
+							placeholderX="0"
+							placeholderY="0"
 							valueX={gapX}
 							valueY={gapY}
 						/>
-					)}
+					</PropertyColumn>
+
+					{/* Align Items */}
+					<PropertyRow label={t("AlignItems")}>
+						<Select
+							onValueChange={(value) =>
+								setAlignItems(value as AlignItems)
+							}
+							value={alignItems}
+						>
+							<SelectTrigger className="w-full">
+								<SelectValue />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="start">Start</SelectItem>
+								<SelectItem value="center">Center</SelectItem>
+								<SelectItem value="end">End</SelectItem>
+								<SelectItem value="stretch">Stretch</SelectItem>
+							</SelectContent>
+						</Select>
+					</PropertyRow>
+
+					{/* Wrap */}
+					<PropertyRow label={t("FlexWrap")}>
+						<BinaryToggle
+							falseLabel={t("No")}
+							onValueChange={(wrap) =>
+								setFlexWrap(wrap ? "wrap" : "nowrap")
+							}
+							trueLabel={t("Yes")}
+							value={flexWrap === "wrap"}
+						/>
+					</PropertyRow>
 				</>
-			) : (
-				<p className="text-sm text-gray-500">
-					Select an element to see its style properties.
+			)}
+
+			{/* Grid Layout Controls */}
+			{isGridLayout && (
+				<>
+					{/* Columns (fr) */}
+					<PropertyRow label="Columns (fr)">
+						<NumberInput
+							onValueChange={setGridColumns}
+							placeholder="1"
+							value={gridColumns}
+						/>
+					</PropertyRow>
+
+					{/* Rows (fr) */}
+					<PropertyRow label="Rows (fr)">
+						<NumberInput
+							onValueChange={setGridRows}
+							placeholder="1"
+							value={gridRows}
+						/>
+					</PropertyRow>
+
+					{/* Gap */}
+					<PropertyColumn
+						action={
+							<Select
+								onValueChange={(value) =>
+									setGapUnit(value as SizeUnit)
+								}
+								value={gapUnit}
+							>
+								<SelectTrigger className="h-auto p-0 border-0 bg-transparent text-xs text-zinc-500 hover:text-zinc-700">
+									({gapUnit})
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="px">px</SelectItem>
+									<SelectItem value="rem">rem</SelectItem>
+									<SelectItem value="em">em</SelectItem>
+								</SelectContent>
+							</Select>
+						}
+						label={t("Gap")}
+					>
+						<DualInput
+							onValueXChange={setGapY}
+							onValueYChange={setGapX}
+							placeholderX="0"
+							placeholderY="0"
+							valueX={gapY}
+							valueY={gapX}
+						/>
+					</PropertyColumn>
+				</>
+			)}
+
+			{/* No controls message */}
+			{!hasLayoutControls && (
+				<p className="text-sm text-zinc-500">
+					Select Flex or Grid to see layout controls.
 				</p>
 			)}
 		</div>
