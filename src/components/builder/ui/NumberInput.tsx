@@ -11,6 +11,7 @@ interface NumberInputProps {
 	placeholder?: string;
 	className?: string;
 	icon?: LucideIcon;
+	hideIcon?: boolean;
 }
 
 export default function NumberInput({
@@ -19,6 +20,7 @@ export default function NumberInput({
 	placeholder = "0",
 	className,
 	icon,
+	hideIcon = false,
 }: NumberInputProps) {
 	const [inputValue, setInputValue] = useState(value.toString());
 
@@ -57,7 +59,7 @@ export default function NumberInput({
 					type="number"
 					value={inputValue}
 				/>
-				{!icon && (
+				{!icon && !hideIcon && (
 					<ChevronsUpDown className="size-4 text-zinc-950 shrink-0" />
 				)}
 			</div>
