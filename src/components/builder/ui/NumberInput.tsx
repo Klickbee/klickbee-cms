@@ -53,7 +53,7 @@ export default function NumberInput({
 					<IconComponent className="size-4 text-zinc-500 shrink-0" />
 				)}
 				<Input
-					className="border-none shadow-none p-0 h-auto text-xs font-normal bg-transparent flex-1"
+					className="border-none shadow-none p-0 h-auto text-xs font-normal bg-transparent flex-1 focus-visible:ring-0 focus:ring-0 [&_input]:focus-visible:ring-0 [&_input]:focus:ring-0"
 					onChange={handleChange}
 					placeholder={placeholder}
 					type="number"

@@ -32,7 +32,7 @@ export default function SimpleUnitInput({
 			{/* Input section */}
 			<div className="flex-1 flex items-center">
 				<NumberInput
-					className="border-none shadow-none bg-transparent h-auto flex-1 [&>div]:pl-3 [&>div]:pr-2 [&>div]:py-2 focus-visible:ring-0 focus:ring-0 [&_input]:focus-visible:ring-0 [&_input]:focus:ring-0"
+					className="border-none shadow-none bg-transparent h-auto flex-1 [&>div]:pl-3 [&>div]:pr-2 [&>div]:py-2"
 					hideIcon
 					onValueChange={onValueChange}
 					placeholder={placeholder}
