@@ -1,11 +1,6 @@
 "use client";
 
-import {
-	ArrowDownToLine,
-	ArrowLeftToLine,
-	ArrowRightToLine,
-	ArrowUpToLine,
-} from "lucide-react";
+import { LucideIcon } from "lucide-react";
 import NumberInput from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/NumberInput";
 import { cn } from "@/lib/utils";
 
@@ -18,6 +13,10 @@ interface QuadInputProps {
 	onRightChange: (value: number) => void;
 	onBottomChange: (value: number) => void;
 	onLeftChange: (value: number) => void;
+	topIcon?: LucideIcon;
+	rightIcon?: LucideIcon;
+	bottomIcon?: LucideIcon;
+	leftIcon?: LucideIcon;
 	className?: string;
 }
 
@@ -30,31 +29,35 @@ export default function QuadInput({
 	onRightChange,
 	onBottomChange,
 	onLeftChange,
+	topIcon,
+	rightIcon,
+	bottomIcon,
+	leftIcon,
 	className,
 }: QuadInputProps) {
 	return (
 		<div className={cn("grid grid-cols-2 gap-2", className)}>
 			{/* Top */}
 			<NumberInput
-				icon={ArrowUpToLine}
+				icon={topIcon}
 				onValueChange={onTopChange}
 				value={topValue}
 			/>
 			{/* Right */}
 			<NumberInput
-				icon={ArrowRightToLine}
+				icon={rightIcon}
 				onValueChange={onRightChange}
 				value={rightValue}
 			/>
 			{/* Bottom */}
 			<NumberInput
-				icon={ArrowDownToLine}
+				icon={bottomIcon}
 				onValueChange={onBottomChange}
 				value={bottomValue}
 			/>
 			{/* Left */}
 			<NumberInput
-				icon={ArrowLeftToLine}
+				icon={leftIcon}
 				onValueChange={onLeftChange}
 				value={leftValue}
 			/>
