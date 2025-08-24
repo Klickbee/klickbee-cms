@@ -1,5 +1,11 @@
 "use client";
 
+import {
+	ArrowDownToLine,
+	ArrowLeftToLine,
+	ArrowRightToLine,
+	ArrowUpToLine,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { SizeUnit } from "@/builder/types/settings/FluidSize";
@@ -128,13 +134,17 @@ export default function BuilderStyleSizeAndSpacing() {
 				label={t("padding")}
 			>
 				<QuadInput
+					bottomIcon={ArrowDownToLine}
 					bottomValue={paddingBottom}
+					leftIcon={ArrowLeftToLine}
 					leftValue={paddingLeft}
 					onBottomChange={setPaddingBottom}
 					onLeftChange={setPaddingLeft}
 					onRightChange={setPaddingRight}
 					onTopChange={setPaddingTop}
+					rightIcon={ArrowRightToLine}
 					rightValue={paddingRight}
+					topIcon={ArrowUpToLine}
 					topValue={paddingTop}
 				/>
 			</PropertyColumn>
@@ -150,13 +160,17 @@ export default function BuilderStyleSizeAndSpacing() {
 				label={t("margin")}
 			>
 				<QuadInput
+					bottomIcon={ArrowDownToLine}
 					bottomValue={marginBottom}
+					leftIcon={ArrowLeftToLine}
 					leftValue={marginLeft}
 					onBottomChange={setMarginBottom}
 					onLeftChange={setMarginLeft}
 					onRightChange={setMarginRight}
 					onTopChange={setMarginTop}
+					rightIcon={ArrowRightToLine}
 					rightValue={marginRight}
+					topIcon={ArrowUpToLine}
 					topValue={marginTop}
 				/>
 			</PropertyColumn>

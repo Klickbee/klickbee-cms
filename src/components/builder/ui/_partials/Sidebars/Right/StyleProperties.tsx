@@ -1,5 +1,6 @@
 import { useTranslations } from "next-intl";
 import BuilderStyleBackground from "@/components/builder/ui/_partials/Sidebars/Right/_partials/Background";
+import BuilderStyleBordersAndCorners from "@/components/builder/ui/_partials/Sidebars/Right/_partials/BordersAndCorners";
 import BuilderStyleLayout from "@/components/builder/ui/_partials/Sidebars/Right/_partials/Layout";
 import BuilderStylePosition from "@/components/builder/ui/_partials/Sidebars/Right/_partials/Position";
 import BuilderStyleSizeAndSpacing from "@/components/builder/ui/_partials/Sidebars/Right/_partials/SizeAndSpacing";
@@ -53,11 +54,20 @@ export default function BuilderStyleProperties() {
 			</AccordionItem>
 
 			<AccordionItem value="background">
-				<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200">
+				<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 data-[state=open]:border-b">
 					{t("Background.title")}
 				</AccordionTrigger>
-				<AccordionContent className="px-4 py-3">
+				<AccordionContent className="px-4 py-3 border-b border-zinc-200">
 					<BuilderStyleBackground />
+				</AccordionContent>
+			</AccordionItem>
+
+			<AccordionItem value="borders">
+				<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 data-[state=open]:border-b">
+					Borders & Corners
+				</AccordionTrigger>
+				<AccordionContent className="px-4 py-3 border-b border-zinc-200">
+					<BuilderStyleBordersAndCorners />
 				</AccordionContent>
 			</AccordionItem>
 
@@ -76,15 +86,6 @@ export default function BuilderStyleProperties() {
 				</AccordionTrigger>
 				<AccordionContent className="px-4 py-3">
 					<BuilderStyleEffects />
-				</AccordionContent>
-			</AccordionItem>
-
-			<AccordionItem value="borders">
-				<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200">
-					Borders & Corners
-				</AccordionTrigger>
-				<AccordionContent className="px-4 py-3">
-					<BuilderStyleBordersAndCorners />
 				</AccordionContent>
 			</AccordionItem>
 

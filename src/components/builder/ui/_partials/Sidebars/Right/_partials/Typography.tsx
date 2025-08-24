@@ -36,7 +36,7 @@ import IconToggleGroup from "@/components/builder/ui/_partials/Sidebars/Right/_p
 import SimpleUnitInput from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/SimpleUnitInput";
 import PropertyColumn from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyColumn";
 import PropertyRow from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyRow";
-import TypographyColorPicker from "@/components/builder/ui/_partials/Sidebars/Right/_partials/pickers/TypographyColorPicker";
+import BasicColorPicker from "@/components/builder/ui/_partials/Sidebars/Right/_partials/pickers/BasicColorPicker";
 import {
 	Select,
 	SelectContent,
@@ -246,10 +246,7 @@ export default function BuilderStyleTypography() {
 
 			{/* Text Color */}
 			<PropertyRow label={t("textColor")}>
-				<TypographyColorPicker
-					onChange={setTextColor}
-					value={textColor}
-				/>
+				<BasicColorPicker onChange={setTextColor} value={textColor} />
 			</PropertyRow>
 
 			{/* Text Alignment */}

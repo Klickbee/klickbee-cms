@@ -1,6 +1,13 @@
 "use client";
 
-import { MoveHorizontal, MoveVertical } from "lucide-react";
+import {
+	ArrowDownToLine,
+	ArrowLeftToLine,
+	ArrowRightToLine,
+	ArrowUpToLine,
+	MoveHorizontal,
+	MoveVertical,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import {
@@ -97,13 +104,17 @@ export default function BuilderStylePosition() {
 				label={t("spacing")}
 			>
 				<QuadInput
+					bottomIcon={ArrowDownToLine}
 					bottomValue={spacingBottom}
+					leftIcon={ArrowLeftToLine}
 					leftValue={spacingLeft}
 					onBottomChange={setSpacingBottom}
 					onLeftChange={setSpacingLeft}
 					onRightChange={setSpacingRight}
 					onTopChange={setSpacingTop}
+					rightIcon={ArrowRightToLine}
 					rightValue={spacingRight}
+					topIcon={ArrowUpToLine}
 					topValue={spacingTop}
 				/>
 			</PropertyColumn>
