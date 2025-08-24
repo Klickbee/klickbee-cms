@@ -51,6 +51,21 @@
 				"title": "Background",
 				"uploadFromComputer": "Upload from computer"
 			},
+			"BordersAndCorners": {
+				"borderColor": "Border Color",
+				"borderRadius": "Border Radius",
+				"borderStyle": "Border Style",
+				"borderWidth": "Border Width",
+				"dashed": "Dashed",
+				"dotted": "Dotted",
+				"double": "Double",
+				"none": "None",
+				"outlineColor": "Outline Color",
+				"outlineStyle": "Outline Style",
+				"outlineWidth": "Outline Width",
+				"solid": "Solid",
+				"title": "Borders & Corners"
+			},
 			"Layout": {
 				"AlignContent": "Align Content",
 				"AlignItems": "Align Items",

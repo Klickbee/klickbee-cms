@@ -51,6 +51,21 @@
 				"title": "Arrière-plan",
 				"uploadFromComputer": "Télécharger depuis l'ordinateur"
 			},
+			"BordersAndCorners": {
+				"borderColor": "Couleur de bordure",
+				"borderRadius": "Rayon de bordure",
+				"borderStyle": "Style de bordure",
+				"borderWidth": "Largeur de bordure",
+				"dashed": "Tirets",
+				"dotted": "Pointillés",
+				"double": "Double",
+				"none": "Aucun",
+				"outlineColor": "Couleur de contour",
+				"outlineStyle": "Style de contour",
+				"outlineWidth": "Largeur de contour",
+				"solid": "Solide",
+				"title": "Bordures et coins"
+			},
 			"Layout": {
 				"AlignContent": "Aligner le contenu",
 				"AlignItems": "Aligner les éléments",
