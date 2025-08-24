@@ -40,6 +40,17 @@
 	},
 	"Builder": {
 		"RightSidebar": {
+			"Background": {
+				"color": "Color",
+				"gradient": "Gradient",
+				"image": "Images",
+				"linear": "Linear",
+				"none": "None",
+				"radial": "Radial",
+				"solid": "Solid",
+				"title": "Background",
+				"uploadFromComputer": "Upload from computer"
+			},
 			"Layout": {
 				"AlignContent": "Align Content",
 				"AlignItems": "Align Items",

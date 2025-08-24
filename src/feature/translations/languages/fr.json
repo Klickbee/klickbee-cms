@@ -40,6 +40,17 @@
 	},
 	"Builder": {
 		"RightSidebar": {
+			"Background": {
+				"color": "Couleur",
+				"gradient": "Dégradé",
+				"image": "Images",
+				"linear": "Linéaire",
+				"none": "Aucun",
+				"radial": "Radial",
+				"solid": "Uni",
+				"title": "Arrière-plan",
+				"uploadFromComputer": "Télécharger depuis l'ordinateur"
+			},
 			"Layout": {
 				"AlignContent": "Aligner le contenu",
 				"AlignItems": "Aligner les éléments",
