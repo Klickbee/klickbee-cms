@@ -1,4 +1,5 @@
 import { useTranslations } from "next-intl";
+import BuilderStyleBackground from "@/components/builder/ui/_partials/Sidebars/Right/_partials/Background";
 import BuilderStyleLayout from "@/components/builder/ui/_partials/Sidebars/Right/_partials/Layout";
 import BuilderStylePosition from "@/components/builder/ui/_partials/Sidebars/Right/_partials/Position";
 import BuilderStyleSizeAndSpacing from "@/components/builder/ui/_partials/Sidebars/Right/_partials/SizeAndSpacing";
@@ -51,21 +52,21 @@ export default function BuilderStyleProperties() {
 				</AccordionContent>
 			</AccordionItem>
 
+			<AccordionItem value="background">
+				<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200">
+					{t("Background.title")}
+				</AccordionTrigger>
+				<AccordionContent className="px-4 py-3">
+					<BuilderStyleBackground />
+				</AccordionContent>
+			</AccordionItem>
+
 			{/*<AccordionItem value="content">
 				<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200">
 					Content
 				</AccordionTrigger>
 				<AccordionContent className="px-4 py-3">
 					<BuilderStyleContent />
-				</AccordionContent>
-			</AccordionItem>
-
-			<AccordionItem value="background">
-				<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200">
-					Background
-				</AccordionTrigger>
-				<AccordionContent className="px-4 py-3">
-					<BuilderStyleBackground />
 				</AccordionContent>
 			</AccordionItem>
 
