@@ -32,11 +32,11 @@ import {
 	TypographyFontWeight,
 	TypographyTextTransform,
 } from "@/builder/types/settings/TypographySettings";
-import ColorPicker from "@/components/builder/ui/ColorPicker";
 import IconToggleGroup from "@/components/builder/ui/IconToggleGroup";
 import PropertyColumn from "@/components/builder/ui/PropertyColumn";
 import PropertyRow from "@/components/builder/ui/PropertyRow";
 import SimpleUnitInput from "@/components/builder/ui/SimpleUnitInput";
+import TypographyColorPicker from "@/components/builder/ui/TypographyColorPicker";
 import {
 	Select,
 	SelectContent,
@@ -246,7 +246,10 @@ export default function BuilderStyleTypography() {
 
 			{/* Text Color */}
 			<PropertyRow label={t("textColor")}>
-				<ColorPicker onChange={setTextColor} value={textColor} />
+				<TypographyColorPicker
+					onChange={setTextColor}
+					value={textColor}
+				/>
 			</PropertyRow>
 
 			{/* Text Alignment */}
