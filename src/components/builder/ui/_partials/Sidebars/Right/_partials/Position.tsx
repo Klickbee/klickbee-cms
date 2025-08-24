@@ -10,12 +10,12 @@ import {
 	PositionType,
 } from "@/builder/types/components/properties/componentStylePropsType";
 import { SizeUnit } from "@/builder/types/settings/FluidSize";
-import IconToggleGroup from "@/components/builder/ui/IconToggleGroup";
-import NumberInput from "@/components/builder/ui/NumberInput";
-import PropertyColumn from "@/components/builder/ui/PropertyColumn";
-import PropertyRow from "@/components/builder/ui/PropertyRow";
-import QuadInput from "@/components/builder/ui/QuadInput";
-import UnitSelector from "@/components/builder/ui/UnitSelector";
+import IconToggleGroup from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/IconToggleGroup";
+import NumberInput from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/NumberInput";
+import QuadInput from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/QuadInput";
+import UnitSelector from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/UnitSelector";
+import PropertyColumn from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyColumn";
+import PropertyRow from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyRow";
 import {
 	Select,
 	SelectContent,

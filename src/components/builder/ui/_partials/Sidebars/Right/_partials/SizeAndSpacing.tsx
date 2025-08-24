@@ -3,11 +3,11 @@
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { SizeUnit } from "@/builder/types/settings/FluidSize";
-import PropertyColumn from "@/components/builder/ui/PropertyColumn";
-import PropertyRow from "@/components/builder/ui/PropertyRow";
-import QuadInput from "@/components/builder/ui/QuadInput";
-import SimpleUnitInput from "@/components/builder/ui/SimpleUnitInput";
-import UnitSelector from "@/components/builder/ui/UnitSelector";
+import QuadInput from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/QuadInput";
+import SimpleUnitInput from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/SimpleUnitInput";
+import UnitSelector from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/UnitSelector";
+import PropertyColumn from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyColumn";
+import PropertyRow from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyRow";
 import { Button } from "@/components/ui/button";
 
 export default function BuilderStyleSizeAndSpacing() {

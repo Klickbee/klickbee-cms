@@ -1,8 +1,8 @@
 "use client";
 
 import { SizeUnit } from "@/builder/types/settings/FluidSize";
-import NumberInput from "@/components/builder/ui/NumberInput";
-import UnitSelector from "@/components/builder/ui/UnitSelector";
+import NumberInput from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/NumberInput";
+import UnitSelector from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/UnitSelector";
 import { cn } from "@/lib/utils";
 
 interface SimpleUnitInputProps {

@@ -1,8 +1,8 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import GradientPickerContent from "@/components/builder/ui/GradientPickerContent";
-import TypeSelector from "@/components/builder/ui/TypeSelector";
+import GradientPickerContent from "@/components/builder/ui/_partials/Sidebars/Right/_partials/pickers/GradientPickerContent";
+import TypeSelector from "@/components/builder/ui/_partials/Sidebars/Right/_partials/pickers/TypeSelector";
 
 interface BackgroundGradientPickerProps {
 	value: string; // Gradient CSS string

@@ -20,12 +20,12 @@ import {
 	type JustifyContent,
 } from "@/builder/types/components/properties/componentStylePropsType";
 import { type SizeUnit } from "@/builder/types/settings/FluidSize";
-import BinaryToggle from "@/components/builder/ui/BinaryToggle";
-import DualInput from "@/components/builder/ui/DualInput";
-import IconToggleGroup from "@/components/builder/ui/IconToggleGroup";
-import NumberInput from "@/components/builder/ui/NumberInput";
-import PropertyColumn from "@/components/builder/ui/PropertyColumn";
-import PropertyRow from "@/components/builder/ui/PropertyRow";
+import BinaryToggle from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/BinaryToggle";
+import DualInput from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/DualInput";
+import IconToggleGroup from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/IconToggleGroup";
+import NumberInput from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/NumberInput";
+import PropertyColumn from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyColumn";
+import PropertyRow from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyRow";
 import {
 	Select,
 	SelectContent,

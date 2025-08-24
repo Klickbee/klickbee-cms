@@ -1,8 +1,8 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import ColorPickerContent from "@/components/builder/ui/ColorPickerContent";
-import TypeSelector from "@/components/builder/ui/TypeSelector";
+import ColorPickerContent from "@/components/builder/ui/_partials/Sidebars/Right/_partials/pickers/ColorPickerContent";
+import TypeSelector from "@/components/builder/ui/_partials/Sidebars/Right/_partials/pickers/TypeSelector";
 
 interface BackgroundColorPickerProps {
 	value: string;

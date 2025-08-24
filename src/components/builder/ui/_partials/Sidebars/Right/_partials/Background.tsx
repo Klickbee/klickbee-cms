@@ -3,16 +3,16 @@
 import { ChevronDown } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import PropertyRow from "@/components/builder/ui/PropertyRow";
+import PropertyRow from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyRow";
 import { Button } from "@/components/ui/button";
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import BackgroundColorPicker from "./BackgroundColorPicker";
-import BackgroundGradientPicker from "./BackgroundGradientPicker";
-import BackgroundImagePicker from "./BackgroundImagePicker";
+import BackgroundColorPicker from "./pickers/BackgroundColorPicker";
+import BackgroundGradientPicker from "./pickers/BackgroundGradientPicker";
+import BackgroundImagePicker from "./pickers/BackgroundImagePicker";
 
 type BackgroundType = "color" | "gradient" | "image";
 

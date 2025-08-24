@@ -2,7 +2,7 @@
 
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
-import ColorPickerContent from "@/components/builder/ui/ColorPickerContent";
+import ColorPickerContent from "@/components/builder/ui/_partials/Sidebars/Right/_partials/pickers/ColorPickerContent";
 import { Button } from "@/components/ui/button";
 import {
 	Popover,

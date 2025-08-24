@@ -32,11 +32,11 @@ import {
 	TypographyFontWeight,
 	TypographyTextTransform,
 } from "@/builder/types/settings/TypographySettings";
-import IconToggleGroup from "@/components/builder/ui/IconToggleGroup";
-import PropertyColumn from "@/components/builder/ui/PropertyColumn";
-import PropertyRow from "@/components/builder/ui/PropertyRow";
-import SimpleUnitInput from "@/components/builder/ui/SimpleUnitInput";
-import TypographyColorPicker from "@/components/builder/ui/TypographyColorPicker";
+import IconToggleGroup from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/IconToggleGroup";
+import SimpleUnitInput from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/SimpleUnitInput";
+import PropertyColumn from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyColumn";
+import PropertyRow from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyRow";
+import TypographyColorPicker from "@/components/builder/ui/_partials/Sidebars/Right/_partials/pickers/TypographyColorPicker";
 import {
 	Select,
 	SelectContent,

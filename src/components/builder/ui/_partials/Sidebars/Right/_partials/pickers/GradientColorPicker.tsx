@@ -2,7 +2,7 @@
 
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
-import GradientPickerContent from "@/components/builder/ui/GradientPickerContent";
+import GradientPickerContent from "@/components/builder/ui/_partials/Sidebars/Right/_partials/pickers/GradientPickerContent";
 import { Button } from "@/components/ui/button";
 import {
 	Popover,

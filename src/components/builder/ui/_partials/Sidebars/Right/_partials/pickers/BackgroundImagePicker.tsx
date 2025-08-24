@@ -1,8 +1,8 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import ImagePickerContent from "@/components/builder/ui/ImagePickerContent";
-import TypeSelector from "@/components/builder/ui/TypeSelector";
+import ImagePickerContent from "@/components/builder/ui/_partials/Sidebars/Right/_partials/pickers/ImagePickerContent";
+import TypeSelector from "@/components/builder/ui/_partials/Sidebars/Right/_partials/pickers/TypeSelector";
 
 interface BackgroundImagePickerProps {
 	value: {

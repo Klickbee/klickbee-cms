@@ -5,7 +5,7 @@ import {
 	AlignVerticalSpaceAround,
 	LucideIcon,
 } from "lucide-react";
-import NumberInput from "@/components/builder/ui/NumberInput";
+import NumberInput from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/NumberInput";
 import { cn } from "@/lib/utils";
 
 interface DualInputProps {
