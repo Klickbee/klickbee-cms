@@ -17,7 +17,7 @@ interface TypographyColorPickerProps {
 	className?: string;
 }
 
-export default function TypographyColorPicker({
+export default function BasicColorPicker({
 	value,
 	onChange,
 	className,

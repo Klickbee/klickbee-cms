@@ -10,9 +10,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import BackgroundColorPicker from "./pickers/BackgroundColorPicker";
-import BackgroundGradientPicker from "./pickers/BackgroundGradientPicker";
-import BackgroundImagePicker from "./pickers/BackgroundImagePicker";
+import BackgroundPicker from "./pickers/BackgroundPicker";
 
 type BackgroundType = "color" | "gradient" | "image";
 
@@ -82,46 +80,6 @@ export default function BuilderStyleBackground() {
 		}));
 	};
 
-	const renderBackgroundContent = () => {
-		switch (background.type) {
-			case "color":
-				return (
-					<BackgroundColorPicker
-						closeColorPicker={() => setIsOpen(false)}
-						onChange={(color) =>
-							setBackground((prev) => ({ ...prev, color }))
-						}
-						onTypeChange={handleTypeChange}
-						selectedType={background.type}
-						value={background.color}
-					/>
-				);
-			case "gradient":
-				return (
-					<BackgroundGradientPicker
-						closeGradientPicker={() => setIsOpen(false)}
-						onChange={(gradient) =>
-							setBackground((prev) => ({ ...prev, gradient }))
-						}
-						onTypeChange={handleTypeChange}
-						selectedType={background.type}
-						value={background.gradient}
-					/>
-				);
-			case "image":
-				return (
-					<BackgroundImagePicker
-						onChange={(image) =>
-							setBackground((prev) => ({ ...prev, image }))
-						}
-						onTypeChange={handleTypeChange}
-						selectedType={background.type}
-						value={background.image}
-					/>
-				);
-		}
-	};
-
 	return (
 		<PropertyRow label={t("title")}>
 			<Popover onOpenChange={setIsOpen} open={isOpen}>
@@ -146,7 +104,26 @@ export default function BuilderStyleBackground() {
 				>
 					<div className="p-3">
 						{/* Contenu selon le type avec sélecteur intégré */}
-						{renderBackgroundContent()}
+						<BackgroundPicker
+							colorValue={background.color}
+							gradientValue={background.gradient}
+							imageValue={background.image}
+							onClose={() => setIsOpen(false)}
+							onColorChange={(color) =>
+								setBackground((prev) => ({ ...prev, color }))
+							}
+							onGradientChange={(gradient) =>
+								setBackground((prev) => ({ ...prev, gradient }))
+							}
+							onImageChange={(image) =>
+								setBackground((prev) => ({
+									...prev,
+									image: image || prev.image,
+								}))
+							}
+							onTypeChange={handleTypeChange}
+							selectedType={background.type}
+						/>
 					</div>
 				</PopoverContent>
 			</Popover>
