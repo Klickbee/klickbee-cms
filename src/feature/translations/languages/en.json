@@ -38,6 +38,91 @@
 			"Success": "Password reset request sent successfully"
 		}
 	},
+	"Builder": {
+		"RightSidebar": {
+			"Background": {
+				"color": "Color",
+				"gradient": "Gradient",
+				"image": "Images",
+				"linear": "Linear",
+				"none": "None",
+				"radial": "Radial",
+				"solid": "Solid",
+				"title": "Background",
+				"uploadFromComputer": "Upload from computer"
+			},
+			"Layout": {
+				"AlignContent": "Align Content",
+				"AlignItems": "Align Items",
+				"Direction": "Direction",
+				"DisplayType": "Display Type",
+				"FlexGrow": "Flex Grow",
+				"FlexShrink": "Flex Shrink",
+				"FlexWrap": "Wrap",
+				"Gap": "Gap",
+				"GridAutoColumns": "Grid Auto Columns",
+				"GridAutoFlow": "Grid Auto Flow",
+				"GridAutoRows": "Grid Auto Rows",
+				"GridColumns": "Grid Columns",
+				"GridRows": "Grid Rows",
+				"JustifyContent": "Justify Content",
+				"JustifyItems": "Justify Items",
+				"Layout": "Layout",
+				"No": "No",
+				"Yes": "Yes"
+			},
+			"Position": {
+				"direction": "Direction",
+				"objectFit": "Object Fit",
+				"objectFitContain": "Contain",
+				"objectFitCover": "Cover",
+				"objectFitFill": "Fill",
+				"objectFitNone": "None",
+				"overflow": "Overflow",
+				"overflowAuto": "Auto",
+				"overflowHidden": "Hidden",
+				"overflowScroll": "Scroll",
+				"overflowVisible": "Visible",
+				"position": "Position",
+				"positionAbsolute": "Absolute",
+				"positionFixed": "Fixed",
+				"positionRelative": "Relative",
+				"positionStatic": "Static",
+				"positionSticky": "Sticky",
+				"spacing": "Spacing",
+				"title": "Position",
+				"zIndex": "Z-index"
+			},
+			"SizeAndSpacing": {
+				"addMinMax": "Add Min & Max",
+				"height": "Height",
+				"hideMinMax": "Hide Min & Max",
+				"margin": "Margin",
+				"maxHeight": "Max Height",
+				"maxWidth": "Max Width",
+				"minHeight": "Min Height",
+				"minWidth": "Min Width",
+				"padding": "Padding",
+				"title": "Size & Spacing",
+				"width": "Width"
+			},
+			"Typography": {
+				"fontFamily": "Font Family",
+				"fontSize": "Font Size",
+				"fontStyle": "Font Style",
+				"fontWeight": "Font Weight",
+				"letterSpacing": "Letter Spacing",
+				"lineHeight": "Line Height",
+				"listStyle": "List Style",
+				"textAlignment": "Text Alignment",
+				"textColor": "Text Color",
+				"textDecoration": "Text Decoration",
+				"textTransform": "Text Transform",
+				"title": "Typography",
+				"whiteSpace": "White Space"
+			}
+		}
+	},
 	"BuilderSettings": {
 		"Colors": "Colors",
 		"ColorsDescription": "Define the color palette of your site.",
