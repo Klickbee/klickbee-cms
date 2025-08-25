@@ -3,10 +3,10 @@
 import { Loader2, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import DefaultCardTitle from "@/components/admin/manage/CardTitle";
+import DashboardTitle from "@/components/admin/_partials/dashboardTitle";
+import CardTitle from "@/components/admin/manage/CardTitle";
 import BulkActions from "@/components/admin/manage/content/BulkActions";
-import DefaultHeader from "@/components/admin/manage/DefaultHeader";
-import EmptyStateComponent from "@/components/admin/manage/EmptyState";
+import EmptyState from "@/components/admin/manage/EmptyState";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -172,29 +172,22 @@ export default function AdminContentPage() {
 	};
 
 	return (
-		<div className="flex flex-col divide-y">
-			<DefaultHeader
-				description={"Manage all the pages of your site."}
-				title={"Contents Manager"}
+		<>
+			<DashboardTitle
+				subtitle="ManageContentsSubtitle"
+				title="ManageContents"
+				translationNamespace="Contents"
 			/>
-			<div className={"p-6"}>
-				<Card className={"gap-0 p-4"}>
-					<CardHeader className={"p-3"}>
-						<div
-							className={
-								"flex flex-row justify-between items-center"
-							}
-						>
-							<DefaultCardTitle>Collections</DefaultCardTitle>
-							<BulkActions
-								checkedRows={checkedRows}
-								collectionsLength={collections?.length || 0}
-								onBulkDelete={() =>
-									setIsBulkDeleteDialogOpen(true)
-								}
-								onCreate={() => setIsCreatingCollection(true)}
-							/>
-						</div>
+			<section className="py-6 px-8">
+				<Card className="gap-0 py-0">
+					<CardHeader className="py-3 px-4 gap-0 flex flex-row justify-between items-center border-b">
+						<CardTitle>Collections</CardTitle>
+						<BulkActions
+							checkedRows={checkedRows}
+							collectionsLength={collections?.length || 0}
+							onBulkDelete={() => setIsBulkDeleteDialogOpen(true)}
+							onCreate={() => setIsCreatingCollection(true)}
+						/>
 					</CardHeader>
 
 					{/* Loading state */}
@@ -207,144 +200,136 @@ export default function AdminContentPage() {
 							Error loading collections
 						</div>
 					) : collections?.length === 0 ? (
-						<EmptyStateComponent
+						<EmptyState
 							buttonText="Create New Collection"
 							description="Organize your content easily with collections. Group similar pages, posts, or products to manage them more efficiently — all in one place."
 							onButtonClick={() => setIsCreatingCollection(true)}
 							title="You don't have any collections yet"
 						/>
 					) : (
-						<CardContent className={"p-0"}>
-							<div className="border rounded-md p-4">
-								{/* Search input */}
-								<div className={"py-4 w-5/20"}>
-									<Input placeholder="Search" />
-								</div>
+						<CardContent className="p-4">
+							{/* Search input */}
+							<div className={"py-4 w-5/20"}>
+								<Input placeholder="Search" />
+							</div>
 
-								{/* Table */}
-								<div className="overflow-x-auto border rounded-md">
-									<Table>
-										<TableHeader>
-											<TableRow>
-												<TableHead className="w-12">
+							{/* Table */}
+							<div className="overflow-x-auto border rounded-md">
+								<Table>
+									<TableHeader>
+										<TableRow>
+											<TableHead className="w-12">
+												<Checkbox
+													checked={allChecked}
+													onCheckedChange={
+														handleHeaderCheck
+													}
+												/>
+											</TableHead>
+											<TableHead>
+												Collection Name ⬍
+											</TableHead>
+											<TableHead>Base URL</TableHead>
+											<TableHead className="text-right">
+												Number of Items
+											</TableHead>
+											<TableHead className="w-12"></TableHead>
+										</TableRow>
+									</TableHeader>
+									<TableBody>
+										{collections?.map((collection) => (
+											<TableRow key={collection.id}>
+												<TableCell>
 													<Checkbox
-														checked={allChecked}
-														onCheckedChange={
-															handleHeaderCheck
+														checked={checkedRows.includes(
+															collection.id,
+														)}
+														onCheckedChange={(
+															checked: boolean,
+														) =>
+															handleRowCheck(
+																collection.id,
+																checked,
+															)
 														}
 													/>
-												</TableHead>
-												<TableHead>
-													Collection Name ⬍
-												</TableHead>
-												<TableHead>Base URL</TableHead>
-												<TableHead className="text-right">
-													Number of Items
-												</TableHead>
-												<TableHead className="w-12"></TableHead>
-											</TableRow>
-										</TableHeader>
-										<TableBody>
-											{collections?.map((collection) => (
-												<TableRow key={collection.id}>
-													<TableCell>
-														<Checkbox
-															checked={checkedRows.includes(
-																collection.id,
-															)}
-															onCheckedChange={(
-																checked: boolean,
-															) =>
-																handleRowCheck(
-																	collection.id,
-																	checked,
-																)
-															}
-														/>
-													</TableCell>
-													<TableCell
-														className={"w-4/10"}
+												</TableCell>
+												<TableCell className={"w-4/10"}>
+													<a
+														className="flex items-center space-x-2"
+														href={generateAdminLink(
+															`/manage/content/${collection.slug}`,
+														)}
 													>
-														<a
-															className="flex items-center space-x-2"
-															href={generateAdminLink(
-																`/manage/content/${collection.slug}`,
-															)}
+														{collection.name}
+													</a>
+												</TableCell>
+												<TableCell>
+													{collection.slug}
+												</TableCell>
+												<TableCell className="text-center w-1/15">
+													{collection.items?.length ||
+														0}
+												</TableCell>
+												<TableCell className={"w-fit"}>
+													<DropdownMenu>
+														<DropdownMenuTrigger
+															asChild
 														>
-															{collection.name}
-														</a>
-													</TableCell>
-													<TableCell>
-														{collection.slug}
-													</TableCell>
-													<TableCell className="text-center w-1/15">
-														{collection.items
-															?.length || 0}
-													</TableCell>
-													<TableCell
-														className={"w-fit"}
-													>
-														<DropdownMenu>
-															<DropdownMenuTrigger
-																asChild
+															<Button
+																size="icon"
+																variant="ghost"
 															>
-																<Button
-																	size="icon"
-																	variant="ghost"
-																>
-																	<MoreHorizontal className="h-4 w-4" />
-																</Button>
-															</DropdownMenuTrigger>
-															<DropdownMenuContent align="end">
-																<DropdownMenuItem
-																	onClick={() =>
-																		openEditDialog(
-																			collection,
-																		)
-																	}
-																>
-																	<Pencil className="h-4 w-4 mr-2" />
-																	Edit
-																</DropdownMenuItem>
-																<DropdownMenuItem
-																	className="text-destructive"
-																	onClick={() =>
-																		openDeleteDialog(
-																			collection.id,
-																		)
-																	}
-																>
-																	<Trash2 className="h-4 w-4 mr-2" />
-																	Delete
-																</DropdownMenuItem>
-															</DropdownMenuContent>
-														</DropdownMenu>
-													</TableCell>
-												</TableRow>
-											))}
-										</TableBody>
-									</Table>
-								</div>
+																<MoreHorizontal className="h-4 w-4" />
+															</Button>
+														</DropdownMenuTrigger>
+														<DropdownMenuContent align="end">
+															<DropdownMenuItem
+																onClick={() =>
+																	openEditDialog(
+																		collection,
+																	)
+																}
+															>
+																<Pencil className="h-4 w-4 mr-2" />
+																Edit
+															</DropdownMenuItem>
+															<DropdownMenuItem
+																className="text-destructive"
+																onClick={() =>
+																	openDeleteDialog(
+																		collection.id,
+																	)
+																}
+															>
+																<Trash2 className="h-4 w-4 mr-2" />
+																Delete
+															</DropdownMenuItem>
+														</DropdownMenuContent>
+													</DropdownMenu>
+												</TableCell>
+											</TableRow>
+										))}
+									</TableBody>
+								</Table>
+							</div>
 
-								{/* Footer */}
-								<div className="p-4 flex items-center justify-between text-sm text-muted-foreground">
-									<p>{`${checkedRows.length} of ${collections?.length || 0} row(s) selected.`}</p>
-									<div className="flex items-center space-x-6 lg:space-x-8">
-										<div className="flex items-center space-x-2">
-											<Button variant="outline">
-												Previous
-											</Button>
-											<Button variant="outline">
-												Next
-											</Button>
-										</div>
+							{/* Footer */}
+							<div className="p-4 flex items-center justify-between text-sm text-muted-foreground">
+								<p>{`${checkedRows.length} of ${collections?.length || 0} row(s) selected.`}</p>
+								<div className="flex items-center space-x-6 lg:space-x-8">
+									<div className="flex items-center space-x-2">
+										<Button variant="outline">
+											Previous
+										</Button>
+										<Button variant="outline">Next</Button>
 									</div>
 								</div>
 							</div>
 						</CardContent>
 					)}
 				</Card>
-			</div>
+			</section>
 
 			{/* Edit Collection Dialog */}
 			<Dialog onOpenChange={setIsEditDialogOpen} open={isEditDialogOpen}>
@@ -553,6 +538,6 @@ export default function AdminContentPage() {
 					</DialogFooter>
 				</DialogContent>
 			</Dialog>
-		</div>
+		</>
 	);
 }

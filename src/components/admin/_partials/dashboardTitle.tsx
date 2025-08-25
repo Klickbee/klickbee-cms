@@ -29,7 +29,7 @@ export default function DashboardTitle({
 	const t = useTranslations(translationNamespace);
 
 	return (
-		<div className="flex flex-col gap-2 px-12 pb-12 border-b">
+		<header className="flex flex-col gap-1 px-8 py-4 border-b">
 			{hasBackButton && (
 				<Button
 					className="w-fit -ml-4 text-primary"
@@ -40,15 +40,15 @@ export default function DashboardTitle({
 					{tCommon("Back")}
 				</Button>
 			)}
-			<h1 className="text-2xl font-bold">
+			<h1 className="text-xl font-semibold">
 				{titleContent ||
 					(titleParams ? t(title, titleParams) : t(title))}
 			</h1>
 			{subtitle && (
-				<p className="text-gray-600">
+				<p className="text-muted-foreground text-sm">
 					{subtitleParams ? t(subtitle, subtitleParams) : t(subtitle)}
 				</p>
 			)}
-		</div>
+		</header>
 	);
 }
