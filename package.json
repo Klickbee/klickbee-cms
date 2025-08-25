@@ -92,7 +92,7 @@
 	"private": true,
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/stralya-company/klickbee-cms.git"
+		"url": "https://github.com/Klickbee/klickbee-cms"
 	},
 	"scripts": {
 		"build": "next build",
