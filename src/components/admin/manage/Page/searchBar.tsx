@@ -1,0 +1,25 @@
+"use client";
+
+import { SearchIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+
+export default function PageSearchBar() {
+	const t = useTranslations("Pages");
+	const [localValue, setLocalValue] = useState("");
+
+	return (
+		<div className="w-full max-w-md relative mb-4">
+			<SearchIcon className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+			<Input
+				className="pl-8"
+				onChange={(e) => {
+					setLocalValue(e.target.value);
+				}}
+				placeholder={t("Search")}
+				value={localValue}
+			/>
+		</div>
+	);
+}
