@@ -2,12 +2,34 @@
 
 import { SearchIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 
-export default function PageSearchBar() {
+interface PageSearchBarProps {
+	searchTerm: string;
+	onSearchChange: (searchTerm: string) => void;
+}
+
+export default function PageSearchBar({
+	searchTerm,
+	onSearchChange,
+}: PageSearchBarProps) {
 	const t = useTranslations("Pages");
-	const [localValue, setLocalValue] = useState("");
+	const [localValue, setLocalValue] = useState(searchTerm);
+
+	// Debounce search
+	useEffect(() => {
+		const timeoutId = setTimeout(() => {
+			onSearchChange(localValue);
+		}, 300);
+
+		return () => clearTimeout(timeoutId);
+	}, [localValue, onSearchChange]);
+
+	// Synchronise with the searchTerm prop
+	useEffect(() => {
+		setLocalValue(searchTerm);
+	}, [searchTerm]);
 
 	return (
 		<div className="w-full max-w-md relative mb-4">

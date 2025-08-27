@@ -219,7 +219,7 @@
 		"ManageTitle": "Gérer les pages",
 		"Name": "Nom de la page",
 		"NameNotAvailable": "Nom de la page non disponible",
-		"NoFound": "Aucune page trouvée",
+		"NoResultsFound": "Aucune page trouvée",
 		"Search": "Rechercher des pages...",
 		"Slug": "URL",
 		"SlugNotAvailable": "URL non disponible",

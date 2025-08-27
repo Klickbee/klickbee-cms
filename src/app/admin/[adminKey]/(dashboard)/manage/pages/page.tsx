@@ -11,6 +11,7 @@ import PageSearchBar from "@/components/admin/manage/Page/searchBar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useAdminKey } from "@/feature/admin-key/lib/utils";
+import { usePageSearch } from "@/feature/page/hooks/usePageSearch";
 import { usePages } from "@/feature/page/queries/usePages";
 
 export default function AdminPagesPage() {
@@ -18,6 +19,7 @@ export default function AdminPagesPage() {
 	const { data: pagesData, isLoading, isError } = usePages();
 	const t = useTranslations("Pages");
 	const pages = Array.isArray(pagesData) ? pagesData : [];
+	const { searchTerm, setSearchTerm, filteredPages } = usePageSearch(pages);
 
 	return (
 		<>
@@ -60,8 +62,18 @@ export default function AdminPagesPage() {
 							/>
 						) : (
 							<>
-								<PageSearchBar />
-								<PagesTable pages={pages} />
+								<PageSearchBar
+									onSearchChange={setSearchTerm}
+									searchTerm={searchTerm}
+								/>
+								{filteredPages.length === 0 &&
+								searchTerm.trim() ? (
+									<div className="text-center py-8 text-muted-foreground">
+										{t("NoResultsFound")}
+									</div>
+								) : (
+									<PagesTable pages={filteredPages} />
+								)}
 							</>
 						)}
 					</CardContent>
