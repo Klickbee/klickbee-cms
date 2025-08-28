@@ -1,11 +1,20 @@
 "use client";
 
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { Loader2, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { toast } from "sonner";
 import PagesPagination from "@/components/admin/manage/Page/pagination";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -21,11 +30,17 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { generateAdminLink } from "@/feature/admin-key/lib/utils";
+import { useDeletePage } from "@/feature/page/queries/usePageActions";
 import { Page } from "@/feature/page/types/page";
 
 export default function PagesTable({ pages }: { pages: Page[] }) {
 	const t = useTranslations("Pages");
+	const tCommon = useTranslations("Common");
 	const [checkedRows, setCheckedRows] = useState<number[]>([]);
+	const [pageToDelete, setPageToDelete] = useState<number | null>(null);
+	const [isDeletingPage, setIsDeletingPage] = useState(false);
+	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+	const deletePage = useDeletePage();
 	const allIds = pages?.map((page) => page.id) || [];
 	const allChecked =
 		checkedRows.length === allIds.length && allIds.length > 0;
@@ -38,6 +53,31 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 		setCheckedRows((prev) =>
 			checked ? [...prev, id] : prev.filter((rowId) => rowId !== id),
 		);
+	};
+
+	const handleDelete = async (id: number) => {
+		setIsDeletingPage(true);
+		try {
+			await deletePage.mutateAsync(id);
+			setIsDeleteDialogOpen(false);
+			setPageToDelete(null);
+			toast.success(t("DeleteSuccess"));
+		} catch (error) {
+			const errorMessage =
+				error instanceof Error
+					? error.message
+					: typeof error === "string"
+						? error
+						: "UnknownError";
+			toast.error(t(errorMessage));
+		} finally {
+			setIsDeletingPage(false);
+		}
+	};
+
+	const openDeleteDialog = (id: number) => {
+		setPageToDelete(id);
+		setIsDeleteDialogOpen(true);
 	};
 
 	return (
@@ -89,22 +129,21 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 										<DropdownMenuContent align="end">
 											<DropdownMenuItem
 												onClick={() =>
-													// TODO
+													// TODO: edit page
 													"Edit"
 												}
 											>
 												<Pencil className="h-4 w-4 mr-2" />
-												Edit
+												{tCommon("Edit")}
 											</DropdownMenuItem>
 											<DropdownMenuItem
 												className="text-destructive"
 												onClick={() =>
-													// TODO
-													"Delete"
+													openDeleteDialog(page.id)
 												}
 											>
 												<Trash2 className="h-4 w-4 mr-2" />
-												Delete
+												{tCommon("Delete")}
 											</DropdownMenuItem>
 										</DropdownMenuContent>
 									</DropdownMenu>
@@ -115,6 +154,40 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 				</Table>
 			</div>
 			<PagesPagination checkedRows={checkedRows} pages={pages} />
+			{/* Delete Collection Confirmation Dialog */}
+			<Dialog
+				onOpenChange={setIsDeleteDialogOpen}
+				open={isDeleteDialogOpen}
+			>
+				<DialogContent className="sm:max-w-md">
+					<DialogHeader>
+						<DialogTitle>{t("DeleteTitle")}</DialogTitle>
+						<DialogDescription>
+							{t("DeleteDescription")}
+						</DialogDescription>
+					</DialogHeader>
+					<DialogFooter>
+						<Button
+							onClick={() => setIsDeleteDialogOpen(false)}
+							variant="outline"
+						>
+							{tCommon("Cancel")}
+						</Button>
+						<Button
+							disabled={isDeletingPage}
+							onClick={() =>
+								pageToDelete && handleDelete(pageToDelete)
+							}
+							variant="destructive"
+						>
+							{isDeletingPage && (
+								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+							)}
+							{tCommon("Delete")}
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 		</>
 	);
 }
