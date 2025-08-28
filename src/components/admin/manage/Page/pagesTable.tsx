@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { Home, Loader2, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -30,6 +30,7 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { generateAdminLink } from "@/feature/admin-key/lib/utils";
+import { useIsHomepage } from "@/feature/page/queries/useIsHomepage";
 import { useDeletePage } from "@/feature/page/queries/usePageActions";
 import { Page } from "@/feature/page/types/page";
 
@@ -98,58 +99,83 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 						</TableRow>
 					</TableHeader>
 					<TableBody>
-						{pages?.map((page) => (
-							<TableRow key={page.id}>
-								<TableCell>
-									<Checkbox
-										checked={checkedRows.includes(page.id)}
-										onCheckedChange={(checked: boolean) =>
-											handleRowCheck(page.id, checked)
-										}
-									/>
-								</TableCell>
-								<TableCell className={"w-4/10"}>
-									<a
-										className="flex items-center space-x-2"
-										href={generateAdminLink(
-											`/manage/content/${page.slug}`,
-										)}
-									>
-										{page.title}
-									</a>
-								</TableCell>
-								<TableCell>{page.slug}</TableCell>
-								<TableCell className={"w-fit"}>
-									<DropdownMenu>
-										<DropdownMenuTrigger asChild>
-											<Button size="icon" variant="ghost">
-												<MoreHorizontal className="h-4 w-4" />
-											</Button>
-										</DropdownMenuTrigger>
-										<DropdownMenuContent align="end">
-											<DropdownMenuItem
-												onClick={() =>
-													// TODO: edit page
-													"Edit"
+						{pages?.map((page) => {
+							const PageRow = () => {
+								const { data: isHomepage } = useIsHomepage(
+									page.id,
+								);
+
+								return (
+									<TableRow key={page.id}>
+										<TableCell>
+											<Checkbox
+												checked={checkedRows.includes(
+													page.id,
+												)}
+												onCheckedChange={(
+													checked: boolean,
+												) =>
+													handleRowCheck(
+														page.id,
+														checked,
+													)
 												}
+											/>
+										</TableCell>
+										<TableCell className={"w-4/10"}>
+											<a
+												className="flex items-center space-x-2"
+												href={generateAdminLink(
+													`/manage/content/${page.slug}`,
+												)}
 											>
-												<Pencil className="h-4 w-4 mr-2" />
-												{tCommon("Edit")}
-											</DropdownMenuItem>
-											<DropdownMenuItem
-												className="text-destructive"
-												onClick={() =>
-													openDeleteDialog(page.id)
-												}
-											>
-												<Trash2 className="h-4 w-4 mr-2" />
-												{tCommon("Delete")}
-											</DropdownMenuItem>
-										</DropdownMenuContent>
-									</DropdownMenu>
-								</TableCell>
-							</TableRow>
-						))}
+												<span>{page.title}</span>
+												{isHomepage && (
+													<Home className="h-4 w-4" />
+												)}
+											</a>
+										</TableCell>
+										<TableCell>{page.slug}</TableCell>
+										<TableCell className={"w-fit"}>
+											<DropdownMenu>
+												<DropdownMenuTrigger asChild>
+													<Button
+														size="icon"
+														variant="ghost"
+													>
+														<MoreHorizontal className="h-4 w-4" />
+													</Button>
+												</DropdownMenuTrigger>
+												<DropdownMenuContent align="end">
+													<DropdownMenuItem
+														onClick={() =>
+															// TODO: edit page
+															"Edit"
+														}
+													>
+														<Pencil className="h-4 w-4 mr-2" />
+														{tCommon("Edit")}
+													</DropdownMenuItem>
+													<DropdownMenuItem
+														className="text-destructive"
+														onClick={() =>
+															openDeleteDialog(
+																page.id,
+															)
+														}
+													>
+														<Trash2 className="h-4 w-4 mr-2" />
+														{tCommon("Delete")}
+													</DropdownMenuItem>
+												</DropdownMenuContent>
+											</DropdownMenu>
+										</TableCell>
+									</TableRow>
+								);
+							};
+
+							return <PageRow key={page.id} />;
+						})}
 					</TableBody>
 				</Table>
 			</div>
