@@ -37,12 +37,14 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { generateAdminLink } from "@/feature/admin-key/lib/utils";
-import { useIsHomepage } from "@/feature/page/queries/useIsHomepage";
+import { usePageSearch } from "@/feature/page/hooks/usePageSearch";
 import {
 	useDeletePage,
 	useSetAsHomePage,
 } from "@/feature/page/queries/usePageActions";
 import { Page } from "@/feature/page/types/page";
+import { useSetting } from "@/feature/settings/queries/useSettings";
+import PageSearchBar from "./searchBar";
 
 export default function PagesTable({ pages }: { pages: Page[] }) {
 	const t = useTranslations("Pages");
@@ -50,10 +52,14 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 	const [checkedRows, setCheckedRows] = useState<number[]>([]);
 	const [pageToDelete, setPageToDelete] = useState<number | null>(null);
 	const [isDeletingPage, setIsDeletingPage] = useState(false);
+	const [isDeletingMultiplePages, setIsDeletingMultiplePages] =
+		useState(false);
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 	const [newHomepageId, setNewHomepageId] = useState<string>("");
+	const { searchTerm, setSearchTerm, filteredPages } = usePageSearch(pages);
 	const deletePage = useDeletePage();
 	const setAsHomePage = useSetAsHomePage();
+	const { data: homePageId } = useSetting("current_homepage_id");
 	const allIds = pages?.map((page) => page.id) || [];
 	const allChecked =
 		checkedRows.length === allIds.length && allIds.length > 0;
@@ -74,11 +80,17 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 			if (newHomepageId) {
 				await setAsHomePage.mutateAsync(Number(newHomepageId));
 			}
+
 			await deletePage.mutateAsync(id);
+
 			setIsDeleteDialogOpen(false);
 			setPageToDelete(null);
 			setNewHomepageId("");
-			toast.success(t("DeleteSuccess"));
+			toast.success(
+				t("DeleteSuccess", {
+					count: 1,
+				}),
+			);
 		} catch (error) {
 			const errorMessage =
 				error instanceof Error
@@ -92,6 +104,37 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 		}
 	};
 
+	const handleBulkDelete = async () => {
+		setIsDeletingMultiplePages(true);
+		try {
+			if (newHomepageId) {
+				await setAsHomePage.mutateAsync(Number(newHomepageId));
+			}
+
+			for (const id of checkedRows) {
+				await deletePage.mutateAsync(id);
+			}
+
+			setIsDeleteDialogOpen(false);
+			setCheckedRows([]);
+			setNewHomepageId("");
+			toast.success(
+				t("DeleteSuccess", {
+					count: checkedRows?.length || 1,
+				}),
+			);
+		} catch (error) {
+			toast.error(
+				t("DeleteError", {
+					count: checkedRows?.length || 1,
+				}),
+			);
+			console.error(error);
+		} finally {
+			setIsDeletingMultiplePages(false);
+		}
+	};
+
 	const openDeleteDialog = (id: number) => {
 		setPageToDelete(id);
 		setNewHomepageId("");
@@ -100,29 +143,49 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 
 	return (
 		<>
-			<div className="rounded-md border">
-				<Table>
-					<TableHeader>
-						<TableRow>
-							<TableHead className="w-12">
-								<Checkbox
-									checked={allChecked}
-									onCheckedChange={handleHeaderCheck}
-								/>
-							</TableHead>
-							<TableHead>{t("Name")}</TableHead>
-							<TableHead>{t("Slug")}</TableHead>
-							<TableHead className="w-12"></TableHead>
-						</TableRow>
-					</TableHeader>
-					<TableBody>
-						{pages?.map((page) => {
-							const PageRow = () => {
-								const { data: isHomepage } = useIsHomepage(
-									page.id,
-								);
-
-								return (
+			<div className="flex flex-row justify-between">
+				<PageSearchBar
+					onSearchChange={setSearchTerm}
+					searchTerm={searchTerm}
+				/>
+				{checkedRows.length > 0 && (
+					<Button
+						className={"flex flex-row gap-0"}
+						onClick={() => {
+							setPageToDelete(null);
+							setNewHomepageId("");
+							setIsDeleteDialogOpen(true);
+						}}
+						variant="destructive"
+					>
+						<Trash2 className="w-4 h-4 mr-2" />
+						{tCommon("Delete")} ({checkedRows.length})
+					</Button>
+				)}
+			</div>
+			{filteredPages.length === 0 && searchTerm.trim() ? (
+				<div className="text-center py-8 text-muted-foreground">
+					{t("NoResultsFound")}
+				</div>
+			) : (
+				<>
+					<div className="rounded-md border">
+						<Table>
+							<TableHeader>
+								<TableRow>
+									<TableHead className="w-12">
+										<Checkbox
+											checked={allChecked}
+											onCheckedChange={handleHeaderCheck}
+										/>
+									</TableHead>
+									<TableHead>{t("Name")}</TableHead>
+									<TableHead>{t("Slug")}</TableHead>
+									<TableHead className="w-12"></TableHead>
+								</TableRow>
+							</TableHeader>
+							<TableBody>
+								{filteredPages?.map((page) => (
 									<TableRow key={page.id}>
 										<TableCell>
 											<Checkbox
@@ -147,7 +210,8 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 												)}
 											>
 												<span>{page.title}</span>
-												{isHomepage && (
+												{Number(homePageId?.value) ===
+													page.id && (
 													<Home className="h-4 w-4" />
 												)}
 											</a>
@@ -188,16 +252,13 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 											</DropdownMenu>
 										</TableCell>
 									</TableRow>
-								);
-							};
-
-							return <PageRow key={page.id} />;
-						})}
-					</TableBody>
-				</Table>
-			</div>
-			<PagesPagination checkedRows={checkedRows} pages={pages} />
-
+								))}
+							</TableBody>
+						</Table>
+					</div>
+					<PagesPagination checkedRows={checkedRows} pages={pages} />
+				</>
+			)}
 			{/* Delete Page Confirmation Dialog */}
 			<Dialog
 				onOpenChange={setIsDeleteDialogOpen}
@@ -206,25 +267,43 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 				<DialogContent className="sm:max-w-md">
 					{(() => {
 						const DeleteDialogContent = () => {
-							const { data: isPageToDeleteHomepage } =
-								useIsHomepage(pageToDelete || 0);
+							// Determines whether we’re deleting a single page or multiple pages
+							const isMultipleSelection =
+								!pageToDelete && checkedRows.length > 0;
+
+							// Pages to exclude from the select (single page or multiple pages)
+							const pagesToExclude = isMultipleSelection
+								? checkedRows
+								: pageToDelete
+									? [pageToDelete]
+									: [];
 							const otherPages =
 								pages?.filter(
-									(page) => page.id !== pageToDelete,
+									(page) => !pagesToExclude.includes(page.id),
 								) || [];
+
+							// Checks if the homepage is in the pages to delete
+							const currentHomepageId = Number(homePageId?.value);
+							const isHomepageInSelection = isMultipleSelection
+								? checkedRows.includes(currentHomepageId)
+								: pageToDelete === currentHomepageId;
 
 							return (
 								<>
 									<DialogHeader>
 										<DialogTitle>
-											{t("DeleteTitle")}
+											{t("DeleteTitle", {
+												count: checkedRows?.length || 1,
+											})}
 										</DialogTitle>
 										<DialogDescription>
-											{t("DeleteDescription")}
+											{t("DeleteDescription", {
+												count: checkedRows?.length || 1,
+											})}
 										</DialogDescription>
 									</DialogHeader>
 
-									{isPageToDeleteHomepage &&
+									{isHomepageInSelection &&
 										otherPages.length > 0 && (
 											<div className="py-4">
 												<label className="text-sm font-medium mb-2 block">
@@ -263,9 +342,11 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 
 									<DialogFooter>
 										<Button
-											onClick={() =>
-												setIsDeleteDialogOpen(false)
-											}
+											onClick={() => {
+												setIsDeleteDialogOpen(false);
+												setNewHomepageId("");
+												setPageToDelete(null);
+											}}
 											variant="outline"
 										>
 											{tCommon("Cancel")}
@@ -273,17 +354,21 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 										<Button
 											disabled={
 												isDeletingPage ||
-												(isPageToDeleteHomepage &&
-													!newHomepageId) ||
-												false
+												isDeletingMultiplePages ||
+												(isHomepageInSelection &&
+													!newHomepageId)
 											}
-											onClick={() =>
-												pageToDelete &&
-												handleDelete(pageToDelete)
-											}
+											onClick={() => {
+												if (isMultipleSelection) {
+													handleBulkDelete();
+												} else if (pageToDelete) {
+													handleDelete(pageToDelete);
+												}
+											}}
 											variant="destructive"
 										>
-											{isDeletingPage && (
+											{(isDeletingPage ||
+												isDeletingMultiplePages) && (
 												<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 											)}
 											{tCommon("Delete")}

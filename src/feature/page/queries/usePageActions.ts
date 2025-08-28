@@ -61,6 +61,9 @@ export function useSetAsHomePage() {
 				queryKey: ["isHomepage"],
 			});
 			queryClient.invalidateQueries({
+				queryKey: ["setting", "current_homepage_id"],
+			});
+			queryClient.invalidateQueries({
 				queryKey: ["settings", "current_homepage_id"],
 			});
 		},
