@@ -22,6 +22,13 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+import {
 	Table,
 	TableBody,
 	TableCell,
@@ -31,7 +38,10 @@ import {
 } from "@/components/ui/table";
 import { generateAdminLink } from "@/feature/admin-key/lib/utils";
 import { useIsHomepage } from "@/feature/page/queries/useIsHomepage";
-import { useDeletePage } from "@/feature/page/queries/usePageActions";
+import {
+	useDeletePage,
+	useSetAsHomePage,
+} from "@/feature/page/queries/usePageActions";
 import { Page } from "@/feature/page/types/page";
 
 export default function PagesTable({ pages }: { pages: Page[] }) {
@@ -41,7 +51,9 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 	const [pageToDelete, setPageToDelete] = useState<number | null>(null);
 	const [isDeletingPage, setIsDeletingPage] = useState(false);
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+	const [newHomepageId, setNewHomepageId] = useState<string>("");
 	const deletePage = useDeletePage();
+	const setAsHomePage = useSetAsHomePage();
 	const allIds = pages?.map((page) => page.id) || [];
 	const allChecked =
 		checkedRows.length === allIds.length && allIds.length > 0;
@@ -59,9 +71,13 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 	const handleDelete = async (id: number) => {
 		setIsDeletingPage(true);
 		try {
+			if (newHomepageId) {
+				await setAsHomePage.mutateAsync(Number(newHomepageId));
+			}
 			await deletePage.mutateAsync(id);
 			setIsDeleteDialogOpen(false);
 			setPageToDelete(null);
+			setNewHomepageId("");
 			toast.success(t("DeleteSuccess"));
 		} catch (error) {
 			const errorMessage =
@@ -78,6 +94,7 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 
 	const openDeleteDialog = (id: number) => {
 		setPageToDelete(id);
+		setNewHomepageId("");
 		setIsDeleteDialogOpen(true);
 	};
 
@@ -180,38 +197,104 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 				</Table>
 			</div>
 			<PagesPagination checkedRows={checkedRows} pages={pages} />
-			{/* Delete Collection Confirmation Dialog */}
+
+			{/* Delete Page Confirmation Dialog */}
 			<Dialog
 				onOpenChange={setIsDeleteDialogOpen}
 				open={isDeleteDialogOpen}
 			>
 				<DialogContent className="sm:max-w-md">
-					<DialogHeader>
-						<DialogTitle>{t("DeleteTitle")}</DialogTitle>
-						<DialogDescription>
-							{t("DeleteDescription")}
-						</DialogDescription>
-					</DialogHeader>
-					<DialogFooter>
-						<Button
-							onClick={() => setIsDeleteDialogOpen(false)}
-							variant="outline"
-						>
-							{tCommon("Cancel")}
-						</Button>
-						<Button
-							disabled={isDeletingPage}
-							onClick={() =>
-								pageToDelete && handleDelete(pageToDelete)
-							}
-							variant="destructive"
-						>
-							{isDeletingPage && (
-								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-							)}
-							{tCommon("Delete")}
-						</Button>
-					</DialogFooter>
+					{(() => {
+						const DeleteDialogContent = () => {
+							const { data: isPageToDeleteHomepage } =
+								useIsHomepage(pageToDelete || 0);
+							const otherPages =
+								pages?.filter(
+									(page) => page.id !== pageToDelete,
+								) || [];
+
+							return (
+								<>
+									<DialogHeader>
+										<DialogTitle>
+											{t("DeleteTitle")}
+										</DialogTitle>
+										<DialogDescription>
+											{t("DeleteDescription")}
+										</DialogDescription>
+									</DialogHeader>
+
+									{isPageToDeleteHomepage &&
+										otherPages.length > 0 && (
+											<div className="py-4">
+												<label className="text-sm font-medium mb-2 block">
+													{t("SelectNewHomepage")}
+												</label>
+												<Select
+													onValueChange={
+														setNewHomepageId
+													}
+													value={newHomepageId}
+												>
+													<SelectTrigger>
+														<SelectValue
+															placeholder={t(
+																"SelectPage",
+															)}
+														/>
+													</SelectTrigger>
+													<SelectContent>
+														{otherPages.map(
+															(page) => (
+																<SelectItem
+																	key={
+																		page.id
+																	}
+																	value={page.id.toString()}
+																>
+																	{page.title}
+																</SelectItem>
+															),
+														)}
+													</SelectContent>
+												</Select>
+											</div>
+										)}
+
+									<DialogFooter>
+										<Button
+											onClick={() =>
+												setIsDeleteDialogOpen(false)
+											}
+											variant="outline"
+										>
+											{tCommon("Cancel")}
+										</Button>
+										<Button
+											disabled={
+												isDeletingPage ||
+												(isPageToDeleteHomepage &&
+													!newHomepageId) ||
+												false
+											}
+											onClick={() =>
+												pageToDelete &&
+												handleDelete(pageToDelete)
+											}
+											variant="destructive"
+										>
+											{isDeletingPage && (
+												<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+											)}
+											{tCommon("Delete")}
+										</Button>
+									</DialogFooter>
+								</>
+							);
+						};
+
+						return <DeleteDialogContent />;
+					})()}
 				</DialogContent>
 			</Dialog>
 		</>

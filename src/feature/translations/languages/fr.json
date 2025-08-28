@@ -221,6 +221,8 @@
 		"NameNotAvailable": "Nom de la page non disponible",
 		"NoResultsFound": "Aucune page trouvée",
 		"Search": "Rechercher des pages...",
+		"SelectNewHomepage": "Sélectionner une nouvelle page d'accueil",
+		"SelectPage": "Sélectionner une page",
 		"Slug": "URL",
 		"SlugNotAvailable": "URL non disponible",
 		"Update": "Mettre à jour la page",
