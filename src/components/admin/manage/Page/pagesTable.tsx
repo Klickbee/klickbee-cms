@@ -1,9 +1,11 @@
 "use client";
 
 import { Home, Loader2, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
 import PagesPagination from "@/components/admin/manage/Page/pagination";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -36,7 +38,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { generateAdminLink } from "@/feature/admin-key/lib/utils";
+import { generateAdminLink, useAdminKey } from "@/feature/admin-key/lib/utils";
 import { usePageSearch } from "@/feature/page/hooks/usePageSearch";
 import {
 	useDeletePage,
@@ -60,9 +62,11 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 	const deletePage = useDeletePage();
 	const setAsHomePage = useSetAsHomePage();
 	const { data: homePageId } = useSetting("current_homepage_id");
+	const adminKey = useAdminKey();
 	const allIds = pages?.map((page) => page.id) || [];
 	const allChecked =
 		checkedRows.length === allIds.length && allIds.length > 0;
+	const setCurrentPage = useCurrentPageStore((state) => state.setCurrentPage);
 
 	const handleHeaderCheck = (checked: boolean) => {
 		setCheckedRows(checked ? allIds : []);
@@ -228,14 +232,22 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 													</Button>
 												</DropdownMenuTrigger>
 												<DropdownMenuContent align="end">
-													<DropdownMenuItem
-														onClick={() =>
-															// TODO: edit page
-															"Edit"
-														}
-													>
-														<Pencil className="h-4 w-4 mr-2" />
-														{tCommon("Edit")}
+													<DropdownMenuItem asChild>
+														<Link
+															href={`/admin/${adminKey}/builder`}
+															onClick={() => {
+																setCurrentPage({
+																	content:
+																		page.content,
+																	id: page.id,
+																	slug: page.slug,
+																	title: page.title,
+																});
+															}}
+														>
+															<Pencil className="h-4 w-4 mr-2" />
+															{tCommon("Edit")}
+														</Link>
 													</DropdownMenuItem>
 													<DropdownMenuItem
 														className="text-destructive"
