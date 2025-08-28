@@ -2,6 +2,7 @@
 
 import { Loader2, Plus } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import DashboardTitle from "@/components/admin/_partials/dashboardTitle";
 import CardTitle from "@/components/admin/manage/CardTitle";
@@ -13,6 +14,7 @@ import { useAdminKey } from "@/feature/admin-key/lib/utils";
 import { usePages } from "@/feature/page/queries/usePages";
 
 export default function AdminPagesPage() {
+	const router = useRouter();
 	const adminKey = useAdminKey();
 	const { data: pagesData, isLoading, isError } = usePages();
 	const t = useTranslations("Pages");
@@ -51,9 +53,10 @@ export default function AdminPagesPage() {
 							<EmptyState
 								buttonText={t("CreateNew")}
 								description={t("EmptyStateDescription")}
-								// TODO
 								onButtonClick={() => {
-									"Create";
+									router.push(
+										`/admin/${adminKey}/builder?action=create_page`,
+									);
 								}}
 								title={t("EmptyStateTitle")}
 							/>
