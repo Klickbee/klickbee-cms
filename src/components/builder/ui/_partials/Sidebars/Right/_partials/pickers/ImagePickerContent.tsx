@@ -127,14 +127,14 @@ export default function ImagePickerContent({
 								size="sm"
 								variant="secondary"
 							>
-								Changer l'image
+								{t("changeImage")}
 							</Button>
 						</div>
 					</div>
 				) : (
 					<div className="flex h-full flex-col items-center justify-center gap-4">
 						<div className="text-center text-sm text-zinc-500">
-							Glissez une image ici ou
+							{t("dragImageHere")}
 						</div>
 						<Button
 							onClick={() => fileInputRef.current?.click()}
@@ -159,7 +159,7 @@ export default function ImagePickerContent({
 			{/* URL input */}
 			<div className="space-y-1">
 				<label className="text-xs font-medium text-zinc-700">
-					URL de l'image
+					{t("imageUrl")}
 				</label>
 				<Input
 					className="h-8 text-xs"
@@ -174,7 +174,7 @@ export default function ImagePickerContent({
 			<div className="grid grid-cols-2 gap-2">
 				<div className="space-y-1">
 					<label className="text-xs font-medium text-zinc-700">
-						Taille
+						{t("imageSize")}
 					</label>
 					<Select onValueChange={handleSizeChange} value={value.size}>
 						<SelectTrigger className="h-8 w-full text-xs">
@@ -190,7 +190,7 @@ export default function ImagePickerContent({
 				</div>
 				<div className="space-y-1">
 					<label className="text-xs font-medium text-zinc-700">
-						Position
+						{t("imagePosition")}
 					</label>
 					<Select
 						onValueChange={handlePositionChange}
