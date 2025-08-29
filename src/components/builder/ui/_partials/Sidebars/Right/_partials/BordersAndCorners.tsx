@@ -7,8 +7,11 @@ import {
 	CornerUpRight,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
-import { SizeUnit } from "@/builder/types/settings/FluidSize";
+import { useStyleState } from "@/builder/hooks/useStyleState";
+import {
+	BorderCornerStyle,
+	BorderStyle,
+} from "@/builder/types/components/properties/componentStylePropsType";
 import UnitSelector from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/UnitSelector";
 import PropertyColumn from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyColumn";
 import {
@@ -23,44 +26,32 @@ import SimpleUnitInput from "./inputs/SimpleUnitInput";
 import PropertyRow from "./layout/PropertyRow";
 import BasicColorPicker from "./pickers/BasicColorPicker";
 
-type BorderStyle = "none" | "solid" | "dashed" | "dotted" | "double";
-
-interface BorderState {
-	width: number;
-	widthUnit: SizeUnit;
-	color: string;
-	borderStyle: BorderStyle;
-	outlineStyle: BorderStyle;
-	radiusTopLeft: number;
-	radiusTopRight: number;
-	radiusBottomLeft: number;
-	radiusBottomRight: number;
-	radiusUnit: SizeUnit;
-	outlineColor: string;
-	outlineWidth: number;
-	outlineWidthUnit: SizeUnit;
-}
-
 export default function BuilderStyleBordersAndCorners() {
 	const t = useTranslations("Builder.RightSidebar.BordersAndCorners");
-	const [border, setBorder] = useState<BorderState>({
+	const {
+		state: border,
+		updateProperty,
+		updateNestedProperty,
+	} = useStyleState<BorderCornerStyle>({
+		borderColor: "#171717",
+		borderRadius: {
+			bottom: { number: 0, unit: "px" },
+			left: { number: 0, unit: "px" },
+			right: { number: 0, unit: "px" },
+			top: { number: 0, unit: "px" },
+		},
 		borderStyle: "solid",
-		color: "#171717",
+		borderWidth: {
+			bottom: { number: 1, unit: "px" },
+			left: { number: 1, unit: "px" },
+			right: { number: 1, unit: "px" },
+			top: { number: 1, unit: "px" },
+		},
 		outlineColor: "#171717",
-		outlineStyle: "solid",
-		outlineWidth: 1,
-		outlineWidthUnit: "px",
-		radiusBottomLeft: 0,
-		radiusBottomRight: 0,
-		radiusTopLeft: 0,
-		radiusTopRight: 0,
-		radiusUnit: "px",
-		width: 1,
-		widthUnit: "px",
+		outlineWidth: { number: 1, unit: "px" },
 	});
 
 	const borderStyleOptions: { value: BorderStyle; label: string }[] = [
-		{ label: t("none"), value: "none" },
 		{ label: t("solid"), value: "solid" },
 		{ label: t("dashed"), value: "dashed" },
 		{ label: t("dotted"), value: "dotted" },
@@ -72,24 +63,58 @@ export default function BuilderStyleBordersAndCorners() {
 			{/* Border Width */}
 			<PropertyRow label={t("borderWidth")}>
 				<SimpleUnitInput
-					onUnitChange={(widthUnit) =>
-						setBorder((prev) => ({ ...prev, widthUnit }))
-					}
-					onValueChange={(width) =>
-						setBorder((prev) => ({ ...prev, width }))
-					}
-					unit={border.widthUnit}
-					value={border.width}
+					onUnitChange={(unit) => {
+						updateNestedProperty("borderWidth", (current) => ({
+							bottom: {
+								number: current?.bottom?.number || 1,
+								unit,
+							},
+							left: {
+								number: current?.left?.number || 1,
+								unit,
+							},
+							right: {
+								number: current?.right?.number || 1,
+								unit,
+							},
+							top: {
+								number: current?.top?.number || 1,
+								unit,
+							},
+						}));
+					}}
+					onValueChange={(number) => {
+						updateNestedProperty("borderWidth", (current) => ({
+							bottom: {
+								number,
+								unit: current?.bottom?.unit || "px",
+							},
+							left: {
+								number,
+								unit: current?.left?.unit || "px",
+							},
+							right: {
+								number,
+								unit: current?.right?.unit || "px",
+							},
+							top: {
+								number,
+								unit: current?.top?.unit || "px",
+							},
+						}));
+					}}
+					unit={border.borderWidth?.top?.unit || "px"}
+					value={border.borderWidth?.top?.number || 1}
 				/>
 			</PropertyRow>
 
 			{/* Border Color */}
 			<PropertyRow label={t("borderColor")}>
 				<BasicColorPicker
-					onChange={(color) =>
-						setBorder((prev) => ({ ...prev, color }))
+					onChange={(borderColor) =>
+						updateProperty("borderColor", borderColor)
 					}
-					value={border.color}
+					value={border.borderColor || "#171717"}
 				/>
 			</PropertyRow>
 
@@ -97,10 +122,10 @@ export default function BuilderStyleBordersAndCorners() {
 			<PropertyRow label={t("borderStyle")}>
 				<Select
 					onValueChange={(borderStyle) =>
-						setBorder((prev) => ({
-							...prev,
-							borderStyle: borderStyle as BorderStyle,
-						}))
+						updateProperty(
+							"borderStyle",
+							borderStyle as BorderStyle,
+						)
 					}
 					value={border.borderStyle}
 				>
@@ -121,35 +146,76 @@ export default function BuilderStyleBordersAndCorners() {
 			<PropertyColumn
 				action={
 					<UnitSelector
-						onUnitChange={(radiusUnit) =>
-							setBorder((prev) => ({ ...prev, radiusUnit }))
+						onUnitChange={(unit) =>
+							updateNestedProperty("borderRadius", (current) => ({
+								bottom: {
+									number: current?.bottom?.number || 0,
+									unit,
+								},
+								left: {
+									number: current?.left?.number || 0,
+									unit,
+								},
+								right: {
+									number: current?.right?.number || 0,
+									unit,
+								},
+								top: {
+									number: current?.top?.number || 0,
+									unit,
+								},
+							}))
 						}
-						unit={border.radiusUnit}
+						unit={border.borderRadius?.top?.unit || "px"}
 					/>
 				}
 				label={t("borderRadius")}
 			>
 				<QuadInput
 					bottomIcon={CornerDownRight}
-					bottomValue={border.radiusBottomLeft}
+					bottomValue={border.borderRadius?.bottom?.number || 0}
 					leftIcon={CornerDownLeft}
-					leftValue={border.radiusBottomRight}
-					onBottomChange={(radiusBottomLeft) =>
-						setBorder((prev) => ({ ...prev, radiusBottomLeft }))
+					leftValue={border.borderRadius?.left?.number || 0}
+					onBottomChange={(number) =>
+						updateNestedProperty("borderRadius", (current) => ({
+							...current,
+							bottom: {
+								number,
+								unit: current?.bottom?.unit || "px",
+							},
+						}))
 					}
-					onLeftChange={(radiusBottomRight) =>
-						setBorder((prev) => ({ ...prev, radiusBottomRight }))
+					onLeftChange={(number) =>
+						updateNestedProperty("borderRadius", (current) => ({
+							...current,
+							left: {
+								number,
+								unit: current?.left?.unit || "px",
+							},
+						}))
 					}
-					onRightChange={(radiusTopRight) =>
-						setBorder((prev) => ({ ...prev, radiusTopRight }))
+					onRightChange={(number) =>
+						updateNestedProperty("borderRadius", (current) => ({
+							...current,
+							right: {
+								number,
+								unit: current?.right?.unit || "px",
+							},
+						}))
 					}
-					onTopChange={(radiusTopLeft) =>
-						setBorder((prev) => ({ ...prev, radiusTopLeft }))
+					onTopChange={(number) =>
+						updateNestedProperty("borderRadius", (current) => ({
+							...current,
+							top: {
+								number,
+								unit: current?.top?.unit || "px",
+							},
+						}))
 					}
 					rightIcon={CornerUpRight}
-					rightValue={border.radiusTopRight}
+					rightValue={border.borderRadius?.right?.number || 0}
 					topIcon={CornerUpLeft}
-					topValue={border.radiusTopLeft}
+					topValue={border.borderRadius?.top?.number || 0}
 				/>
 			</PropertyColumn>
 
@@ -157,47 +223,29 @@ export default function BuilderStyleBordersAndCorners() {
 			<PropertyRow label={t("outlineColor")}>
 				<BasicColorPicker
 					onChange={(outlineColor) =>
-						setBorder((prev) => ({ ...prev, outlineColor }))
+						updateProperty("outlineColor", outlineColor)
 					}
-					value={border.outlineColor}
+					value={border.outlineColor || "#171717"}
 				/>
-			</PropertyRow>
-
-			{/* Outline Style */}
-			<PropertyRow label={t("outlineStyle")}>
-				<Select
-					onValueChange={(outlineStyle) =>
-						setBorder((prev) => ({
-							...prev,
-							outlineStyle: outlineStyle as BorderStyle,
-						}))
-					}
-					value={border.outlineStyle}
-				>
-					<SelectTrigger className="h-8 w-full text-xs">
-						<SelectValue />
-					</SelectTrigger>
-					<SelectContent>
-						{borderStyleOptions.map((option) => (
-							<SelectItem key={option.value} value={option.value}>
-								{option.label}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
 			</PropertyRow>
 
 			{/* Outline Width */}
 			<PropertyRow label={t("outlineWidth")}>
 				<SimpleUnitInput
-					onUnitChange={(outlineWidthUnit) =>
-						setBorder((prev) => ({ ...prev, outlineWidthUnit }))
+					onUnitChange={(unit) =>
+						updateProperty("outlineWidth", {
+							number: border.outlineWidth?.number || 1,
+							unit,
+						})
 					}
-					onValueChange={(outlineWidth) =>
-						setBorder((prev) => ({ ...prev, outlineWidth }))
+					onValueChange={(number) =>
+						updateProperty("outlineWidth", {
+							number,
+							unit: border.outlineWidth?.unit || "px",
+						})
 					}
-					unit={border.outlineWidthUnit}
-					value={border.outlineWidth}
+					unit={border.outlineWidth?.unit || "px"}
+					value={border.outlineWidth?.number || 1}
 				/>
 			</PropertyRow>
 		</div>
