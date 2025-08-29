@@ -25,18 +25,16 @@ export default function SearchBar({
 	}, [deferredValue, setSearchQuery]);
 
 	return (
-		<div className="w-full max-w-md flex items-center space-x-2">
-			<div className="relative flex-1">
-				<SearchIcon className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-				<Input
-					className="pl-8"
-					onChange={(e) => {
-						setLocalValue(e.target.value);
-					}}
-					placeholder={placeholder}
-					value={localValue}
-				/>
-			</div>
+		<div className="w-full max-w-md relative mb-4">
+			<SearchIcon className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+			<Input
+				className="pl-8"
+				onChange={(e) => {
+					setLocalValue(e.target.value);
+				}}
+				placeholder={placeholder}
+				value={localValue}
+			/>
 		</div>
 	);
 }

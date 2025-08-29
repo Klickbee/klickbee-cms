@@ -54,7 +54,15 @@ export function useSetAsHomePage() {
 		mutationFn: (pageId: number) => setAsHomePage(pageId),
 		onSuccess: () => {
 			// Invalidate both the pages query and the current_homepage_id setting
-			queryClient.invalidateQueries({ queryKey: ["pages"] });
+			queryClient.invalidateQueries({
+				queryKey: ["pages"],
+			});
+			queryClient.invalidateQueries({
+				queryKey: ["isHomepage"],
+			});
+			queryClient.invalidateQueries({
+				queryKey: ["setting", "current_homepage_id"],
+			});
 			queryClient.invalidateQueries({
 				queryKey: ["settings", "current_homepage_id"],
 			});

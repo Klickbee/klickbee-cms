@@ -36,8 +36,6 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { sortPagesWithHomeFirst } from "@/feature/page/lib/pagesClient";
-import { useCreatePage } from "@/feature/page/queries/useCreatePage";
-import { useLastPageId } from "@/feature/page/queries/useLastPageId";
 import {
 	useDeletePage,
 	useDuplicatePage,
@@ -46,10 +44,8 @@ import {
 } from "@/feature/page/queries/usePageActions";
 import { usePages } from "@/feature/page/queries/usePages";
 import { Page, PageLight } from "@/feature/page/types/page";
-import {
-	useSetSetting,
-	useSetting,
-} from "@/feature/settings/queries/useSettings";
+import { useSetting } from "@/feature/settings/queries/useSettings";
+import { useAddPage } from "@/hooks/useAddPage";
 
 export default function BuilderTabPagesPages() {
 	const [isEditingSlug, setIsEditingSlug] = useState<{
@@ -62,14 +58,11 @@ export default function BuilderTabPagesPages() {
 	const { data: pages } = usePages();
 	const currentPage = useCurrentPageStore((state) => state.currentPage);
 	const setCurrentPage = useCurrentPageStore((state) => state.setCurrentPage);
-	const createPage = useCreatePage();
-	const setSetting = useSetSetting();
 	const { data: currentHomepageRaw } = useSetting("current_homepage_id");
 	const currentHomepage = {
 		value: Number(currentHomepageRaw?.value),
 	};
-
-	const { data: lastPageId } = useLastPageId();
+	const { addPage } = useAddPage();
 
 	// Initialize page action hooks
 	const duplicatePage = useDuplicatePage();
@@ -162,32 +155,6 @@ export default function BuilderTabPagesPages() {
 
 	const handleCurrentPageSwitch = (page: PageLight) => {
 		setCurrentPage(page);
-	};
-
-	const handleAddPage = async () => {
-		const newPage = await createPage.mutateAsync({
-			content: {},
-			slug: `page-${lastPageId}`,
-			title: "New Page " + lastPageId,
-		});
-
-		if (
-			!pages ||
-			(Array.isArray(pages) && pages.length === 0) ||
-			!currentHomepage
-		) {
-			await setSetting.mutateAsync({
-				key: "current_homepage_id",
-				value: String(newPage.id),
-			});
-		}
-
-		handleCurrentPageSwitch({
-			content: newPage.content,
-			id: newPage.id,
-			slug: newPage.slug,
-			title: newPage.title,
-		});
 	};
 
 	// Draggable page component
@@ -416,7 +383,7 @@ export default function BuilderTabPagesPages() {
 		<div className="flex flex-col gap-1">
 			<div className="flex items-center justify-between px-2 py-2 text-sm font-medium">
 				<span>Pages</span>
-				<Button onClick={handleAddPage} size="icon" variant="ghost">
+				<Button onClick={addPage} size="icon" variant="ghost">
 					<Plus className="w-4 h-4" />
 				</Button>
 			</div>

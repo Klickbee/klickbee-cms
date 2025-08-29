@@ -1,6 +1,9 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { lastPageIdOptions } from "@/feature/page/options/lastPageIdOptions";
+import { useQuery } from "@tanstack/react-query";
+import { getLastPageId } from "@/feature/page/lib/pages";
 
 export function useLastPageId() {
-	return useSuspenseQuery(lastPageIdOptions());
+	return useQuery({
+		queryFn: async () => await getLastPageId(),
+		queryKey: ["lastPageId"] as const,
+	});
 }

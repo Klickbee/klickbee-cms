@@ -3,6 +3,7 @@
 import { BuilderComponent } from "@/builder/types/components/components";
 import { isAuthenticatedGuard } from "@/feature/auth/lib/session";
 import { prisma } from "@/lib/prisma";
+import { isHomepage } from "../lib/pages";
 
 /**
  * Duplicates a page with a new title and slug
@@ -60,14 +61,8 @@ export const deletePage = async (pageId: number) => {
 	}
 
 	// Check if this is the home page
-	const homepageSetting = await prisma.settings.findUnique({
-		where: { key: "current_homepage_id" },
-	});
-
-	if (homepageSetting && Number(homepageSetting.value) === pageId) {
-		throw new Error(
-			"Cannot delete the home page. Set another page as home first.",
-		);
+	if (await isHomepage(pageId)) {
+		throw new Error("CannotDeleteHomePage");
 	}
 
 	// Delete the page

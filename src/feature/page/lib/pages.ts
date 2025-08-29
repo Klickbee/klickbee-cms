@@ -104,3 +104,11 @@ export const getLastPageId = async () => {
 		})
 		.then((page) => page?.id || 0);
 };
+
+export const isHomepage = async (pageId: number) => {
+	const homepageSetting = await prisma.settings.findUnique({
+		where: { key: "current_homepage_id" },
+	});
+
+	return homepageSetting && Number(homepageSetting.value) === pageId;
+};
