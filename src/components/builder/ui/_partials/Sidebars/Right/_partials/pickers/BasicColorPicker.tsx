@@ -2,6 +2,7 @@
 
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { ColorSettings } from "@/builder/types/settings/ColorSettings";
 import ColorPickerContent from "@/components/builder/ui/_partials/Sidebars/Right/_partials/pickers/ColorPickerContent";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,9 +12,9 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
-interface TypographyColorPickerProps {
-	value: string;
-	onChange: (color: string) => void;
+interface BasicColorPickerProps {
+	value: ColorSettings | string;
+	onChange: (color: ColorSettings | string) => void;
 	className?: string;
 }
 
@@ -21,7 +22,7 @@ export default function BasicColorPicker({
 	value,
 	onChange,
 	className,
-}: TypographyColorPickerProps) {
+}: BasicColorPickerProps) {
 	const [isOpen, setIsOpen] = useState(false);
 
 	return (
@@ -37,9 +38,18 @@ export default function BasicColorPicker({
 				>
 					<div
 						className="w-4 h-4 rounded border border-zinc-200 mr-2"
-						style={{ backgroundColor: value }}
+						style={{
+							backgroundColor:
+								typeof value === "string"
+									? value
+									: value?.hexCode || "#000000",
+						}}
 					/>
-					<span className="flex-1 text-xs">{value}</span>
+					<span className="flex-1 text-xs">
+						{typeof value === "string"
+							? value
+							: value?.hexCode || "#000000"}
+					</span>
 					<ChevronDown className="ml-2 h-3 w-3 shrink-0 opacity-50" />
 				</Button>
 			</PopoverTrigger>
@@ -50,8 +60,12 @@ export default function BasicColorPicker({
 			>
 				<ColorPickerContent
 					closeColorPicker={() => setIsOpen(false)}
-					onChange={onChange}
-					value={value}
+					onChange={(color: string) => onChange(color)}
+					value={
+						typeof value === "string"
+							? value
+							: value?.hexCode || "#000000"
+					}
 				/>
 			</PopoverContent>
 		</Popover>
