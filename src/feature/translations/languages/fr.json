@@ -86,7 +86,8 @@
 		"PasswordPlaceholder": "Votre mot de passe",
 		"PhoneNumber": "Numéro de téléphone",
 		"Previous": "Précédent",
-		"RowsSelected": "{checkedRows} de {pagesLength} {checkedRows, plural, =0 {ligne} =1 {ligne} other {lignes}} {checkedRows, plural, =0 {sélectionnée} =1 {sélectionnée} other {sélectionnées}}."
+		"RowsSelected": "{checkedRows} de {pagesLength} {checkedRows, plural, =0 {ligne} =1 {ligne} other {lignes}} {checkedRows, plural, =0 {sélectionnée} =1 {sélectionnée} other {sélectionnées}}.",
+		"SeoScore": "Score SEO"
 	},
 	"Contacts": {
 		"ContactTitle": "{readingId} - {name}",

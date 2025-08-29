@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
+import SeoBadge from "@/components/admin/_partials/seoBadge";
 import PagesPagination from "@/components/admin/manage/Page/pagination";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -45,6 +46,7 @@ import {
 	useSetAsHomePage,
 } from "@/feature/page/queries/usePageActions";
 import { Page } from "@/feature/page/types/page";
+import { seoScoreCalculated } from "@/feature/seo/lib/seoScoreCalculated";
 import { useSetting } from "@/feature/settings/queries/useSettings";
 import PageSearchBar from "./searchBar";
 
@@ -185,6 +187,9 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 									</TableHead>
 									<TableHead>{t("Name")}</TableHead>
 									<TableHead>{t("Slug")}</TableHead>
+									<TableHead className="text-center">
+										{tCommon("SeoScore")}
+									</TableHead>
 									<TableHead className="w-12"></TableHead>
 								</TableRow>
 							</TableHeader>
@@ -221,6 +226,18 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 											</a>
 										</TableCell>
 										<TableCell>{page.slug}</TableCell>
+										<TableCell className="text-center">
+											<SeoBadge
+												score={seoScoreCalculated({
+													metaDescription:
+														page.metaDescription,
+													metaKeywords:
+														page.metaKeywords,
+													metaTitle: page.metaTitle,
+													title: page.title,
+												})}
+											/>
+										</TableCell>
 										<TableCell className={"w-fit"}>
 											<DropdownMenu>
 												<DropdownMenuTrigger asChild>
