@@ -10,13 +10,14 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { useStyleState } from "@/builder/hooks/useStyleState";
 import {
 	DirectionType,
 	ObjectFitType,
 	OverflowType,
+	PositionStyle,
 	PositionType,
 } from "@/builder/types/components/properties/componentStylePropsType";
-import { SizeUnit } from "@/builder/types/settings/FluidSize";
 import IconToggleGroup from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/IconToggleGroup";
 import NumberInput from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/NumberInput";
 import QuadInput from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/QuadInput";
@@ -34,27 +35,20 @@ import {
 export default function BuilderStylePosition() {
 	const t = useTranslations("Builder.RightSidebar.Position");
 
-	// Position states
-	const [position, setPosition] = useState<PositionType>("relative");
+	const { state: positionStyle, updateProperty } =
+		useStyleState<PositionStyle>({
+			bottom: { number: 0, unit: "px" },
+			left: { number: 0, unit: "px" },
+			objectFit: "cover",
+			overflow: "auto",
+			position: "relative",
+			right: { number: 0, unit: "px" },
+			top: { number: 0, unit: "px" },
+			zIndex: 1,
+		});
 
-	// Spacing states (reuse spacing logic from SizeAndSpacing)
-	const [spacingTop, setSpacingTop] = useState<number>(0);
-	const [spacingRight, setSpacingRight] = useState<number>(0);
-	const [spacingBottom, setSpacingBottom] = useState<number>(0);
-	const [spacingLeft, setSpacingLeft] = useState<number>(0);
-	const [spacingUnit, setSpacingUnit] = useState<SizeUnit>("px");
-
-	// Z-index state
-	const [zIndex, setZIndex] = useState<number>(1);
-
-	// Direction state
+	// Direction state (separate since it's not part of PositionStyle)
 	const [direction, setDirection] = useState<DirectionType>("vertical");
-
-	// Overflow state
-	const [overflow, setOverflow] = useState<OverflowType>("auto");
-
-	// Object Fit state
-	const [objectFit, setObjectFit] = useState<ObjectFitType>("cover");
 
 	// Direction options
 	const directionOptions = [
@@ -67,8 +61,10 @@ export default function BuilderStylePosition() {
 			{/* Position */}
 			<PropertyRow label={t("position")}>
 				<Select
-					onValueChange={(value: PositionType) => setPosition(value)}
-					value={position}
+					onValueChange={(value: PositionType) =>
+						updateProperty("position", value)
+					}
+					value={positionStyle.position || "relative"}
 				>
 					<SelectTrigger className="h-8 w-full text-xs">
 						<SelectValue />
@@ -97,31 +93,71 @@ export default function BuilderStylePosition() {
 			<PropertyColumn
 				action={
 					<UnitSelector
-						onUnitChange={setSpacingUnit}
-						unit={spacingUnit}
+						onUnitChange={(unit) => {
+							updateProperty("bottom", {
+								number: positionStyle.bottom?.number || 0,
+								unit,
+							});
+							updateProperty("left", {
+								number: positionStyle.left?.number || 0,
+								unit,
+							});
+							updateProperty("right", {
+								number: positionStyle.right?.number || 0,
+								unit,
+							});
+							updateProperty("top", {
+								number: positionStyle.top?.number || 0,
+								unit,
+							});
+						}}
+						unit={positionStyle.top?.unit || "px"}
 					/>
 				}
 				label={t("spacing")}
 			>
 				<QuadInput
 					bottomIcon={ArrowDownToLine}
-					bottomValue={spacingBottom}
+					bottomValue={positionStyle.bottom?.number || 0}
 					leftIcon={ArrowLeftToLine}
-					leftValue={spacingLeft}
-					onBottomChange={setSpacingBottom}
-					onLeftChange={setSpacingLeft}
-					onRightChange={setSpacingRight}
-					onTopChange={setSpacingTop}
+					leftValue={positionStyle.left?.number || 0}
+					onBottomChange={(value) =>
+						updateProperty("bottom", {
+							number: value,
+							unit: positionStyle.bottom?.unit || "px",
+						})
+					}
+					onLeftChange={(value) =>
+						updateProperty("left", {
+							number: value,
+							unit: positionStyle.left?.unit || "px",
+						})
+					}
+					onRightChange={(value) =>
+						updateProperty("right", {
+							number: value,
+							unit: positionStyle.right?.unit || "px",
+						})
+					}
+					onTopChange={(value) =>
+						updateProperty("top", {
+							number: value,
+							unit: positionStyle.top?.unit || "px",
+						})
+					}
 					rightIcon={ArrowRightToLine}
-					rightValue={spacingRight}
+					rightValue={positionStyle.right?.number || 0}
 					topIcon={ArrowUpToLine}
-					topValue={spacingTop}
+					topValue={positionStyle.top?.number || 0}
 				/>
 			</PropertyColumn>
 
 			{/* Z-index */}
 			<PropertyRow label={t("zIndex")}>
-				<NumberInput onValueChange={setZIndex} value={zIndex} />
+				<NumberInput
+					onValueChange={(value) => updateProperty("zIndex", value)}
+					value={positionStyle.zIndex || 1}
+				/>
 			</PropertyRow>
 
 			{/* Direction */}
@@ -136,8 +172,10 @@ export default function BuilderStylePosition() {
 			{/* Overflow */}
 			<PropertyRow label={t("overflow")}>
 				<Select
-					onValueChange={(value: OverflowType) => setOverflow(value)}
-					value={overflow}
+					onValueChange={(value: OverflowType) =>
+						updateProperty("overflow", value)
+					}
+					value={positionStyle.overflow || "auto"}
 				>
 					<SelectTrigger className="h-8 w-full text-xs">
 						<SelectValue />
@@ -163,9 +201,9 @@ export default function BuilderStylePosition() {
 			<PropertyRow label={t("objectFit")}>
 				<Select
 					onValueChange={(value: ObjectFitType) =>
-						setObjectFit(value)
+						updateProperty("objectFit", value)
 					}
-					value={objectFit}
+					value={positionStyle.objectFit || "cover"}
 				>
 					<SelectTrigger className="h-8 w-full text-xs">
 						<SelectValue />
