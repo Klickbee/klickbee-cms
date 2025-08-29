@@ -1,6 +1,8 @@
 import { useTranslations } from "next-intl";
+import BuilderStyleAdvanced from "@/components/builder/ui/_partials/Sidebars/Right/_partials/Advanced";
 import BuilderStyleBackground from "@/components/builder/ui/_partials/Sidebars/Right/_partials/Background";
 import BuilderStyleBordersAndCorners from "@/components/builder/ui/_partials/Sidebars/Right/_partials/BordersAndCorners";
+import BuilderStyleEffects from "@/components/builder/ui/_partials/Sidebars/Right/_partials/Effects";
 import BuilderStyleLayout from "@/components/builder/ui/_partials/Sidebars/Right/_partials/Layout";
 import BuilderStylePosition from "@/components/builder/ui/_partials/Sidebars/Right/_partials/Position";
 import BuilderStyleSizeAndSpacing from "@/components/builder/ui/_partials/Sidebars/Right/_partials/SizeAndSpacing";
@@ -64,39 +66,30 @@ export default function BuilderStyleProperties() {
 
 			<AccordionItem value="borders">
 				<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 data-[state=open]:border-b">
-					Borders & Corners
+					{t("BordersAndCorners.title")}
 				</AccordionTrigger>
 				<AccordionContent className="px-4 py-3 border-b border-zinc-200">
 					<BuilderStyleBordersAndCorners />
 				</AccordionContent>
 			</AccordionItem>
 
-			{/*<AccordionItem value="content">
-				<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200">
-					Content
-				</AccordionTrigger>
-				<AccordionContent className="px-4 py-3">
-					<BuilderStyleContent />
-				</AccordionContent>
-			</AccordionItem>
-
 			<AccordionItem value="effects">
-				<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200">
-					Effects
+				<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 data-[state=open]:border-b">
+					{t("Effects.title")}
 				</AccordionTrigger>
-				<AccordionContent className="px-4 py-3">
+				<AccordionContent className="px-4 py-3 border-b border-zinc-200">
 					<BuilderStyleEffects />
 				</AccordionContent>
 			</AccordionItem>
 
 			<AccordionItem value="advanced">
-				<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200">
-					Advanced
+				<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 border-b">
+					{t("Advanced.title")}
 				</AccordionTrigger>
-				<AccordionContent className="px-4 py-3">
+				<AccordionContent className="px-4 py-3 border-b border-zinc-200">
 					<BuilderStyleAdvanced />
 				</AccordionContent>
-			</AccordionItem>*/}
+			</AccordionItem>
 		</Accordion>
 	);
 }
