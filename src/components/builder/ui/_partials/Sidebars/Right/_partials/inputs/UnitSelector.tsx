@@ -1,5 +1,9 @@
 "use client";
 
+import {
+	PercentUnit,
+	TimeUnit,
+} from "@/builder/types/components/properties/componentStylePropsType";
 import { SizeUnit } from "@/builder/types/settings/FluidSize";
 import {
 	Select,
@@ -9,17 +13,49 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 
-interface UnitSelectorProps {
-	unit: SizeUnit;
-	onUnitChange: (unit: SizeUnit) => void;
+interface UnitSelectorProps<T extends SizeUnit | PercentUnit | TimeUnit> {
+	unit: T;
+	onUnitChange: (unit: T) => void;
 	variant?: "default" | "embedded";
 }
 
-export default function UnitSelector({
-	unit,
-	onUnitChange,
-	variant = "default",
-}: UnitSelectorProps) {
+export default function UnitSelector<
+	T extends SizeUnit | PercentUnit | TimeUnit,
+>({ unit, onUnitChange, variant = "default" }: UnitSelectorProps<T>) {
+	const getUnitOptions = () => {
+		// Pour les unités d'opacité, on affiche juste %
+		if (unit === "%") {
+			return [
+				<SelectItem key="%" value="%">
+					%
+				</SelectItem>,
+			];
+		}
+		// Pour les unités de temps, on affiche ms et s
+		if (unit === "ms" || unit === "s") {
+			return [
+				<SelectItem key="ms" value="ms">
+					ms
+				</SelectItem>,
+				<SelectItem key="s" value="s">
+					s
+				</SelectItem>,
+			];
+		}
+		// Pour les unités de taille, on affiche px, rem, em
+		return [
+			<SelectItem key="px" value="px">
+				px
+			</SelectItem>,
+			<SelectItem key="rem" value="rem">
+				rem
+			</SelectItem>,
+			<SelectItem key="em" value="em">
+				em
+			</SelectItem>,
+		];
+	};
+
 	return (
 		<Select onValueChange={onUnitChange} value={unit}>
 			<SelectTrigger
@@ -31,11 +67,7 @@ export default function UnitSelector({
 			>
 				{variant === "embedded" ? <SelectValue /> : `(${unit})`}
 			</SelectTrigger>
-			<SelectContent>
-				<SelectItem value="px">px</SelectItem>
-				<SelectItem value="rem">rem</SelectItem>
-				<SelectItem value="em">em</SelectItem>
-			</SelectContent>
+			<SelectContent>{getUnitOptions()}</SelectContent>
 		</Select>
 	);
 }
