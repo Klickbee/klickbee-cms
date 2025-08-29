@@ -148,7 +148,7 @@ export default function BuilderStyleBackground() {
 							onColorChange={(color) =>
 								updateProperty("color", color)
 							}
-							onGradientChange={(gradientCSS) => {
+							onGradientChange={() => {
 								// Parse CSS gradient back to BackgroundStyle format
 								// For now, use a simple approach - this could be enhanced
 								updateProperty("gradient", {
