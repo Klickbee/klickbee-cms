@@ -11,13 +11,14 @@ import {
 	MoveVertical,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useStyleState } from "@/builder/hooks/useStyleState";
 import {
 	type AlignItems,
 	type DisplayType,
 	type FlexDirection,
-	type FlexWrap,
+	type GridAuto,
 	type JustifyContent,
+	type LayoutStyle,
 } from "@/builder/types/components/properties/componentStylePropsType";
 import { type SizeUnit } from "@/builder/types/settings/FluidSize";
 import BinaryToggle from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/BinaryToggle";
@@ -37,30 +38,39 @@ import {
 export default function BuilderStyleLayout() {
 	const t = useTranslations("Builder.RightSidebar.Layout");
 
-	// Display state
-	const [displayType, setDisplayType] = useState<DisplayType>("flex");
-
-	// Flex states
-	const [flexDirection, setFlexDirection] = useState<FlexDirection>("row");
-	const [justifyContent, setJustifyContent] =
-		useState<JustifyContent>("start");
-	const [alignItems, setAlignItems] = useState<AlignItems>("stretch");
-	const [flexWrap, setFlexWrap] = useState<FlexWrap>("nowrap");
-
-	// Gap states (shared between flex and grid)
-	const [gapX, setGapX] = useState<number>(0);
-	const [gapY, setGapY] = useState<number>(0);
-	const [gapUnit, setGapUnit] = useState<SizeUnit>("px");
-
-	// Grid states
-	const [gridColumns, setGridColumns] = useState<number>(1);
-	const [gridRows, setGridRows] = useState<number>(1);
+	const {
+		state: layout,
+		updateProperty,
+		updateNestedProperty,
+	} = useStyleState<LayoutStyle>({
+		display: "flex",
+		flex: {
+			alignItems: "stretch",
+			direction: "row",
+			gap: {
+				column: { max: 0, maxWidth: 1440, min: 0, sizeUnit: "px" },
+				key: "layout-gap",
+				row: { max: 0, maxWidth: 1440, min: 0, sizeUnit: "px" },
+			},
+			justifyContent: "start",
+			wrap: "nowrap",
+		},
+		grid: {
+			columns: 1,
+			gap: {
+				column: { max: 0, maxWidth: 1440, min: 0, sizeUnit: "px" },
+				key: "layout-gap",
+				row: { max: 0, maxWidth: 1440, min: 0, sizeUnit: "px" },
+			},
+			rows: 1,
+		},
+	});
 
 	// Determine if layout controls should be shown
 	const isFlexLayout =
-		displayType === "flex" || displayType === "inline-flex";
+		layout.display === "flex" || layout.display === "inline-flex";
 	const isGridLayout =
-		displayType === "grid" || displayType === "inline-grid";
+		layout.display === "grid" || layout.display === "inline-grid";
 	const hasLayoutControls = isFlexLayout || isGridLayout;
 
 	// Direction options for flex
@@ -88,9 +98,9 @@ export default function BuilderStyleLayout() {
 			<PropertyRow label={t("DisplayType")}>
 				<Select
 					onValueChange={(value) =>
-						setDisplayType(value as DisplayType)
+						updateProperty("display", value as DisplayType)
 					}
-					value={displayType}
+					value={layout.display || "flex"}
 				>
 					<SelectTrigger className="w-full">
 						<SelectValue />
@@ -112,18 +122,28 @@ export default function BuilderStyleLayout() {
 					{/* Direction */}
 					<PropertyRow label={t("Direction")}>
 						<IconToggleGroup
-							onValueChange={setFlexDirection}
+							onValueChange={(value) =>
+								updateNestedProperty("flex", (current) => ({
+									...current,
+									direction: value as FlexDirection,
+								}))
+							}
 							options={directionOptions}
-							value={flexDirection}
+							value={layout.flex?.direction || "row"}
 						/>
 					</PropertyRow>
 
 					{/* Justify Content */}
 					<PropertyColumn label={t("JustifyContent")}>
 						<IconToggleGroup
-							onValueChange={setJustifyContent}
+							onValueChange={(value) =>
+								updateNestedProperty("flex", (current) => ({
+									...current,
+									justifyContent: value as JustifyContent,
+								}))
+							}
 							options={justifyContentOptions}
-							value={justifyContent}
+							value={layout.flex?.justifyContent || "start"}
 						/>
 					</PropertyColumn>
 
@@ -131,13 +151,44 @@ export default function BuilderStyleLayout() {
 					<PropertyColumn
 						action={
 							<Select
-								onValueChange={(value) =>
-									setGapUnit(value as SizeUnit)
+								onValueChange={(value) => {
+									const currentGap = layout.flex?.gap || {
+										column: {
+											max: 0,
+											maxWidth: 1440,
+											min: 0,
+											sizeUnit: "px",
+										},
+										key: "layout-gap",
+										row: {
+											max: 0,
+											maxWidth: 1440,
+											min: 0,
+											sizeUnit: "px",
+										},
+									};
+									updateNestedProperty("flex", (current) => ({
+										...current,
+										gap: {
+											...currentGap,
+											column: {
+												...currentGap.column,
+												sizeUnit: value as SizeUnit,
+											},
+											row: {
+												...currentGap.row,
+												sizeUnit: value as SizeUnit,
+											},
+										},
+									}));
+								}}
+								value={
+									layout.flex?.gap?.column.sizeUnit || "px"
 								}
-								value={gapUnit}
 							>
 								<SelectTrigger className="h-auto p-0 border-0 bg-transparent text-xs text-zinc-500 hover:text-zinc-700">
-									({gapUnit})
+									({layout.flex?.gap?.column.sizeUnit || "px"}
+									)
 								</SelectTrigger>
 								<SelectContent>
 									<SelectItem value="px">px</SelectItem>
@@ -149,12 +200,66 @@ export default function BuilderStyleLayout() {
 						label={t("Gap")}
 					>
 						<DualInput
-							onValueXChange={setGapX}
-							onValueYChange={setGapY}
+							onValueXChange={(value) => {
+								const currentGap = layout.flex?.gap || {
+									column: {
+										max: 0,
+										maxWidth: 1440,
+										min: 0,
+										sizeUnit: "px",
+									},
+									key: "layout-gap",
+									row: {
+										max: 0,
+										maxWidth: 1440,
+										min: 0,
+										sizeUnit: "px",
+									},
+								};
+								updateNestedProperty("flex", (current) => ({
+									...current,
+									gap: {
+										...currentGap,
+										column: {
+											...currentGap.column,
+											max: value,
+											min: value,
+										},
+									},
+								}));
+							}}
+							onValueYChange={(value) => {
+								const currentGap = layout.flex?.gap || {
+									column: {
+										max: 0,
+										maxWidth: 1440,
+										min: 0,
+										sizeUnit: "px",
+									},
+									key: "layout-gap",
+									row: {
+										max: 0,
+										maxWidth: 1440,
+										min: 0,
+										sizeUnit: "px",
+									},
+								};
+								updateNestedProperty("flex", (current) => ({
+									...current,
+									gap: {
+										...currentGap,
+										row: {
+											...currentGap.row,
+											max: value,
+											min: value,
+										},
+									},
+								}));
+							}}
 							placeholderX="0"
 							placeholderY="0"
-							valueX={gapX}
-							valueY={gapY}
+							valueX={layout.flex?.gap?.column.min || 0}
+							valueY={layout.flex?.gap?.row.min || 0}
 						/>
 					</PropertyColumn>
 
@@ -162,9 +267,12 @@ export default function BuilderStyleLayout() {
 					<PropertyRow label={t("AlignItems")}>
 						<Select
 							onValueChange={(value) =>
-								setAlignItems(value as AlignItems)
+								updateNestedProperty("flex", (current) => ({
+									...current,
+									alignItems: value as AlignItems,
+								}))
 							}
-							value={alignItems}
+							value={layout.flex?.alignItems || "stretch"}
 						>
 							<SelectTrigger className="w-full">
 								<SelectValue />
@@ -183,10 +291,13 @@ export default function BuilderStyleLayout() {
 						<BinaryToggle
 							falseLabel={t("No")}
 							onValueChange={(wrap) =>
-								setFlexWrap(wrap ? "wrap" : "nowrap")
+								updateNestedProperty("flex", (current) => ({
+									...current,
+									wrap: wrap ? "wrap" : "nowrap",
+								}))
 							}
 							trueLabel={t("Yes")}
-							value={flexWrap === "wrap"}
+							value={layout.flex?.wrap === "wrap"}
 						/>
 					</PropertyRow>
 				</>
@@ -198,18 +309,28 @@ export default function BuilderStyleLayout() {
 					{/* Columns (fr) */}
 					<PropertyRow label="Columns (fr)">
 						<NumberInput
-							onValueChange={setGridColumns}
+							onValueChange={(value) =>
+								updateNestedProperty("grid", (current) => ({
+									...current,
+									columns: value as GridAuto,
+								}))
+							}
 							placeholder="1"
-							value={gridColumns}
+							value={(layout.grid?.columns as number) || 1}
 						/>
 					</PropertyRow>
 
 					{/* Rows (fr) */}
 					<PropertyRow label="Rows (fr)">
 						<NumberInput
-							onValueChange={setGridRows}
+							onValueChange={(value) =>
+								updateNestedProperty("grid", (current) => ({
+									...current,
+									rows: value as GridAuto,
+								}))
+							}
 							placeholder="1"
-							value={gridRows}
+							value={(layout.grid?.rows as number) || 1}
 						/>
 					</PropertyRow>
 
@@ -217,13 +338,44 @@ export default function BuilderStyleLayout() {
 					<PropertyColumn
 						action={
 							<Select
-								onValueChange={(value) =>
-									setGapUnit(value as SizeUnit)
+								onValueChange={(value) => {
+									const currentGap = layout.grid?.gap || {
+										column: {
+											max: 0,
+											maxWidth: 1440,
+											min: 0,
+											sizeUnit: "px",
+										},
+										key: "layout-gap",
+										row: {
+											max: 0,
+											maxWidth: 1440,
+											min: 0,
+											sizeUnit: "px",
+										},
+									};
+									updateNestedProperty("grid", (current) => ({
+										...current,
+										gap: {
+											...currentGap,
+											column: {
+												...currentGap.column,
+												sizeUnit: value as SizeUnit,
+											},
+											row: {
+												...currentGap.row,
+												sizeUnit: value as SizeUnit,
+											},
+										},
+									}));
+								}}
+								value={
+									layout.grid?.gap?.column.sizeUnit || "px"
 								}
-								value={gapUnit}
 							>
 								<SelectTrigger className="h-auto p-0 border-0 bg-transparent text-xs text-zinc-500 hover:text-zinc-700">
-									({gapUnit})
+									({layout.grid?.gap?.column.sizeUnit || "px"}
+									)
 								</SelectTrigger>
 								<SelectContent>
 									<SelectItem value="px">px</SelectItem>
@@ -235,12 +387,66 @@ export default function BuilderStyleLayout() {
 						label={t("Gap")}
 					>
 						<DualInput
-							onValueXChange={setGapY}
-							onValueYChange={setGapX}
+							onValueXChange={(value) => {
+								const currentGap = layout.grid?.gap || {
+									column: {
+										max: 0,
+										maxWidth: 1440,
+										min: 0,
+										sizeUnit: "px",
+									},
+									key: "layout-gap",
+									row: {
+										max: 0,
+										maxWidth: 1440,
+										min: 0,
+										sizeUnit: "px",
+									},
+								};
+								updateNestedProperty("grid", (current) => ({
+									...current,
+									gap: {
+										...currentGap,
+										column: {
+											...currentGap.column,
+											max: value,
+											min: value,
+										},
+									},
+								}));
+							}}
+							onValueYChange={(value) => {
+								const currentGap = layout.grid?.gap || {
+									column: {
+										max: 0,
+										maxWidth: 1440,
+										min: 0,
+										sizeUnit: "px",
+									},
+									key: "layout-gap",
+									row: {
+										max: 0,
+										maxWidth: 1440,
+										min: 0,
+										sizeUnit: "px",
+									},
+								};
+								updateNestedProperty("grid", (current) => ({
+									...current,
+									gap: {
+										...currentGap,
+										row: {
+											...currentGap.row,
+											max: value,
+											min: value,
+										},
+									},
+								}));
+							}}
 							placeholderX="0"
 							placeholderY="0"
-							valueX={gapY}
-							valueY={gapX}
+							valueX={layout.grid?.gap?.column.min || 0}
+							valueY={layout.grid?.gap?.row.min || 0}
 						/>
 					</PropertyColumn>
 				</>
