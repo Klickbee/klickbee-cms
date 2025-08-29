@@ -19,22 +19,6 @@ export const useStyleState = <T>(initialState: T) => {
 		}));
 	};
 
-	// Fonction helper pour les arrays avec index
-	const updateArrayItem = <K extends keyof T, V>(
-		property: K,
-		index: number,
-		value: V,
-	) => {
-		setState((prev) => ({
-			...prev,
-			[property]: Array.isArray(prev[property])
-				? (prev[property] as V[]).map((item, i) =>
-						i === index ? value : item,
-					)
-				: prev[property],
-		}));
-	};
-
 	// Fonction helper pour ajouter un élément à un array
 	const addArrayItem = <K extends keyof T, V>(property: K, value: V) => {
 		setState((prev) => ({
@@ -53,22 +37,6 @@ export const useStyleState = <T>(initialState: T) => {
 				? (prev[property] as unknown[]).filter((_, i) => i !== index)
 				: prev[property],
 		}));
-	};
-
-	// Fonction helper pour les propriétés avec unités (number + unit)
-	const updateUnitValue = <K extends keyof T>(
-		property: K,
-		field: "number" | "unit",
-		value: string | number,
-	) => {
-		const current = (state[property] as {
-			number: number;
-			unit: string;
-		}) || { number: 0, unit: "px" };
-		updateProperty(property, {
-			...current,
-			[field]: value,
-		} as T[K]);
 	};
 
 	// Fonction helper spécialisée pour les shadows (box/text)
@@ -105,12 +73,9 @@ export const useStyleState = <T>(initialState: T) => {
 	return {
 		addArrayItem,
 		removeArrayItem,
-		setState,
 		state,
-		updateArrayItem,
 		updateArrayItemProperty,
 		updateNestedProperty,
 		updateProperty,
-		updateUnitValue,
 	};
 };
