@@ -6,7 +6,6 @@ import {
 	AlignLeft,
 	AlignRight,
 	Ban,
-	Bold,
 	CaseLower,
 	CaseSensitive,
 	CaseUpper,
@@ -20,18 +19,10 @@ import {
 	WrapText,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
-import {
-	ListStyle,
-	TextAlign,
-	TextDecoration,
-	WhiteSpace,
-} from "@/builder/types/components/properties/componentStylePropsType";
+import { useStyleState } from "@/builder/hooks/useStyleState";
+import { TypographyStyle } from "@/builder/types/components/properties/componentStylePropsType";
 import { SizeUnit } from "@/builder/types/settings/FluidSize";
-import {
-	TypographyFontWeight,
-	TypographyTextTransform,
-} from "@/builder/types/settings/TypographySettings";
+import { TypographyFontWeight } from "@/builder/types/settings/TypographySettings";
 import IconToggleGroup from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/IconToggleGroup";
 import SimpleUnitInput from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/SimpleUnitInput";
 import PropertyColumn from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyColumn";
@@ -45,48 +36,24 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 
-type FontStyleType = "normal" | "bold" | "italic";
-
 export default function BuilderStyleTypography() {
 	const t = useTranslations("Builder.RightSidebar.Typography");
 
-	// Font states
-	const [fontFamily, setFontFamily] = useState<string>("Poppins");
-	const [fontSize, setFontSize] = useState<number>(100);
-	const [fontSizeUnit, setFontSizeUnit] = useState<SizeUnit>("px");
-	const [fontWeight, setFontWeight] =
-		useState<TypographyFontWeight>("normal");
-
-	// Line Height states
-	const [lineHeight, setLineHeight] = useState<number>(120);
-	const [lineHeightUnit, setLineHeightUnit] = useState<SizeUnit>("px");
-
-	// Letter Spacing states
-	const [letterSpacing, setLetterSpacing] = useState<number>(120);
-	const [letterSpacingUnit, setLetterSpacingUnit] = useState<SizeUnit>("px");
-
-	// Font Style states
-	const [fontStyle, setFontStyle] = useState<FontStyleType>("normal");
-
-	// Text Transform states
-	const [textTransform, setTextTransform] =
-		useState<TypographyTextTransform>("unset");
-
-	// Text Color state
-	const [textColor, setTextColor] = useState<string>("#171717");
-
-	// Text Alignment state
-	const [textAlignment, setTextAlignment] = useState<TextAlign>("left");
-
-	// Text Decoration state
-	const [textDecoration, setTextDecoration] =
-		useState<TextDecoration>("none");
-
-	// White Space state
-	const [whiteSpace, setWhiteSpace] = useState<WhiteSpace>("normal");
-
-	// List Style state
-	const [listStyle, setListStyle] = useState<ListStyle>("none");
+	const { state: typography, updateProperty } =
+		useStyleState<TypographyStyle>({
+			color: "#171717",
+			fontFamily: "Poppins",
+			fontSize: { max: 16, maxWidth: 1440, min: 16, sizeUnit: "px" },
+			fontStyle: "normal",
+			fontWeight: "normal",
+			letterSpacing: { number: 0, unit: "px" },
+			lineHeight: { number: 1.5, unit: "em" },
+			listStyle: "none",
+			textAlign: "left",
+			textDecoration: "none",
+			textTransform: "unset",
+			whiteSpace: "normal",
+		});
 
 	// Font Family options
 	const fontFamilyOptions = [
@@ -116,7 +83,6 @@ export default function BuilderStyleTypography() {
 	// Font Style options
 	const fontStyleOptions = [
 		{ icon: Type, value: "normal" as const },
-		{ icon: Bold, value: "bold" as const },
 		{ icon: Italic, value: "italic" as const },
 	];
 
@@ -161,7 +127,12 @@ export default function BuilderStyleTypography() {
 		<div className="flex flex-col gap-3">
 			{/* Font Family */}
 			<PropertyColumn label={t("fontFamily")}>
-				<Select onValueChange={setFontFamily} value={fontFamily}>
+				<Select
+					onValueChange={(value) =>
+						updateProperty("fontFamily", value)
+					}
+					value={typography.fontFamily || "Poppins"}
+				>
 					<SelectTrigger className="h-8 w-full text-xs">
 						<SelectValue />
 					</SelectTrigger>
@@ -178,10 +149,36 @@ export default function BuilderStyleTypography() {
 			{/* Font Size */}
 			<PropertyRow label={t("fontSize")}>
 				<SimpleUnitInput
-					onUnitChange={setFontSizeUnit}
-					onValueChange={setFontSize}
-					unit={fontSizeUnit}
-					value={fontSize}
+					onUnitChange={(unit) => {
+						const currentValue = typography.fontSize || {
+							max: 16,
+							maxWidth: 1440,
+							min: 16,
+							sizeUnit: "px",
+						};
+						updateProperty("fontSize", {
+							max: currentValue.max,
+							maxWidth: currentValue.maxWidth,
+							min: currentValue.min,
+							sizeUnit: unit,
+						});
+					}}
+					onValueChange={(number) => {
+						const currentValue = typography.fontSize || {
+							max: 16,
+							maxWidth: 1440,
+							min: 16,
+							sizeUnit: "px",
+						};
+						updateProperty("fontSize", {
+							max: number,
+							maxWidth: currentValue.maxWidth,
+							min: number,
+							sizeUnit: currentValue.sizeUnit,
+						});
+					}}
+					unit={typography.fontSize?.sizeUnit || "px"}
+					value={typography.fontSize?.min || 16}
 				/>
 			</PropertyRow>
 
@@ -189,9 +186,9 @@ export default function BuilderStyleTypography() {
 			<PropertyRow label={t("fontWeight")}>
 				<Select
 					onValueChange={(value: TypographyFontWeight) =>
-						setFontWeight(value)
+						updateProperty("fontWeight", value)
 					}
-					value={fontWeight}
+					value={typography.fontWeight || "normal"}
 				>
 					<SelectTrigger className="h-8 w-full text-xs">
 						<SelectValue />
@@ -209,79 +206,138 @@ export default function BuilderStyleTypography() {
 			{/* Line Height */}
 			<PropertyRow label={t("lineHeight")}>
 				<SimpleUnitInput
-					onUnitChange={setLineHeightUnit}
-					onValueChange={setLineHeight}
-					unit={lineHeightUnit}
-					value={lineHeight}
+					onUnitChange={(unit) => {
+						const currentValue =
+							typeof typography.lineHeight === "object"
+								? typography.lineHeight
+								: { number: 1.5, unit: "em" as SizeUnit };
+						updateProperty("lineHeight", {
+							number: currentValue.number,
+							unit,
+						});
+					}}
+					onValueChange={(number) => {
+						const currentValue =
+							typeof typography.lineHeight === "object"
+								? typography.lineHeight
+								: { number: 1.5, unit: "em" as SizeUnit };
+						updateProperty("lineHeight", {
+							number,
+							unit: currentValue.unit,
+						});
+					}}
+					unit={
+						typeof typography.lineHeight === "object"
+							? typography.lineHeight.unit
+							: "em"
+					}
+					value={
+						typeof typography.lineHeight === "object"
+							? typography.lineHeight.number
+							: 1.5
+					}
 				/>
 			</PropertyRow>
 
 			{/* Letter Spacing */}
 			<PropertyRow label={t("letterSpacing")}>
 				<SimpleUnitInput
-					onUnitChange={setLetterSpacingUnit}
-					onValueChange={setLetterSpacing}
-					unit={letterSpacingUnit}
-					value={letterSpacing}
+					onUnitChange={(unit) => {
+						const currentValue = typography.letterSpacing || {
+							number: 0,
+							unit: "px",
+						};
+						updateProperty("letterSpacing", {
+							number: currentValue.number,
+							unit,
+						});
+					}}
+					onValueChange={(number) => {
+						const currentValue = typography.letterSpacing || {
+							number: 0,
+							unit: "px",
+						};
+						updateProperty("letterSpacing", {
+							number,
+							unit: currentValue.unit,
+						});
+					}}
+					unit={typography.letterSpacing?.unit || "px"}
+					value={typography.letterSpacing?.number || 0}
 				/>
 			</PropertyRow>
 
 			{/* Font Style */}
 			<PropertyRow label={t("fontStyle")}>
 				<IconToggleGroup
-					onValueChange={setFontStyle}
+					onValueChange={(value) =>
+						updateProperty("fontStyle", value)
+					}
 					options={fontStyleOptions}
-					value={fontStyle}
+					value={typography.fontStyle || "normal"}
 				/>
 			</PropertyRow>
 
 			{/* Text Transform */}
 			<PropertyColumn label={t("textTransform")}>
 				<IconToggleGroup
-					onValueChange={setTextTransform}
+					onValueChange={(value) =>
+						updateProperty("textTransform", value)
+					}
 					options={textTransformOptions}
-					value={textTransform}
+					value={typography.textTransform || "unset"}
 				/>
 			</PropertyColumn>
 
 			{/* Text Color */}
 			<PropertyRow label={t("textColor")}>
-				<BasicColorPicker onChange={setTextColor} value={textColor} />
+				<BasicColorPicker
+					onChange={(color) => updateProperty("color", color)}
+					value={typography.color || "#171717"}
+				/>
 			</PropertyRow>
 
 			{/* Text Alignment */}
 			<PropertyColumn label={t("textAlignment")}>
 				<IconToggleGroup
-					onValueChange={setTextAlignment}
+					onValueChange={(value) =>
+						updateProperty("textAlign", value)
+					}
 					options={textAlignmentOptions}
-					value={textAlignment}
+					value={typography.textAlign || "left"}
 				/>
 			</PropertyColumn>
 
 			{/* Text Decoration */}
 			<PropertyRow label={t("textDecoration")}>
 				<IconToggleGroup
-					onValueChange={setTextDecoration}
+					onValueChange={(value) =>
+						updateProperty("textDecoration", value)
+					}
 					options={textDecorationOptions}
-					value={textDecoration}
+					value={typography.textDecoration || "none"}
 				/>
 			</PropertyRow>
 
 			{/* White Space */}
 			<PropertyRow label={t("whiteSpace")}>
 				<IconToggleGroup
-					onValueChange={setWhiteSpace}
+					onValueChange={(value) =>
+						updateProperty("whiteSpace", value)
+					}
 					options={whiteSpaceOptions}
-					value={whiteSpace}
+					value={typography.whiteSpace || "normal"}
 				/>
 			</PropertyRow>
 
 			{/* List Style */}
 			<PropertyRow label={t("listStyle")}>
 				<IconToggleGroup
-					onValueChange={setListStyle}
+					onValueChange={(value) =>
+						updateProperty("listStyle", value)
+					}
 					options={listStyleOptions}
-					value={listStyle}
+					value={typography.listStyle || "none"}
 				/>
 			</PropertyRow>
 		</div>
