@@ -35,7 +35,12 @@ export type DirectionType = "vertical" | "horizontal";
 export type GridAuto = number | `${number}fr`;
 export type Side = "top" | "right" | "bottom" | "left";
 export type TextAlign = "left" | "center" | "right" | "justify";
-export type TextTransform = "none" | "uppercase" | "lowercase" | "capitalize";
+export type TextTransform =
+	| "none"
+	| "uppercase"
+	| "lowercase"
+	| "capitalize"
+	| "unset";
 export type TextDecoration = "none" | "underline" | "line-through";
 export type WhiteSpace = "normal" | "nowrap" | "pre-line";
 export type ListStyle = "disc" | "circle" | "none";
@@ -45,11 +50,15 @@ export type ImagePosition = "top" | "center" | "bottom" | "custom";
 export type ImageRepeat = "repeat" | "no-repeat";
 export type BackgroundAttachment = "scroll" | "fixed";
 export type BorderStyle = "solid" | "dashed" | "dotted" | "double";
-export type BackdropFilter = "blur" | "brightness" | "contrast";
+export type BackdropFilter = "none" | "blur" | "brightness" | "contrast";
 export type TimingFunction = "ease" | "linear";
-export type AnimationType = "fade" | "slide" | "bounce";
+export type AnimationType = "none" | "fade" | "slide" | "bounce";
+export type PercentUnit = "%";
+export type TimeUnit = "ms" | "s";
 
 export type SpacingValue = { number: number; unit: SizeUnit };
+
+export type PercentValue = { number: number; unit: PercentUnit };
 
 export type LayoutStyle = {
 	display?: DisplayType;
@@ -67,6 +76,9 @@ export type LayoutStyle = {
 		rows?: GridAuto;
 		gap?: SectionGap;
 	};
+};
+
+export type PositionStyle = {
 	position?: PositionType;
 	top?: SpacingValue;
 	right?: SpacingValue;
@@ -95,7 +107,7 @@ export type TypographyStyle = {
 	fontWeight?: TypographySettings["fontWeight"];
 	lineHeight?: SpacingValue | "normal" | "inherit" | "initial" | "unset";
 	fontStyle?: TypographySettings["fontStyle"];
-	letterSpacing?: TypographySettings["letterSpacing"];
+	letterSpacing?: SpacingValue;
 	color?: ColorSettings | string;
 	textAlign?: TextAlign;
 	textTransform?: TextTransform;
@@ -129,24 +141,32 @@ export type BorderCornerStyle = {
 	outlineWidth?: SpacingValue;
 };
 
+export type BoxShadowStyle = {
+	color: ColorSettings | string;
+	opacity: PercentValue;
+	x: SpacingValue;
+	y: SpacingValue;
+	blur: PercentValue;
+	spread: PercentValue;
+};
+
+export type TextShadowStyle = {
+	color: ColorSettings | string;
+	opacity: PercentValue;
+	x: SpacingValue;
+	y: SpacingValue;
+	blur: PercentValue;
+	spread: PercentValue;
+};
+
 export type EffectsStyle = {
-	boxShadow?: {
-		color: ColorSettings | string;
-		x: SpacingValue;
-		y: SpacingValue;
-		blur: SpacingValue;
-		spread: SpacingValue;
-	};
-	textShadow?: {
-		color: ColorSettings | string;
-		x: SpacingValue;
-		y: SpacingValue;
-		blur: SpacingValue;
-	};
+	boxShadows?: BoxShadowStyle[];
+	textShadows?: TextShadowStyle[];
 	opacity?: number;
 	backdropFilter?: BackdropFilter[];
 	hover?: {
 		backgroundColor?: ColorSettings | string;
+		textColor?: ColorSettings | string;
 		boxShadow?: boolean;
 		scale?: number;
 		transition?: {
@@ -160,11 +180,19 @@ export type EffectsStyle = {
 	};
 };
 
+export type AdvancedStyle = {
+	cssClass?: string;
+	cssId?: string;
+	customCss?: string;
+};
+
 export type ComponentStyleProps = {
 	layout?: LayoutStyle;
+	position?: PositionStyle;
 	sizeAndSpacing?: SizeSpacingStyle;
 	typography?: TypographyStyle;
 	background?: BackgroundStyle;
 	bordersAndCorners?: BorderCornerStyle;
 	effects?: EffectsStyle;
+	advanced?: AdvancedStyle;
 };
