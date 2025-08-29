@@ -306,8 +306,8 @@ export default function BuilderStyleLayout() {
 			{/* Grid Layout Controls */}
 			{isGridLayout && (
 				<>
-					{/* Columns (fr) */}
-					<PropertyRow label="Columns (fr)">
+					{/* Columns */}
+					<PropertyRow label={t("columns")}>
 						<NumberInput
 							onValueChange={(value) =>
 								updateNestedProperty("grid", (current) => ({
@@ -320,8 +320,8 @@ export default function BuilderStyleLayout() {
 						/>
 					</PropertyRow>
 
-					{/* Rows (fr) */}
-					<PropertyRow label="Rows (fr)">
+					{/* Rows */}
+					<PropertyRow label={t("rows")}>
 						<NumberInput
 							onValueChange={(value) =>
 								updateNestedProperty("grid", (current) => ({
@@ -455,7 +455,7 @@ export default function BuilderStyleLayout() {
 			{/* No controls message */}
 			{!hasLayoutControls && (
 				<p className="text-sm text-zinc-500">
-					Select Flex or Grid to see layout controls.
+					{t("noLayoutControlsMessage")}
 				</p>
 			)}
 		</div>
