@@ -40,6 +40,13 @@
 	},
 	"Builder": {
 		"RightSidebar": {
+			"Advanced": {
+				"cssClass": "Classe CSS",
+				"cssId": "ID CSS",
+				"customCss": "CSS personnalisé",
+				"customCssPlaceholder": "Tapez votre CSS personnalisé ici.",
+				"title": "Avancé"
+			},
 			"Background": {
 				"color": "Couleur",
 				"gradient": "Dégradé",
@@ -65,6 +72,42 @@
 				"outlineWidth": "Largeur de contour",
 				"solid": "Solide",
 				"title": "Bordures et coins"
+			},
+			"Effects": {
+				"addMoreBoxShadow": "Ajouter plus d'ombre",
+				"addMoreTextShadow": "Ajouter plus d'ombre de texte",
+				"animationBounce": "Rebond",
+				"animationFade": "Fondu",
+				"animationNone": "Aucun",
+				"animationPulse": "Pulsation",
+				"animationSlide": "Glissement",
+				"animationsDuration": "Durée des animations",
+				"animationsType": "Type d'animations",
+				"backdropFilter": "Filtre d'arrière-plan",
+				"backdropFilterBlur": "Flou",
+				"backdropFilterBrightness": "Luminosité",
+				"backdropFilterContrast": "Contraste",
+				"backdropFilterNone": "Aucun",
+				"backdropFilterSaturate": "Saturation",
+				"backgroundColor": "Couleur d'arrière-plan",
+				"blur": "Flou",
+				"boxShadow": "Ombre de boîte",
+				"hoverStateControls": "Contrôles d'état de survol",
+				"opacity": "Opacité",
+				"shadowColor": "Couleur d'ombre",
+				"spreadRadius": "Étendue",
+				"textColor": "Couleur du texte",
+				"textShadow": "Ombre de texte",
+				"timingEase": "Facilité",
+				"timingEaseIn": "Facilité d'entrée",
+				"timingEaseInOut": "Facilité d'entrée-sortie",
+				"timingEaseOut": "Facilité de sortie",
+				"timingLinear": "Linéaire",
+				"title": "Effets",
+				"transitionsDuration": "Durée des transitions",
+				"transitionsTiming": "Temporisation des transitions",
+				"xOffset": "Décalage X",
+				"yOffset": "Décalage Y"
 			},
 			"Layout": {
 				"AlignContent": "Aligner le contenu",

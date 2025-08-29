@@ -40,6 +40,13 @@
 	},
 	"Builder": {
 		"RightSidebar": {
+			"Advanced": {
+				"cssClass": "CSS Class",
+				"cssId": "CSS ID",
+				"customCss": "Custom CSS",
+				"customCssPlaceholder": "Type your custom CSS here.",
+				"title": "Advanced"
+			},
 			"Background": {
 				"color": "Color",
 				"gradient": "Gradient",
@@ -65,6 +72,42 @@
 				"outlineWidth": "Outline Width",
 				"solid": "Solid",
 				"title": "Borders & Corners"
+			},
+			"Effects": {
+				"addMoreBoxShadow": "Add More Box Shadow",
+				"addMoreTextShadow": "Add More Text Shadow",
+				"animationBounce": "Bounce",
+				"animationFade": "Fade",
+				"animationNone": "None",
+				"animationPulse": "Pulse",
+				"animationSlide": "Slide",
+				"animationsDuration": "Animations Duration",
+				"animationsType": "Animations Type",
+				"backdropFilter": "Backdrop Filter",
+				"backdropFilterBlur": "Blur",
+				"backdropFilterBrightness": "Brightness",
+				"backdropFilterContrast": "Contrast",
+				"backdropFilterNone": "None",
+				"backdropFilterSaturate": "Saturate",
+				"backgroundColor": "Background Color",
+				"blur": "Blur",
+				"boxShadow": "Box Shadow",
+				"hoverStateControls": "Hover State Controls",
+				"opacity": "Opacity",
+				"shadowColor": "Shadow Color",
+				"spreadRadius": "Spread",
+				"textColor": "Text Color",
+				"textShadow": "Text Shadow",
+				"timingEase": "Ease",
+				"timingEaseIn": "Ease In",
+				"timingEaseInOut": "Ease In Out",
+				"timingEaseOut": "Ease Out",
+				"timingLinear": "Linear",
+				"title": "Effects",
+				"transitionsDuration": "Transitions Duration",
+				"transitionsTiming": "Transitions Timing",
+				"xOffset": "X Offset",
+				"yOffset": "Y Offset"
 			},
 			"Layout": {
 				"AlignContent": "Align Content",
