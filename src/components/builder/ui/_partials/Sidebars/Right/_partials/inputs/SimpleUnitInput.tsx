@@ -1,27 +1,33 @@
 "use client";
 
+import {
+	PercentUnit,
+	TimeUnit,
+} from "@/builder/types/components/properties/componentStylePropsType";
 import { SizeUnit } from "@/builder/types/settings/FluidSize";
 import NumberInput from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/NumberInput";
 import UnitSelector from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/UnitSelector";
 import { cn } from "@/lib/utils";
 
-interface SimpleUnitInputProps {
+interface SimpleUnitInputProps<T extends SizeUnit | PercentUnit | TimeUnit> {
 	value: number;
 	onValueChange: (value: number) => void;
-	unit: SizeUnit;
-	onUnitChange: (unit: SizeUnit) => void;
+	unit: T;
+	onUnitChange: (unit: T) => void;
 	placeholder?: string;
 	className?: string;
 }
 
-export default function SimpleUnitInput({
+export default function SimpleUnitInput<
+	T extends SizeUnit | PercentUnit | TimeUnit,
+>({
 	value,
 	onValueChange,
 	unit,
 	onUnitChange,
 	placeholder = "0",
 	className,
-}: SimpleUnitInputProps) {
+}: SimpleUnitInputProps<T>) {
 	return (
 		<div
 			className={cn(
