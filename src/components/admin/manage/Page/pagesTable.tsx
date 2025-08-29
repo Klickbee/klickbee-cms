@@ -160,7 +160,7 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 							setNewHomepageId("");
 							setIsDeleteDialogOpen(true);
 						}}
-						variant="destructive"
+						variant="outlineDestructive"
 					>
 						<Trash2 className="w-4 h-4 mr-2" />
 						{tCommon("Delete")} ({checkedRows.length})
