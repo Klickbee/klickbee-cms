@@ -48,9 +48,14 @@
 				"title": "Advanced"
 			},
 			"Background": {
+				"changeImage": "Change Image",
 				"color": "Color",
+				"dragImageHere": "Drag an image here or",
 				"gradient": "Gradient",
 				"image": "Images",
+				"imagePosition": "Position",
+				"imageSize": "Size",
+				"imageUrl": "Image URL",
 				"linear": "Linear",
 				"none": "None",
 				"radial": "Radial",
@@ -112,6 +117,7 @@
 			"Layout": {
 				"AlignContent": "Align Content",
 				"AlignItems": "Align Items",
+				"columns": "Columns",
 				"Direction": "Direction",
 				"DisplayType": "Display Type",
 				"FlexGrow": "Flex Grow",
@@ -127,6 +133,8 @@
 				"JustifyItems": "Justify Items",
 				"Layout": "Layout",
 				"No": "No",
+				"noLayoutControlsMessage": "Select Flex or Grid to see layout controls.",
+				"rows": "Rows",
 				"Yes": "Yes"
 			},
 			"Position": {
