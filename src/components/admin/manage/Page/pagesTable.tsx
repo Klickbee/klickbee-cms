@@ -150,6 +150,43 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 		}
 	};
 
+	const handleDuplicate = async (pageId: number) => {
+		try {
+			await duplicatePage.mutate(pageId);
+			toast.success(
+				t("DuplicateSuccess", {
+					count: 1,
+				}),
+			);
+		} catch {
+			toast.error(
+				t("DuplicateError", {
+					count: 1,
+				}),
+			);
+		}
+	};
+
+	const handleBulkDuplicate = async () => {
+		try {
+			for (const id of checkedRows) {
+				await duplicatePage.mutate(id);
+			}
+			setCheckedRows([]);
+			toast.success(
+				t("DuplicateSuccess", {
+					count: checkedRows?.length || 1,
+				}),
+			);
+		} catch {
+			toast.error(
+				t("DuplicateError", {
+					count: checkedRows?.length || 1,
+				}),
+			);
+		}
+	};
+
 	const openDeleteDialog = (id: number) => {
 		setPageToDelete(id);
 		setNewHomepageId("");
@@ -179,20 +216,7 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 						</Button>
 						<Button
 							className={"flex flex-row gap-0"}
-							onClick={() => {
-								checkedRows.forEach((pageId) => {
-									duplicatePage.mutate(pageId, {
-										onSuccess: () => {
-											setCheckedRows([]);
-											toast.success(
-												t("DuplicateSuccess", {
-													count: 1,
-												}),
-											);
-										},
-									});
-								});
-							}}
+							onClick={handleBulkDuplicate}
 							variant="outline"
 						>
 							<Copy className="w-4 h-4 mr-2" />
@@ -297,6 +321,16 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 															<Pencil className="h-4 w-4 mr-2" />
 															{tCommon("Edit")}
 														</Link>
+													</DropdownMenuItem>
+													<DropdownMenuItem
+														onClick={() =>
+															handleDuplicate(
+																page.id,
+															)
+														}
+													>
+														<Copy className="h-4 w-4 mr-2" />
+														{tCommon("Duplicate")}
 													</DropdownMenuItem>
 													<DropdownMenuItem
 														className="text-destructive"
