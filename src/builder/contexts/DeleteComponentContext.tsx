@@ -1,3 +1,5 @@
+"use client";
+
 import { createContext, ReactNode, useContext } from "react";
 import { useDeleteComponent } from "@/builder/hooks/useDeleteComponent";
 import { Button } from "@/components/ui/button";
