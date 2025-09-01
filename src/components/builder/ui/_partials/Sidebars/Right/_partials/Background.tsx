@@ -2,7 +2,7 @@
 
 import { ChevronDown } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useStyleState } from "@/builder/hooks/useStyleState";
 import {
 	BackgroundStyle,
@@ -18,19 +18,19 @@ import {
 } from "@/components/ui/popover";
 import BackgroundPicker from "./pickers/BackgroundPicker";
 
-type BackgroundType = "color" | "gradient" | "image";
-
 export default function BuilderStyleBackground() {
 	const t = useTranslations("Builder.RightSidebar.Background");
 	const [isOpen, setIsOpen] = useState(false);
-	const [backgroundType, setBackgroundType] =
-		useState<BackgroundType>("color");
+	const [selectedType, setSelectedType] = useState<
+		"color" | "gradient" | "image"
+	>("color");
 	const { state: background, updateProperty } =
 		useStyleState<BackgroundStyle>({
 			color: "#171717",
 			gradient: {
-				angle: { number: 90, unit: "deg" },
+				angle: 90,
 				colors: ["#0052d4", "#6fb1fc"],
+				positions: [0, 100],
 				type: "linear",
 			},
 			image: {
@@ -41,80 +41,39 @@ export default function BuilderStyleBackground() {
 			},
 		});
 
-	const getBackgroundPreview = () => {
-		switch (backgroundType) {
-			case "color":
-				return (
-					<div
-						className="w-4 h-4 rounded border border-zinc-200"
-						style={{ backgroundColor: background.color as string }}
-					/>
-				);
-			case "gradient": {
-				const gradientCSS = background.gradient
-					? `${background.gradient.type}-gradient(${background.gradient.angle?.number || 90}${background.gradient.angle?.unit || "deg"}, ${background.gradient.colors.join(", ")})`
-					: "linear-gradient(90deg, #0052d4, #6fb1fc)";
-				return (
-					<div
-						className="w-4 h-4 rounded border border-zinc-200"
-						style={{ background: gradientCSS }}
-					/>
-				);
-			}
-			case "image":
-				return (
-					<div className="w-4 h-4 rounded border border-zinc-200 bg-gray-300" />
-				);
+	useEffect(() => {
+		const detectedType = background.image?.src
+			? "image"
+			: background.gradient
+				? "gradient"
+				: "color";
+		setSelectedType(detectedType);
+	}, []);
+
+	const backgroundType = selectedType;
+
+	const getGradientCSS = (gradient: BackgroundStyle["gradient"]) => {
+		if (!gradient)
+			return "linear-gradient(90deg, #0052d4 0%, #6fb1fc 100%)";
+
+		if (gradient.type === "linear") {
+			return `linear-gradient(${gradient.angle || 90}deg, ${gradient.colors[0]} ${gradient.positions[0]}%, ${gradient.colors[1]} ${gradient.positions[1]}%)`;
+		} else {
+			return `radial-gradient(circle, ${gradient.colors[0]} ${gradient.positions[0]}%, ${gradient.colors[1]} ${gradient.positions[1]}%)`;
 		}
 	};
 
-	const getBackgroundText = () => {
-		switch (backgroundType) {
-			case "color":
-				return background.color as string;
-			case "gradient":
-				return t("gradient");
-			case "image":
-				return t("image");
-		}
-	};
+	const previewStyle =
+		backgroundType === "color"
+			? { backgroundColor: background.color as string }
+			: backgroundType === "gradient"
+				? { background: getGradientCSS(background.gradient) }
+				: {};
 
-	const handleTypeChange = (type: BackgroundType) => {
-		setBackgroundType(type);
-	};
-
-	// Convert BackgroundStyle to BackgroundPicker props format
-	const getColorValue = () => {
-		return typeof background.color === "string"
-			? background.color
-			: "#171717";
-	};
-
-	const getGradientValue = () => {
-		if (background.gradient) {
-			return `${background.gradient.type}-gradient(${background.gradient.angle?.number || 90}${background.gradient.angle?.unit || "deg"}, ${background.gradient.colors.join(", ")})`;
-		}
-		return "linear-gradient(90deg, #0052d4, #6fb1fc)";
-	};
-
-	const getImageValue = () => {
-		if (background.image) {
-			const position =
-				typeof background.image.position === "string"
-					? background.image.position
-					: "center";
-			return {
-				position,
-				size: background.image.size || "cover",
-				url: background.image.src || "",
-			};
-		}
-		return {
-			position: "center",
-			size: "cover",
-			url: "",
-		};
-	};
+	const backgroundText =
+		backgroundType === "color"
+			? (background.color as string)
+			: t(backgroundType);
 
 	return (
 		<PropertyRow label={t("title")}>
@@ -125,9 +84,12 @@ export default function BuilderStyleBackground() {
 						variant="outline"
 					>
 						<div className="flex items-center gap-2 flex-1">
-							{getBackgroundPreview()}
+							<div
+								className={`w-4 h-4 rounded border border-zinc-200 ${backgroundType === "image" ? "bg-gray-300" : ""}`}
+								style={previewStyle}
+							/>
 							<span className="flex-1 text-xs truncate">
-								{getBackgroundText()}
+								{backgroundText}
 							</span>
 						</div>
 						<ChevronDown className="h-3 w-3 shrink-0 opacity-50" />
@@ -139,24 +101,36 @@ export default function BuilderStyleBackground() {
 					side="bottom"
 				>
 					<div className="p-3">
-						{/* Contenu selon le type avec sélecteur intégré */}
 						<BackgroundPicker
-							colorValue={getColorValue()}
-							gradientValue={getGradientValue()}
-							imageValue={getImageValue()}
-							onClose={() => setIsOpen(false)}
+							colorValue={
+								(background.color as string) || "#171717"
+							}
+							gradientValue={background.gradient}
+							imageValue={
+								background.image
+									? {
+											position:
+												typeof background.image
+													.position === "string"
+													? background.image.position
+													: "center",
+											size:
+												background.image.size ||
+												"cover",
+											url: background.image.src || "",
+										}
+									: {
+											position: "center",
+											size: "cover",
+											url: "",
+										}
+							}
 							onColorChange={(color) =>
 								updateProperty("color", color)
 							}
-							onGradientChange={() => {
-								// Parse CSS gradient back to BackgroundStyle format
-								// For now, use a simple approach - this could be enhanced
-								updateProperty("gradient", {
-									angle: { number: 90, unit: "deg" },
-									colors: ["#0052d4", "#6fb1fc"], // Default values
-									type: "linear",
-								});
-							}}
+							onGradientChange={(gradient) =>
+								updateProperty("gradient", gradient)
+							}
 							onImageChange={(image) => {
 								if (image) {
 									updateProperty("image", {
@@ -168,7 +142,34 @@ export default function BuilderStyleBackground() {
 									});
 								}
 							}}
-							onTypeChange={handleTypeChange}
+							onTypeChange={(type) => {
+								setSelectedType(type);
+								// Reset other types and set defaults when switching
+								if (type === "color") {
+									updateProperty("gradient", undefined);
+									updateProperty("image", undefined);
+								} else if (type === "gradient") {
+									updateProperty("image", undefined);
+									if (!background.gradient) {
+										updateProperty("gradient", {
+											angle: 90,
+											colors: ["#0052d4", "#6fb1fc"],
+											positions: [0, 100],
+											type: "linear",
+										});
+									}
+								} else if (type === "image") {
+									updateProperty("gradient", undefined);
+									if (!background.image) {
+										updateProperty("image", {
+											position: "center",
+											repeat: "no-repeat",
+											size: "cover",
+											src: "",
+										});
+									}
+								}
+							}}
 							selectedType={backgroundType}
 						/>
 					</div>

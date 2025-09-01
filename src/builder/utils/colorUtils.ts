@@ -66,3 +66,7 @@ export function formatColor(
 			return color;
 	}
 }
+
+export function cleanColor(color: string): string {
+	return color.replace(/\s+\d+%/g, "").trim();
+}

@@ -120,8 +120,9 @@ export type BackgroundStyle = {
 	color?: ColorSettings | string;
 	gradient?: {
 		type: GradientType;
-		angle?: { number: number; unit: "deg" | "rad" };
+		angle?: number; // 0-360° (angle global pour linear)
 		colors: [ColorSettings | string, ColorSettings | string];
+		positions: [number, number]; // 0-100%
 	};
 	image?: {
 		src: string;

@@ -32,7 +32,6 @@ export default function ImagePickerContent({
 
 	const handleFileSelect = (file: File) => {
 		if (file && file.type.startsWith("image/")) {
-			// Convertir en base64 pour la persistence
 			const reader = new FileReader();
 			reader.onload = (e) => {
 				const base64Url = e.target?.result as string;
@@ -40,7 +39,6 @@ export default function ImagePickerContent({
 				onChange({
 					...value,
 					position: value.position || "center",
-					// Assurer les valeurs par défaut
 					size: value.size || "cover",
 					url: base64Url,
 				});
@@ -99,7 +97,6 @@ export default function ImagePickerContent({
 
 	return (
 		<div className="space-y-3">
-			{/* Zone de upload inspirée du design Figma */}
 			<div
 				className={`relative h-[200px] w-full rounded border-2 border-dashed transition-colors ${
 					dragActive
@@ -119,7 +116,6 @@ export default function ImagePickerContent({
 							src={value.url}
 							width={400}
 						/>
-						{/* Overlay pour changer l'image */}
 						<div className="absolute inset-0 flex items-center justify-center transition-colors group-hover:backdrop-blur-sm">
 							<Button
 								className="opacity-0 group-hover:opacity-100 transition-opacity"
@@ -147,7 +143,6 @@ export default function ImagePickerContent({
 				)}
 			</div>
 
-			{/* Input file caché */}
 			<Input
 				accept="image/*"
 				className="hidden"
@@ -156,7 +151,6 @@ export default function ImagePickerContent({
 				type="file"
 			/>
 
-			{/* URL input */}
 			<div className="space-y-1">
 				<label className="text-xs font-medium text-zinc-700">
 					{t("imageUrl")}
@@ -170,7 +164,6 @@ export default function ImagePickerContent({
 				/>
 			</div>
 
-			{/* Options de background */}
 			<div className="grid grid-cols-2 gap-2">
 				<div className="space-y-1">
 					<label className="text-xs font-medium text-zinc-700">

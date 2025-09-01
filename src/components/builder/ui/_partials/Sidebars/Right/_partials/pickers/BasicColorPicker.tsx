@@ -55,7 +55,7 @@ export default function BasicColorPicker({
 			</PopoverTrigger>
 			<PopoverContent
 				align="center"
-				className="w-[310px] p-3 m-3"
+				className="w-[300px] p-3 m-3"
 				side="bottom"
 			>
 				<ColorPickerContent

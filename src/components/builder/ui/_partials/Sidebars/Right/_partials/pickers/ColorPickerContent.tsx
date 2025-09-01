@@ -14,7 +14,7 @@ import {
 import styles from "./ColorPicker.module.css";
 
 interface ColorPickerProps {
-	closeColorPicker: () => void;
+	closeColorPicker?: () => void;
 	value: string;
 	onChange: (color: string) => void;
 }
@@ -47,7 +47,7 @@ export default function ColorPicker({
 
 	const handlePresetClick = (color: string) => {
 		onChange(color);
-		closeColorPicker();
+		closeColorPicker?.();
 	};
 
 	return (
