@@ -53,7 +53,7 @@ export default function BuilderStyleAdvanced() {
 					{t("customCss")}
 				</Label>
 				<Textarea
-					className="h-20 resize-none text-xs"
+					className="h-48 resize-none text-xs"
 					onChange={(e) =>
 						updateProperty("customCss", e.target.value)
 					}
