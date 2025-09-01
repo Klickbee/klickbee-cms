@@ -1,6 +1,13 @@
 "use client";
 
-import { Home, Loader2, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import {
+	Copy,
+	Home,
+	Loader2,
+	MoreHorizontal,
+	Pencil,
+	Trash2,
+} from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -43,6 +50,7 @@ import { generateAdminLink, useAdminKey } from "@/feature/admin-key/lib/utils";
 import { usePageSearch } from "@/feature/page/hooks/usePageSearch";
 import {
 	useDeletePage,
+	useDuplicatePage,
 	useSetAsHomePage,
 } from "@/feature/page/queries/usePageActions";
 import { Page } from "@/feature/page/types/page";
@@ -69,6 +77,7 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 	const allChecked =
 		checkedRows.length === allIds.length && allIds.length > 0;
 	const setCurrentPage = useCurrentPageStore((state) => state.setCurrentPage);
+	const duplicatePage = useDuplicatePage();
 
 	const handleHeaderCheck = (checked: boolean) => {
 		setCheckedRows(checked ? allIds : []);
@@ -149,24 +158,47 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 
 	return (
 		<>
-			<div className="flex flex-row justify-between">
+			<div className="flex flex-row items-center justify-between mb-4">
 				<PageSearchBar
 					onSearchChange={setSearchTerm}
 					searchTerm={searchTerm}
 				/>
 				{checkedRows.length > 0 && (
-					<Button
-						className={"flex flex-row gap-0"}
-						onClick={() => {
-							setPageToDelete(null);
-							setNewHomepageId("");
-							setIsDeleteDialogOpen(true);
-						}}
-						variant="outlineDestructive"
-					>
-						<Trash2 className="w-4 h-4 mr-2" />
-						{tCommon("Delete")} ({checkedRows.length})
-					</Button>
+					<div className="flex flex-row items-center gap-3">
+						<Button
+							className={"flex flex-row gap-0"}
+							onClick={() => {
+								setPageToDelete(null);
+								setNewHomepageId("");
+								setIsDeleteDialogOpen(true);
+							}}
+							variant="outlineDestructive"
+						>
+							<Trash2 className="w-4 h-4 mr-2" />
+							{tCommon("Delete")} ({checkedRows.length})
+						</Button>
+						<Button
+							className={"flex flex-row gap-0"}
+							onClick={() => {
+								checkedRows.forEach((pageId) => {
+									duplicatePage.mutate(pageId, {
+										onSuccess: () => {
+											setCheckedRows([]);
+											toast.success(
+												t("DuplicateSuccess", {
+													count: 1,
+												}),
+											);
+										},
+									});
+								});
+							}}
+							variant="outline"
+						>
+							<Copy className="w-4 h-4 mr-2" />
+							{tCommon("Duplicate")}
+						</Button>
+					</div>
 				)}
 			</div>
 			{filteredPages.length === 0 && searchTerm.trim() ? (
