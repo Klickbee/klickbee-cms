@@ -332,6 +332,14 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 														<Copy className="h-4 w-4 mr-2" />
 														{tCommon("Duplicate")}
 													</DropdownMenuItem>
+													<DropdownMenuItem asChild>
+														<Link
+															href={`/admin/${adminKey}/manage/pages/${page.id}`}
+														>
+															<Pencil className="h-4 w-4 mr-2" />
+															SEO
+														</Link>
+													</DropdownMenuItem>
 													<DropdownMenuItem
 														className="text-destructive"
 														onClick={() =>

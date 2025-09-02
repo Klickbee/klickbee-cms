@@ -347,3 +347,83 @@ export const updatePageContent = async (
 		throw error; // Re-throw to be caught by the client
 	}
 };
+
+/**
+ * Updates a page's SEO
+ */
+export const updatePageSeo = async (
+	pageId: number,
+	data: { slug: string; metaTitle?: string; metaDescription?: string },
+) => {
+	try {
+		const authError = await isAuthenticatedGuard();
+		if (authError) {
+			return authError;
+		}
+
+		// Validate slug
+		if (!data.slug || data.slug.trim() === "") {
+			throw new Error("Slug cannot be empty");
+		}
+
+		// Sanitize slug - remove special characters, replace spaces with hyphens
+		const sanitizedSlug = data.slug
+			.toLowerCase()
+			.trim()
+			.replace(/[^\w\s-]/g, "") // Remove special characters
+			.replace(/\s+/g, "-") // Replace spaces with hyphens
+			.replace(/-+/g, "-"); // Replace multiple hyphens with single hyphen
+
+		if (sanitizedSlug === "") {
+			throw new Error("Slug contains only invalid characters");
+		}
+
+		// Check if the page exists
+		const page = await prisma.page.findUnique({
+			where: { id: pageId },
+		});
+
+		if (!page) {
+			throw new Error(`Page with ID ${pageId} not found`);
+		}
+
+		// Check if slug is already in use by another page
+		const existingPage = await prisma.page.findFirst({
+			where: {
+				id: { not: pageId }, // Exclude the current page
+				slug: sanitizedSlug,
+			},
+		});
+
+		if (existingPage) {
+			throw new Error("SlugNotAvailable");
+		}
+
+		// Update the page SEO
+		return prisma.page.update({
+			data: {
+				metaDescription: data.metaDescription,
+				metaTitle: data.metaTitle,
+				slug: sanitizedSlug,
+			},
+			select: {
+				content: true,
+				createdAt: true,
+				id: true,
+				isPublished: true,
+				metaDescription: true,
+				metaKeywords: true,
+				metaTitle: true,
+				parentId: true,
+				publishedAt: true,
+				slug: true,
+				title: true,
+				updatedAt: true,
+			},
+			where: { id: pageId },
+		});
+	} catch (error) {
+		console.error("Error updating page slug:", error);
+		throw error; // Re-throw to be caught by the client
+	}
+};

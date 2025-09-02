@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
@@ -25,30 +25,35 @@ export default function DashboardTitle({
 	titleContent,
 }: DashboardTitleProps) {
 	const router = useRouter();
-	const tCommon = useTranslations("Common");
 	const t = useTranslations(translationNamespace);
 
 	return (
-		<header className="flex flex-col gap-1 px-8 py-4 border-b">
+		<header className="flex flex-row items-center justify-start gap-8 px-8 py-4 border-b">
 			{hasBackButton && (
 				<Button
-					className="w-fit -ml-4 text-primary"
+					className={
+						"group bg-background border gap-8 px-3 hover:bg-foreground group:text-primary group-hover:text-secondary"
+					}
 					onClick={() => router.back()}
-					variant="ghost"
 				>
-					<ArrowLeft className="h-4 w-4" />
-					{tCommon("Back")}
+					<ChevronLeft
+						className={"text-primary group-hover:text-secondary"}
+					/>
 				</Button>
 			)}
-			<h1 className="text-xl font-semibold">
-				{titleContent ||
-					(titleParams ? t(title, titleParams) : t(title))}
-			</h1>
-			{subtitle && (
-				<p className="text-muted-foreground text-sm">
-					{subtitleParams ? t(subtitle, subtitleParams) : t(subtitle)}
-				</p>
-			)}
+			<div className="flex flex-col gap-1">
+				<h1 className="text-xl font-semibold">
+					{titleContent ||
+						(titleParams ? t(title, titleParams) : t(title))}
+				</h1>
+				{subtitle && (
+					<p className="text-muted-foreground text-sm">
+						{subtitleParams
+							? t(subtitle, subtitleParams)
+							: t(subtitle)}
+					</p>
+				)}
+			</div>
 		</header>
 	);
 }

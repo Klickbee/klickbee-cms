@@ -5,6 +5,7 @@ import {
 	setAsHomePage,
 	updatePageContent,
 	updatePageParent,
+	updatePageSeo,
 	updatePageSlug,
 	updatePageTitle,
 } from "@/feature/page/actions/pageActions";
@@ -140,6 +141,34 @@ export function useUpdatePageContent() {
 		onSuccess: () => {
 			// Invalidate the pages query to refetch the updated list
 			queryClient.invalidateQueries({ queryKey: ["pages"] });
+		},
+	});
+}
+
+/**
+ * Hook for updating a page's SEO
+ */
+export function useUpdatePageSeo() {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: ({
+			pageId,
+			data,
+		}: {
+			pageId: number;
+			data: {
+				slug: string;
+				metaTitle?: string;
+				metaDescription?: string;
+			};
+		}) => updatePageSeo(pageId, data),
+		onSuccess: (_data, variables) => {
+			// Invalidate the pages query to refetch the updated list
+			queryClient.invalidateQueries({ queryKey: ["pages"] });
+			queryClient.invalidateQueries({
+				queryKey: ["page", variables.pageId],
+			});
 		},
 	});
 }
