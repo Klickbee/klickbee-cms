@@ -46,7 +46,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { generateAdminLink, useAdminKey } from "@/feature/admin-key/lib/utils";
+import { generateAdminLink } from "@/feature/admin-key/lib/utils";
 import { usePageSearch } from "@/feature/page/hooks/usePageSearch";
 import {
 	useDeletePage,
@@ -72,7 +72,6 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 	const deletePage = useDeletePage();
 	const setAsHomePage = useSetAsHomePage();
 	const { data: homePageId } = useSetting("current_homepage_id");
-	const adminKey = useAdminKey();
 	const allIds = pages?.map((page) => page.id) || [];
 	const allChecked =
 		checkedRows.length === allIds.length && allIds.length > 0;
@@ -267,19 +266,14 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 												}
 											/>
 										</TableCell>
-										<TableCell className={"w-4/10"}>
-											<a
-												className="flex items-center space-x-2"
-												href={generateAdminLink(
-													`/manage/content/${page.slug}`,
-												)}
-											>
+										<TableCell className="w-4/10">
+											<div className="flex flex-row items-center gap-2">
 												<span>{page.title}</span>
 												{Number(homePageId?.value) ===
 													page.id && (
 													<Home className="h-4 w-4" />
 												)}
-											</a>
+											</div>
 										</TableCell>
 										<TableCell>{page.slug}</TableCell>
 										<TableCell className="text-center">
@@ -307,7 +301,9 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 												<DropdownMenuContent align="end">
 													<DropdownMenuItem asChild>
 														<Link
-															href={`/admin/${adminKey}/builder`}
+															href={generateAdminLink(
+																"builder",
+															)}
 															onClick={() => {
 																setCurrentPage({
 																	content:
@@ -334,7 +330,9 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 													</DropdownMenuItem>
 													<DropdownMenuItem asChild>
 														<Link
-															href={`/admin/${adminKey}/manage/pages/${page.id}`}
+															href={generateAdminLink(
+																`manage/pages/${page.id}`,
+															)}
 														>
 															<Pencil className="h-4 w-4 mr-2" />
 															SEO
