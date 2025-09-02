@@ -1,13 +1,6 @@
 "use client";
 
-import {
-	Copy,
-	Home,
-	Loader2,
-	MoreHorizontal,
-	Pencil,
-	Trash2,
-} from "lucide-react";
+import { Copy, Home, Loader2, MoreHorizontal, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -314,7 +307,6 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 																});
 															}}
 														>
-															<Pencil className="h-4 w-4 mr-2" />
 															{tCommon("Edit")}
 														</Link>
 													</DropdownMenuItem>
@@ -325,7 +317,6 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 															)
 														}
 													>
-														<Copy className="h-4 w-4 mr-2" />
 														{tCommon("Duplicate")}
 													</DropdownMenuItem>
 													<DropdownMenuItem asChild>
@@ -334,7 +325,6 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 																`manage/pages/${page.id}`,
 															)}
 														>
-															<Pencil className="h-4 w-4 mr-2" />
 															SEO
 														</Link>
 													</DropdownMenuItem>
@@ -346,7 +336,6 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 															)
 														}
 													>
-														<Trash2 className="h-4 w-4 mr-2" />
 														{tCommon("Delete")}
 													</DropdownMenuItem>
 												</DropdownMenuContent>
