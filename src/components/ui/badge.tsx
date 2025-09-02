@@ -21,9 +21,9 @@ const badgeVariants = cva(
 				secondary:
 					"border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90",
 				success:
-					"border-transparent bg-green-100 font-semibold text-green-700 [a&]:hover:bg-green/200",
+					"border-transparent bg-green-100 font-semibold text-green-700 [a&]:hover:bg-green-200",
 				warning:
-					"border-transparent bg-orange-100 font-semibold text-orange-700 [a&]:hover:bg-orange/200",
+					"border-transparent bg-orange-100 font-semibold text-orange-700 [a&]:hover:bg-orange-200",
 			},
 		},
 	},
