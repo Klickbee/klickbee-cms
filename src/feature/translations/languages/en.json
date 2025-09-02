@@ -87,7 +87,7 @@
 		"PasswordPlaceholder": "Your password",
 		"PhoneNumber": "Phone Number",
 		"Previous": "Previous",
-		"RowsSelected": "{checkedRows} of {pagesLength} {checkedRows, plural, =0 {row} =1 {row} other {row}} selected.",
+		"RowsSelected": "{checkedRows} of {pagesLength} {checkedRows, plural, =0 {row} =1 {row} other {rows}} selected.",
 		"Save": "Save",
 		"Saving": "Saving...",
 		"SeoScore": "SEO Score"
@@ -214,7 +214,7 @@
 		"DuplicateError": "Error duplicating {count, plural, =1 {page} other {pages}}",
 		"DuplicateSuccess": "{count, plural, =1 {# page} other {# pages}} duplicated successfully.",
 		"EmptyStateDescription": "You haven’t created any pages yet. Build beautiful, high-performing pages to showcase your content and connect with your audience.",
-		"EmptyStateTitle": "You don’t create pages yet",
+		"EmptyStateTitle": "You haven’t created any pages yet",
 		"GoogleSeo": "This is how Google Actualy see your page",
 		"ListTitle": "Pages",
 		"LoadListError": "Error loading pages",
