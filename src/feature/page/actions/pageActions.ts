@@ -384,7 +384,9 @@ export const updatePageSeo = async (
 		});
 
 		if (!page) {
-			throw new Error(`Page with ID ${pageId} not found`);
+			// Sanitize pageId for log injection prevention
+			const safePageId = String(pageId).replace(/[^\d]/g, "");
+			throw new Error(`Page with ID ${safePageId} not found`);
 		}
 
 		// Check if slug is already in use by another page
