@@ -16,7 +16,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import BackgroundPicker from "./pickers/BackgroundPicker";
+import BackgroundPicker from "../pickers/BackgroundPicker";
 
 export default function BuilderStyleBackground() {
 	const t = useTranslations("Builder.RightSidebar.Background");
