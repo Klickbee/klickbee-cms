@@ -21,10 +21,10 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import QuadInput from "./inputs/QuadInput";
-import SimpleUnitInput from "./inputs/SimpleUnitInput";
-import PropertyRow from "./layout/PropertyRow";
-import BasicColorPicker from "./pickers/BasicColorPicker";
+import QuadInput from "../inputs/QuadInput";
+import SimpleUnitInput from "../inputs/SimpleUnitInput";
+import PropertyRow from "../layout/PropertyRow";
+import BasicColorPicker from "../pickers/BasicColorPicker";
 
 export default function BuilderStyleBordersAndCorners() {
 	const t = useTranslations("Builder.RightSidebar.BordersAndCorners");

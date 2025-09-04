@@ -1,12 +1,12 @@
 import { useTranslations } from "next-intl";
-import BuilderStyleAdvanced from "@/components/builder/ui/_partials/Sidebars/Right/_partials/Advanced";
-import BuilderStyleBackground from "@/components/builder/ui/_partials/Sidebars/Right/_partials/Background";
-import BuilderStyleBordersAndCorners from "@/components/builder/ui/_partials/Sidebars/Right/_partials/BordersAndCorners";
-import BuilderStyleEffects from "@/components/builder/ui/_partials/Sidebars/Right/_partials/Effects";
-import BuilderStyleLayout from "@/components/builder/ui/_partials/Sidebars/Right/_partials/Layout";
-import BuilderStylePosition from "@/components/builder/ui/_partials/Sidebars/Right/_partials/Position";
-import BuilderStyleSizeAndSpacing from "@/components/builder/ui/_partials/Sidebars/Right/_partials/SizeAndSpacing";
-import BuilderStyleTypography from "@/components/builder/ui/_partials/Sidebars/Right/_partials/Typography";
+import BuilderStyleAdvanced from "@/components/builder/ui/_partials/Sidebars/Right/_partials/styles/Advanced";
+import BuilderStyleBackground from "@/components/builder/ui/_partials/Sidebars/Right/_partials/styles/Background";
+import BuilderStyleBordersAndCorners from "@/components/builder/ui/_partials/Sidebars/Right/_partials/styles/BordersAndCorners";
+import BuilderStyleEffects from "@/components/builder/ui/_partials/Sidebars/Right/_partials/styles/Effects";
+import BuilderStyleLayout from "@/components/builder/ui/_partials/Sidebars/Right/_partials/styles/Layout";
+import BuilderStylePosition from "@/components/builder/ui/_partials/Sidebars/Right/_partials/styles/Position";
+import BuilderStyleSizeAndSpacing from "@/components/builder/ui/_partials/Sidebars/Right/_partials/styles/SizeAndSpacing";
+import BuilderStyleTypography from "@/components/builder/ui/_partials/Sidebars/Right/_partials/styles/Typography";
 import {
 	Accordion,
 	AccordionContent,

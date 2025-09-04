@@ -16,7 +16,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import BackgroundPicker from "./pickers/BackgroundPicker";
+import BackgroundPicker from "../pickers/BackgroundPicker";
 
 type BackgroundType = "color" | "gradient" | "image";
 
