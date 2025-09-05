@@ -49,7 +49,6 @@ import {
 import { Page } from "@/feature/page/types/page";
 import { seoScoreCalculated } from "@/feature/seo/lib/seoScoreCalculated";
 import { useSetting } from "@/feature/settings/queries/useSettings";
-import { isHome } from "@/lib/utils";
 import PageSearchBar from "./searchBar";
 
 export default function PagesTable({ pages }: { pages: Page[] }) {
@@ -263,13 +262,15 @@ export default function PagesTable({ pages }: { pages: Page[] }) {
 										<TableCell className="w-4/10">
 											<div className="flex flex-row items-center gap-2">
 												<span>{page.title}</span>
-												{isHome(page.id) && (
+												{Number(homePageId?.value) ===
+													page.id && (
 													<Home className="h-4 w-4" />
 												)}
 											</div>
 										</TableCell>
 										<TableCell>
-											{isHome(page.id)
+											{Number(homePageId?.value) ===
+											page.id
 												? `/`
 												: `/${page.slug}`}
 										</TableCell>

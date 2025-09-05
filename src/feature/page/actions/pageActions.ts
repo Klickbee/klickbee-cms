@@ -23,7 +23,42 @@ export const duplicatePage = async (pageId: number) => {
 		throw new Error("Page not found");
 	}
 
-	// Create a duplicate with a new title and slug
+	// Generate a unique slug for the duplicated page
+	const generateUniqueSlug = async (baseSlug: string): Promise<string> => {
+		// First, try with "-copy"
+		let candidateSlug = `${baseSlug}-copy`;
+		let counter = 1;
+
+		// Keep trying until we find a unique slug
+		while (
+			await prisma.page.findUnique({ where: { slug: candidateSlug } })
+		) {
+			counter++;
+			candidateSlug = `${baseSlug}-copy-${counter}`;
+		}
+
+		return candidateSlug;
+	};
+
+	// Generate a unique slug
+	const uniqueSlug = await generateUniqueSlug(originalPage.slug);
+
+	// Generate a unique title
+	const generateUniqueTitle = (baseTitle: string, slug: string): string => {
+		// Extract the copy number from the slug if it exists
+		const copyMatch = slug.match(/-copy(?:-([0-9]+))?$/);
+		if (copyMatch) {
+			const copyNumber = copyMatch[1] ? Number(copyMatch[1]) : 1;
+			return copyNumber === 1
+				? `${baseTitle} (Copy)`
+				: `${baseTitle} (Copy ${copyNumber})`;
+		}
+		return `${baseTitle} (Copy)`;
+	};
+
+	const uniqueTitle = generateUniqueTitle(originalPage.title, uniqueSlug);
+
+	// Create a duplicate with a new title and unique slug
 	return prisma.page.create({
 		data: {
 			content: originalPage.content ?? {},
@@ -32,8 +67,8 @@ export const duplicatePage = async (pageId: number) => {
 			metaKeywords: originalPage.metaKeywords,
 			metaTitle: originalPage.metaTitle,
 			parentId: originalPage.parentId,
-			slug: `${originalPage.slug}-copy`,
-			title: `${originalPage.title} (Copy)`,
+			slug: uniqueSlug,
+			title: uniqueTitle,
 		},
 		select: {
 			content: true,
