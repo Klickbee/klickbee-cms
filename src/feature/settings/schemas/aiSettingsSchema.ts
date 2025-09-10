@@ -8,10 +8,10 @@ export const aiSettingsSchema = z.object({
 export type AiSettingsSchema = z.infer<typeof aiSettingsSchema>;
 
 export const aiContextSchema = z.object({
-	companyActivity: z.string().optional(),
-	companyExperience: z.string().optional(),
-	companyIndustry: z.string().optional(),
-	companyName: z.string().optional(),
+	companyActivity: z.string(),
+	companyExperience: z.string(),
+	companyIndustry: z.string(),
+	companyName: z.string(),
 	otherInformations: z.string().optional(),
 	toneOfVoice: z.string().optional(),
 });
