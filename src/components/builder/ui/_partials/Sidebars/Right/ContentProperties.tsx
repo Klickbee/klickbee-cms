@@ -1,4 +1,7 @@
+"use client";
+
 import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent";
+import TextAreaContent from "@/components/builder/ui/_partials/Sidebars/Right/_partials/content/TextAreaContent";
 import {
 	Accordion,
 	AccordionContent,
@@ -14,7 +17,6 @@ import LinkContent from "./_partials/content/LinkContent";
 import ListContent from "./_partials/content/ListContent";
 import ParagraphContent from "./_partials/content/ParagraphContent";
 import RichTextContent from "./_partials/content/RichTextContent";
-import TextAreaContent from "./_partials/content/TextAreaContent";
 import TextFieldContent from "./_partials/content/TextFieldContent";
 import VideoContent from "./_partials/content/VideoContent";
 
