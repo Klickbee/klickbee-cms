@@ -1,3 +1,5 @@
+"use client";
+
 import { Minus } from "lucide-react";
 import { useState } from "react";
 import { BuilderComponent } from "@/builder/types/components/components";
