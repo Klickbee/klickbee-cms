@@ -85,8 +85,8 @@ const componentMap: Record<
 	spacer: Spacer,
 	submitbutton: SubmitButton,
 	text: Text,
+	textarea: DefaultComponent,
 	textfield: TextField,
-
 	// Default for undefined
 	undefined: DefaultComponent,
 	video: Video,
