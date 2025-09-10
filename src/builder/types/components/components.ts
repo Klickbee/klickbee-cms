@@ -10,6 +10,7 @@ export type ComponentType =
 	| "heading"
 	| "text"
 	| "paragraph"
+	| "textarea"
 	| "richtext"
 	| "link"
 	| "spacer"
