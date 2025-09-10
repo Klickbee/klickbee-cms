@@ -34,5 +34,8 @@ export interface ComponentContentProps {
 	defaultValue?: string;
 	helperText?: string; // Additional helper text for inputs
 	multiple?: boolean; // Allow multiple file uploads
-	target?: string; // Link target (_blank, _self, etc.)
+	target?: string; // Link target (_blank, _self, etc.),
+	rows?: number;
+	enableDynamicContent?: boolean; // Enable dynamic content for CMS templates
+	templateFieldName?: string; // Template field name for CMS content
 }
