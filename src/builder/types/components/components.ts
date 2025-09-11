@@ -31,6 +31,8 @@ export type ComponentType =
 	| "radiogroup"
 	| "dropdown"
 	| "submitbutton"
+	// CMS components
+	| "cmstemplate"
 	| "undefined";
 
 export interface BuilderComponent {
