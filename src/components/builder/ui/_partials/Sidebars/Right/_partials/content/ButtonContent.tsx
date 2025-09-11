@@ -1,6 +1,8 @@
+import { CONTENT_DEFAULTS } from "@/builder/constants/contentDefaults";
+import { useContentProps } from "@/builder/hooks/useContentProps";
+import { useContentUpdate } from "@/builder/hooks/useContentUpdate";
 import { BuilderComponent } from "@/builder/types/components/components";
-import { Input } from "@/components/ui/input";
-import PropertyColumn from "../layout/PropertyColumn";
+import PropertyField from "../layout/PropertyField";
 import FileUploader from "./FileUploader";
 
 interface ButtonContentProps {
@@ -8,40 +10,40 @@ interface ButtonContentProps {
 }
 
 export default function ButtonContent({ component }: ButtonContentProps) {
-	const buttonText = component.props.content?.text || "Button Text Here";
-	const buttonUrl =
-		component.props.content?.href || "https://www.google.com/";
-	const buttonIcon = component.props.content?.icon;
+	const { text, href, icon } = useContentProps(component, {
+		href: CONTENT_DEFAULTS.DEFAULT_URL,
+		icon: undefined,
+		text: CONTENT_DEFAULTS.BUTTON_TEXT,
+	});
 
-	const handleIconChange = (iconUrl: string | null) => {
-		// TODO: Update component props in store
-	};
+	const { updateText, updateHref, updateIcon } = useContentUpdate(component);
 
 	return (
 		<div className="flex flex-col gap-3">
-			<PropertyColumn label="Button Text">
-				<Input
-					className="h-8"
-					placeholder="Button Text Here"
-					value={buttonText}
-				/>
-			</PropertyColumn>
+			<PropertyField
+				label="Button Text"
+				layout="column"
+				onChange={updateText}
+				placeholder={CONTENT_DEFAULTS.BUTTON_TEXT}
+				value={text}
+			/>
 
-			<PropertyColumn label="URL">
-				<Input
-					className="h-8"
-					placeholder="https://www.google.com/"
-					value={buttonUrl}
-				/>
-			</PropertyColumn>
+			<PropertyField
+				label="URL"
+				layout="column"
+				onChange={updateHref}
+				placeholder={CONTENT_DEFAULTS.DEFAULT_URL}
+				type="url"
+				value={href}
+			/>
 
 			<FileUploader
 				acceptedTypes={["svg"]}
-				initialFile={buttonIcon}
+				initialFile={icon}
 				label="Icon"
 				maxSize={2}
 				mode="icon"
-				onFileChange={handleIconChange}
+				onFileChange={(fileUrl) => updateIcon(fileUrl || "")}
 			/>
 		</div>
 	);
