@@ -1,10 +1,11 @@
 export type ListType = "bulleted" | "numbered";
 export type FieldType = "text" | "email" | "password";
+export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
 
 export interface ComponentContentProps {
 	text?: string; // General text content (buttons, links, labels, etc.)
 	content?: string; // Formatted text (rich text blocks)
-	level?: 1 | 2 | 3 | 4 | 5 | 6; // Heading level (H1–H6)
+	level?: HeadingLevel; // Heading level (H1–H6)
 	href?: string; // Link or action URL
 	openInNewTab?: boolean; // Open link in new tab
 	icon?: React.ReactNode | string; // Icon reference
