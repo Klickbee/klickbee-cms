@@ -30,3 +30,9 @@ export const setSetting = async (key: string, value: string) => {
 		where: { key },
 	});
 };
+
+export const deleteSetting = async (key: string) => {
+	return prisma.settings.delete({
+		where: { key },
+	});
+};

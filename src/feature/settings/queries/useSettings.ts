@@ -15,6 +15,8 @@ export function useSetting(key: string, userId?: string | null) {
 	});
 }
 
+// Ajouter delete setting
+
 export function useSetSetting() {
 	const queryClient = useQueryClient();
 	return useMutation({
@@ -28,7 +30,7 @@ export function useSetSetting() {
 				headers: { "Content-Type": "application/json" },
 				method: "POST",
 			});
-			if (!res.ok) throw new Error("Save error");
+			if (!res.ok) throw new Error(`Save error on setting: ${data.key}`);
 			return res.json();
 		},
 		onSuccess: (_data, variables) => {
