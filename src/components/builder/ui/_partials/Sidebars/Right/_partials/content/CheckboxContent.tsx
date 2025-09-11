@@ -1,50 +1,43 @@
+import { CONTENT_DEFAULTS } from "@/builder/constants/contentDefaults";
+import { useContentProps } from "@/builder/hooks/useContentProps";
+import { useContentUpdate } from "@/builder/hooks/useContentUpdate";
 import { BuilderComponent } from "@/builder/types/components/components";
-import { Input } from "@/components/ui/input";
-import PropertyColumn from "../layout/PropertyColumn";
-import ToggleButton from "./ToggleButton";
+import FormFieldGroup from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/FormFieldGroup";
+import PropertyToggle from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyToggle";
 
 interface CheckboxContentProps {
 	component: BuilderComponent;
 }
 
 export default function CheckboxContent({ component }: CheckboxContentProps) {
-	const fieldName = component.props.content?.name || "Field Name Here";
-	const fieldLabel = component.props.content?.label || "Label Name Here";
-	const required = component.props.content?.required ?? true;
-	const checkedByDefault = component.props.content?.defaultChecked ?? true;
+	const { name, label, required, defaultChecked } = useContentProps(
+		component,
+		{
+			defaultChecked: true,
+			label: CONTENT_DEFAULTS.FIELD_LABEL,
+			name: CONTENT_DEFAULTS.FIELD_NAME,
+			required: CONTENT_DEFAULTS.FIELD_REQUIRED,
+		},
+	);
+
+	const { updateName, updateLabel, updateRequired, updateSingleField } =
+		useContentUpdate(component);
 
 	return (
 		<div className="flex flex-col gap-3">
-			<PropertyColumn label="Field Name">
-				<Input
-					className="h-8"
-					placeholder="Field Name Here"
-					value={fieldName}
-				/>
-			</PropertyColumn>
-
-			<PropertyColumn label="Label">
-				<Input
-					className="h-8"
-					placeholder="Label Name Here"
-					value={fieldLabel}
-				/>
-			</PropertyColumn>
-
-			<ToggleButton
-				label="Required"
-				onChange={(value) => {
-					// TODO: Update component props in store
-				}}
-				value={required}
+			<FormFieldGroup
+				label={label}
+				name={name}
+				onLabelChange={updateLabel}
+				onNameChange={updateName}
+				onRequiredChange={updateRequired}
+				required={required}
 			/>
 
-			<ToggleButton
+			<PropertyToggle
 				label="Checked by default"
-				onChange={(value) => {
-					// TODO: Update component props in store
-				}}
-				value={checkedByDefault}
+				onChange={(value) => updateSingleField("defaultChecked", value)}
+				value={defaultChecked}
 			/>
 		</div>
 	);
