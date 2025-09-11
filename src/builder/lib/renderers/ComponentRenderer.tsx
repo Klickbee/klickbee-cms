@@ -58,6 +58,7 @@ const componentMap: Record<
 > = {
 	button: DefaultComponent,
 	checkbox: Checkbox,
+	cmstemplate: DefaultComponent,
 	container: Container,
 	divider: DefaultComponent,
 	dropdown: Dropdown,
