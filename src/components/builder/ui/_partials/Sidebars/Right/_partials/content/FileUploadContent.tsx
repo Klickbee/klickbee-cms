@@ -1,18 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { CONTENT_DEFAULTS } from "@/builder/constants/contentDefaults";
+import { useContentProps } from "@/builder/hooks/useContentProps";
+import { useContentUpdate } from "@/builder/hooks/useContentUpdate";
 import { BuilderComponent } from "@/builder/types/components/components";
+import FormFieldGroup from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/FormFieldGroup";
+import PropertySelect from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertySelect";
 import { Input } from "@/components/ui/input";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
-import PropertyColumn from "../layout/PropertyColumn";
 import PropertyRow from "../layout/PropertyRow";
-import ToggleButton from "./ToggleButton";
 
 interface FileUploadContentProps {
 	component: BuilderComponent;
@@ -21,57 +16,56 @@ interface FileUploadContentProps {
 export default function FileUploadContent({
 	component,
 }: FileUploadContentProps) {
-	const fieldName = component.props.content?.name || "Field Name Here";
-	const fieldLabel = component.props.content?.label || "Label Name Here";
-	const required = component.props.content?.required ?? true;
-	const mimeType = component.props.content?.mimeTypes || "PDF";
-	const [maxFileSize, setMaxFileSize] = useState(
-		component.props.content?.maxFileSize || 2,
+	const { name, label, required, mimeTypes, maxFileSize } = useContentProps(
+		component,
+		{
+			label: CONTENT_DEFAULTS.FIELD_LABEL,
+			maxFileSize: CONTENT_DEFAULTS.DEFAULT_MAX_FILE_SIZE,
+			mimeTypes: CONTENT_DEFAULTS.DEFAULT_MIME_TYPE,
+			name: CONTENT_DEFAULTS.FIELD_NAME,
+			required: CONTENT_DEFAULTS.FIELD_REQUIRED,
+		},
 	);
+
+	const { updateName, updateLabel, updateRequired, updateSingleField } =
+		useContentUpdate(component);
 
 	return (
 		<div className="flex flex-col gap-3">
-			<PropertyColumn label="Field Name">
-				<Input
-					className="h-8"
-					placeholder="Field Name Here"
-					value={fieldName}
-				/>
-			</PropertyColumn>
-
-			<PropertyColumn label="Label">
-				<Input
-					className="h-8"
-					placeholder="Label Name Here"
-					value={fieldLabel}
-				/>
-			</PropertyColumn>
-
-			<ToggleButton
-				label="Required"
-				onChange={(value) => {
-					// TODO: Update component props in store
-				}}
-				value={required}
+			<FormFieldGroup
+				label={label}
+				name={name}
+				onLabelChange={updateLabel}
+				onNameChange={updateName}
+				onRequiredChange={updateRequired}
+				required={required}
 			/>
 
-			<PropertyRow label="File Type">
-				<Select value={mimeType}>
-					<SelectTrigger className="h-8">
-						<SelectValue />
-					</SelectTrigger>
-					<SelectContent>
-						<SelectItem value="PDF">PDF</SelectItem>
-					</SelectContent>
-				</Select>
-			</PropertyRow>
+			<PropertySelect
+				label="File Type"
+				layout="row"
+				onChange={(value) => updateSingleField("mimeTypes", value)}
+				options={[
+					{ label: "PDF", value: CONTENT_DEFAULTS.DEFAULT_MIME_TYPE },
+					{ label: "Image", value: "Image" },
+					{ label: "Document", value: "Document" },
+					{ label: "Video", value: "Video" },
+					{ label: "Audio", value: "Audio" },
+				]}
+				value={mimeTypes as string}
+			/>
 
 			<PropertyRow label="Max File Size">
 				<div className="flex">
 					<Input
 						className="h-8 px-3 rounded-r-none border-r-0"
 						min="1"
-						onChange={(e) => setMaxFileSize(Number(e.target.value))}
+						onChange={(e) =>
+							updateSingleField(
+								"maxFileSize",
+								Number(e.target.value),
+							)
+						}
 						type="number"
 						value={maxFileSize}
 					/>

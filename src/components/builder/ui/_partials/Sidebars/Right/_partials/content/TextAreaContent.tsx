@@ -1,67 +1,52 @@
+import { CONTENT_DEFAULTS } from "@/builder/constants/contentDefaults";
+import { useContentProps } from "@/builder/hooks/useContentProps";
+import { useContentUpdate } from "@/builder/hooks/useContentUpdate";
 import { BuilderComponent } from "@/builder/types/components/components";
-import { Input } from "@/components/ui/input";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
-import PropertyColumn from "../layout/PropertyColumn";
-import PropertyRow from "../layout/PropertyRow";
-import ToggleButton from "./ToggleButton";
+import FormFieldGroup from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/FormFieldGroup";
+import PropertySelect from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertySelect";
 
 interface TextAreaContentProps {
 	component: BuilderComponent;
 }
 
 export default function TextAreaContent({ component }: TextAreaContentProps) {
-	const fieldName = component.props.content?.name || "Field Name Here";
-	const fieldLabel = component.props.content?.label || "Label Name Here";
-	const required = component.props.content?.required ?? true;
-	const rows = component.props.content?.rows || 1;
+	const { name, label, required, rows } = useContentProps(component, {
+		label: CONTENT_DEFAULTS.FIELD_LABEL,
+		name: CONTENT_DEFAULTS.FIELD_NAME,
+		required: CONTENT_DEFAULTS.FIELD_REQUIRED,
+		rows: CONTENT_DEFAULTS.DEFAULT_TEXTAREA_ROWS,
+	});
+
+	const { updateName, updateLabel, updateRequired, updateSingleField } =
+		useContentUpdate(component);
 
 	return (
 		<div className="flex flex-col gap-3">
-			<PropertyColumn label="Field Name">
-				<Input
-					className="h-8"
-					placeholder="Field Name Here"
-					value={fieldName}
-				/>
-			</PropertyColumn>
-
-			<PropertyColumn label="Label">
-				<Input
-					className="h-8"
-					placeholder="Label Name Here"
-					value={fieldLabel}
-				/>
-			</PropertyColumn>
-
-			<ToggleButton
-				label="Required"
-				onChange={(value) => {
-					// TODO: Update component props in store
-				}}
-				value={required}
+			<FormFieldGroup
+				label={label}
+				name={name}
+				onLabelChange={updateLabel}
+				onNameChange={updateName}
+				onRequiredChange={updateRequired}
+				required={required}
 			/>
 
-			<PropertyRow label="Rows">
-				<Select value={rows.toString()}>
-					<SelectTrigger className="h-8">
-						<SelectValue />
-					</SelectTrigger>
-					<SelectContent>
-						<SelectItem value="1">1</SelectItem>
-						<SelectItem value="2">2</SelectItem>
-						<SelectItem value="3">3</SelectItem>
-						<SelectItem value="4">4</SelectItem>
-						<SelectItem value="5">5</SelectItem>
-						<SelectItem value="6">6</SelectItem>
-					</SelectContent>
-				</Select>
-			</PropertyRow>
+			<PropertySelect
+				label="Rows"
+				layout="row"
+				onChange={(value: string) =>
+					updateSingleField("rows", parseInt(value))
+				}
+				options={[
+					{ label: "1", value: "1" },
+					{ label: "2", value: "2" },
+					{ label: "3", value: "3" },
+					{ label: "4", value: "4" },
+					{ label: "5", value: "5" },
+					{ label: "6", value: "6" },
+				]}
+				value={rows?.toString() || "1"}
+			/>
 		</div>
 	);
 }

@@ -1,6 +1,8 @@
+import { CONTENT_DEFAULTS } from "@/builder/constants/contentDefaults";
+import { useContentProps } from "@/builder/hooks/useContentProps";
+import { useContentUpdate } from "@/builder/hooks/useContentUpdate";
 import { BuilderComponent } from "@/builder/types/components/components";
-import { Textarea } from "@/components/ui/textarea";
-import PropertyColumn from "../layout/PropertyColumn";
+import PropertyField from "../layout/PropertyField";
 import RewriteButton from "./RewriteButton";
 
 interface ParagraphContentProps {
@@ -8,17 +10,22 @@ interface ParagraphContentProps {
 }
 
 export default function ParagraphContent({ component }: ParagraphContentProps) {
-	const paragraphText = component.props.content?.text || "Text";
+	const { text } = useContentProps(component, {
+		text: CONTENT_DEFAULTS.PARAGRAPH_TEXT,
+	});
+
+	const { updateText } = useContentUpdate(component);
 
 	return (
 		<div className="flex flex-col gap-3">
-			<PropertyColumn label="Text Content">
-				<Textarea
-					className="h-16 resize"
-					placeholder="Text"
-					value={paragraphText}
-				/>
-			</PropertyColumn>
+			<PropertyField
+				label="Text Content"
+				layout="column"
+				onChange={updateText}
+				placeholder={CONTENT_DEFAULTS.PARAGRAPH_TEXT}
+				value={text}
+				variant="textarea"
+			/>
 
 			<RewriteButton />
 		</div>

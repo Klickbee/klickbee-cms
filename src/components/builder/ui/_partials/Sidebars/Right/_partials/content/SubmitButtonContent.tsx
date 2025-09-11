@@ -1,6 +1,8 @@
+import { CONTENT_DEFAULTS } from "@/builder/constants/contentDefaults";
+import { useContentProps } from "@/builder/hooks/useContentProps";
+import { useContentUpdate } from "@/builder/hooks/useContentUpdate";
 import { BuilderComponent } from "@/builder/types/components/components";
-import { Input } from "@/components/ui/input";
-import PropertyColumn from "../layout/PropertyColumn";
+import PropertyField from "../layout/PropertyField";
 
 interface SubmitButtonContentProps {
 	component: BuilderComponent;
@@ -9,26 +11,30 @@ interface SubmitButtonContentProps {
 export default function SubmitButtonContent({
 	component,
 }: SubmitButtonContentProps) {
-	const fieldName = component.props.content?.name || "Field Name Here";
-	const buttonText = component.props.content?.text || "Label Name Here";
+	const { name, text } = useContentProps(component, {
+		name: CONTENT_DEFAULTS.FIELD_NAME,
+		text: CONTENT_DEFAULTS.BUTTON_TEXT,
+	});
+
+	const { updateName, updateText } = useContentUpdate(component);
 
 	return (
 		<div className="flex flex-col gap-3">
-			<PropertyColumn label="Field Name">
-				<Input
-					className="h-8"
-					placeholder="Field Name Here"
-					value={fieldName}
-				/>
-			</PropertyColumn>
+			<PropertyField
+				label="Field Name"
+				layout="column"
+				onChange={updateName}
+				placeholder={CONTENT_DEFAULTS.FIELD_NAME}
+				value={name}
+			/>
 
-			<PropertyColumn label="Text Button">
-				<Input
-					className="h-8"
-					placeholder="Label Name Here"
-					value={buttonText}
-				/>
-			</PropertyColumn>
+			<PropertyField
+				label="Text Button"
+				layout="column"
+				onChange={updateText}
+				placeholder={CONTENT_DEFAULTS.BUTTON_TEXT}
+				value={text}
+			/>
 		</div>
 	);
 }

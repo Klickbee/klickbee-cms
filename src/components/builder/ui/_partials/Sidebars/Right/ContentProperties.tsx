@@ -9,14 +9,20 @@ import {
 	AccordionTrigger,
 } from "@/components/ui/accordion";
 import ButtonContent from "./_partials/content/ButtonContent";
+import CheckboxContent from "./_partials/content/CheckboxContent";
+import CMSTemplateContent from "./_partials/content/CMSTemplateContent";
+import DropdownContent from "./_partials/content/DropdownContent";
 import EmbedContent from "./_partials/content/EmbedContent";
+import FileUploadContent from "./_partials/content/FileUploadContent";
 import FormBlockContent from "./_partials/content/FormBlockContent";
 import HeadingContent from "./_partials/content/HeadingContent";
 import ImageContent from "./_partials/content/ImageContent";
 import LinkContent from "./_partials/content/LinkContent";
 import ListContent from "./_partials/content/ListContent";
 import ParagraphContent from "./_partials/content/ParagraphContent";
+import RadioGroupContent from "./_partials/content/RadioGroupContent";
 import RichTextContent from "./_partials/content/RichTextContent";
+import SubmitButtonContent from "./_partials/content/SubmitButtonContent";
 import TextFieldContent from "./_partials/content/TextFieldContent";
 import VideoContent from "./_partials/content/VideoContent";
 
@@ -56,6 +62,18 @@ export default function BuilderContentProperties() {
 				return <TextFieldContent component={currentComponent} />;
 			case "textarea":
 				return <TextAreaContent component={currentComponent} />;
+			case "cmstemplate":
+				return <CMSTemplateContent component={currentComponent} />;
+			case "checkbox":
+				return <CheckboxContent component={currentComponent} />;
+			case "dropdown":
+				return <DropdownContent component={currentComponent} />;
+			case "fileupload":
+				return <FileUploadContent component={currentComponent} />;
+			case "radiogroup":
+				return <RadioGroupContent component={currentComponent} />;
+			case "submitbutton":
+				return <SubmitButtonContent component={currentComponent} />;
 			default:
 				return (
 					<div className="text-sm text-gray-500 py-4">

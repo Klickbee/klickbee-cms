@@ -1,40 +1,46 @@
+import { CONTENT_DEFAULTS } from "@/builder/constants/contentDefaults";
+import { useContentProps } from "@/builder/hooks/useContentProps";
+import { useContentUpdate } from "@/builder/hooks/useContentUpdate";
 import { BuilderComponent } from "@/builder/types/components/components";
-import { Input } from "@/components/ui/input";
-import PropertyColumn from "../layout/PropertyColumn";
-import ToggleButton from "./ToggleButton";
+import PropertyField from "../layout/PropertyField";
+import PropertyToggle from "../layout/PropertyToggle";
 
 interface LinkContentProps {
 	component: BuilderComponent;
 }
 
 export default function LinkContent({ component }: LinkContentProps) {
-	const linkText = component.props.content?.text || "Link Text Here";
-	const linkUrl = component.props.content?.href || "https://www.google.com/";
-	const openInNewTab = component.props.content?.openInNewTab || true;
+	const { text, href, openInNewTab } = useContentProps(component, {
+		href: CONTENT_DEFAULTS.DEFAULT_URL,
+		openInNewTab: CONTENT_DEFAULTS.DEFAULT_OPEN_NEW_TAB,
+		text: CONTENT_DEFAULTS.LINK_TEXT,
+	});
+
+	const { updateText, updateHref, updateOpenInNewTab } =
+		useContentUpdate(component);
 
 	return (
 		<div className="flex flex-col gap-3">
-			<PropertyColumn label="Link Text">
-				<Input
-					className="h-8"
-					placeholder="Link Text Here"
-					value={linkText}
-				/>
-			</PropertyColumn>
+			<PropertyField
+				label="Link Text"
+				layout="column"
+				onChange={updateText}
+				placeholder={CONTENT_DEFAULTS.LINK_TEXT}
+				value={text}
+			/>
 
-			<PropertyColumn label="Link URL">
-				<Input
-					className="h-8"
-					placeholder="https://www.google.com/"
-					value={linkUrl}
-				/>
-			</PropertyColumn>
+			<PropertyField
+				label="Link URL"
+				layout="column"
+				onChange={updateHref}
+				placeholder={CONTENT_DEFAULTS.DEFAULT_URL}
+				type="url"
+				value={href}
+			/>
 
-			<ToggleButton
+			<PropertyToggle
 				label="New Tab"
-				onChange={() => {
-					// TODO: Update component props in store
-				}}
+				onChange={updateOpenInNewTab}
 				value={openInNewTab}
 			/>
 		</div>

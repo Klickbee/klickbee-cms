@@ -1,6 +1,8 @@
+import { CONTENT_DEFAULTS } from "@/builder/constants/contentDefaults";
+import { useContentProps } from "@/builder/hooks/useContentProps";
+import { useContentUpdate } from "@/builder/hooks/useContentUpdate";
 import { BuilderComponent } from "@/builder/types/components/components";
-import { Input } from "@/components/ui/input";
-import PropertyColumn from "../layout/PropertyColumn";
+import PropertyField from "../layout/PropertyField";
 import FileUploader from "./FileUploader";
 
 interface ImageContentProps {
@@ -8,31 +10,31 @@ interface ImageContentProps {
 }
 
 export default function ImageContent({ component }: ImageContentProps) {
-	const imageSrc = component.props.content?.src;
-	const altText = component.props.content?.alt || "Loremipsum dolor sit amet";
+	const { src, alt } = useContentProps(component, {
+		alt: CONTENT_DEFAULTS.DEFAULT_ALT_TEXT,
+		src: "",
+	});
 
-	const handleImageChange = (imageUrl: string | null) => {
-		// TODO: Update component props in store
-	};
+	const { updateSrc, updateAlt } = useContentUpdate(component);
 
 	return (
 		<div className="flex flex-col gap-3">
 			<FileUploader
 				acceptedTypes={["png", "jpeg", "jpg", "svg"]}
-				initialFile={imageSrc}
+				initialFile={src}
 				label="Icon"
 				maxSize={2}
 				mode="image"
-				onFileChange={handleImageChange}
+				onFileChange={(fileUrl) => updateSrc(fileUrl || "")}
 			/>
 
-			<PropertyColumn label="Alt Text">
-				<Input
-					className="h-8"
-					placeholder="Loremipsum dolor sit amet"
-					value={altText}
-				/>
-			</PropertyColumn>
+			<PropertyField
+				label="Alt Text"
+				layout="column"
+				onChange={updateAlt}
+				placeholder={CONTENT_DEFAULTS.DEFAULT_ALT_TEXT}
+				value={alt}
+			/>
 		</div>
 	);
 }

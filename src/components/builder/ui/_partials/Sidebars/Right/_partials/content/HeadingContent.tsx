@@ -1,14 +1,10 @@
+import { CONTENT_DEFAULTS } from "@/builder/constants/contentDefaults";
+import { useContentProps } from "@/builder/hooks/useContentProps";
+import { useContentUpdate } from "@/builder/hooks/useContentUpdate";
 import { BuilderComponent } from "@/builder/types/components/components";
-import { Input } from "@/components/ui/input";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
-import PropertyColumn from "../layout/PropertyColumn";
-import PropertyRow from "../layout/PropertyRow";
+import { HeadingLevel } from "@/builder/types/components/properties/componentContentPropsType";
+import PropertySelect from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertySelect";
+import PropertyField from "../layout/PropertyField";
 import RewriteButton from "./RewriteButton";
 
 interface HeadingContentProps {
@@ -16,37 +12,39 @@ interface HeadingContentProps {
 }
 
 export default function HeadingContent({ component }: HeadingContentProps) {
-	const headingText = component.props.content?.text || "Text Heading";
-	const headingLevel = component.props.content?.level || 1;
+	const { text, level } = useContentProps(component, {
+		level: CONTENT_DEFAULTS.DEFAULT_HEADING_LEVEL as HeadingLevel,
+		text: CONTENT_DEFAULTS.HEADING_TEXT,
+	});
 
-	// Convert number level to string for Select component
-	const levelAsString = headingLevel.toString();
+	const { updateText, updateLevel } = useContentUpdate(component);
 
 	return (
 		<div className="flex flex-col gap-3">
-			<PropertyRow label="Heading Level">
-				<Select value={levelAsString}>
-					<SelectTrigger className="h-8">
-						<SelectValue />
-					</SelectTrigger>
-					<SelectContent>
-						<SelectItem value="1">H1</SelectItem>
-						<SelectItem value="2">H2</SelectItem>
-						<SelectItem value="3">H3</SelectItem>
-						<SelectItem value="4">H4</SelectItem>
-						<SelectItem value="5">H5</SelectItem>
-						<SelectItem value="6">H6</SelectItem>
-					</SelectContent>
-				</Select>
-			</PropertyRow>
+			<PropertySelect
+				label="Heading Level"
+				layout="row"
+				onChange={(value) =>
+					updateLevel(parseInt(value) as HeadingLevel)
+				}
+				options={[
+					{ label: "H1", value: "1" },
+					{ label: "H2", value: "2" },
+					{ label: "H3", value: "3" },
+					{ label: "H4", value: "4" },
+					{ label: "H5", value: "5" },
+					{ label: "H6", value: "6" },
+				]}
+				value={level?.toString() || "1"}
+			/>
 
-			<PropertyColumn label="Text">
-				<Input
-					className="h-8"
-					placeholder="Text Heading"
-					value={headingText}
-				/>
-			</PropertyColumn>
+			<PropertyField
+				label="Text"
+				layout="column"
+				onChange={updateText}
+				placeholder={CONTENT_DEFAULTS.HEADING_TEXT}
+				value={text}
+			/>
 
 			<RewriteButton />
 		</div>

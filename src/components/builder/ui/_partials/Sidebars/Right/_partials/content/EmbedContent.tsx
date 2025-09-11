@@ -1,23 +1,30 @@
+import { CONTENT_DEFAULTS } from "@/builder/constants/contentDefaults";
+import { useContentProps } from "@/builder/hooks/useContentProps";
+import { useContentUpdate } from "@/builder/hooks/useContentUpdate";
 import { BuilderComponent } from "@/builder/types/components/components";
-import { Textarea } from "@/components/ui/textarea";
-import PropertyColumn from "../layout/PropertyColumn";
+import PropertyField from "../layout/PropertyField";
 
 interface EmbedContentProps {
 	component: BuilderComponent;
 }
 
 export default function EmbedContent({ component }: EmbedContentProps) {
-	const customCode = component.props.content?.code || "Custom code";
+	const { code } = useContentProps(component, {
+		code: CONTENT_DEFAULTS.DEFAULT_CUSTOM_CODE,
+	});
+
+	const { updateSingleField } = useContentUpdate(component);
 
 	return (
 		<div className="flex flex-col gap-3">
-			<PropertyColumn label="Custom Code">
-				<Textarea
-					className="h-16 resize"
-					placeholder="Custom code"
-					value={customCode}
-				/>
-			</PropertyColumn>
+			<PropertyField
+				label="Custom Code"
+				layout="column"
+				onChange={(value) => updateSingleField("code", value)}
+				placeholder={CONTENT_DEFAULTS.DEFAULT_CUSTOM_CODE}
+				value={code}
+				variant="textarea"
+			/>
 		</div>
 	);
 }
