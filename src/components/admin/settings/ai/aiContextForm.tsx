@@ -129,9 +129,9 @@ export default function AiContextForm() {
 	};
 
 	const aiContextWithoutCompanyName = () => {
-		const newAiContext = { ...aiContext };
-		delete newAiContext.companyName;
-		return newAiContext;
+		// biome-ignore lint/correctness/noUnusedVariables: we don't need the unused variable, it's just to remove the companyName from the object
+		const { companyName, ...aiContextWithoutCompanyName } = aiContext || {};
+		return aiContextWithoutCompanyName;
 	};
 
 	return (
