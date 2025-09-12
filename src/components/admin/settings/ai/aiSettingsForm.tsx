@@ -80,15 +80,24 @@ export default function AiSettingsForm() {
 		const keys = Object.keys(data) as (keyof AiSettingsSchema)[];
 
 		try {
-			await keys.forEach(async (key) => {
-				const currentValue = aiSettings?.[key];
-				if (data[key] !== "" && data[key] !== currentValue) {
-					await setSetting.mutateAsync({
-						key,
-						value: String(data[key]),
-					});
-				}
-			});
+			await Promise.all(
+				keys.map(async (key) => {
+					const currentValue = aiSettings?.[key];
+					if (data[key] !== currentValue) {
+						await setSetting.mutateAsync(
+							{
+								key,
+								value: String(data[key]),
+							},
+							{
+								onError: (error) => {
+									toast.error(error.message);
+								},
+							},
+						);
+					}
+				}),
+			);
 			toast.success(tSettings("UpdateSettingsSuccess"));
 		} catch (error) {
 			const errorMessage =

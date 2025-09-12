@@ -102,22 +102,24 @@ export default function AiContextForm() {
 		const keys = Object.keys(data) as (keyof AiContextSchema)[];
 
 		try {
-			await keys.forEach(async (key) => {
-				const currentValue = aiContext?.[key];
-				if (data[key] !== currentValue) {
-					await setSetting.mutateAsync(
-						{
-							key,
-							value: String(data[key]),
-						},
-						{
-							onError: (error) => {
-								toast.error(error.message);
+			await Promise.all(
+				keys.map(async (key) => {
+					const currentValue = aiContext?.[key];
+					if (data[key] !== currentValue) {
+						await setSetting.mutateAsync(
+							{
+								key,
+								value: String(data[key]),
 							},
-						},
-					);
-				}
-			});
+							{
+								onError: (error) => {
+									toast.error(error.message);
+								},
+							},
+						);
+					}
+				}),
+			);
 			toast.success(tSettings("UpdateSettingsSuccess"));
 		} catch (error) {
 			const errorMessage =
