@@ -15,8 +15,6 @@ export function useSetting(key: string, userId?: string | null) {
 	});
 }
 
-// Ajouter delete setting
-
 export function useSetSetting() {
 	const queryClient = useQueryClient();
 	return useMutation({
