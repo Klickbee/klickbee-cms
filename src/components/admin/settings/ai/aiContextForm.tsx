@@ -47,6 +47,7 @@ export default function AiContextForm() {
 	const setSetting = useSetSetting();
 	const t = useTranslations("SettingsAi");
 	const tCommon = useTranslations("Common");
+	const tSettings = useTranslations("Settings");
 	const [aiContext, setAiContext] = useState<AiContextSchema | null>(null);
 
 	useEffect(() => {
@@ -104,7 +105,7 @@ export default function AiContextForm() {
 			await keys.forEach(async (key) => {
 				const currentValue = aiContext?.[key];
 				if (data[key] !== currentValue) {
-					const result = await setSetting.mutateAsync(
+					await setSetting.mutateAsync(
 						{
 							key,
 							value: String(data[key]),
@@ -115,9 +116,9 @@ export default function AiContextForm() {
 							},
 						},
 					);
-					toast.success(result.message);
 				}
 			});
+			toast.success(tSettings("UpdateSettingsSuccess"));
 		} catch (error) {
 			const errorMessage =
 				error instanceof Error ? error.message : "Error";

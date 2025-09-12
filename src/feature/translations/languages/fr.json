@@ -259,6 +259,7 @@
 		"SuccessMessage": "Un lien de réinitialisation a été envoyé à votre adresse email."
 	},
 	"Settings": {
+		"UpdateSettingsSuccess": "Mise à jour des paramètres avec succès",
 		"UpdateSuccess": "Mise à jour du paramètre {key} avec succès"
 	},
 	"SettingsAi": {

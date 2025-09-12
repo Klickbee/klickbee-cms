@@ -259,6 +259,7 @@
 		"SuccessMessage": "A password reset link has been sent to your email address."
 	},
 	"Settings": {
+		"UpdateSettingsSuccess": "Settings updated successfully",
 		"UpdateSuccess": "Update {key} successfully"
 	},
 	"SettingsAi": {
