@@ -11,7 +11,7 @@ import {
 	useSensors,
 } from "@dnd-kit/core";
 import { File, Home, MoreHorizontal, Plus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
 import EditableSlug from "@/components/builder/ui/_partials/Sidebars/Left/_partials/Tabs/_partials/Pages/_partials/EditableSlug";
@@ -83,6 +83,13 @@ export default function BuilderTabPagesPages() {
 		open: boolean;
 		pageId: number | null;
 	}>({ open: false, pageId: null });
+
+	// Prevent hydration mismatch by only enabling DnD on client
+	const [isDndEnabled, setIsDndEnabled] = useState(false);
+
+	useEffect(() => {
+		setIsDndEnabled(true);
+	}, []);
 
 	// Configure sensors for drag detection
 	const sensors = useSensors(
@@ -208,12 +215,13 @@ export default function BuilderTabPagesPages() {
 			setNodeRef: setDragNodeRef,
 			isDragging,
 		} = useDraggable({
-			disabled: isHome,
+			disabled: isHome || !isDndEnabled,
 			id: page.id,
 		});
 
 		// Set up droppable (so other pages can be dropped on this page to become children)
 		const { setNodeRef: setDropNodeRef } = useDroppable({
+			disabled: !isDndEnabled,
 			id: `page-${page.id}`,
 		});
 
@@ -395,6 +403,7 @@ export default function BuilderTabPagesPages() {
 	// Root container component
 	const RootContainer = ({ children }: { children: React.ReactNode }) => {
 		const { setNodeRef } = useDroppable({
+			disabled: !isDndEnabled,
 			id: "root-container",
 		});
 
@@ -420,12 +429,39 @@ export default function BuilderTabPagesPages() {
 					<Plus className="w-4 h-4" />
 				</Button>
 			</div>
-			<DndContext
-				onDragEnd={handleDragEnd}
-				onDragStart={handleDragStart}
-				sensors={isEditingSlug.state ? [] : sensors}
-			>
-				<RootContainer>
+			{isDndEnabled ? (
+				<DndContext
+					onDragEnd={handleDragEnd}
+					onDragStart={handleDragStart}
+					sensors={isEditingSlug.state ? [] : sensors}
+				>
+					<RootContainer>
+						{sortedPages.length > 0 ? (
+							sortedPages
+								.filter((p: Page) => p && !p.parentId)
+								.map((page: Page) =>
+									renderPageWithChildren(page, sortedPages),
+								)
+						) : (
+							<div className="px-2 py-2 text-sm">
+								No pages available
+							</div>
+						)}
+					</RootContainer>
+
+					{/* Drag overlay to show the dragged item */}
+					<DragOverlay>
+						{activeId ? (
+							<div className="bg-background border border-primary rounded-md p-2 opacity-80 shadow-md">
+								{sortedPages.find(
+									(page) => page.id === activeId,
+								)?.title || "Page"}
+							</div>
+						) : null}
+					</DragOverlay>
+				</DndContext>
+			) : (
+				<div className="flex flex-col gap-1">
 					{sortedPages.length > 0 ? (
 						sortedPages
 							.filter((p: Page) => p && !p.parentId)
@@ -437,18 +473,8 @@ export default function BuilderTabPagesPages() {
 							No pages available
 						</div>
 					)}
-				</RootContainer>
-
-				{/* Drag overlay to show the dragged item */}
-				<DragOverlay>
-					{activeId ? (
-						<div className="bg-background border border-primary rounded-md p-2 opacity-80 shadow-md">
-							{sortedPages.find((page) => page.id === activeId)
-								?.title || "Page"}
-						</div>
-					) : null}
-				</DragOverlay>
-			</DndContext>
+				</div>
+			)}
 			<Dialog
 				onOpenChange={(open: boolean) =>
 					setConfirmDelete({ open, pageId: confirmDelete.pageId })
