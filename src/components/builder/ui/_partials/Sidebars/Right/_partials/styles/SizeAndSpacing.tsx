@@ -8,166 +8,217 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { useStyleState } from "@/builder/hooks/useStyleState";
-import { SizeSpacingStyle } from "@/builder/types/components/properties/componentStylePropsType";
-import QuadInput from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/QuadInput";
-import SimpleUnitInput from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/SimpleUnitInput";
-import UnitSelector from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/UnitSelector";
-import PropertyColumn from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyColumn";
-import PropertyRow from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyRow";
+import { STYLE_DEFAULTS } from "@/builder/constants/styleDefaults";
+import { useStyleProps } from "@/builder/hooks/useStyleProps";
+import { useStyleUpdate } from "@/builder/hooks/useStyleUpdate";
+import { BuilderComponent } from "@/builder/types/components/components";
+import PropertyQuadInput from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyQuadInput";
+import PropertyUnitInput from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyUnitInput";
 import { Button } from "@/components/ui/button";
 
-export default function BuilderStyleSizeAndSpacing() {
+export default function BuilderStyleSizeAndSpacing({
+	component,
+}: {
+	component: BuilderComponent;
+}) {
 	const t = useTranslations("Builder.RightSidebar.SizeAndSpacing");
 
 	const [showMinMax, setShowMinMax] = useState<boolean>(false);
-	const {
-		state: sizeSpacing,
-		updateProperty,
-		updateNestedProperty,
-	} = useStyleState<SizeSpacingStyle>({
-		height: { number: 0, unit: "px" },
-		margin: {
-			bottom: { max: 0, maxWidth: 1440, min: 0, sizeUnit: "px" },
-			key: "default-margin",
-			left: { max: 0, maxWidth: 1440, min: 0, sizeUnit: "px" },
-			right: { max: 0, maxWidth: 1440, min: 0, sizeUnit: "px" },
-			top: { max: 0, maxWidth: 1440, min: 0, sizeUnit: "px" },
-		},
-		maxHeight: { number: 0, unit: "px" },
-		maxWidth: { number: 0, unit: "px" },
-		minHeight: { number: 0, unit: "px" },
-		minWidth: { number: 0, unit: "px" },
-		padding: {
-			bottom: { max: 0, maxWidth: 1440, min: 0, sizeUnit: "px" },
-			key: "default-padding",
-			left: { max: 0, maxWidth: 1440, min: 0, sizeUnit: "px" },
-			right: { max: 0, maxWidth: 1440, min: 0, sizeUnit: "px" },
-			top: { max: 0, maxWidth: 1440, min: 0, sizeUnit: "px" },
-		},
-		width: { number: 0, unit: "px" },
+	const styleProps = useStyleProps(component, {
+		sizeAndSpacing: STYLE_DEFAULTS.SIZE_AND_SPACING,
 	});
+	const sizeSpacing =
+		styleProps.sizeAndSpacing || STYLE_DEFAULTS.SIZE_AND_SPACING;
+	const { updateNestedProperty } = useStyleUpdate(component);
 
 	return (
-		<div className="flex flex-col gap-3">
+		<div className="flex flex-col gap-3 pt-3">
 			{/* Width */}
-			<PropertyRow label={t("width")}>
-				<SimpleUnitInput
-					onUnitChange={(unit) =>
-						updateProperty("width", {
+			<PropertyUnitInput
+				label={t("width")}
+				layout="row"
+				onUnitChange={(unit) =>
+					updateNestedProperty("sizeAndSpacing", (current) => ({
+						...current,
+						width: {
 							number: sizeSpacing.width?.number || 0,
 							unit,
-						})
-					}
-					onValueChange={(number) =>
-						updateProperty("width", {
+						},
+					}))
+				}
+				onValueChange={(number) =>
+					updateNestedProperty("sizeAndSpacing", (current) => ({
+						...current,
+						width: {
 							number,
 							unit: sizeSpacing.width?.unit || "px",
-						})
-					}
-					unit={sizeSpacing.width?.unit || "px"}
-					value={sizeSpacing.width?.number || 0}
-				/>
-			</PropertyRow>
+						},
+					}))
+				}
+				unit={sizeSpacing.width?.unit || "px"}
+				value={sizeSpacing.width?.number || 0}
+			/>
 
 			{/* Height */}
-			<PropertyRow label={t("height")}>
-				<SimpleUnitInput
-					onUnitChange={(unit) =>
-						updateProperty("height", {
+			<PropertyUnitInput
+				label={t("height")}
+				layout="row"
+				onUnitChange={(unit) =>
+					updateNestedProperty("sizeAndSpacing", (current) => ({
+						...current,
+						height: {
 							number: sizeSpacing.height?.number || 0,
 							unit,
-						})
-					}
-					onValueChange={(number) =>
-						updateProperty("height", {
+						},
+					}))
+				}
+				onValueChange={(number) =>
+					updateNestedProperty("sizeAndSpacing", (current) => ({
+						...current,
+						height: {
 							number,
 							unit: sizeSpacing.height?.unit || "px",
-						})
-					}
-					unit={sizeSpacing.height?.unit || "px"}
-					value={sizeSpacing.height?.number || 0}
-				/>
-			</PropertyRow>
+						},
+					}))
+				}
+				unit={sizeSpacing.height?.unit || "px"}
+				value={sizeSpacing.height?.number || 0}
+			/>
 
 			{/* Min/Max sections (conditional) */}
 			{showMinMax && (
 				<>
-					<PropertyRow label={t("minWidth")}>
-						<SimpleUnitInput
-							onUnitChange={(unit) =>
-								updateProperty("minWidth", {
-									number: sizeSpacing.minWidth?.number || 0,
-									unit,
-								})
-							}
-							onValueChange={(number) =>
-								updateProperty("minWidth", {
-									number,
-									unit: sizeSpacing.minWidth?.unit || "px",
-								})
-							}
-							unit={sizeSpacing.minWidth?.unit || "px"}
-							value={sizeSpacing.minWidth?.number || 0}
-						/>
-					</PropertyRow>
+					<PropertyUnitInput
+						label={t("minWidth")}
+						layout="row"
+						onUnitChange={(unit) =>
+							updateNestedProperty(
+								"sizeAndSpacing",
+								(current) => ({
+									...current,
+									minWidth: {
+										number:
+											sizeSpacing.minWidth?.number || 0,
+										unit,
+									},
+								}),
+							)
+						}
+						onValueChange={(number) =>
+							updateNestedProperty(
+								"sizeAndSpacing",
+								(current) => ({
+									...current,
+									minWidth: {
+										number,
+										unit:
+											sizeSpacing.minWidth?.unit || "px",
+									},
+								}),
+							)
+						}
+						unit={sizeSpacing.minWidth?.unit || "px"}
+						value={sizeSpacing.minWidth?.number || 0}
+					/>
 
-					<PropertyRow label={t("maxWidth")}>
-						<SimpleUnitInput
-							onUnitChange={(unit) =>
-								updateProperty("maxWidth", {
-									number: sizeSpacing.maxWidth?.number || 0,
-									unit,
-								})
-							}
-							onValueChange={(number) =>
-								updateProperty("maxWidth", {
-									number,
-									unit: sizeSpacing.maxWidth?.unit || "px",
-								})
-							}
-							unit={sizeSpacing.maxWidth?.unit || "px"}
-							value={sizeSpacing.maxWidth?.number || 0}
-						/>
-					</PropertyRow>
+					<PropertyUnitInput
+						label={t("maxWidth")}
+						layout="row"
+						onUnitChange={(unit) =>
+							updateNestedProperty(
+								"sizeAndSpacing",
+								(current) => ({
+									...current,
+									maxWidth: {
+										number:
+											sizeSpacing.maxWidth?.number || 0,
+										unit,
+									},
+								}),
+							)
+						}
+						onValueChange={(number) =>
+							updateNestedProperty(
+								"sizeAndSpacing",
+								(current) => ({
+									...current,
+									maxWidth: {
+										number,
+										unit:
+											sizeSpacing.maxWidth?.unit || "px",
+									},
+								}),
+							)
+						}
+						unit={sizeSpacing.maxWidth?.unit || "px"}
+						value={sizeSpacing.maxWidth?.number || 0}
+					/>
 
-					<PropertyRow label={t("minHeight")}>
-						<SimpleUnitInput
-							onUnitChange={(unit) =>
-								updateProperty("minHeight", {
-									number: sizeSpacing.minHeight?.number || 0,
-									unit,
-								})
-							}
-							onValueChange={(number) =>
-								updateProperty("minHeight", {
-									number,
-									unit: sizeSpacing.minHeight?.unit || "px",
-								})
-							}
-							unit={sizeSpacing.minHeight?.unit || "px"}
-							value={sizeSpacing.minHeight?.number || 0}
-						/>
-					</PropertyRow>
+					<PropertyUnitInput
+						label={t("minHeight")}
+						layout="row"
+						onUnitChange={(unit) =>
+							updateNestedProperty(
+								"sizeAndSpacing",
+								(current) => ({
+									...current,
+									minHeight: {
+										number:
+											sizeSpacing.minHeight?.number || 0,
+										unit,
+									},
+								}),
+							)
+						}
+						onValueChange={(number) =>
+							updateNestedProperty(
+								"sizeAndSpacing",
+								(current) => ({
+									...current,
+									minHeight: {
+										number,
+										unit:
+											sizeSpacing.minHeight?.unit || "px",
+									},
+								}),
+							)
+						}
+						unit={sizeSpacing.minHeight?.unit || "px"}
+						value={sizeSpacing.minHeight?.number || 0}
+					/>
 
-					<PropertyRow label={t("maxHeight")}>
-						<SimpleUnitInput
-							onUnitChange={(unit) =>
-								updateProperty("maxHeight", {
-									number: sizeSpacing.maxHeight?.number || 0,
-									unit,
-								})
-							}
-							onValueChange={(number) =>
-								updateProperty("maxHeight", {
-									number,
-									unit: sizeSpacing.maxHeight?.unit || "px",
-								})
-							}
-							unit={sizeSpacing.maxHeight?.unit || "px"}
-							value={sizeSpacing.maxHeight?.number || 0}
-						/>
-					</PropertyRow>
+					<PropertyUnitInput
+						label={t("maxHeight")}
+						layout="row"
+						onUnitChange={(unit) =>
+							updateNestedProperty(
+								"sizeAndSpacing",
+								(current) => ({
+									...current,
+									maxHeight: {
+										number:
+											sizeSpacing.maxHeight?.number || 0,
+										unit,
+									},
+								}),
+							)
+						}
+						onValueChange={(number) =>
+							updateNestedProperty(
+								"sizeAndSpacing",
+								(current) => ({
+									...current,
+									maxHeight: {
+										number,
+										unit:
+											sizeSpacing.maxHeight?.unit || "px",
+									},
+								}),
+							)
+						}
+						unit={sizeSpacing.maxHeight?.unit || "px"}
+						value={sizeSpacing.maxHeight?.number || 0}
+					/>
 				</>
 			)}
 
@@ -182,182 +233,160 @@ export default function BuilderStyleSizeAndSpacing() {
 			</Button>
 
 			{/* Padding */}
-			<PropertyColumn
-				action={
-					<UnitSelector
-						onUnitChange={(unit) =>
-							updateNestedProperty("padding", (current) =>
-								current
-									? {
-											...current,
-											bottom: {
-												...current.bottom,
-												sizeUnit: unit,
-											},
-											left: {
-												...current.left,
-												sizeUnit: unit,
-											},
-											right: {
-												...current.right,
-												sizeUnit: unit,
-											},
-											top: {
-												...current.top,
-												sizeUnit: unit,
-											},
-										}
-									: undefined,
-							)
-						}
-						unit={sizeSpacing.padding?.top.sizeUnit || "px"}
-					/>
-				}
+			<PropertyQuadInput
+				icons={{
+					bottom: ArrowDownToLine,
+					left: ArrowLeftToLine,
+					right: ArrowRightToLine,
+					top: ArrowUpToLine,
+				}}
 				label={t("padding")}
-			>
-				<QuadInput
-					bottomIcon={ArrowDownToLine}
-					bottomValue={sizeSpacing.padding?.bottom.min || 0}
-					leftIcon={ArrowLeftToLine}
-					leftValue={sizeSpacing.padding?.left.min || 0}
-					onBottomChange={(value) =>
-						updateNestedProperty("padding", (current) =>
-							current
-								? {
-										...current,
-										bottom: {
-											...current.bottom,
-											min: value,
+				onUnitChange={(unit) =>
+					updateNestedProperty("sizeAndSpacing", (current) => ({
+						...current,
+						padding: current?.padding
+							? {
+									...current.padding,
+									bottom: {
+										...current.padding.bottom,
+										sizeUnit: unit,
+									},
+									left: {
+										...current.padding.left,
+										sizeUnit: unit,
+									},
+									right: {
+										...current.padding.right,
+										sizeUnit: unit,
+									},
+									top: {
+										...current.padding.top,
+										sizeUnit: unit,
+									},
+								}
+							: undefined,
+					}))
+				}
+				onValuesChange={({ top, right, bottom, left }) => {
+					updateNestedProperty("sizeAndSpacing", (current) => ({
+						...current,
+						padding: current?.padding
+							? {
+									...current.padding,
+									...(top !== undefined && {
+										top: {
+											...current.padding.top,
+											min: top,
 										},
-									}
-								: undefined,
-						)
-					}
-					onLeftChange={(value) =>
-						updateNestedProperty("padding", (current) =>
-							current
-								? {
-										...current,
-										left: { ...current.left, min: value },
-									}
-								: undefined,
-						)
-					}
-					onRightChange={(value) =>
-						updateNestedProperty("padding", (current) =>
-							current
-								? {
-										...current,
-										right: { ...current.right, min: value },
-									}
-								: undefined,
-						)
-					}
-					onTopChange={(value) =>
-						updateNestedProperty("padding", (current) =>
-							current
-								? {
-										...current,
-										top: { ...current.top, min: value },
-									}
-								: undefined,
-						)
-					}
-					rightIcon={ArrowRightToLine}
-					rightValue={sizeSpacing.padding?.right.min || 0}
-					topIcon={ArrowUpToLine}
-					topValue={sizeSpacing.padding?.top.min || 0}
-				/>
-			</PropertyColumn>
+									}),
+									...(right !== undefined && {
+										right: {
+											...current.padding.right,
+											min: right,
+										},
+									}),
+									...(bottom !== undefined && {
+										bottom: {
+											...current.padding.bottom,
+											min: bottom,
+										},
+									}),
+									...(left !== undefined && {
+										left: {
+											...current.padding.left,
+											min: left,
+										},
+									}),
+								}
+							: undefined,
+					}));
+				}}
+				unit={sizeSpacing.padding?.top.sizeUnit || "px"}
+				values={{
+					bottom: sizeSpacing.padding?.bottom.min || 0,
+					left: sizeSpacing.padding?.left.min || 0,
+					right: sizeSpacing.padding?.right.min || 0,
+					top: sizeSpacing.padding?.top.min || 0,
+				}}
+			/>
 
 			{/* Margin */}
-			<PropertyColumn
-				action={
-					<UnitSelector
-						onUnitChange={(unit) =>
-							updateNestedProperty("margin", (current) =>
-								current
-									? {
-											...current,
-											bottom: {
-												...current.bottom,
-												sizeUnit: unit,
-											},
-											left: {
-												...current.left,
-												sizeUnit: unit,
-											},
-											right: {
-												...current.right,
-												sizeUnit: unit,
-											},
-											top: {
-												...current.top,
-												sizeUnit: unit,
-											},
-										}
-									: undefined,
-							)
-						}
-						unit={sizeSpacing.margin?.top.sizeUnit || "px"}
-					/>
-				}
+			<PropertyQuadInput
+				icons={{
+					bottom: ArrowDownToLine,
+					left: ArrowLeftToLine,
+					right: ArrowRightToLine,
+					top: ArrowUpToLine,
+				}}
 				label={t("margin")}
-			>
-				<QuadInput
-					bottomIcon={ArrowDownToLine}
-					bottomValue={sizeSpacing.margin?.bottom.min || 0}
-					leftIcon={ArrowLeftToLine}
-					leftValue={sizeSpacing.margin?.left.min || 0}
-					onBottomChange={(value) =>
-						updateNestedProperty("margin", (current) =>
-							current
-								? {
-										...current,
-										bottom: {
-											...current.bottom,
-											min: value,
+				onUnitChange={(unit) =>
+					updateNestedProperty("sizeAndSpacing", (current) => ({
+						...current,
+						margin: current?.margin
+							? {
+									...current.margin,
+									bottom: {
+										...current.margin.bottom,
+										sizeUnit: unit,
+									},
+									left: {
+										...current.margin.left,
+										sizeUnit: unit,
+									},
+									right: {
+										...current.margin.right,
+										sizeUnit: unit,
+									},
+									top: {
+										...current.margin.top,
+										sizeUnit: unit,
+									},
+								}
+							: undefined,
+					}))
+				}
+				onValuesChange={({ top, right, bottom, left }) => {
+					updateNestedProperty("sizeAndSpacing", (current) => ({
+						...current,
+						margin: current?.margin
+							? {
+									...current.margin,
+									...(top !== undefined && {
+										top: {
+											...current.margin.top,
+											min: top,
 										},
-									}
-								: undefined,
-						)
-					}
-					onLeftChange={(value) =>
-						updateNestedProperty("margin", (current) =>
-							current
-								? {
-										...current,
-										left: { ...current.left, min: value },
-									}
-								: undefined,
-						)
-					}
-					onRightChange={(value) =>
-						updateNestedProperty("margin", (current) =>
-							current
-								? {
-										...current,
-										right: { ...current.right, min: value },
-									}
-								: undefined,
-						)
-					}
-					onTopChange={(value) =>
-						updateNestedProperty("margin", (current) =>
-							current
-								? {
-										...current,
-										top: { ...current.top, min: value },
-									}
-								: undefined,
-						)
-					}
-					rightIcon={ArrowRightToLine}
-					rightValue={sizeSpacing.margin?.right.min || 0}
-					topIcon={ArrowUpToLine}
-					topValue={sizeSpacing.margin?.top.min || 0}
-				/>
-			</PropertyColumn>
+									}),
+									...(right !== undefined && {
+										right: {
+											...current.margin.right,
+											min: right,
+										},
+									}),
+									...(bottom !== undefined && {
+										bottom: {
+											...current.margin.bottom,
+											min: bottom,
+										},
+									}),
+									...(left !== undefined && {
+										left: {
+											...current.margin.left,
+											min: left,
+										},
+									}),
+								}
+							: undefined,
+					}));
+				}}
+				unit={sizeSpacing.margin?.top.sizeUnit || "px"}
+				values={{
+					bottom: sizeSpacing.margin?.bottom.min || 0,
+					left: sizeSpacing.margin?.left.min || 0,
+					right: sizeSpacing.margin?.right.min || 0,
+					top: sizeSpacing.margin?.top.min || 0,
+				}}
+			/>
 		</div>
 	);
 }
