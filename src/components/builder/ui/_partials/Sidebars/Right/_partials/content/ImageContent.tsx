@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { CONTENT_DEFAULTS } from "@/builder/constants/contentDefaults";
 import { useContentProps } from "@/builder/hooks/useContentProps";
 import { useContentUpdate } from "@/builder/hooks/useContentUpdate";
@@ -10,6 +11,7 @@ interface ImageContentProps {
 }
 
 export default function ImageContent({ component }: ImageContentProps) {
+	const t = useTranslations("Builder.RightSidebar.Content");
 	const { src, alt } = useContentProps(component, {
 		alt: CONTENT_DEFAULTS.DEFAULT_ALT_TEXT,
 		src: "",
@@ -22,14 +24,14 @@ export default function ImageContent({ component }: ImageContentProps) {
 			<FileUploader
 				acceptedTypes={["png", "jpeg", "jpg", "svg"]}
 				initialFile={src}
-				label="Icon"
+				label={t("image")}
 				maxSize={2}
 				mode="image"
 				onFileChange={(fileUrl) => updateSrc(fileUrl || "")}
 			/>
 
 			<PropertyField
-				label="Alt Text"
+				label={t("altText")}
 				layout="column"
 				onChange={updateAlt}
 				placeholder={CONTENT_DEFAULTS.DEFAULT_ALT_TEXT}

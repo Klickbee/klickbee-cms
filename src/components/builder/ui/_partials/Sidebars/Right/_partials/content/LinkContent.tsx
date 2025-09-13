@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { CONTENT_DEFAULTS } from "@/builder/constants/contentDefaults";
 import { useContentProps } from "@/builder/hooks/useContentProps";
 import { useContentUpdate } from "@/builder/hooks/useContentUpdate";
@@ -10,6 +11,7 @@ interface LinkContentProps {
 }
 
 export default function LinkContent({ component }: LinkContentProps) {
+	const t = useTranslations("Builder.RightSidebar.Content");
 	const { text, href, openInNewTab } = useContentProps(component, {
 		href: CONTENT_DEFAULTS.DEFAULT_URL,
 		openInNewTab: CONTENT_DEFAULTS.DEFAULT_OPEN_NEW_TAB,
@@ -22,7 +24,7 @@ export default function LinkContent({ component }: LinkContentProps) {
 	return (
 		<div className="flex flex-col gap-3">
 			<PropertyField
-				label="Link Text"
+				label={t("linkText")}
 				layout="column"
 				onChange={updateText}
 				placeholder={CONTENT_DEFAULTS.LINK_TEXT}
@@ -30,7 +32,7 @@ export default function LinkContent({ component }: LinkContentProps) {
 			/>
 
 			<PropertyField
-				label="Link URL"
+				label={t("linkUrl")}
 				layout="column"
 				onChange={updateHref}
 				placeholder={CONTENT_DEFAULTS.DEFAULT_URL}
@@ -39,7 +41,7 @@ export default function LinkContent({ component }: LinkContentProps) {
 			/>
 
 			<PropertyToggle
-				label="New Tab"
+				label={t("newTab")}
 				onChange={updateOpenInNewTab}
 				value={openInNewTab}
 			/>

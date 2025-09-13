@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { CONTENT_DEFAULTS } from "@/builder/constants/contentDefaults";
 import { useContentProps } from "@/builder/hooks/useContentProps";
 import { useContentUpdate } from "@/builder/hooks/useContentUpdate";
@@ -11,6 +12,7 @@ interface SubmitButtonContentProps {
 export default function SubmitButtonContent({
 	component,
 }: SubmitButtonContentProps) {
+	const t = useTranslations("Builder.RightSidebar.Content");
 	const { name, text } = useContentProps(component, {
 		name: CONTENT_DEFAULTS.FIELD_NAME,
 		text: CONTENT_DEFAULTS.BUTTON_TEXT,
@@ -21,7 +23,7 @@ export default function SubmitButtonContent({
 	return (
 		<div className="flex flex-col gap-3">
 			<PropertyField
-				label="Field Name"
+				label={t("fieldName")}
 				layout="column"
 				onChange={updateName}
 				placeholder={CONTENT_DEFAULTS.FIELD_NAME}
@@ -29,7 +31,7 @@ export default function SubmitButtonContent({
 			/>
 
 			<PropertyField
-				label="Text Button"
+				label={t("textButton")}
 				layout="column"
 				onChange={updateText}
 				placeholder={CONTENT_DEFAULTS.BUTTON_TEXT}

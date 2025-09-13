@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { CONTENT_DEFAULTS } from "@/builder/constants/contentDefaults";
 import { useContentProps } from "@/builder/hooks/useContentProps";
 import { useContentUpdate } from "@/builder/hooks/useContentUpdate";
@@ -12,6 +13,7 @@ interface CMSTemplateContentProps {
 export default function CMSTemplateContent({
 	component,
 }: CMSTemplateContentProps) {
+	const t = useTranslations("Builder.RightSidebar.Content");
 	const { enableDynamicContent, templateFieldName } = useContentProps(
 		component,
 		{
@@ -25,7 +27,7 @@ export default function CMSTemplateContent({
 	return (
 		<div className="flex flex-col gap-3">
 			<PropertyToggle
-				label="Enable dynamic content"
+				label={t("enableDynamicContent")}
 				onChange={(value) =>
 					updateSingleField("enableDynamicContent", value)
 				}
@@ -33,7 +35,7 @@ export default function CMSTemplateContent({
 			/>
 
 			<PropertyField
-				label="Template field name"
+				label={t("templateFieldName")}
 				layout="column"
 				onChange={(value) =>
 					updateSingleField("templateFieldName", value)

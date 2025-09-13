@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { useContentProps } from "@/builder/hooks/useContentProps";
 import { useContentUpdate } from "@/builder/hooks/useContentUpdate";
 import { BuilderComponent } from "@/builder/types/components/components";
@@ -10,6 +11,7 @@ interface VideoContentProps {
 }
 
 export default function VideoContent({ component }: VideoContentProps) {
+	const t = useTranslations("Builder.RightSidebar.Content");
 	const { src, autoplay, controls } = useContentProps(component, {
 		autoplay: true,
 		controls: true,
@@ -20,7 +22,7 @@ export default function VideoContent({ component }: VideoContentProps) {
 
 	return (
 		<div className="flex flex-col gap-3">
-			<PropertyColumn label="Video URL">
+			<PropertyColumn label={t("videoUrl")}>
 				<Input
 					className="h-8"
 					onChange={(e) => updateSrc(e.target.value)}
@@ -30,13 +32,13 @@ export default function VideoContent({ component }: VideoContentProps) {
 			</PropertyColumn>
 
 			<PropertyToggle
-				label="Autoplay"
+				label={t("autoplay")}
 				onChange={(value) => updateSingleField("autoplay", value)}
 				value={autoplay}
 			/>
 
 			<PropertyToggle
-				label="Show Controls"
+				label={t("showControls")}
 				onChange={(value) => updateSingleField("controls", value)}
 				value={controls}
 			/>

@@ -3,6 +3,13 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
+import {
+	BackgroundAttachment,
+	ImagePosition,
+	ImageRepeat,
+	ImageSize,
+	SpacingValue,
+} from "@/builder/types/components/properties/componentStylePropsType";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -15,9 +22,11 @@ import {
 
 interface ImagePickerContentProps {
 	value: {
-		url: string;
-		size: string;
-		position: string;
+		src: string;
+		size?: ImageSize;
+		position?: ImagePosition | { x: SpacingValue; y: SpacingValue };
+		repeat?: ImageRepeat;
+		attachment?: BackgroundAttachment;
 	};
 	onChange: (image: ImagePickerContentProps["value"]) => void;
 }
@@ -40,7 +49,7 @@ export default function ImagePickerContent({
 					...value,
 					position: value.position || "center",
 					size: value.size || "cover",
-					url: base64Url,
+					src: base64Url,
 				});
 			};
 
@@ -74,21 +83,21 @@ export default function ImagePickerContent({
 		setDragActive(false);
 	};
 
-	const handleUrlChange = (url: string) => {
+	const handleUrlChange = (src: string) => {
 		onChange({
 			...value,
-			url,
+			src,
 		});
 	};
 
-	const handleSizeChange = (size: string) => {
+	const handleSizeChange = (size: ImageSize) => {
 		onChange({
 			...value,
 			size,
 		});
 	};
 
-	const handlePositionChange = (position: string) => {
+	const handlePositionChange = (position: ImagePosition) => {
 		onChange({
 			...value,
 			position,
@@ -107,13 +116,13 @@ export default function ImagePickerContent({
 				onDragOver={handleDragOver}
 				onDrop={handleDrop}
 			>
-				{value.url ? (
+				{value.src ? (
 					<div className="h-full w-full rounded relative overflow-hidden group">
 						<Image
 							alt="Preview"
 							className="h-full w-full object-cover"
 							height={200}
-							src={value.url}
+							src={value.src}
 							width={400}
 						/>
 						<div className="absolute inset-0 flex items-center justify-center transition-colors group-hover:backdrop-blur-sm">
@@ -160,7 +169,7 @@ export default function ImagePickerContent({
 					onChange={(e) => handleUrlChange(e.target.value)}
 					placeholder="https://example.com/image.jpg"
 					type="url"
-					value={value.url}
+					value={value.src}
 				/>
 			</div>
 
@@ -187,7 +196,7 @@ export default function ImagePickerContent({
 					</label>
 					<Select
 						onValueChange={handlePositionChange}
-						value={value.position}
+						value={value.position as string}
 					>
 						<SelectTrigger className="h-8 w-full text-xs">
 							<SelectValue />

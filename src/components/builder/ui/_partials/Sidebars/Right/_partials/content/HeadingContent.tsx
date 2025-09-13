@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { CONTENT_DEFAULTS } from "@/builder/constants/contentDefaults";
 import { useContentProps } from "@/builder/hooks/useContentProps";
 import { useContentUpdate } from "@/builder/hooks/useContentUpdate";
@@ -12,6 +13,7 @@ interface HeadingContentProps {
 }
 
 export default function HeadingContent({ component }: HeadingContentProps) {
+	const t = useTranslations("Builder.RightSidebar.Content");
 	const { text, level } = useContentProps(component, {
 		level: CONTENT_DEFAULTS.DEFAULT_HEADING_LEVEL as HeadingLevel,
 		text: CONTENT_DEFAULTS.HEADING_TEXT,
@@ -22,7 +24,7 @@ export default function HeadingContent({ component }: HeadingContentProps) {
 	return (
 		<div className="flex flex-col gap-3">
 			<PropertySelect
-				label="Heading Level"
+				label={t("headingLevel")}
 				layout="row"
 				onChange={(value) =>
 					updateLevel(parseInt(value) as HeadingLevel)
@@ -39,7 +41,7 @@ export default function HeadingContent({ component }: HeadingContentProps) {
 			/>
 
 			<PropertyField
-				label="Text"
+				label={t("text")}
 				layout="column"
 				onChange={updateText}
 				placeholder={CONTENT_DEFAULTS.HEADING_TEXT}

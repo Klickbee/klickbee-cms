@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { CONTENT_DEFAULTS } from "@/builder/constants/contentDefaults";
 import { useContentProps } from "@/builder/hooks/useContentProps";
 import { useContentUpdate } from "@/builder/hooks/useContentUpdate";
@@ -16,6 +17,7 @@ interface FileUploadContentProps {
 export default function FileUploadContent({
 	component,
 }: FileUploadContentProps) {
+	const t = useTranslations("Builder.RightSidebar.Content");
 	const { name, label, required, mimeTypes, maxFileSize } = useContentProps(
 		component,
 		{
@@ -42,20 +44,23 @@ export default function FileUploadContent({
 			/>
 
 			<PropertySelect
-				label="File Type"
+				label={t("fileType")}
 				layout="row"
 				onChange={(value) => updateSingleField("mimeTypes", value)}
 				options={[
-					{ label: "PDF", value: CONTENT_DEFAULTS.DEFAULT_MIME_TYPE },
-					{ label: "Image", value: "Image" },
-					{ label: "Document", value: "Document" },
-					{ label: "Video", value: "Video" },
-					{ label: "Audio", value: "Audio" },
+					{
+						label: t("pdf"),
+						value: CONTENT_DEFAULTS.DEFAULT_MIME_TYPE,
+					},
+					{ label: t("image"), value: "Image" },
+					{ label: t("document"), value: "Document" },
+					{ label: t("video"), value: "Video" },
+					{ label: t("audio"), value: "Audio" },
 				]}
 				value={mimeTypes as string}
 			/>
 
-			<PropertyRow label="Max File Size">
+			<PropertyRow label={t("maxFileSize")}>
 				<div className="flex">
 					<Input
 						className="h-8 px-3 rounded-r-none border-r-0"

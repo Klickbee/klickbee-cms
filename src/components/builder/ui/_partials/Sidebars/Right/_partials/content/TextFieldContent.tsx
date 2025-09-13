@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { CONTENT_DEFAULTS } from "@/builder/constants/contentDefaults";
 import { useContentProps } from "@/builder/hooks/useContentProps";
 import { useContentUpdate } from "@/builder/hooks/useContentUpdate";
@@ -11,6 +12,7 @@ interface TextFieldContentProps {
 }
 
 export default function TextFieldContent({ component }: TextFieldContentProps) {
+	const t = useTranslations("Builder.RightSidebar.Content");
 	const { name, label, required, type } = useContentProps(component, {
 		label: CONTENT_DEFAULTS.FIELD_LABEL,
 		name: CONTENT_DEFAULTS.FIELD_NAME,
@@ -33,15 +35,15 @@ export default function TextFieldContent({ component }: TextFieldContentProps) {
 			/>
 
 			<PropertySelect
-				label="Type"
+				label={t("type")}
 				layout="row"
 				onChange={(value: string) =>
 					updateSingleField("type", value as FieldType)
 				}
 				options={[
-					{ label: "Text", value: "text" },
-					{ label: "Email", value: "email" },
-					{ label: "Password", value: "password" },
+					{ label: t("text"), value: "text" },
+					{ label: t("email"), value: "email" },
+					{ label: t("password"), value: "password" },
 				]}
 				value={type}
 			/>

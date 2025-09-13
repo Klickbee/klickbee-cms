@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useDynamicItemsContent } from "@/builder/hooks/useDynamicItemsContent";
 import { useFormFieldContent } from "@/builder/hooks/useFormFieldContent";
 import { BuilderComponent } from "@/builder/types/components/components";
@@ -11,6 +12,7 @@ interface DropdownContentProps {
 }
 
 export default function DropdownContent({ component }: DropdownContentProps) {
+	const t = useTranslations("Builder.RightSidebar.Content");
 	const { formProps, updateFormField } = useFormFieldContent(component);
 	const { items, itemsActions } = useDynamicItemsContent(component);
 
@@ -27,12 +29,12 @@ export default function DropdownContent({ component }: DropdownContentProps) {
 
 			<DynamicItemsList
 				items={items}
-				label="Items"
+				label={t("items")}
 				minItems={1}
 				onAddItem={itemsActions.handleAddItem}
 				onItemChange={itemsActions.handleItemChange}
 				onRemoveItem={itemsActions.handleRemoveItem}
-				placeholderPrefix="List Radio"
+				placeholderPrefix={t("listDropdown")}
 			/>
 		</div>
 	);

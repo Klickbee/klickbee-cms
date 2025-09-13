@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { CONTENT_DEFAULTS } from "@/builder/constants/contentDefaults";
 import { useContentProps } from "@/builder/hooks/useContentProps";
 import { useContentUpdate } from "@/builder/hooks/useContentUpdate";
@@ -10,6 +11,7 @@ interface TextAreaContentProps {
 }
 
 export default function TextAreaContent({ component }: TextAreaContentProps) {
+	const t = useTranslations("Builder.RightSidebar.Content");
 	const { name, label, required, rows } = useContentProps(component, {
 		label: CONTENT_DEFAULTS.FIELD_LABEL,
 		name: CONTENT_DEFAULTS.FIELD_NAME,
@@ -32,7 +34,7 @@ export default function TextAreaContent({ component }: TextAreaContentProps) {
 			/>
 
 			<PropertySelect
-				label="Rows"
+				label={t("rows")}
 				layout="row"
 				onChange={(value: string) =>
 					updateSingleField("rows", parseInt(value))

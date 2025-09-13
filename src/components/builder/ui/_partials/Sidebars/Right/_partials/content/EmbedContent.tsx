@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { CONTENT_DEFAULTS } from "@/builder/constants/contentDefaults";
 import { useContentProps } from "@/builder/hooks/useContentProps";
 import { useContentUpdate } from "@/builder/hooks/useContentUpdate";
@@ -9,6 +10,7 @@ interface EmbedContentProps {
 }
 
 export default function EmbedContent({ component }: EmbedContentProps) {
+	const t = useTranslations("Builder.RightSidebar.Content");
 	const { code } = useContentProps(component, {
 		code: CONTENT_DEFAULTS.DEFAULT_CUSTOM_CODE,
 	});
@@ -18,7 +20,7 @@ export default function EmbedContent({ component }: EmbedContentProps) {
 	return (
 		<div className="flex flex-col gap-3">
 			<PropertyField
-				label="Custom Code"
+				label={t("customCode")}
 				layout="column"
 				onChange={(value) => updateSingleField("code", value)}
 				placeholder={CONTENT_DEFAULTS.DEFAULT_CUSTOM_CODE}

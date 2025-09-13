@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { CONTENT_DEFAULTS } from "@/builder/constants/contentDefaults";
 import { useContentProps } from "@/builder/hooks/useContentProps";
 import { useContentUpdate } from "@/builder/hooks/useContentUpdate";
@@ -14,6 +15,7 @@ interface ListContentProps {
 }
 
 export default function ListContent({ component }: ListContentProps) {
+	const t = useTranslations("Builder.RightSidebar.Content");
 	const { listType } = useContentProps(component, {
 		listType: CONTENT_DEFAULTS.DEFAULT_LIST_TYPE as ListType,
 	});
@@ -24,7 +26,7 @@ export default function ListContent({ component }: ListContentProps) {
 	return (
 		<div className="flex flex-col gap-3">
 			<PropertySelect
-				label="List Type"
+				label={t("listType")}
 				layout="row"
 				onChange={(value) =>
 					updateSingleField(
@@ -33,20 +35,20 @@ export default function ListContent({ component }: ListContentProps) {
 					)
 				}
 				options={[
-					{ label: "Bulleted", value: "bulleted" },
-					{ label: "Numbered", value: "numbered" },
+					{ label: t("bulleted"), value: "bulleted" },
+					{ label: t("numbered"), value: "numbered" },
 				]}
 				value={listType as string}
 			/>
 
 			<DynamicItemsList
 				items={items}
-				label="Items"
+				label={t("items")}
 				minItems={1}
 				onAddItem={itemsActions.handleAddItem}
 				onItemChange={itemsActions.handleItemChange}
 				onRemoveItem={itemsActions.handleRemoveItem}
-				placeholderPrefix="List Text"
+				placeholderPrefix={t("listText")}
 			/>
 		</div>
 	);

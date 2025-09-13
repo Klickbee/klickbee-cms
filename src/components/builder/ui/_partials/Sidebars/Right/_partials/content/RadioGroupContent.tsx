@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useDynamicItemsContent } from "@/builder/hooks/useDynamicItemsContent";
 import { useFormFieldContent } from "@/builder/hooks/useFormFieldContent";
 import { BuilderComponent } from "@/builder/types/components/components";
@@ -13,6 +14,7 @@ interface RadioGroupContentProps {
 export default function RadioGroupContent({
 	component,
 }: RadioGroupContentProps) {
+	const t = useTranslations("Builder.RightSidebar.Content");
 	const { formProps, updateFormField } = useFormFieldContent(component);
 	const { items, itemsActions } = useDynamicItemsContent(component);
 
@@ -29,12 +31,12 @@ export default function RadioGroupContent({
 
 			<DynamicItemsList
 				items={items}
-				label="Items"
+				label={t("items")}
 				minItems={1}
 				onAddItem={itemsActions.handleAddItem}
 				onItemChange={itemsActions.handleItemChange}
 				onRemoveItem={itemsActions.handleRemoveItem}
-				placeholderPrefix="List Radio"
+				placeholderPrefix={t("listRadio")}
 			/>
 		</div>
 	);

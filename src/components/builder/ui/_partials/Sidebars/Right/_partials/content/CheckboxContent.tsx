@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { CONTENT_DEFAULTS } from "@/builder/constants/contentDefaults";
 import { useContentProps } from "@/builder/hooks/useContentProps";
 import { useContentUpdate } from "@/builder/hooks/useContentUpdate";
@@ -10,6 +11,7 @@ interface CheckboxContentProps {
 }
 
 export default function CheckboxContent({ component }: CheckboxContentProps) {
+	const t = useTranslations("Builder.RightSidebar.Content");
 	const { name, label, required, defaultChecked } = useContentProps(
 		component,
 		{
@@ -35,7 +37,7 @@ export default function CheckboxContent({ component }: CheckboxContentProps) {
 			/>
 
 			<PropertyToggle
-				label="Checked by default"
+				label={t("checkedByDefault")}
 				onChange={(value) => updateSingleField("defaultChecked", value)}
 				value={defaultChecked}
 			/>

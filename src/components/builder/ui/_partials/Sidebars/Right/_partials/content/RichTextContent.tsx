@@ -32,6 +32,7 @@ import {
 	Underline as UnderlineIcon,
 	Undo,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useContentProps } from "@/builder/hooks/useContentProps";
 import { useContentUpdate } from "@/builder/hooks/useContentUpdate";
@@ -56,6 +57,7 @@ interface RichTextContentProps {
 }
 
 export default function RichTextContent({ component }: RichTextContentProps) {
+	const t = useTranslations("Builder.RightSidebar.Content");
 	const { content } = useContentProps(component, {
 		content: "",
 	});
@@ -171,13 +173,13 @@ export default function RichTextContent({ component }: RichTextContentProps) {
 
 	// Get current text style
 	const getCurrentTextStyle = () => {
-		if (editor.isActive("heading", { level: 1 })) return "Heading 1";
-		if (editor.isActive("heading", { level: 2 })) return "Heading 2";
-		if (editor.isActive("heading", { level: 3 })) return "Heading 3";
-		if (editor.isActive("heading", { level: 4 })) return "Heading 4";
-		if (editor.isActive("heading", { level: 5 })) return "Heading 5";
-		if (editor.isActive("heading", { level: 6 })) return "Heading 6";
-		return "Normal text";
+		if (editor.isActive("heading", { level: 1 })) return t("heading1");
+		if (editor.isActive("heading", { level: 2 })) return t("heading2");
+		if (editor.isActive("heading", { level: 3 })) return t("heading3");
+		if (editor.isActive("heading", { level: 4 })) return t("heading4");
+		if (editor.isActive("heading", { level: 5 })) return t("heading5");
+		if (editor.isActive("heading", { level: 6 })) return t("heading6");
+		return t("normalText");
 	};
 
 	// Text alignment handlers
@@ -284,37 +286,37 @@ export default function RichTextContent({ component }: RichTextContentProps) {
 							<DropdownMenuItem
 								onClick={() => setTextStyle("paragraph")}
 							>
-								Normal text
+								{t("normalText")}
 							</DropdownMenuItem>
 							<DropdownMenuItem
 								onClick={() => setTextStyle("h1")}
 							>
-								Heading 1
+								{t("heading1")}
 							</DropdownMenuItem>
 							<DropdownMenuItem
 								onClick={() => setTextStyle("h2")}
 							>
-								Heading 2
+								{t("heading2")}
 							</DropdownMenuItem>
 							<DropdownMenuItem
 								onClick={() => setTextStyle("h3")}
 							>
-								Heading 3
+								{t("heading3")}
 							</DropdownMenuItem>
 							<DropdownMenuItem
 								onClick={() => setTextStyle("h4")}
 							>
-								Heading 4
+								{t("heading4")}
 							</DropdownMenuItem>
 							<DropdownMenuItem
 								onClick={() => setTextStyle("h5")}
 							>
-								Heading 5
+								{t("heading5")}
 							</DropdownMenuItem>
 							<DropdownMenuItem
 								onClick={() => setTextStyle("h6")}
 							>
-								Heading 6
+								{t("heading6")}
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
@@ -348,25 +350,25 @@ export default function RichTextContent({ component }: RichTextContentProps) {
 								onClick={() => setTextAlign("left")}
 							>
 								<AlignLeft className="w-4 h-4 mr-2" />
-								Align Left
+								{t("alignLeft")}
 							</DropdownMenuItem>
 							<DropdownMenuItem
 								onClick={() => setTextAlign("center")}
 							>
 								<AlignCenter className="w-4 h-4 mr-2" />
-								Align Center
+								{t("alignCenter")}
 							</DropdownMenuItem>
 							<DropdownMenuItem
 								onClick={() => setTextAlign("right")}
 							>
 								<AlignRight className="w-4 h-4 mr-2" />
-								Align Right
+								{t("alignRight")}
 							</DropdownMenuItem>
 							<DropdownMenuItem
 								onClick={() => setTextAlign("justify")}
 							>
 								<AlignJustify className="w-4 h-4 mr-2" />
-								Align Justify
+								{t("alignJustify")}
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
@@ -541,7 +543,7 @@ export default function RichTextContent({ component }: RichTextContentProps) {
 						content.trim() === "" ||
 						content === "<p></p>") && (
 						<div className="absolute top-3 left-3 text-muted-foreground text-sm pointer-events-none">
-							Enter rich text content...
+							{t("enterRichTextContent")}
 						</div>
 					)}
 				</div>
