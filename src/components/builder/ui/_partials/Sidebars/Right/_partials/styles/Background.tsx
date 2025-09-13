@@ -3,10 +3,12 @@
 import { ChevronDown } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { useStyleState } from "@/builder/hooks/useStyleState";
+import { STYLE_DEFAULTS } from "@/builder/constants/styleDefaults";
+import { useStyleProps } from "@/builder/hooks/useStyleProps";
+import { useStyleUpdate } from "@/builder/hooks/useStyleUpdate";
+import { BuilderComponent } from "@/builder/types/components/components";
 import {
 	BackgroundStyle,
-	ImagePosition,
 	ImageSize,
 } from "@/builder/types/components/properties/componentStylePropsType";
 import PropertyRow from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyRow";
@@ -18,33 +20,26 @@ import {
 } from "@/components/ui/popover";
 import BackgroundPicker from "../pickers/BackgroundPicker";
 
-export default function BuilderStyleBackground() {
+export default function BuilderStyleBackground({
+	component,
+}: {
+	component: BuilderComponent;
+}) {
 	const t = useTranslations("Builder.RightSidebar.Background");
 	const [isOpen, setIsOpen] = useState(false);
 	const [selectedType, setSelectedType] = useState<
 		"color" | "gradient" | "image"
 	>("color");
-	const { state: background, updateProperty } =
-		useStyleState<BackgroundStyle>({
-			color: "#171717",
-			gradient: {
-				angle: 90,
-				colors: ["#0052d4", "#6fb1fc"],
-				positions: [0, 100],
-				type: "linear",
-			},
-			image: {
-				position: "center",
-				repeat: "no-repeat",
-				size: "cover",
-				src: "",
-			},
-		});
+	const styleProps = useStyleProps(component, {
+		background: STYLE_DEFAULTS.BACKGROUND,
+	});
+	const backgroundStyle = styleProps.background || STYLE_DEFAULTS.BACKGROUND;
+	const { updateNestedProperty } = useStyleUpdate(component);
 
 	useEffect(() => {
-		const detectedType = background.image?.src
+		const detectedType = backgroundStyle.image
 			? "image"
-			: background.gradient
+			: backgroundStyle.gradient
 				? "gradient"
 				: "color";
 		setSelectedType(detectedType);
@@ -65,14 +60,14 @@ export default function BuilderStyleBackground() {
 
 	const previewStyle =
 		backgroundType === "color"
-			? { backgroundColor: background.color as string }
+			? { backgroundColor: backgroundStyle.color as string }
 			: backgroundType === "gradient"
-				? { background: getGradientCSS(background.gradient) }
+				? { background: getGradientCSS(backgroundStyle.gradient) }
 				: {};
 
 	const backgroundText =
 		backgroundType === "color"
-			? (background.color as string)
+			? (backgroundStyle.color as string)
 			: t(backgroundType);
 
 	return (
@@ -102,71 +97,92 @@ export default function BuilderStyleBackground() {
 				>
 					<div className="p-3">
 						<BackgroundPicker
-							colorValue={
-								(background.color as string) || "#171717"
-							}
-							gradientValue={background.gradient}
+							colorValue={backgroundStyle.color || "#171717"}
+							gradientValue={backgroundStyle.gradient}
 							imageValue={
-								background.image
-									? {
-											position:
-												typeof background.image
-													.position === "string"
-													? background.image.position
-													: "center",
-											size:
-												background.image.size ||
-												"cover",
-											url: background.image.src || "",
-										}
+								backgroundStyle.image
+									? backgroundStyle.image
 									: {
 											position: "center",
-											size: "cover",
-											url: "",
+											size: "cover" as ImageSize,
+											src: "",
 										}
 							}
 							onColorChange={(color) =>
-								updateProperty("color", color)
+								updateNestedProperty(
+									"background",
+									(currentColor) => ({
+										...currentColor,
+										color,
+									}),
+								)
 							}
 							onGradientChange={(gradient) =>
-								updateProperty("gradient", gradient)
+								updateNestedProperty(
+									"background",
+									(currentGradient) => ({
+										...currentGradient,
+										gradient,
+									}),
+								)
 							}
 							onImageChange={(image) => {
 								if (image) {
-									updateProperty("image", {
-										position:
-											image.position as ImagePosition,
-										repeat: "no-repeat",
-										size: image.size as ImageSize,
-										src: image.url,
-									});
+									updateNestedProperty(
+										"background",
+										(currentImage) => ({
+											...currentImage,
+											image,
+										}),
+									);
 								}
 							}}
 							onTypeChange={(type) => {
 								setSelectedType(type);
 								// Reset other types and set defaults when switching
 								if (type === "color") {
-									updateProperty("gradient", undefined);
-									updateProperty("image", undefined);
+									updateNestedProperty("background", () => ({
+										gradient: undefined,
+									}));
+									updateNestedProperty("background", () => ({
+										image: undefined,
+									}));
 								} else if (type === "gradient") {
-									updateProperty("image", undefined);
-									if (!background.gradient) {
-										updateProperty("gradient", {
-											angle: 90,
-											colors: ["#0052d4", "#6fb1fc"],
-											positions: [0, 100],
-											type: "linear",
-										});
+									updateNestedProperty("background", () => ({
+										image: undefined,
+									}));
+									if (!backgroundStyle.gradient) {
+										updateNestedProperty(
+											"background",
+											() => ({
+												gradient: {
+													angle: 90,
+													colors: [
+														"#0052d4",
+														"#6fb1fc",
+													],
+													positions: [0, 100],
+													type: "linear",
+												},
+											}),
+										);
 									}
 								} else if (type === "image") {
-									updateProperty("gradient", undefined);
-									if (!background.image) {
-										updateProperty("image", {
-											position: "center",
-											repeat: "no-repeat",
-											size: "cover",
-											src: "",
-										});
+									updateNestedProperty("background", () => ({
+										gradient: undefined,
+									}));
+									if (!backgroundStyle.image) {
+										updateNestedProperty(
+											"background",
+											() => ({
+												image: {
+													position: "center",
+													repeat: "no-repeat",
+													size: "cover",
+													src: "",
+												},
+											}),
+										);
 									}
 								}
 							}}

@@ -1,67 +1,67 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useStyleState } from "@/builder/hooks/useStyleState";
+import { STYLE_DEFAULTS } from "@/builder/constants/styleDefaults";
+import { useStyleProps } from "@/builder/hooks/useStyleProps";
+import { useStyleUpdate } from "@/builder/hooks/useStyleUpdate";
+import { BuilderComponent } from "@/builder/types/components/components";
 import { AdvancedStyle } from "@/builder/types/components/properties/componentStylePropsType";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import PropertyField from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyField";
 
-export default function BuilderStyleAdvanced() {
+export default function BuilderStyleAdvanced({
+	component,
+}: {
+	component: BuilderComponent;
+}) {
 	const t = useTranslations("Builder.RightSidebar.Advanced");
 
-	const { state: advancedStyle, updateProperty } =
-		useStyleState<AdvancedStyle>({
-			cssClass: "",
-			cssId: "",
-			customCss: "",
-		});
+	const styleProps = useStyleProps(component, {
+		advanced: STYLE_DEFAULTS.ADVANCED,
+	});
+	const advancedStyle = styleProps.advanced || STYLE_DEFAULTS.ADVANCED;
+	const { updateNestedProperty } = useStyleUpdate(component);
+
+	const updateProperty = (field: keyof AdvancedStyle, value: string) => {
+		updateNestedProperty("advanced", (current) => ({
+			...current,
+			[field]: value,
+		}));
+	};
 
 	return (
-		<div className="flex flex-col gap-3">
+		<div className="flex flex-col gap-3 pt-3">
 			{/* CSS Class */}
-			<div className="flex items-center gap-2">
-				<Label className="text-xs font-medium text-zinc-500 w-[100px]">
-					{t("cssClass")}
-				</Label>
-				<Input
-					className="flex-1 text-xs"
-					onChange={(e) => updateProperty("cssClass", e.target.value)}
-					placeholder={t("cssClass")}
-					type="text"
-					value={advancedStyle.cssClass || ""}
-				/>
-			</div>
+			<PropertyField
+				label={t("cssClass")}
+				layout="row"
+				onChange={(value) => updateProperty("cssClass", value)}
+				placeholder={t("cssClass")}
+				type="text"
+				value={advancedStyle.cssClass || ""}
+				variant="input"
+			/>
 
 			{/* CSS ID */}
-			<div className="flex items-center gap-2">
-				<Label className="text-xs font-medium text-zinc-500 w-[100px]">
-					{t("cssId")}
-				</Label>
-				<Input
-					className="flex-1 text-xs"
-					onChange={(e) => updateProperty("cssId", e.target.value)}
-					placeholder={t("cssId")}
-					type="text"
-					value={advancedStyle.cssId || ""}
-				/>
-			</div>
+			<PropertyField
+				label={t("cssId")}
+				layout="row"
+				onChange={(value) => updateProperty("cssId", value)}
+				placeholder={t("cssId")}
+				type="text"
+				value={advancedStyle.cssId || ""}
+				variant="input"
+			/>
 
 			{/* Custom CSS */}
-			<div className="flex flex-col gap-2">
-				<Label className="text-xs font-medium text-zinc-500">
-					{t("customCss")}
-				</Label>
-				<Textarea
-					className="h-48 resize-none text-xs"
-					onChange={(e) =>
-						updateProperty("customCss", e.target.value)
-					}
-					placeholder={t("customCssPlaceholder")}
-					style={{ resize: "vertical" }}
-					value={advancedStyle.customCss || ""}
-				/>
-			</div>
+			<PropertyField
+				label={t("customCss")}
+				layout="column"
+				onChange={(value) => updateProperty("customCss", value)}
+				placeholder={t("customCssPlaceholder")}
+				textareaClassName="h-48 resize-vertical text-xs"
+				value={advancedStyle.customCss || ""}
+				variant="textarea"
+			/>
 		</div>
 	);
 }
