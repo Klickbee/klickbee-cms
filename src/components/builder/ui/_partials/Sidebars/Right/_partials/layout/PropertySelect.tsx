@@ -8,22 +8,22 @@ import {
 import PropertyColumn from "./PropertyColumn";
 import PropertyRow from "./PropertyRow";
 
-interface SelectOption {
-	value: string;
+interface SelectOption<T extends string> {
+	value: T;
 	label: string;
 }
 
-interface PropertySelectProps {
+interface PropertySelectProps<T extends string> {
 	label: string;
-	value: string;
-	onChange: (value: string) => void;
-	options: SelectOption[];
+	value: T;
+	onChange: (value: T) => void;
+	options: SelectOption<T>[];
 	layout?: "row" | "column";
 	placeholder?: string;
 	disabled?: boolean;
 }
 
-export default function PropertySelect({
+export default function PropertySelect<T extends string>({
 	label,
 	value,
 	onChange,
@@ -31,7 +31,7 @@ export default function PropertySelect({
 	layout = "row",
 	placeholder,
 	disabled = false,
-}: PropertySelectProps) {
+}: PropertySelectProps<T>) {
 	const selectElement = (
 		<Select disabled={disabled} onValueChange={onChange} value={value}>
 			<SelectTrigger className="h-8 w-full">
