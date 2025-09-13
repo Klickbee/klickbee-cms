@@ -1,7 +1,14 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { BackgroundStyle } from "@/builder/types/components/properties/componentStylePropsType";
+import {
+	BackgroundAttachment,
+	BackgroundStyle,
+	ImagePosition,
+	ImageRepeat,
+	ImageSize,
+	SpacingValue,
+} from "@/builder/types/components/properties/componentStylePropsType";
 import ColorPickerContent from "./ColorPickerContent";
 import GradientPickerContent from "./GradientPickerContent";
 import ImagePickerContent from "./ImagePickerContent";
@@ -15,9 +22,11 @@ interface BackgroundPickerProps {
 	gradientValue?: BackgroundStyle["gradient"];
 	onGradientChange?: (gradient: BackgroundStyle["gradient"]) => void;
 	imageValue?: {
-		url: string;
-		size: string;
-		position: string;
+		src: string;
+		size?: ImageSize;
+		position?: ImagePosition | { x: SpacingValue; y: SpacingValue };
+		repeat?: ImageRepeat;
+		attachment?: BackgroundAttachment;
 	};
 	onImageChange?: (image: BackgroundPickerProps["imageValue"]) => void;
 }
@@ -29,7 +38,7 @@ export default function BackgroundPicker({
 	onColorChange,
 	gradientValue,
 	onGradientChange,
-	imageValue = { position: "center", size: "cover", url: "" },
+	imageValue = { position: "center", size: "cover", src: "" },
 	onImageChange,
 }: BackgroundPickerProps) {
 	const t = useTranslations("Builder.RightSidebar.Background");
