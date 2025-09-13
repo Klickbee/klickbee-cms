@@ -1,4 +1,7 @@
+"use client";
+
 import { useTranslations } from "next-intl";
+import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent";
 import BuilderStyleAdvanced from "@/components/builder/ui/_partials/Sidebars/Right/_partials/styles/Advanced";
 import BuilderStyleBackground from "@/components/builder/ui/_partials/Sidebars/Right/_partials/styles/Background";
 import BuilderStyleBordersAndCorners from "@/components/builder/ui/_partials/Sidebars/Right/_partials/styles/BordersAndCorners";
@@ -16,6 +19,14 @@ import {
 
 export default function BuilderStyleProperties() {
 	const t = useTranslations("Builder.RightSidebar");
+	const currentComponent = useCurrentComponentStore(
+		(state) => state.currentComponent,
+	);
+
+	// Don't render if no component is selected
+	if (!currentComponent || currentComponent.id === "none") {
+		return null;
+	}
 
 	return (
 		<Accordion defaultValue={["layout"]} type="multiple">
@@ -24,7 +35,7 @@ export default function BuilderStyleProperties() {
 					{t("Layout.Layout")}
 				</AccordionTrigger>
 				<AccordionContent className="px-4 py-3 border-b border-zinc-200">
-					<BuilderStyleLayout />
+					<BuilderStyleLayout component={currentComponent} />
 				</AccordionContent>
 			</AccordionItem>
 
@@ -33,7 +44,7 @@ export default function BuilderStyleProperties() {
 					{t("Position.title")}
 				</AccordionTrigger>
 				<AccordionContent className="px-4 py-3 border-b border-zinc-200">
-					<BuilderStylePosition />
+					<BuilderStylePosition component={currentComponent} />
 				</AccordionContent>
 			</AccordionItem>
 
@@ -42,7 +53,7 @@ export default function BuilderStyleProperties() {
 					{t("SizeAndSpacing.title")}
 				</AccordionTrigger>
 				<AccordionContent className="px-4 py-3 border-b border-zinc-200">
-					<BuilderStyleSizeAndSpacing />
+					<BuilderStyleSizeAndSpacing component={currentComponent} />
 				</AccordionContent>
 			</AccordionItem>
 
@@ -51,7 +62,7 @@ export default function BuilderStyleProperties() {
 					{t("Typography.title")}
 				</AccordionTrigger>
 				<AccordionContent className="px-4 py-3 border-b border-zinc-200">
-					<BuilderStyleTypography />
+					<BuilderStyleTypography component={currentComponent} />
 				</AccordionContent>
 			</AccordionItem>
 
@@ -60,7 +71,7 @@ export default function BuilderStyleProperties() {
 					{t("Background.title")}
 				</AccordionTrigger>
 				<AccordionContent className="px-4 py-3 border-b border-zinc-200">
-					<BuilderStyleBackground />
+					<BuilderStyleBackground component={currentComponent} />
 				</AccordionContent>
 			</AccordionItem>
 
@@ -69,7 +80,9 @@ export default function BuilderStyleProperties() {
 					{t("BordersAndCorners.title")}
 				</AccordionTrigger>
 				<AccordionContent className="px-4 py-3 border-b border-zinc-200">
-					<BuilderStyleBordersAndCorners />
+					<BuilderStyleBordersAndCorners
+						component={currentComponent}
+					/>
 				</AccordionContent>
 			</AccordionItem>
 
@@ -78,7 +91,7 @@ export default function BuilderStyleProperties() {
 					{t("Effects.title")}
 				</AccordionTrigger>
 				<AccordionContent className="px-4 py-3 border-b border-zinc-200">
-					<BuilderStyleEffects />
+					<BuilderStyleEffects component={currentComponent} />
 				</AccordionContent>
 			</AccordionItem>
 
@@ -87,7 +100,7 @@ export default function BuilderStyleProperties() {
 					{t("Advanced.title")}
 				</AccordionTrigger>
 				<AccordionContent className="px-4 py-3 border-b border-zinc-200">
-					<BuilderStyleAdvanced />
+					<BuilderStyleAdvanced component={currentComponent} />
 				</AccordionContent>
 			</AccordionItem>
 		</Accordion>
