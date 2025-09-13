@@ -19,41 +19,28 @@ import {
 	WrapText,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useStyleState } from "@/builder/hooks/useStyleState";
-import { TypographyStyle } from "@/builder/types/components/properties/componentStylePropsType";
-import { SizeUnit } from "@/builder/types/settings/FluidSize";
+import { STYLE_DEFAULTS } from "@/builder/constants/styleDefaults";
+import { useStyleProps } from "@/builder/hooks/useStyleProps";
+import { useStyleUpdate } from "@/builder/hooks/useStyleUpdate";
+import { BuilderComponent } from "@/builder/types/components/components";
 import { TypographyFontWeight } from "@/builder/types/settings/TypographySettings";
-import IconToggleGroup from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/IconToggleGroup";
-import SimpleUnitInput from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/SimpleUnitInput";
-import PropertyColumn from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyColumn";
-import PropertyRow from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyRow";
-import BasicColorPicker from "@/components/builder/ui/_partials/Sidebars/Right/_partials/pickers/BasicColorPicker";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
+import PropertyColorPicker from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyColorPicker";
+import PropertySelect from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertySelect";
+import PropertyToggle from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyToggle";
+import PropertyUnitInput from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyUnitInput";
 
-export default function BuilderStyleTypography() {
+export default function BuilderStyleTypography({
+	component,
+}: {
+	component: BuilderComponent;
+}) {
 	const t = useTranslations("Builder.RightSidebar.Typography");
 
-	const { state: typography, updateProperty } =
-		useStyleState<TypographyStyle>({
-			color: "#171717",
-			fontFamily: "Poppins",
-			fontSize: { max: 16, maxWidth: 1440, min: 16, sizeUnit: "px" },
-			fontStyle: "normal",
-			fontWeight: "normal",
-			letterSpacing: { number: 0, unit: "px" },
-			lineHeight: { number: 1.5, unit: "em" },
-			listStyle: "none",
-			textAlign: "left",
-			textDecoration: "none",
-			textTransform: "unset",
-			whiteSpace: "normal",
-		});
+	const styleProps = useStyleProps(component, {
+		typography: STYLE_DEFAULTS.TYPOGRAPHY,
+	});
+	const typography = styleProps.typography || STYLE_DEFAULTS.TYPOGRAPHY;
+	const { updateNestedProperty } = useStyleUpdate(component);
 
 	// Font Family options
 	const fontFamilyOptions = [
@@ -126,220 +113,241 @@ export default function BuilderStyleTypography() {
 	return (
 		<div className="flex flex-col gap-3">
 			{/* Font Family */}
-			<PropertyColumn label={t("fontFamily")}>
-				<Select
-					onValueChange={(value) =>
-						updateProperty("fontFamily", value)
-					}
-					value={typography.fontFamily || "Poppins"}
-				>
-					<SelectTrigger className="h-8 w-full text-xs">
-						<SelectValue />
-					</SelectTrigger>
-					<SelectContent>
-						{fontFamilyOptions.map((font) => (
-							<SelectItem key={font} value={font}>
-								{font}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
-			</PropertyColumn>
+			<PropertySelect<string>
+				label={t("fontFamily")}
+				layout="column"
+				onChange={(value) =>
+					updateNestedProperty("typography", (current) => ({
+						...current,
+						fontFamily: value,
+					}))
+				}
+				options={fontFamilyOptions.map((font) => ({
+					label: font,
+					value: font,
+				}))}
+				value={typography.fontFamily || "Poppins"}
+			/>
 
 			{/* Font Size */}
-			<PropertyRow label={t("fontSize")}>
-				<SimpleUnitInput
-					onUnitChange={(unit) => {
-						const currentValue = typography.fontSize || {
-							max: 16,
-							maxWidth: 1440,
-							min: 16,
-							sizeUnit: "px",
-						};
-						updateProperty("fontSize", {
-							max: currentValue.max,
-							maxWidth: currentValue.maxWidth,
-							min: currentValue.min,
+			<PropertyUnitInput
+				label={t("fontSize")}
+				layout="row"
+				onUnitChange={(unit) =>
+					updateNestedProperty("typography", (current) => ({
+						...current,
+						fontSize: {
+							...(typography.fontSize || {
+								max: 16,
+								maxWidth: 1440,
+								min: 16,
+								sizeUnit: "px",
+							}),
 							sizeUnit: unit,
-						});
-					}}
-					onValueChange={(number) => {
-						const currentValue = typography.fontSize || {
-							max: 16,
-							maxWidth: 1440,
-							min: 16,
-							sizeUnit: "px",
-						};
-						updateProperty("fontSize", {
+						},
+					}))
+				}
+				onValueChange={(number) =>
+					updateNestedProperty("typography", (current) => ({
+						...current,
+						fontSize: {
+							...(typography.fontSize || {
+								max: 16,
+								maxWidth: 1440,
+								min: 16,
+								sizeUnit: "px",
+							}),
 							max: number,
-							maxWidth: currentValue.maxWidth,
 							min: number,
-							sizeUnit: currentValue.sizeUnit,
-						});
-					}}
-					unit={typography.fontSize?.sizeUnit || "px"}
-					value={typography.fontSize?.min || 16}
-				/>
-			</PropertyRow>
+						},
+					}))
+				}
+				unit={typography.fontSize?.sizeUnit || "px"}
+				value={typography.fontSize?.min || 16}
+			/>
 
 			{/* Font Weight */}
-			<PropertyRow label={t("fontWeight")}>
-				<Select
-					onValueChange={(value: TypographyFontWeight) =>
-						updateProperty("fontWeight", value)
-					}
-					value={typography.fontWeight || "normal"}
-				>
-					<SelectTrigger className="h-8 w-full text-xs">
-						<SelectValue />
-					</SelectTrigger>
-					<SelectContent>
-						{fontWeightOptions.map((weight) => (
-							<SelectItem key={weight.value} value={weight.value}>
-								{weight.label}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
-			</PropertyRow>
+			<PropertySelect<TypographyFontWeight>
+				label={t("fontWeight")}
+				layout="row"
+				onChange={(value) =>
+					updateNestedProperty("typography", (current) => ({
+						...current,
+						fontWeight: value,
+					}))
+				}
+				options={fontWeightOptions}
+				value={typography.fontWeight || "normal"}
+			/>
 
 			{/* Line Height */}
-			<PropertyRow label={t("lineHeight")}>
-				<SimpleUnitInput
-					onUnitChange={(unit) => {
-						const currentValue =
-							typeof typography.lineHeight === "object"
-								? typography.lineHeight
-								: { number: 1.5, unit: "em" as SizeUnit };
-						updateProperty("lineHeight", {
-							number: currentValue.number,
+			<PropertyUnitInput
+				label={t("lineHeight")}
+				layout="row"
+				onUnitChange={(unit) =>
+					updateNestedProperty("typography", (current) => ({
+						...current,
+						lineHeight: {
+							number:
+								typeof typography.lineHeight === "object"
+									? typography.lineHeight.number
+									: 1.5,
 							unit,
-						});
-					}}
-					onValueChange={(number) => {
-						const currentValue =
-							typeof typography.lineHeight === "object"
-								? typography.lineHeight
-								: { number: 1.5, unit: "em" as SizeUnit };
-						updateProperty("lineHeight", {
+						},
+					}))
+				}
+				onValueChange={(number) =>
+					updateNestedProperty("typography", (current) => ({
+						...current,
+						lineHeight: {
 							number,
-							unit: currentValue.unit,
-						});
-					}}
-					unit={
-						typeof typography.lineHeight === "object"
-							? typography.lineHeight.unit
-							: "em"
-					}
-					value={
-						typeof typography.lineHeight === "object"
-							? typography.lineHeight.number
-							: 1.5
-					}
-				/>
-			</PropertyRow>
+							unit:
+								typeof typography.lineHeight === "object"
+									? typography.lineHeight.unit
+									: "em",
+						},
+					}))
+				}
+				unit={
+					typeof typography.lineHeight === "object"
+						? typography.lineHeight.unit
+						: "em"
+				}
+				value={
+					typeof typography.lineHeight === "object"
+						? typography.lineHeight.number
+						: 1.5
+				}
+			/>
 
 			{/* Letter Spacing */}
-			<PropertyRow label={t("letterSpacing")}>
-				<SimpleUnitInput
-					onUnitChange={(unit) => {
-						const currentValue = typography.letterSpacing || {
-							number: 0,
-							unit: "px",
-						};
-						updateProperty("letterSpacing", {
-							number: currentValue.number,
+			<PropertyUnitInput
+				label={t("letterSpacing")}
+				layout="row"
+				onUnitChange={(unit) =>
+					updateNestedProperty("typography", (current) => ({
+						...current,
+						letterSpacing: {
+							number: typography.letterSpacing?.number || 0,
 							unit,
-						});
-					}}
-					onValueChange={(number) => {
-						const currentValue = typography.letterSpacing || {
-							number: 0,
-							unit: "px",
-						};
-						updateProperty("letterSpacing", {
+						},
+					}))
+				}
+				onValueChange={(number) =>
+					updateNestedProperty("typography", (current) => ({
+						...current,
+						letterSpacing: {
 							number,
-							unit: currentValue.unit,
-						});
-					}}
-					unit={typography.letterSpacing?.unit || "px"}
-					value={typography.letterSpacing?.number || 0}
-				/>
-			</PropertyRow>
+							unit: typography.letterSpacing?.unit || "px",
+						},
+					}))
+				}
+				unit={typography.letterSpacing?.unit || "px"}
+				value={typography.letterSpacing?.number || 0}
+			/>
 
 			{/* Font Style */}
-			<PropertyRow label={t("fontStyle")}>
-				<IconToggleGroup
-					onValueChange={(value) =>
-						updateProperty("fontStyle", value)
-					}
-					options={fontStyleOptions}
-					value={typography.fontStyle || "normal"}
-				/>
-			</PropertyRow>
+			<PropertyToggle
+				label={t("fontStyle")}
+				layout="row"
+				onChange={(value) =>
+					updateNestedProperty("typography", (current) => ({
+						...current,
+						fontStyle: value,
+					}))
+				}
+				options={fontStyleOptions}
+				value={typography.fontStyle || "normal"}
+				variant="icon"
+			/>
 
 			{/* Text Transform */}
-			<PropertyColumn label={t("textTransform")}>
-				<IconToggleGroup
-					onValueChange={(value) =>
-						updateProperty("textTransform", value)
-					}
-					options={textTransformOptions}
-					value={typography.textTransform || "unset"}
-				/>
-			</PropertyColumn>
+			<PropertyToggle
+				label={t("textTransform")}
+				layout="column"
+				onChange={(value) =>
+					updateNestedProperty("typography", (current) => ({
+						...current,
+						textTransform: value,
+					}))
+				}
+				options={textTransformOptions}
+				value={typography.textTransform || "unset"}
+				variant="icon"
+			/>
 
 			{/* Text Color */}
-			<PropertyRow label={t("textColor")}>
-				<BasicColorPicker
-					onChange={(color) => updateProperty("color", color)}
-					value={typography.color || "#171717"}
-				/>
-			</PropertyRow>
+			<PropertyColorPicker
+				label={t("textColor")}
+				layout="row"
+				onChange={(color) =>
+					updateNestedProperty("typography", (current) => ({
+						...current,
+						color,
+					}))
+				}
+				value={typography.color || "#171717"}
+			/>
 
 			{/* Text Alignment */}
-			<PropertyColumn label={t("textAlignment")}>
-				<IconToggleGroup
-					onValueChange={(value) =>
-						updateProperty("textAlign", value)
-					}
-					options={textAlignmentOptions}
-					value={typography.textAlign || "left"}
-				/>
-			</PropertyColumn>
+			<PropertyToggle
+				label={t("textAlignment")}
+				layout="column"
+				onChange={(value) =>
+					updateNestedProperty("typography", (current) => ({
+						...current,
+						textAlign: value,
+					}))
+				}
+				options={textAlignmentOptions}
+				value={typography.textAlign || "left"}
+				variant="icon"
+			/>
 
 			{/* Text Decoration */}
-			<PropertyRow label={t("textDecoration")}>
-				<IconToggleGroup
-					onValueChange={(value) =>
-						updateProperty("textDecoration", value)
-					}
-					options={textDecorationOptions}
-					value={typography.textDecoration || "none"}
-				/>
-			</PropertyRow>
+			<PropertyToggle
+				label={t("textDecoration")}
+				layout="row"
+				onChange={(value) =>
+					updateNestedProperty("typography", (current) => ({
+						...current,
+						textDecoration: value,
+					}))
+				}
+				options={textDecorationOptions}
+				value={typography.textDecoration || "none"}
+				variant="icon"
+			/>
 
 			{/* White Space */}
-			<PropertyRow label={t("whiteSpace")}>
-				<IconToggleGroup
-					onValueChange={(value) =>
-						updateProperty("whiteSpace", value)
-					}
-					options={whiteSpaceOptions}
-					value={typography.whiteSpace || "normal"}
-				/>
-			</PropertyRow>
+			<PropertyToggle
+				label={t("whiteSpace")}
+				layout="row"
+				onChange={(value) =>
+					updateNestedProperty("typography", (current) => ({
+						...current,
+						whiteSpace: value,
+					}))
+				}
+				options={whiteSpaceOptions}
+				value={typography.whiteSpace || "normal"}
+				variant="icon"
+			/>
 
 			{/* List Style */}
-			<PropertyRow label={t("listStyle")}>
-				<IconToggleGroup
-					onValueChange={(value) =>
-						updateProperty("listStyle", value)
-					}
-					options={listStyleOptions}
-					value={typography.listStyle || "none"}
-				/>
-			</PropertyRow>
+			<PropertyToggle
+				label={t("listStyle")}
+				layout="row"
+				onChange={(value) =>
+					updateNestedProperty("typography", (current) => ({
+						...current,
+						listStyle: value,
+					}))
+				}
+				options={listStyleOptions}
+				value={typography.listStyle || "none"}
+				variant="icon"
+			/>
 		</div>
 	);
 }
