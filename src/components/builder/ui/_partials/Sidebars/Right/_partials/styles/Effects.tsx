@@ -2,31 +2,26 @@
 
 import { Minus, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useStyleState } from "@/builder/hooks/useStyleState";
+import { STYLE_DEFAULTS } from "@/builder/constants/styleDefaults";
+import { useStyleProps } from "@/builder/hooks/useStyleProps";
+import { useStyleUpdate } from "@/builder/hooks/useStyleUpdate";
+import { BuilderComponent } from "@/builder/types/components/components";
 import {
 	AnimationType,
 	BackdropFilter,
 	BoxShadowStyle,
-	EffectsStyle,
 	TextShadowStyle,
 	TimingFunction,
 } from "@/builder/types/components/properties/componentStylePropsType";
-import SimpleUnitInput from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/SimpleUnitInput";
-import PropertyRow from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyRow";
-import BasicColorPicker from "@/components/builder/ui/_partials/Sidebars/Right/_partials/pickers/BasicColorPicker";
+import PropertyColorPicker from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyColorPicker";
+import PropertySelect from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertySelect";
+import PropertyUnitInput from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyUnitInput";
 import { Button } from "@/components/ui/button";
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select"; // Helper function to create a default box shadow
 
 // Helper function to create a default box shadow
 const createDefaultBoxShadow = (): BoxShadowStyle => ({
@@ -48,29 +43,23 @@ const createDefaultTextShadow = (): TextShadowStyle => ({
 	y: { number: 1, unit: "px" },
 });
 
-export default function BuilderStyleEffects() {
+export default function BuilderStyleEffects({
+	component,
+}: {
+	component: BuilderComponent;
+}) {
 	const t = useTranslations("Builder.RightSidebar.Effects");
+	const styleProps = useStyleProps(component, {
+		effects: STYLE_DEFAULTS.EFFECT,
+	});
+	const effects = styleProps.effects || STYLE_DEFAULTS.EFFECT;
+
 	const {
-		state: effects,
-		updateProperty,
+		updateNestedProperty,
 		addArrayItem,
 		removeArrayItem,
 		updateArrayItemProperty,
-	} = useStyleState<EffectsStyle>({
-		animation: {
-			duration: { number: 500, unit: "ms" },
-			type: "none",
-		},
-		backdropFilter: ["none"],
-		hover: {
-			backgroundColor: "#171717",
-			transition: {
-				duration: { number: 300, unit: "ms" },
-				timingFunction: "ease",
-			},
-		},
-		opacity: 100,
-	});
+	} = useStyleUpdate(component);
 
 	const backdropFilterOptions: { value: BackdropFilter; label: string }[] = [
 		{ label: t("backdropFilterNone"), value: "none" },
@@ -137,173 +126,170 @@ export default function BuilderStyleEffects() {
 						{boxShadow && (
 							<div className="flex flex-col gap-2">
 								{/* Shadow Color */}
-								<PropertyRow label={t("shadowColor")}>
-									<BasicColorPicker
-										onChange={(color) =>
-											updateArrayItemProperty(
-												"boxShadows",
-												index,
-												"color",
-												color,
-											)
-										}
-										value={boxShadow.color as string}
-									/>
-								</PropertyRow>
+								<PropertyColorPicker
+									label={t("shadowColor")}
+									layout="row"
+									onChange={(color) =>
+										updateArrayItemProperty(
+											"boxShadows",
+											index,
+											"color",
+											color,
+										)
+									}
+									value={boxShadow.color as string}
+								/>
 
 								{/* Opacity */}
-								<PropertyRow label={t("opacity")}>
-									<SimpleUnitInput
-										onUnitChange={(unit) =>
-											updateArrayItemProperty(
-												"boxShadows",
-												index,
-												"opacity",
-												{
-													number: boxShadow.opacity
-														.number,
-													unit: unit as "%",
-												},
-											)
-										}
-										onValueChange={(number) =>
-											updateArrayItemProperty(
-												"boxShadows",
-												index,
-												"opacity",
-												{
-													number,
-													unit: boxShadow.opacity
-														.unit,
-												},
-											)
-										}
-										unit={boxShadow.opacity.unit}
-										value={boxShadow.opacity.number}
-									/>
-								</PropertyRow>
+								<PropertyUnitInput
+									label={t("opacity")}
+									layout="row"
+									onUnitChange={(unit) =>
+										updateArrayItemProperty(
+											"boxShadows",
+											index,
+											"opacity",
+											{
+												number: boxShadow.opacity
+													.number,
+												unit: unit as "%",
+											},
+										)
+									}
+									onValueChange={(number) =>
+										updateArrayItemProperty(
+											"boxShadows",
+											index,
+											"opacity",
+											{
+												number,
+												unit: boxShadow.opacity.unit,
+											},
+										)
+									}
+									unit={boxShadow.opacity.unit}
+									value={boxShadow.opacity.number}
+								/>
 
 								{/* X Offset */}
-								<PropertyRow label={t("xOffset")}>
-									<SimpleUnitInput
-										onUnitChange={(unit) =>
-											updateArrayItemProperty(
-												"boxShadows",
-												index,
-												"x",
-												{
-													number: boxShadow.x.number,
-													unit,
-												},
-											)
-										}
-										onValueChange={(number) =>
-											updateArrayItemProperty(
-												"boxShadows",
-												index,
-												"x",
-												{
-													number,
-													unit: boxShadow.x.unit,
-												},
-											)
-										}
-										unit={boxShadow.x.unit}
-										value={boxShadow.x.number}
-									/>
-								</PropertyRow>
+								<PropertyUnitInput
+									label={t("xOffset")}
+									layout="row"
+									onUnitChange={(unit) =>
+										updateArrayItemProperty(
+											"boxShadows",
+											index,
+											"x",
+											{
+												number: boxShadow.x.number,
+												unit,
+											},
+										)
+									}
+									onValueChange={(number) =>
+										updateArrayItemProperty(
+											"boxShadows",
+											index,
+											"x",
+											{
+												number,
+												unit: boxShadow.x.unit,
+											},
+										)
+									}
+									unit={boxShadow.x.unit}
+									value={boxShadow.x.number}
+								/>
 
 								{/* Y Offset */}
-								<PropertyRow label={t("yOffset")}>
-									<SimpleUnitInput
-										onUnitChange={(unit) =>
-											updateArrayItemProperty(
-												"boxShadows",
-												index,
-												"y",
-												{
-													number: boxShadow.y.number,
-													unit,
-												},
-											)
-										}
-										onValueChange={(number) =>
-											updateArrayItemProperty(
-												"boxShadows",
-												index,
-												"y",
-												{
-													number,
-													unit: boxShadow.y.unit,
-												},
-											)
-										}
-										unit={boxShadow.y.unit}
-										value={boxShadow.y.number}
-									/>
-								</PropertyRow>
+								<PropertyUnitInput
+									label={t("yOffset")}
+									layout="row"
+									onUnitChange={(unit) =>
+										updateArrayItemProperty(
+											"boxShadows",
+											index,
+											"y",
+											{
+												number: boxShadow.y.number,
+												unit,
+											},
+										)
+									}
+									onValueChange={(number) =>
+										updateArrayItemProperty(
+											"boxShadows",
+											index,
+											"y",
+											{
+												number,
+												unit: boxShadow.y.unit,
+											},
+										)
+									}
+									unit={boxShadow.y.unit}
+									value={boxShadow.y.number}
+								/>
 
 								{/* Blur */}
-								<PropertyRow label={t("blur")}>
-									<SimpleUnitInput
-										onUnitChange={(unit) =>
-											updateArrayItemProperty(
-												"boxShadows",
-												index,
-												"blur",
-												{
-													number: boxShadow.blur
-														.number,
-													unit,
-												},
-											)
-										}
-										onValueChange={(number) =>
-											updateArrayItemProperty(
-												"boxShadows",
-												index,
-												"blur",
-												{
-													number,
-													unit: boxShadow.blur.unit,
-												},
-											)
-										}
-										unit={boxShadow.blur.unit}
-										value={boxShadow.blur.number}
-									/>
-								</PropertyRow>
+								<PropertyUnitInput
+									label={t("blur")}
+									layout="row"
+									onUnitChange={(unit) =>
+										updateArrayItemProperty(
+											"boxShadows",
+											index,
+											"blur",
+											{
+												number: boxShadow.blur.number,
+												unit,
+											},
+										)
+									}
+									onValueChange={(number) =>
+										updateArrayItemProperty(
+											"boxShadows",
+											index,
+											"blur",
+											{
+												number,
+												unit: boxShadow.blur.unit,
+											},
+										)
+									}
+									unit={boxShadow.blur.unit}
+									value={boxShadow.blur.number}
+								/>
 
 								{/* Spread */}
-								<PropertyRow label={t("spreadRadius")}>
-									<SimpleUnitInput
-										onUnitChange={(unit) =>
-											updateArrayItemProperty(
-												"boxShadows",
-												index,
-												"spread",
-												{
-													number: boxShadow.spread
-														.number,
-													unit,
-												},
-											)
-										}
-										onValueChange={(number) =>
-											updateArrayItemProperty(
-												"boxShadows",
-												index,
-												"spread",
-												{
-													number,
-													unit: boxShadow.spread.unit,
-												},
-											)
-										}
-										unit={boxShadow.spread.unit}
-										value={boxShadow.spread.number}
-									/>
-								</PropertyRow>
+								<PropertyUnitInput
+									label={t("spreadRadius")}
+									layout="row"
+									onUnitChange={(unit) =>
+										updateArrayItemProperty(
+											"boxShadows",
+											index,
+											"spread",
+											{
+												number: boxShadow.spread.number,
+												unit,
+											},
+										)
+									}
+									onValueChange={(number) =>
+										updateArrayItemProperty(
+											"boxShadows",
+											index,
+											"spread",
+											{
+												number,
+												unit: boxShadow.spread.unit,
+											},
+										)
+									}
+									unit={boxShadow.spread.unit}
+									value={boxShadow.spread.number}
+								/>
 							</div>
 						)}
 					</PopoverContent>
@@ -370,174 +356,171 @@ export default function BuilderStyleEffects() {
 						{textShadow && (
 							<div className="flex flex-col gap-2">
 								{/* Shadow Color */}
-								<PropertyRow label={t("shadowColor")}>
-									<BasicColorPicker
-										onChange={(color) =>
-											updateArrayItemProperty(
-												"textShadows",
-												index,
-												"color",
-												color,
-											)
-										}
-										value={textShadow.color as string}
-									/>
-								</PropertyRow>
+								<PropertyColorPicker
+									label={t("shadowColor")}
+									layout="row"
+									onChange={(color) =>
+										updateArrayItemProperty(
+											"textShadows",
+											index,
+											"color",
+											color,
+										)
+									}
+									value={textShadow.color as string}
+								/>
 
 								{/* Opacity */}
-								<PropertyRow label={t("opacity")}>
-									<SimpleUnitInput
-										onUnitChange={(unit) =>
-											updateArrayItemProperty(
-												"textShadows",
-												index,
-												"opacity",
-												{
-													number: textShadow.opacity
-														.number,
-													unit: unit as "%",
-												},
-											)
-										}
-										onValueChange={(number) =>
-											updateArrayItemProperty(
-												"textShadows",
-												index,
-												"opacity",
-												{
-													number,
-													unit: textShadow.opacity
-														.unit,
-												},
-											)
-										}
-										unit={textShadow.opacity.unit}
-										value={textShadow.opacity.number}
-									/>
-								</PropertyRow>
+								<PropertyUnitInput
+									label={t("opacity")}
+									layout="row"
+									onUnitChange={(unit) =>
+										updateArrayItemProperty(
+											"textShadows",
+											index,
+											"opacity",
+											{
+												number: textShadow.opacity
+													.number,
+												unit: unit as "%",
+											},
+										)
+									}
+									onValueChange={(number) =>
+										updateArrayItemProperty(
+											"textShadows",
+											index,
+											"opacity",
+											{
+												number,
+												unit: textShadow.opacity.unit,
+											},
+										)
+									}
+									unit={textShadow.opacity.unit}
+									value={textShadow.opacity.number}
+								/>
 
 								{/* X Offset */}
-								<PropertyRow label={t("xOffset")}>
-									<SimpleUnitInput
-										onUnitChange={(unit) =>
-											updateArrayItemProperty(
-												"textShadows",
-												index,
-												"x",
-												{
-													number: textShadow.x.number,
-													unit,
-												},
-											)
-										}
-										onValueChange={(number) =>
-											updateArrayItemProperty(
-												"textShadows",
-												index,
-												"x",
-												{
-													number,
-													unit: textShadow.x.unit,
-												},
-											)
-										}
-										unit={textShadow.x.unit}
-										value={textShadow.x.number}
-									/>
-								</PropertyRow>
+								<PropertyUnitInput
+									label={t("xOffset")}
+									layout="row"
+									onUnitChange={(unit) =>
+										updateArrayItemProperty(
+											"textShadows",
+											index,
+											"x",
+											{
+												number: textShadow.x.number,
+												unit,
+											},
+										)
+									}
+									onValueChange={(number) =>
+										updateArrayItemProperty(
+											"textShadows",
+											index,
+											"x",
+											{
+												number,
+												unit: textShadow.x.unit,
+											},
+										)
+									}
+									unit={textShadow.x.unit}
+									value={textShadow.x.number}
+								/>
 
 								{/* Y Offset */}
-								<PropertyRow label={t("yOffset")}>
-									<SimpleUnitInput
-										onUnitChange={(unit) =>
-											updateArrayItemProperty(
-												"textShadows",
-												index,
-												"y",
-												{
-													number: textShadow.y.number,
-													unit,
-												},
-											)
-										}
-										onValueChange={(number) =>
-											updateArrayItemProperty(
-												"textShadows",
-												index,
-												"y",
-												{
-													number,
-													unit: textShadow.y.unit,
-												},
-											)
-										}
-										unit={textShadow.y.unit}
-										value={textShadow.y.number}
-									/>
-								</PropertyRow>
+								<PropertyUnitInput
+									label={t("yOffset")}
+									layout="row"
+									onUnitChange={(unit) =>
+										updateArrayItemProperty(
+											"textShadows",
+											index,
+											"y",
+											{
+												number: textShadow.y.number,
+												unit,
+											},
+										)
+									}
+									onValueChange={(number) =>
+										updateArrayItemProperty(
+											"textShadows",
+											index,
+											"y",
+											{
+												number,
+												unit: textShadow.y.unit,
+											},
+										)
+									}
+									unit={textShadow.y.unit}
+									value={textShadow.y.number}
+								/>
 
 								{/* Blur */}
-								<PropertyRow label={t("blur")}>
-									<SimpleUnitInput
-										onUnitChange={(unit) =>
-											updateArrayItemProperty(
-												"textShadows",
-												index,
-												"blur",
-												{
-													number: textShadow.blur
-														.number,
-													unit,
-												},
-											)
-										}
-										onValueChange={(number) =>
-											updateArrayItemProperty(
-												"textShadows",
-												index,
-												"blur",
-												{
-													number,
-													unit: textShadow.blur.unit,
-												},
-											)
-										}
-										unit={textShadow.blur.unit}
-										value={textShadow.blur.number}
-									/>
-								</PropertyRow>
+								<PropertyUnitInput
+									label={t("blur")}
+									layout="row"
+									onUnitChange={(unit) =>
+										updateArrayItemProperty(
+											"textShadows",
+											index,
+											"blur",
+											{
+												number: textShadow.blur.number,
+												unit,
+											},
+										)
+									}
+									onValueChange={(number) =>
+										updateArrayItemProperty(
+											"textShadows",
+											index,
+											"blur",
+											{
+												number,
+												unit: textShadow.blur.unit,
+											},
+										)
+									}
+									unit={textShadow.blur.unit}
+									value={textShadow.blur.number}
+								/>
 
 								{/* Spread */}
-								<PropertyRow label={t("spreadRadius")}>
-									<SimpleUnitInput
-										onUnitChange={(unit) =>
-											updateArrayItemProperty(
-												"textShadows",
-												index,
-												"spread",
-												{
-													number: textShadow.spread
-														.number,
-													unit,
-												},
-											)
-										}
-										onValueChange={(number) =>
-											updateArrayItemProperty(
-												"textShadows",
-												index,
-												"spread",
-												{
-													number,
-													unit: textShadow.spread
-														.unit,
-												},
-											)
-										}
-										unit={textShadow.spread.unit}
-										value={textShadow.spread.number}
-									/>
-								</PropertyRow>
+								<PropertyUnitInput
+									label={t("spreadRadius")}
+									layout="row"
+									onUnitChange={(unit) =>
+										updateArrayItemProperty(
+											"textShadows",
+											index,
+											"spread",
+											{
+												number: textShadow.spread
+													.number,
+												unit,
+											},
+										)
+									}
+									onValueChange={(number) =>
+										updateArrayItemProperty(
+											"textShadows",
+											index,
+											"spread",
+											{
+												number,
+												unit: textShadow.spread.unit,
+											},
+										)
+									}
+									unit={textShadow.spread.unit}
+									value={textShadow.spread.number}
+								/>
 							</div>
 						)}
 					</PopoverContent>
@@ -562,41 +545,35 @@ export default function BuilderStyleEffects() {
 			</Button>
 
 			{/* Opacity */}
-			<PropertyRow label={t("opacity")}>
-				<SimpleUnitInput
-					onUnitChange={() => {
-						// Opacity is always in %
-					}}
-					onValueChange={(opacity) =>
-						updateProperty("opacity", opacity)
-					}
-					unit="%"
-					value={effects.opacity || 100}
-				/>
-			</PropertyRow>
+			<PropertyUnitInput
+				label={t("opacity")}
+				layout="row"
+				onUnitChange={() => {
+					// Opacity is always in %
+				}}
+				onValueChange={(opacity) =>
+					updateNestedProperty("effects", (current) => ({
+						...current,
+						opacity,
+					}))
+				}
+				unit="%"
+				value={effects.opacity || 100}
+			/>
 
 			{/* Backdrop Filter */}
-			<PropertyRow label={t("backdropFilter")}>
-				<Select
-					onValueChange={(backdropFilter) =>
-						updateProperty("backdropFilter", [
-							backdropFilter as BackdropFilter,
-						])
-					}
-					value={effects.backdropFilter?.[0] || "none"}
-				>
-					<SelectTrigger className="h-8 w-full text-xs">
-						<SelectValue />
-					</SelectTrigger>
-					<SelectContent>
-						{backdropFilterOptions.map((option) => (
-							<SelectItem key={option.value} value={option.value}>
-								{option.label}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
-			</PropertyRow>
+			<PropertySelect<BackdropFilter>
+				label={t("backdropFilter")}
+				layout="row"
+				onChange={(backdropFilter) =>
+					updateNestedProperty("effects", (current) => ({
+						...current,
+						backdropFilter: [backdropFilter],
+					}))
+				}
+				options={backdropFilterOptions}
+				value={effects.backdropFilter?.[0] || "none"}
+			/>
 
 			{/* Hover State Controls */}
 			<div className="font-medium text-xs text-zinc-950 w-full">
@@ -604,36 +581,45 @@ export default function BuilderStyleEffects() {
 			</div>
 
 			{/* Background Color */}
-			<PropertyRow label={t("backgroundColor")}>
-				<BasicColorPicker
-					onChange={(backgroundColor) =>
-						updateProperty("hover", {
+			<PropertyColorPicker
+				label={t("backgroundColor")}
+				layout="row"
+				onChange={(backgroundColor) =>
+					updateNestedProperty("effects", (current) => ({
+						...current,
+						hover: {
 							...effects.hover,
 							backgroundColor,
-						})
-					}
-					value={effects.hover?.backgroundColor || "#171717"}
-				/>
-			</PropertyRow>
+						},
+					}))
+				}
+				value={effects.hover?.backgroundColor || "#171717"}
+			/>
 
 			{/* Text Color */}
-			<PropertyRow label={t("textColor")}>
-				<BasicColorPicker
-					onChange={(textColor) =>
-						updateProperty("hover", {
+			<PropertyColorPicker
+				label={t("textColor")}
+				layout="row"
+				onChange={(textColor) =>
+					updateNestedProperty("effects", (current) => ({
+						...current,
+						hover: {
 							...effects.hover,
 							textColor,
-						})
-					}
-					value={effects.hover?.textColor || "#171717"}
-				/>
-			</PropertyRow>
+						},
+					}))
+				}
+				value={effects.hover?.textColor || "#171717"}
+			/>
 
 			{/* Transitions Duration */}
-			<PropertyRow label={t("transitionsDuration")}>
-				<SimpleUnitInput
-					onUnitChange={(unit) =>
-						updateProperty("hover", {
+			<PropertyUnitInput
+				label={t("transitionsDuration")}
+				layout="row"
+				onUnitChange={(unit) =>
+					updateNestedProperty("effects", (current) => ({
+						...current,
+						hover: {
 							...effects.hover,
 							transition: {
 								duration: {
@@ -646,10 +632,13 @@ export default function BuilderStyleEffects() {
 									effects.hover?.transition?.timingFunction ||
 									"ease",
 							},
-						})
-					}
-					onValueChange={(number) =>
-						updateProperty("hover", {
+						},
+					}))
+				}
+				onValueChange={(number) =>
+					updateNestedProperty("effects", (current) => ({
+						...current,
+						hover: {
 							...effects.hover,
 							transition: {
 								duration: {
@@ -662,18 +651,21 @@ export default function BuilderStyleEffects() {
 									effects.hover?.transition?.timingFunction ||
 									"ease",
 							},
-						})
-					}
-					unit={effects.hover?.transition?.duration.unit || "ms"}
-					value={effects.hover?.transition?.duration.number || 300}
-				/>
-			</PropertyRow>
+						},
+					}))
+				}
+				unit={effects.hover?.transition?.duration.unit || "ms"}
+				value={effects.hover?.transition?.duration.number || 300}
+			/>
 
 			{/* Transitions Timing */}
-			<PropertyRow label={t("transitionsTiming")}>
-				<Select
-					onValueChange={(timingFunction) =>
-						updateProperty("hover", {
+			<PropertySelect<TimingFunction>
+				label={t("transitionsTiming")}
+				layout="row"
+				onChange={(timingFunction) =>
+					updateNestedProperty("effects", (current) => ({
+						...current,
+						hover: {
 							...effects.hover,
 							transition: {
 								duration: effects.hover?.transition
@@ -681,79 +673,67 @@ export default function BuilderStyleEffects() {
 									number: 300,
 									unit: "ms",
 								},
-								timingFunction:
-									timingFunction as TimingFunction,
+								timingFunction,
 							},
-						})
-					}
-					value={effects.hover?.transition?.timingFunction || "ease"}
-				>
-					<SelectTrigger className="h-8 w-full text-xs">
-						<SelectValue />
-					</SelectTrigger>
-					<SelectContent>
-						{transitionTimingOptions.map((option) => (
-							<SelectItem key={option.value} value={option.value}>
-								{option.label}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
-			</PropertyRow>
+						},
+					}))
+				}
+				options={transitionTimingOptions}
+				value={effects.hover?.transition?.timingFunction || "ease"}
+			/>
 
 			{/* Animations Type */}
-			<PropertyRow label={t("animationsType")}>
-				<Select
-					onValueChange={(animationType) =>
-						updateProperty("animation", {
+			<PropertySelect<AnimationType>
+				label={t("animationsType")}
+				layout="row"
+				onChange={(animationType) =>
+					updateNestedProperty("effects", (current) => ({
+						...current,
+						animation: {
 							duration: effects.animation?.duration || {
 								number: 500,
 								unit: "ms",
 							},
-							type: animationType as AnimationType,
-						})
-					}
-					value={effects.animation?.type || "none"}
-				>
-					<SelectTrigger className="h-8 w-full text-xs">
-						<SelectValue />
-					</SelectTrigger>
-					<SelectContent>
-						{animationTypeOptions.map((option) => (
-							<SelectItem key={option.value} value={option.value}>
-								{option.label}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
-			</PropertyRow>
+							type: animationType,
+						},
+					}))
+				}
+				options={animationTypeOptions}
+				value={effects.animation?.type || "none"}
+			/>
 
 			{/* Animations Duration */}
-			<PropertyRow label={t("animationsDuration")}>
-				<SimpleUnitInput
-					onUnitChange={(unit) =>
-						updateProperty("animation", {
+			<PropertyUnitInput
+				label={t("animationsDuration")}
+				layout="row"
+				onUnitChange={(unit) =>
+					updateNestedProperty("effects", (current) => ({
+						...current,
+						animation: {
 							duration: {
 								number:
 									effects.animation?.duration.number || 500,
 								unit,
 							},
 							type: effects.animation?.type || "none",
-						})
-					}
-					onValueChange={(number) =>
-						updateProperty("animation", {
+						},
+					}))
+				}
+				onValueChange={(number) =>
+					updateNestedProperty("effects", (current) => ({
+						...current,
+						animation: {
 							duration: {
 								number,
 								unit: effects.animation?.duration.unit || "ms",
 							},
 							type: effects.animation?.type || "none",
-						})
-					}
-					unit={effects.animation?.duration.unit || "ms"}
-					value={effects.animation?.duration.number || 500}
-				/>
-			</PropertyRow>
+						},
+					}))
+				}
+				unit={effects.animation?.duration.unit || "ms"}
+				value={effects.animation?.duration.number || 500}
+			/>
 		</div>
 	);
 }
