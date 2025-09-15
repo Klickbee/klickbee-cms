@@ -4,7 +4,7 @@ import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import DefaultCardTitle from "@/components/admin/manage/CardTitle";
+import CardTitle from "@/components/admin/manage/CardTitle";
 import DefaultHeader from "@/components/admin/manage/DefaultHeader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -132,9 +132,7 @@ export default function CreateCollectionItemPage({
 
 			<Card className={"mx-8 my-6"}>
 				<CardHeader>
-					<DefaultCardTitle>
-						Create New {collectionName} Item
-					</DefaultCardTitle>
+					<CardTitle>Create New {collectionName} Item</CardTitle>
 				</CardHeader>
 				<CardContent>
 					{error && (

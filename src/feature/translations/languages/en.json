@@ -278,6 +278,7 @@
 		"Delete": "Delete",
 		"DeleteSelected": "Delete Selected",
 		"Download": "Download",
+		"Duplicate": "Duplicate",
 		"Edit": "Edit",
 		"Email": "Email",
 		"EmailPlaceholder": "Enter your email",
@@ -290,7 +291,11 @@
 		"Password": "Password",
 		"PasswordPlaceholder": "Your password",
 		"PhoneNumber": "Phone Number",
-		"Previous": "Previous"
+		"Previous": "Previous",
+		"RowsSelected": "{checkedRows} of {pagesLength} {checkedRows, plural, =0 {row} =1 {row} other {rows}} selected.",
+		"Save": "Save",
+		"Saving": "Saving...",
+		"SeoScore": "SEO Score"
 	},
 	"Contacts": {
 		"ContactTitle": "{readingId} - {name}",
@@ -311,6 +316,10 @@
 		"SearchContacts": "Search contacts...",
 		"SubmitDate": "Submit Date",
 		"ViewContact": "View Contact"
+	},
+	"Contents": {
+		"ManageContents": "Contents Manager",
+		"ManageContentsSubtitle": "Manage all the pages of your site."
 	},
 	"Errors": {
 		"GoogleFontsError": "Error retrieving Google Fonts",
@@ -395,6 +404,45 @@
 		"SquareLogo": "Square Logo",
 		"Title": "Logos",
 		"Uploading": "Uploading..."
+	},
+	"Pages": {
+		"Add": "Add Page",
+		"CannotDeleteHomePage": "Cannot delete the home page. Set another page as home first.",
+		"CreateError": "Error creating page",
+		"CreateNew": "Create New Page",
+		"CreateSubtitle": "Add a new page",
+		"CreateSuccess": "Page created successfully",
+		"DeleteDescription": "This action cannot be undone. This will permanently delete the {count, plural, =1 {page} other {# pages}} and all associated data.",
+		"DeleteError": "Error deleting {count, plural, =1 {page} other {pages}}",
+		"DeleteSuccess": "{count, plural, =1 {# page} other {# pages}} deleted successfully",
+		"DeleteTitle": "Delete {count, plural, =1 {page} other {the # pages}}",
+		"DuplicateError": "Error duplicating {count, plural, =1 {page} other {pages}}",
+		"DuplicateSuccess": "{count, plural, =1 {# page} other {# pages}} duplicated successfully.",
+		"EmptyStateDescription": "You haven’t created any pages yet. Build beautiful, high-performing pages to showcase your content and connect with your audience.",
+		"EmptyStateTitle": "You haven’t created any pages yet",
+		"GoogleSeo": "This is how Google Actualy see your page",
+		"ListTitle": "Pages",
+		"LoadListError": "Error loading pages",
+		"ManageSubtitle": "Manage all the pages of your site.",
+		"ManageTitle": "Manage Pages",
+		"MetaDescription": "Meta Description (150-160 characters)",
+		"MetaTitle": "Meta Title (50-60 characters)",
+		"Name": "Page name",
+		"NameNotAvailable": "Page name not available",
+		"NoResultsFound": "No pages found",
+		"Search": "Search pages...",
+		"SelectNewHomepage": "Select new homepage",
+		"SelectPage": "Select a page",
+		"SeoSubtitle": "Edit the content and SEO of your page.",
+		"SeoTitle": "{title} Settings",
+		"Slug": "URL (Slug)",
+		"SlugNotAvailable": "URL (Slug) not available",
+		"SubPageTitle": "Pages manager / {title}",
+		"Update": "Update Page",
+		"UpdateError": "Error updating page",
+		"UpdateSubtitle": "Update page information",
+		"UpdateSuccess": "Page updated successfully",
+		"Updating": "Updating page..."
 	},
 	"ResetPassword": {
 		"ErrorMessage": "An error occurred while resetting the password.",

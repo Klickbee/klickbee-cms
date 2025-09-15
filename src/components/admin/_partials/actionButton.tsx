@@ -113,10 +113,7 @@ export default function ActionButton<T = unknown>({
 
 	if (createUrl) {
 		return (
-			<Button
-				asChild
-				className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white"
-			>
+			<Button asChild className="flex items-center gap-2">
 				<Link href={`/admin/${adminKey}${createUrl}`}>
 					<Plus className="h-4 w-4" />
 					{t("Add")}

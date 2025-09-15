@@ -3,6 +3,7 @@
 import { BuilderComponent } from "@/builder/types/components/components";
 import { isAuthenticatedGuard } from "@/feature/auth/lib/session";
 import { prisma } from "@/lib/prisma";
+import { isHomepage } from "../lib/pages";
 
 /**
  * Duplicates a page with a new title and slug
@@ -22,7 +23,42 @@ export const duplicatePage = async (pageId: number) => {
 		throw new Error("Page not found");
 	}
 
-	// Create a duplicate with a new title and slug
+	// Generate a unique slug for the duplicated page
+	const generateUniqueSlug = async (baseSlug: string): Promise<string> => {
+		// First, try with "-copy"
+		let candidateSlug = `${baseSlug}-copy`;
+		let counter = 1;
+
+		// Keep trying until we find a unique slug
+		while (
+			await prisma.page.findUnique({ where: { slug: candidateSlug } })
+		) {
+			counter++;
+			candidateSlug = `${baseSlug}-copy-${counter}`;
+		}
+
+		return candidateSlug;
+	};
+
+	// Generate a unique slug
+	const uniqueSlug = await generateUniqueSlug(originalPage.slug);
+
+	// Generate a unique title
+	const generateUniqueTitle = (baseTitle: string, slug: string): string => {
+		// Extract the copy number from the slug if it exists
+		const copyMatch = slug.match(/-copy(?:-([0-9]+))?$/);
+		if (copyMatch) {
+			const copyNumber = copyMatch[1] ? Number(copyMatch[1]) : 1;
+			return copyNumber === 1
+				? `${baseTitle} (Copy)`
+				: `${baseTitle} (Copy ${copyNumber})`;
+		}
+		return `${baseTitle} (Copy)`;
+	};
+
+	const uniqueTitle = generateUniqueTitle(originalPage.title, uniqueSlug);
+
+	// Create a duplicate with a new title and unique slug
 	return prisma.page.create({
 		data: {
 			content: originalPage.content ?? {},
@@ -31,8 +67,8 @@ export const duplicatePage = async (pageId: number) => {
 			metaKeywords: originalPage.metaKeywords,
 			metaTitle: originalPage.metaTitle,
 			parentId: originalPage.parentId,
-			slug: `${originalPage.slug}-copy`,
-			title: `${originalPage.title} (Copy)`,
+			slug: uniqueSlug,
+			title: uniqueTitle,
 		},
 		select: {
 			content: true,
@@ -60,14 +96,8 @@ export const deletePage = async (pageId: number) => {
 	}
 
 	// Check if this is the home page
-	const homepageSetting = await prisma.settings.findUnique({
-		where: { key: "current_homepage_id" },
-	});
-
-	if (homepageSetting && Number(homepageSetting.value) === pageId) {
-		throw new Error(
-			"Cannot delete the home page. Set another page as home first.",
-		);
+	if (await isHomepage(pageId)) {
+		throw new Error("CannotDeleteHomePage");
 	}
 
 	// Delete the page
@@ -349,6 +379,88 @@ export const updatePageContent = async (
 		});
 	} catch (error) {
 		console.error("Error updating page content:", error);
+		throw error; // Re-throw to be caught by the client
+	}
+};
+
+/**
+ * Updates a page's SEO
+ */
+export const updatePageSeo = async (
+	pageId: number,
+	data: { slug: string; metaTitle?: string; metaDescription?: string },
+) => {
+	try {
+		const authError = await isAuthenticatedGuard();
+		if (authError) {
+			return authError;
+		}
+
+		// Validate slug
+		if (!data.slug || data.slug.trim() === "") {
+			throw new Error("Slug cannot be empty");
+		}
+
+		// Sanitize slug - remove special characters, replace spaces with hyphens
+		const sanitizedSlug = data.slug
+			.toLowerCase()
+			.trim()
+			.replace(/[^\w\s-]/g, "") // Remove special characters
+			.replace(/\s+/g, "-") // Replace spaces with hyphens
+			.replace(/-+/g, "-"); // Replace multiple hyphens with single hyphen
+
+		if (sanitizedSlug === "") {
+			throw new Error("Slug contains only invalid characters");
+		}
+
+		// Check if the page exists
+		const page = await prisma.page.findUnique({
+			where: { id: pageId },
+		});
+
+		if (!page) {
+			// Sanitize pageId for log injection prevention
+			const safePageId = String(pageId).replace(/[^\d]/g, "");
+			throw new Error(`Page with ID ${safePageId} not found`);
+		}
+
+		// Check if slug is already in use by another page
+		const existingPage = await prisma.page.findFirst({
+			where: {
+				id: { not: pageId }, // Exclude the current page
+				slug: sanitizedSlug,
+			},
+		});
+
+		if (existingPage) {
+			throw new Error("SlugNotAvailable");
+		}
+
+		// Update the page SEO
+		return prisma.page.update({
+			data: {
+				metaDescription: data.metaDescription,
+				metaTitle: data.metaTitle,
+				slug: sanitizedSlug,
+			},
+			select: {
+				content: true,
+				createdAt: true,
+				id: true,
+				isPublished: true,
+				metaDescription: true,
+				metaKeywords: true,
+				metaTitle: true,
+				parentId: true,
+				publishedAt: true,
+				slug: true,
+				title: true,
+				updatedAt: true,
+			},
+			where: { id: pageId },
+		});
+	} catch (error) {
+		console.error("Error updating page slug:", error);
 		throw error; // Re-throw to be caught by the client
 	}
 };

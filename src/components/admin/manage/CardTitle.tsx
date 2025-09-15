@@ -1,7 +1,3 @@
-export default function DefaultCardTitle({
-	children,
-}: {
-	children: React.ReactNode;
-}) {
-	return <h1 className={"text-xl font-semibold "}>{children}</h1>;
+export default function CardTitle({ children }: { children: React.ReactNode }) {
+	return <h2 className="font-semibold">{children}</h2>;
 }

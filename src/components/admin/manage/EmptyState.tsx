@@ -6,21 +6,17 @@ interface EmptyStateProps {
 	title: string;
 	description: string;
 	buttonText?: string;
-	dialogTitle?: string;
-	dialogDescription?: string;
 	onButtonClick?: () => void;
 }
 
-export default function EmptyStateComponent({
+export default function EmptyState({
 	title,
 	description,
 	buttonText,
-	dialogTitle = "Create New Collection",
-	dialogDescription = "Create a new collection to organize your content.",
 	onButtonClick,
 }: EmptyStateProps) {
 	return (
-		<div className="p-6 border-t flex flex-col items-center justify-center text-center">
+		<div className="p-6 flex flex-col items-center justify-center text-center">
 			<div className="mb-4">
 				<Image
 					alt="Empty state"
