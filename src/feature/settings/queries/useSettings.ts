@@ -28,7 +28,7 @@ export function useSetSetting() {
 				headers: { "Content-Type": "application/json" },
 				method: "POST",
 			});
-			if (!res.ok) throw new Error("Save error");
+			if (!res.ok) throw new Error(`Save error on setting: ${data.key}`);
 			return res.json();
 		},
 		onSuccess: (_data, variables) => {

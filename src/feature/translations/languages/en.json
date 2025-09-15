@@ -77,6 +77,7 @@
 		"Edit": "Edit",
 		"Email": "Email",
 		"EmailPlaceholder": "Enter your email",
+		"Loading": "Loading...",
 		"Name": "Name",
 		"NamePlaceholder": "Enter full name",
 		"Next": "Next",
@@ -256,6 +257,31 @@
 		"Sending": "Sending...",
 		"SendResetLink": "Send reset link",
 		"SuccessMessage": "A password reset link has been sent to your email address."
+	},
+	"Settings": {
+		"UpdateSettingsSuccess": "Settings updated successfully",
+		"UpdateSuccess": "Update {key} successfully"
+	},
+	"SettingsAi": {
+		"AiContextFormDescription": "Please fill in the fields below to help us better understand your company's background and communication style. This information allows our AI to generate content, suggestions, or insights that are relevant, personalized, and aligned with your industry, tone, and objectives.",
+		"AiContextFormTitle": "AI Context",
+		"AiModelLabel": "Select your AI Model",
+		"AiSettingsFormTitle": "AI Settings",
+		"ApiKeyLabel": "Your API key",
+		"CompanyActivityLabel": "Your Company Activities",
+		"CompanyActivityPlaceholder": "Enter your company activities",
+		"CompanyExperienceLabel": "Your Company Experience",
+		"CompanyExperiencePlaceholder": "Enter your company experience",
+		"CompanyIndustryLabel": "Your Company Industry",
+		"CompanyIndustryPlaceholder": "Enter your company industry",
+		"CompanyNameLabel": "Your Company Name",
+		"CompanyNamePlaceholder": "Enter your company name",
+		"ManageAi": "AI Settings",
+		"ManageAiSubtitle": "Edit AI settings and AI context.",
+		"OtherInformationsLabel": "Other Relevant Informations",
+		"OtherInformationsPlaceholder": "Enter other relevant informations",
+		"ToneOfVoiceLabel": "Tone of Voice",
+		"ToneOfVoicePlaceholder": "Enter your tone of voice"
 	},
 	"SettingsUsers": {
 		"Add": "Add User",
