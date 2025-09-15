@@ -200,6 +200,25 @@
 		"Title": "Logos",
 		"Uploading": "Envoi en cours…"
 	},
+	"Media": {
+		"DeleteDescription": "Cette action ne peut pas être annulée. Cela supprimera définitivement le média et toutes ses données associées.",
+		"DeleteError": "Erreur lors de la suppression du média",
+		"DeleteSuccess": "Média supprimé avec succès",
+		"DeleteTitle": "Supprimer un média",
+		"EmptyStateDescription": "Votre médiathèque est vide. Téléchargez des images, des vidéos ou des documents ici pour les utiliser facilement dans vos projets.",
+		"EmptyStateTitle": "Vous n'avez pas de média",
+		"ListTitle": "Tous les médias",
+		"LoadListError": "Erreur lors du chargement des médias",
+		"ManageSubtitle": "Voir et gérer tous les médias.",
+		"ManageTitle": "Gérer les médias",
+		"NoResultsFound": "Aucun média trouvée",
+		"SaveError": "Erreur lors de la mise à jour de la page",
+		"SaveSuccess": "Page mise à jour avec succès",
+		"Search": "Rechercher des médias...",
+		"UploadError": "Erreur lors de l'import d'un média",
+		"UploadNew": "Importer un média",
+		"UploadSuccess": "Média importé avec succès"
+	},
 	"Pages": {
 		"Add": "Ajouter une page",
 		"CannotDeleteHomePage": "Impossible de supprimer la page d'accueil. Définissez d'abord une autre page en tant que page d'accueil.",

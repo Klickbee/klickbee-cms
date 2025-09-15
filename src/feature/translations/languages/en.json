@@ -200,6 +200,25 @@
 		"Title": "Logos",
 		"Uploading": "Uploading..."
 	},
+	"Media": {
+		"DeleteDescription": "This action cannot be undone. This will permanently delete the media and all associated data.",
+		"DeleteError": "Error deleting media",
+		"DeleteSuccess": "Media deleted successfully",
+		"DeleteTitle": "Delete media",
+		"EmptyStateDescription": "Your media library is empty. Upload images, videos or documents here to use them easily in your projects.",
+		"EmptyStateTitle": "You have no media",
+		"ListTitle": "All media",
+		"LoadListError": "Error loading media",
+		"ManageSubtitle": "View and manage all media.",
+		"ManageTitle": "Manage media",
+		"NoResultsFound": "No media found",
+		"SaveError": "Error updating page",
+		"SaveSuccess": "Page updated successfully",
+		"Search": "Search media...",
+		"UploadError": "Error uploading media",
+		"UploadNew": "Upload media",
+		"UploadSuccess": "Media uploaded successfully"
+	},
 	"Pages": {
 		"Add": "Add Page",
 		"CannotDeleteHomePage": "Cannot delete the home page. Set another page as home first.",
