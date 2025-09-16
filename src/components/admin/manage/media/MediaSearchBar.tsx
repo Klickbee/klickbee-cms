@@ -32,7 +32,7 @@ export default function MediaSearchBar({
 	}, [searchTerm]);
 
 	return (
-		<div className="w-full max-w-md relative mb-4">
+		<div className="w-full max-w-md relative">
 			<SearchIcon className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
 			<Input
 				className="pl-8"

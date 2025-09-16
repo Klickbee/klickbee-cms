@@ -6,6 +6,7 @@ import { useState } from "react";
 import DashboardTitle from "@/components/admin/_partials/dashboardTitle";
 import EmptyState from "@/components/admin/manage/EmptyState";
 import MediaDetailModal from "@/components/admin/manage/media/MediaDetailModal";
+import MediaTypeFilter from "@/components/admin/manage/media/MediaFilter";
 import MediaGrid from "@/components/admin/manage/media/MediaGrid";
 import MediaSearchBar from "@/components/admin/manage/media/MediaSearchBar";
 import MediaUploadModal from "@/components/admin/manage/media/MediaUploadModal";
@@ -18,8 +19,14 @@ import type { MediaFile } from "@/feature/media/types/media";
 export default function AdminMediaPage() {
 	const t = useTranslations("Media");
 	const { data: mediaFiles = [], isLoading } = useMedia();
-	const { searchTerm, setSearchTerm, filteredMedia } =
-		useMediaSearch(mediaFiles);
+	const {
+		searchTerm,
+		setSearchTerm,
+		typeFilter,
+		setTypeFilter,
+		filteredMedia,
+	} = useMediaSearch(mediaFiles);
+	useMediaSearch(mediaFiles);
 	const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 	const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 	const [selectedMedia, setSelectedMedia] = useState<MediaFile | null>(null);
@@ -67,14 +74,21 @@ export default function AdminMediaPage() {
 							</div>
 						) : mediaFiles.length > 0 ? (
 							<>
-								{/* Search Bar */}
-								<MediaSearchBar
-									onSearchChange={setSearchTerm}
-									searchTerm={searchTerm}
-								/>
+								{/* Search Bar and Filters */}
+								<div className="flex items-center gap-4 mb-4 justify-between">
+									<MediaSearchBar
+										onSearchChange={setSearchTerm}
+										searchTerm={searchTerm}
+									/>
+									<MediaTypeFilter
+										onTypeFilterChange={setTypeFilter}
+										typeFilter={typeFilter}
+									/>
+								</div>
+
 								{/* Media Grid or No Results */}
 								{filteredMedia.length === 0 &&
-								searchTerm.trim() ? (
+								(searchTerm.trim() || typeFilter !== "all") ? (
 									<div className="text-center py-8 text-muted-foreground">
 										{t("NoResultsFound")}
 									</div>
