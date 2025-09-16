@@ -46,6 +46,7 @@ export default function HeadingContent({ component }: HeadingContentProps) {
 				onChange={updateText}
 				placeholder={CONTENT_DEFAULTS.HEADING_TEXT}
 				value={text}
+				variant="textarea"
 			/>
 
 			<RewriteButton />
