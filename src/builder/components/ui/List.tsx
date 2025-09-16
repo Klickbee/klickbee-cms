@@ -18,36 +18,30 @@ export const List: React.FC<ListProps> = ({ component }) => {
 
 	return (
 		<div
-			className="relative   bg-white"
+			className="flex flex-col space-y-2"
 			style={{
 				order: component.order || 0, // Use order property for positioning
 				...mapStylePropsToCss(component.props?.style),
 			}}
 		>
-			<div className="">
-				<div className="flex flex-col space-y-2">
-					<label className="text-sm font-medium text-gray-700">
-						{label}
-					</label>
-					{listType === "ol" ? (
-						<ol className="list-decimal pl-5 space-y-1">
-							{items.map((item, index) => (
-								<li className="text-gray-700" key={index}>
-									{item}
-								</li>
-							))}
-						</ol>
-					) : (
-						<ul className="list-disc pl-5 space-y-1">
-							{items.map((item, index) => (
-								<li className="text-gray-700" key={index}>
-									{item}
-								</li>
-							))}
-						</ul>
-					)}
-				</div>
-			</div>
+			<label className="text-sm font-medium text-gray-700">{label}</label>
+			{listType === "ol" ? (
+				<ol className="list-decimal pl-5 space-y-1">
+					{items.map((item, index) => (
+						<li className="text-gray-700" key={index}>
+							{item}
+						</li>
+					))}
+				</ol>
+			) : (
+				<ul className="list-disc pl-5 space-y-1">
+					{items.map((item, index) => (
+						<li className="text-gray-700" key={index}>
+							{item}
+						</li>
+					))}
+				</ul>
+			)}
 		</div>
 	);
 };

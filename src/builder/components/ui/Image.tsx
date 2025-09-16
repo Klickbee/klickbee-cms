@@ -22,22 +22,16 @@ export const Image: React.FC<ImageProps> = ({ component }) => {
 	};
 
 	return (
-		<div
-			className="relative   bg-white"
+		<img
+			alt={alt}
+			className="max-w-full h-auto"
+			height={height.number}
+			src={src}
 			style={{
 				order: component.order || 0, // Use order property for positioning
 				...mapStylePropsToCss(component.props?.style),
 			}}
-		>
-			<div className="">
-				<img
-					alt={alt}
-					className="max-w-full h-auto"
-					height={height.number}
-					src={src}
-					width={width.number}
-				/>
-			</div>
-		</div>
+			width={width.number}
+		/>
 	);
 };

@@ -14,16 +14,12 @@ export const RichText: React.FC<RichTextProps> = ({ component }) => {
 
 	return (
 		<div
-			className="relative   bg-white"
+			className=" text-gray-700"
+			dangerouslySetInnerHTML={{ __html: content }}
 			style={{
 				order: component.order || 0, // Use order property for positioning
 				...mapStylePropsToCss(component.props?.style),
 			}}
-		>
-			<div
-				className=" text-gray-700"
-				dangerouslySetInnerHTML={{ __html: content }}
-			/>
-		</div>
+		/>
 	);
 };

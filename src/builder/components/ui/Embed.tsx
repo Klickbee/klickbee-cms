@@ -16,19 +16,13 @@ export const Embed: React.FC<EmbedProps> = ({ component }) => {
 
 	return (
 		<div
-			className="relative   bg-white"
+			className="embed-container"
+			dangerouslySetInnerHTML={{ __html: embedCode }}
 			style={{
 				order: component.order || 0, // Use order property for positioning
 				...mapStylePropsToCss(component.props?.style),
 			}}
-		>
-			<div className="">
-				<div
-					className="embed-container"
-					dangerouslySetInnerHTML={{ __html: embedCode }}
-					title={title}
-				/>
-			</div>
-		</div>
+			title={title}
+		/>
 	);
 };

@@ -18,62 +18,56 @@ export const Grid: React.FC<GridProps> = ({ component }) => {
 	// Get the setTargetComponent function from context
 	const dragDropContext = useContext(DragDropContext);
 
+	// Root grid container styles
+	const rootStyle: React.CSSProperties = {
+		order: component.order || 0,
+		...mapStylePropsToCss(component.props?.style),
+		gridTemplateColumns: `repeat(${columns}, 1fr)`,
+	};
+
 	return (
-		<div
-			className="relative   bg-white"
-			style={{
-				order: component.order || 0, // Use order property for positioning
-				...mapStylePropsToCss(component.props?.style),
-			}}
-		>
+		<div className="grid ga" style={rootStyle}>
 			{/* Render children in a grid layout */}
 			{!component.children || component.children.length === 0 ? (
 				<EmptyChildrenPlaceholder />
 			) : (
-				<div
-					className="grid ga"
-					style={{
-						gridTemplateColumns: `repeat(${columns}, 1fr)`,
-					}}
-				>
-					{component.children
-						.slice() // Create a copy of the array to avoid mutating the original
-						.sort((a, b) => (a.order || 0) - (b.order || 0)) // Sort by order
-						.map((child) => (
-							<div
-								className="border border-dotted border-gray-200 p-2"
-								key={child.id}
-							>
-								<ComponentRenderer
-									component={child}
-									isDropTarget={
-										dragDropContext?.targetComponent ===
-										child.id
+				component.children
+					.slice() // Create a copy of the array to avoid mutating the original
+					.sort((a, b) => (a.order || 0) - (b.order || 0)) // Sort by order
+					.map((child) => (
+						<div
+							className="border border-dotted border-gray-200 p-2"
+							key={child.id}
+						>
+							<ComponentRenderer
+								component={child}
+								isDropTarget={
+									dragDropContext?.targetComponent ===
+									child.id
+								}
+								onDragLeave={() => {
+									if (dragDropContext) {
+										dragDropContext.setTargetComponent(
+											null,
+										);
 									}
-									onDragLeave={() => {
-										if (dragDropContext) {
-											dragDropContext.setTargetComponent(
-												null,
-											);
-										}
-									}}
-									onDragOver={(e) => {
-										// Only allow dropping onto container components
-										if (
-											canHaveChildren(child.type) &&
-											dragDropContext
-										) {
-											e.stopPropagation();
-											e.preventDefault();
-											dragDropContext.setTargetComponent(
-												child.id,
-											);
-										}
-									}}
-								/>
-							</div>
-						))}
-				</div>
+								}}
+								onDragOver={(e) => {
+									// Only allow dropping onto container components
+									if (
+										canHaveChildren(child.type) &&
+										dragDropContext
+									) {
+										e.stopPropagation();
+										e.preventDefault();
+										dragDropContext.setTargetComponent(
+											child.id,
+										);
+									}
+								}}
+							/>
+						</div>
+					))
 			)}
 		</div>
 	);

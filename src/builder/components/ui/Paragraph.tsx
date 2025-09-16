@@ -12,14 +12,13 @@ export const Paragraph: React.FC<ParagraphProps> = ({ component }) => {
 		(component.props?.content?.text as string) || "Paragraph content";
 
 	return (
-		<div
-			className="relative   bg-white"
+		<p
 			style={{
 				order: component.order || 0, // Use order property for positioning
 				...mapStylePropsToCss(component.props?.style),
 			}}
 		>
-			<p className=" text-gray-700 leading-relaxed">{content}</p>
-		</div>
+			{content}
+		</p>
 	);
 };

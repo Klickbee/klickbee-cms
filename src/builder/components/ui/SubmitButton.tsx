@@ -10,21 +10,15 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({ component }) => {
 	const text = (component.props?.content?.text as string) || "Submit";
 
 	return (
-		<div
-			className="relative   bg-white"
+		<button
+			className={`rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2`}
 			style={{
 				order: component.order || 0, // Use order property for positioning
 				...((component.props?.style as Record<string, unknown>) || {}),
 			}}
+			type="submit"
 		>
-			<div className="">
-				<button
-					className={`rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2`}
-					type="submit"
-				>
-					{text}
-				</button>
-			</div>
-		</div>
+			{text}
+		</button>
 	);
 };

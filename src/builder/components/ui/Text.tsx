@@ -12,14 +12,14 @@ export const Text: React.FC<TextProps> = ({ component }) => {
 		(component.props?.content?.text as string) || "Text content";
 
 	return (
-		<div
-			className="relative   bg-white"
+		<p
+			className=" text-gray-700"
 			style={{
 				order: component.order || 0, // Use order property for positioning
 				...mapStylePropsToCss(component.props?.style),
 			}}
 		>
-			<p className=" text-gray-700">{content}</p>
-		</div>
+			{content}
+		</p>
 	);
 };

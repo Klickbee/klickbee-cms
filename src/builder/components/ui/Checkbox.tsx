@@ -18,41 +18,30 @@ export const Checkbox: React.FC<CheckboxProps> = ({ component }) => {
 
 	return (
 		<div
-			className="relative   bg-white"
+			className="flex items-start"
 			style={{
 				order: component.order || 0, // Use order property for positioning
 				...mapStylePropsToCss(component.props?.style),
 			}}
 		>
-			<div className="">
-				<div className="flex items-start">
-					<div className="flex items-center h-5">
-						<input
-							className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-							defaultChecked={checked}
-							id={name}
-							name={name}
-							required={required}
-							type="checkbox"
-						/>
-					</div>
-					<div className=" text-sm">
-						<label
-							className="font-medium text-gray-700"
-							htmlFor={name}
-						>
-							{label}
-							{required && (
-								<span className="text-destructive ">*</span>
-							)}
-						</label>
-						{helperText && (
-							<p className="text-xs text-gray-500">
-								{helperText}
-							</p>
-						)}
-					</div>
-				</div>
+			<div className="flex items-center h-5">
+				<input
+					className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+					defaultChecked={checked}
+					id={name}
+					name={name}
+					required={required}
+					type="checkbox"
+				/>
+			</div>
+			<div className=" text-sm">
+				<label className="font-medium text-gray-700" htmlFor={name}>
+					{label}
+					{required && <span className="text-destructive ">*</span>}
+				</label>
+				{helperText && (
+					<p className="text-xs text-gray-500">{helperText}</p>
+				)}
 			</div>
 		</div>
 	);
