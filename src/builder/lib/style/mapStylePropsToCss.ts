@@ -148,6 +148,8 @@ function applySizeSpacing(size?: SizeSpacingStyle): React.CSSProperties {
 		pm?: SectionPadding,
 		prefix?: "padding" | "margin",
 	) => {
+		// console.log(pm)
+		// console.log(size)
 		if (!pm || !prefix) return;
 		const top = fluidToCss(pm.top);
 		const right = fluidToCss(pm.right);
@@ -344,6 +346,8 @@ export function mapStylePropsToCss(
 ): React.CSSProperties {
 	const css: React.CSSProperties = {};
 	if (!style) return css;
+
+	// if (style.sizeAndSpacing?.padding) console.log(style.sizeAndSpacing);
 
 	Object.assign(css, applyLayout(style.layout));
 	Object.assign(css, applyPosition(style.position));

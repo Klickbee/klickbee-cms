@@ -22,6 +22,7 @@ export function useStyleUpdate(component: BuilderComponent) {
 	const setCurrentComponent = useCurrentComponentStore(
 		(state) => state.setCurrentComponent,
 	);
+	// console.log(component)
 
 	const currentPage = useCurrentPageStore((state) => state.currentPage);
 
@@ -29,6 +30,8 @@ export function useStyleUpdate(component: BuilderComponent) {
 
 	const updateStyle = useCallback(
 		(updates: Partial<ComponentStyleProps>) => {
+			// console.log(updates)
+			// console.log(component.props.style)
 			// Update the component's style properties
 			const updatedComponent: BuilderComponent = {
 				...component,
