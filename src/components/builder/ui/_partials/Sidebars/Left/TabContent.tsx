@@ -1,3 +1,5 @@
+"use client";
+
 import { useCurrentTabStore } from "@/builder/store/storeCurrentTabsSidebar";
 import BuilderTabComponents from "@/components/builder/ui/_partials/Sidebars/Left/_partials/Tabs/Components";
 import BuilderTabLayers from "@/components/builder/ui/_partials/Sidebars/Left/_partials/Tabs/Layers";

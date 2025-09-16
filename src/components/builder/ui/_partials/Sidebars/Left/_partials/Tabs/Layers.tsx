@@ -1,3 +1,5 @@
+"use client";
+
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
 import { BuilderComponent } from "@/builder/types/components/components";
 import {

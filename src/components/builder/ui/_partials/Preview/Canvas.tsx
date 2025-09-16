@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useRef, useState } from "react";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
 import { Breakpoint } from "@/builder/types/breakpoint";

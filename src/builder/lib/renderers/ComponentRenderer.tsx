@@ -58,6 +58,7 @@ const componentMap: Record<
 > = {
 	button: DefaultComponent,
 	checkbox: Checkbox,
+	cmstemplate: DefaultComponent,
 	container: Container,
 	divider: DefaultComponent,
 	dropdown: Dropdown,
@@ -85,8 +86,8 @@ const componentMap: Record<
 	spacer: Spacer,
 	submitbutton: SubmitButton,
 	text: Text,
+	textarea: DefaultComponent,
 	textfield: TextField,
-
 	// Default for undefined
 	undefined: DefaultComponent,
 	video: Video,

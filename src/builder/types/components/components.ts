@@ -10,6 +10,7 @@ export type ComponentType =
 	| "heading"
 	| "text"
 	| "paragraph"
+	| "textarea"
 	| "richtext"
 	| "link"
 	| "spacer"
@@ -30,6 +31,8 @@ export type ComponentType =
 	| "radiogroup"
 	| "dropdown"
 	| "submitbutton"
+	// CMS components
+	| "cmstemplate"
 	| "undefined";
 
 export interface BuilderComponent {
