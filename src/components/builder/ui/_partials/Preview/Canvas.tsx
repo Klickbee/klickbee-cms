@@ -20,7 +20,7 @@ import {
 
 export default function BuilderPreviewCanvas() {
 	const containerRef = useRef<HTMLDivElement>(null);
-	const [zoom, setZoom] = useState(1);
+	const [zoom, setZoom] = useState(0.85);
 	const [offset, setOffset] = useState({ x: 0, y: 0 });
 	const [isDragging, setIsDragging] = useState(false);
 	const start = useRef({ x: 0, y: 0 });
