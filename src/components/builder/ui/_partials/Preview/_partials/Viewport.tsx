@@ -158,12 +158,19 @@ export default function BuilderPreviewViewport({
 				}}
 				style={{
 					backgroundColor: "white",
+					containerType: "inline-size",
 					minHeight: "1000px",
 					position: "relative",
 					transition: "all 0.2s ease",
-					width: `${bp.width / 1.5}px`,
+					width: `${bp.width}px`,
 				}}
 			>
+				<div
+					style={{
+						transformOrigin: "top left",
+						width: `${bp.width}px`,
+					}}
+				></div>
 				{/* Render components for this breakpoint */}
 				{currentPage.content &&
 					Array.isArray(currentPage.content) &&
