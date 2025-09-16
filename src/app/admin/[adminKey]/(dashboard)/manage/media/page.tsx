@@ -7,15 +7,19 @@ import DashboardTitle from "@/components/admin/_partials/dashboardTitle";
 import EmptyState from "@/components/admin/manage/EmptyState";
 import MediaDetailModal from "@/components/admin/manage/media/MediaDetailModal";
 import MediaGrid from "@/components/admin/manage/media/MediaGrid";
+import MediaSearchBar from "@/components/admin/manage/media/MediaSearchBar";
 import MediaUploadModal from "@/components/admin/manage/media/MediaUploadModal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useMediaSearch } from "@/feature/media/hooks/useMediaSearch";
 import { useMedia } from "@/feature/media/queries/useMedia";
 import type { MediaFile } from "@/feature/media/types/media";
 
 export default function AdminMediaPage() {
 	const t = useTranslations("Media");
 	const { data: mediaFiles = [], isLoading } = useMedia();
+	const { searchTerm, setSearchTerm, filteredMedia } =
+		useMediaSearch(mediaFiles);
 	const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 	const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 	const [selectedMedia, setSelectedMedia] = useState<MediaFile | null>(null);
@@ -56,25 +60,38 @@ export default function AdminMediaPage() {
 							{t("UploadNew")}
 						</Button>
 					</CardHeader>
-					<CardContent className="p-0">
+					<CardContent className="p-4">
 						{isLoading ? (
 							<div className="flex justify-center items-center h-40">
 								<Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
 							</div>
 						) : mediaFiles.length > 0 ? (
-							<MediaGrid
-								files={mediaFiles}
-								onMediaClick={handleMediaClick}
-							/>
-						) : (
-							<div className="p-4">
-								<EmptyState
-									buttonText={t("UploadNew")}
-									description={t("EmptyStateDescription")}
-									onButtonClick={handleOpenUploadModal}
-									title={t("EmptyStateTitle")}
+							<>
+								{/* Search Bar */}
+								<MediaSearchBar
+									onSearchChange={setSearchTerm}
+									searchTerm={searchTerm}
 								/>
-							</div>
+								{/* Media Grid or No Results */}
+								{filteredMedia.length === 0 &&
+								searchTerm.trim() ? (
+									<div className="text-center py-8 text-muted-foreground">
+										{t("NoResultsFound")}
+									</div>
+								) : (
+									<MediaGrid
+										files={filteredMedia}
+										onMediaClick={handleMediaClick}
+									/>
+								)}
+							</>
+						) : (
+							<EmptyState
+								buttonText={t("UploadNew")}
+								description={t("EmptyStateDescription")}
+								onButtonClick={handleOpenUploadModal}
+								title={t("EmptyStateTitle")}
+							/>
 						)}
 					</CardContent>
 				</Card>
@@ -83,7 +100,6 @@ export default function AdminMediaPage() {
 			<MediaUploadModal
 				isOpen={isUploadModalOpen}
 				onClose={handleCloseUploadModal}
-				// onUploadSuccess={handleUploadSuccess}
 			/>
 
 			<MediaDetailModal
