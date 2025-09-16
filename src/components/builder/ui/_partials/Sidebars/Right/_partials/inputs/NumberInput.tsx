@@ -54,7 +54,8 @@ export default function NumberInput({
 				)}
 				<Input
 					className="border-none shadow-none p-0 h-auto text-xs font-normal bg-transparent flex-1 focus-visible:ring-0 focus:ring-0 [&_input]:focus-visible:ring-0 [&_input]:focus:ring-0"
-					onChange={handleChange}
+					onBlur={handleChange}
+					onChange={(e) => setInputValue(e.target.value)}
 					placeholder={placeholder}
 					type="number"
 					value={inputValue}
