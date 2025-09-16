@@ -1,4 +1,5 @@
 "use client";
+
 import { LayoutDashboard, Play, Save, Send } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -51,7 +52,7 @@ export default function BuilderHeader() {
 	}, [currentPage, isSaving]);
 
 	return (
-		<header className="flex items-center justify-between px-4 py-6 border-b">
+		<header className="flex items-center justify-between p-4 border-b h-16">
 			<div className="flex items-center gap-6">
 				<Button
 					asChild

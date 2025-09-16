@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getTranslations } from "next-intl/server";
 import { isAuthenticatedGuard } from "@/feature/auth/lib/session";
 import {
+	deleteSetting,
 	getSetting,
 	setSetting,
 	setUserSetting,
@@ -30,22 +32,22 @@ export async function POST(req: NextRequest) {
 	if (authError) {
 		return authError;
 	}
+	const t = await getTranslations("Settings");
 	const body = await req.json();
 	const { key, value, userId } = body;
 
-	if (!key || !value) {
-		return NextResponse.json(
-			{ error: "key or value missing" },
-			{ status: 400 },
-		);
+	if (!key) {
+		return NextResponse.json({ error: "key missing" }, { status: 400 });
 	}
 
-	if (userId) {
+	if (!value) {
+		await deleteSetting(key);
+	} else if (userId) {
 		await setUserSetting(key, value, userId);
 	} else {
 		await setSetting(key, value);
 	}
 
-	const successMessage = `Setting ${key} updated successfully`;
+	const successMessage = t("UpdateSuccess", { key });
 	return NextResponse.json({ message: successMessage }, { status: 200 });
 }

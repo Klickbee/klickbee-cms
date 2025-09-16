@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { BuilderComponent } from "@/builder/types/components/components";
 import {
 	deletePage,
 	duplicatePage,
@@ -9,11 +10,6 @@ import {
 	updatePageSlug,
 	updatePageTitle,
 } from "@/feature/page/actions/pageActions";
-import { Prisma } from "@/generated/prisma";
-
-import JsonNull = Prisma.NullTypes.JsonNull;
-
-import { BuilderComponent } from "@/builder/types/components/components";
 
 /**
  * Hook for duplicating a page
