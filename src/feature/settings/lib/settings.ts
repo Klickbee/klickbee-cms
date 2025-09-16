@@ -1,6 +1,14 @@
+"use server";
+
+import { isAuthenticatedGuard } from "@/feature/auth/lib/session";
 import { prisma } from "@/lib/prisma";
 
 export const getSetting = async (key: string, userId?: string | null) => {
+	const authError = await isAuthenticatedGuard();
+	if (authError) {
+		return authError as never;
+	}
+
 	if (userId) {
 		const userSetting = await prisma.userSettings.findUnique({
 			where: { key_userId: { key, userId } },
@@ -16,6 +24,10 @@ export const setUserSetting = async (
 	value: string,
 	userId: string,
 ) => {
+	const authError = await isAuthenticatedGuard();
+	if (authError) {
+		return authError as never;
+	}
 	return prisma.userSettings.upsert({
 		create: { key, userId, value },
 		update: { value },
@@ -24,6 +36,10 @@ export const setUserSetting = async (
 };
 
 export const setSetting = async (key: string, value: string) => {
+	const authError = await isAuthenticatedGuard();
+	if (authError) {
+		return authError as never;
+	}
 	return prisma.settings.upsert({
 		create: { key, value },
 		update: { value },
@@ -32,6 +48,10 @@ export const setSetting = async (key: string, value: string) => {
 };
 
 export const deleteSetting = async (key: string) => {
+	const authError = await isAuthenticatedGuard();
+	if (authError) {
+		return authError as never;
+	}
 	return prisma.settings.delete({
 		where: { key },
 	});
