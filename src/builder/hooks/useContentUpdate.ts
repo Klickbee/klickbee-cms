@@ -41,7 +41,7 @@ export function useContentUpdate(component: BuilderComponent) {
 			);
 			setCurrentPage(currentPage);
 		},
-		[component, setCurrentComponent, setCurrentPage],
+		[component, setCurrentComponent, setCurrentPage, currentPage],
 	);
 
 	// Helper functions for common update patterns
@@ -156,16 +156,11 @@ function updatePageContent(
 	componentContent: BuilderComponent,
 ): PrismaJson.PageContentMetaType {
 	// If content is not an array, return as-is (schema allows {})
-	// console.log("updatePageContent", pageContent);
-	// console.log("isArray page content", Array.isArray(pageContent));
-
 	if (!Array.isArray(pageContent)) return pageContent;
 
 	const updateInTree = (nodes: BuilderComponent[]): BuilderComponent[] => {
 		return nodes.map((node) => {
 			// If this is the node to update, merge its props with the new content/style
-			// console.log(node.id)
-			// console.log(componentId)
 			if (node.id === componentId) {
 				return {
 					...node,

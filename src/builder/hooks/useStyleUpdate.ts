@@ -2,6 +2,7 @@
 
 import { useCallback } from "react";
 import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent";
+import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
 import { BuilderComponent } from "@/builder/types/components/components";
 import {
 	BoxShadowStyle,
@@ -17,6 +18,10 @@ export function useStyleUpdate(component: BuilderComponent) {
 	const setCurrentComponent = useCurrentComponentStore(
 		(state) => state.setCurrentComponent,
 	);
+
+	const currentPage = useCurrentPageStore((state) => state.currentPage);
+
+	const setCurrentPage = useCurrentPageStore((state) => state.setCurrentPage);
 
 	const updateStyle = useCallback(
 		(updates: Partial<ComponentStyleProps>) => {
@@ -34,11 +39,15 @@ export function useStyleUpdate(component: BuilderComponent) {
 
 			// Update the current component in the store
 			setCurrentComponent(updatedComponent);
-
-			// TODO: Also need to update the component in the page content array
-			// This would require a page store update to persist changes
+			currentPage.content = updatePageContent(
+				currentPage.content,
+				component.id,
+				updatedComponent,
+			);
+			setCurrentPage(currentPage);
+			// console.log(currentPage.content);
 		},
-		[component, setCurrentComponent],
+		[component, setCurrentComponent, currentPage, setCurrentPage],
 	);
 
 	// Helper function for updating a single style field
@@ -160,4 +169,48 @@ export function useStyleUpdate(component: BuilderComponent) {
 		updateSingleField,
 		updateStyle,
 	};
+}
+
+function updatePageContent(
+	pageContent: PrismaJson.PageContentMetaType,
+	componentId: string,
+	componentContent: BuilderComponent,
+): PrismaJson.PageContentMetaType {
+	// If content is not an array, return as-is (schema allows {})
+
+	if (!Array.isArray(pageContent)) return pageContent;
+
+	const updateInTree = (nodes: BuilderComponent[]): BuilderComponent[] => {
+		return nodes.map((node) => {
+			// If this is the node to update, merge its props with the new content/style
+			if (node.id === componentId) {
+				return {
+					...node,
+					props: {
+						...node.props,
+						content: {
+							...(node.props?.content ?? {}),
+							...(componentContent.props?.content ?? {}),
+						},
+						style: {
+							...(node.props?.style ?? {}),
+							...(componentContent.props?.style ?? {}),
+						},
+					},
+				};
+			}
+
+			// Otherwise, recurse into children if present
+			if (node.children && node.children.length) {
+				return {
+					...node,
+					children: updateInTree(node.children as BuilderComponent[]),
+				};
+			}
+
+			return node;
+		});
+	};
+
+	return updateInTree(pageContent as BuilderComponent[]);
 }
