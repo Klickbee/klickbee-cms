@@ -282,6 +282,7 @@
 		"Edit": "Modifier",
 		"Email": "Email",
 		"EmailPlaceholder": "Entrez votre email",
+		"Loading": "Chargement...",
 		"Name": "Nom",
 		"NamePlaceholder": "Saisir le nom complet",
 		"Next": "Suivant",
@@ -461,6 +462,32 @@
 		"Sending": "Envoi en cours...",
 		"SendResetLink": "Envoyer le lien de réinitialisation",
 		"SuccessMessage": "Un lien de réinitialisation a été envoyé à votre adresse email."
+	},
+	"Settings": {
+		"UpdateSettingsSuccess": "Mise à jour des paramètres avec succès",
+		"UpdateSuccess": "Mise à jour du paramètre {key} avec succès"
+	},
+	"SettingsAi": {
+		"AiContextFormDescription": "Veuillez remplir les champs ci-dessous afin de nous aider à mieux comprendre le contexte et le style de communication de votre entreprise. Ces informations permettent à notre IA de générer du contenu, des suggestions ou des idées pertinentes, personnalisées et adaptées à votre secteur d'activité, à votre ton et à vos objectifs.",
+		"AiContextFormTitle": "Contexte IA",
+		"AiModelLabel": "Sélectionnez votre modèle IA",
+		"AiSettingsFormTitle": "Paramètres IA",
+		"ApiKeyLabel": "Votre clé API",
+		"CompanyActivityLabel": "Activité de l'entreprise",
+		"CompanyActivityPlaceholder": "Entrez l'activité de votre entreprise",
+		"CompanyExperienceLabel": "Expérience de l'entreprise",
+		"CompanyExperiencePlaceholder": "Entrez l'expérience de votre entreprise",
+		"CompanyIndustryLabel": "Industrie de l'entreprise",
+		"CompanyIndustryPlaceholder": "Entrez le secteur d'activité de votre entreprise",
+		"CompanyNameLabel": "Nom de l'entreprise",
+		"CompanyNamePlaceholder": "Entrez le nom de votre entreprise",
+		"CompanyNameRequired": "Le nom de l'entreprise est requis",
+		"ManageAi": "Paramètres IA",
+		"ManageAiSubtitle": "Modifier les paramètres IA et le contexte IA.",
+		"OtherInformationsLabel": "Autres informations significatives",
+		"OtherInformationsPlaceholder": "Entrez les informations significatives de votre entreprise",
+		"ToneOfVoiceLabel": "Ton de la voix",
+		"ToneOfVoicePlaceholder": "Entrez votre ton de rédaction"
 	},
 	"SettingsUsers": {
 		"Add": "Ajouter un utilisateur",
