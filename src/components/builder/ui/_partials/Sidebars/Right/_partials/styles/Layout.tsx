@@ -24,16 +24,12 @@ import {
 } from "@/builder/types/components/properties/componentStylePropsType";
 import { type SizeUnit } from "@/builder/types/settings/FluidSize";
 import DualInput from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/DualInput";
+import UnitSelector from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/UnitSelector";
 import PropertyColumn from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyColumn";
 import PropertyNumber from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyNumber";
 import PropertySelect from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertySelect";
 import PropertyToggle from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyToggle";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectTrigger } from "@/components/ui/select";
 
 export default function BuilderStyleLayout({
 	component,
@@ -192,9 +188,14 @@ export default function BuilderStyleLayout({
 									)
 								</SelectTrigger>
 								<SelectContent>
-									<SelectItem value="px">px</SelectItem>
-									<SelectItem value="rem">rem</SelectItem>
-									<SelectItem value="em">em</SelectItem>
+									<UnitSelector
+										onUnitChange={() => "test"}
+										unit={
+											layoutStyles.flex?.gap?.column
+												.sizeUnit || "px"
+										}
+										variant={"no-wrap"}
+									/>
 								</SelectContent>
 							</Select>
 						}
@@ -403,9 +404,13 @@ export default function BuilderStyleLayout({
 									)
 								</SelectTrigger>
 								<SelectContent>
-									<SelectItem value="px">px</SelectItem>
-									<SelectItem value="rem">rem</SelectItem>
-									<SelectItem value="em">em</SelectItem>
+									<UnitSelector
+										onUnitChange={() => "test"}
+										unit={
+											layoutStyles.flex?.gap?.column
+												.sizeUnit || "px"
+										}
+									/>
 								</SelectContent>
 							</Select>
 						}

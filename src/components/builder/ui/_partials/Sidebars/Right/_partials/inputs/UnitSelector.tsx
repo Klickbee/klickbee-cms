@@ -16,7 +16,7 @@ import {
 interface UnitSelectorProps<T extends SizeUnit | PercentUnit | TimeUnit> {
 	unit: T;
 	onUnitChange: (unit: T) => void;
-	variant?: "default" | "embedded";
+	variant?: "default" | "embedded" | "no-wrap";
 }
 
 export default function UnitSelector<
@@ -32,7 +32,7 @@ export default function UnitSelector<
 			);
 		});
 		// Pour les unités d'opacité, on affiche juste %
-		if (unit === "%") {
+		if (unit === "%" && variant != "no-wrap") {
 			return [
 				<SelectItem key="%" value="%">
 					%
@@ -50,22 +50,26 @@ export default function UnitSelector<
 				</SelectItem>,
 			];
 		}
-		// Pour les unités de taille, on affiche px, rem, em
+		// Pour les unités de taille, on affiche sizeUnits
 		return unitsArraySelectItems;
 	};
 
-	return (
-		<Select onValueChange={onUnitChange} value={unit}>
-			<SelectTrigger
-				className={
-					variant === "embedded"
-						? "border-none shadow-none p-0 h-auto bg-transparent text-center text-xs font-medium text-zinc-500 hover:text-zinc-700 w-full [&>svg]:hidden"
-						: "h-auto p-0 border-0 shadow-none bg-transparent text-sm text-zinc-500 hover:text-zinc-700"
-				}
-			>
-				{variant === "embedded" ? <SelectValue /> : `(${unit})`}
-			</SelectTrigger>
-			<SelectContent>{getUnitOptions()}</SelectContent>
-		</Select>
-	);
+	if (variant === "no-wrap") {
+		return getUnitOptions();
+	} else {
+		return (
+			<Select onValueChange={onUnitChange} value={unit}>
+				<SelectTrigger
+					className={
+						variant === "embedded"
+							? "border-none shadow-none p-0 h-auto bg-transparent text-center text-xs font-medium text-zinc-500 hover:text-zinc-700 w-full [&>svg]:hidden"
+							: "h-auto p-0 border-0 shadow-none bg-transparent text-sm text-zinc-500 hover:text-zinc-700"
+					}
+				>
+					{variant === "embedded" ? <SelectValue /> : `(${unit})`}
+				</SelectTrigger>
+				<SelectContent>{getUnitOptions()}</SelectContent>
+			</Select>
+		);
+	}
 }
