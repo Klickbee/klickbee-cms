@@ -4,8 +4,20 @@ export function toClamp(
 	size: FluidSize,
 	globalMaxWidth: string = "1440px",
 ): string {
+	if (size.max == size.min) {
+		size.min = size.max * 0.75;
+	}
+	if (size.min == undefined) {
+		size.min = size.max * 0.75;
+	}
+
+	if (size.max == undefined) {
+		size.max = size.min * 1.25;
+	}
+
 	const min = size.min;
 	const max = size.max;
+
 	const maxWidth = size.maxWidth || parseFloat(globalMaxWidth);
 	const sizeUnit = size.sizeUnit;
 

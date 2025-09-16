@@ -1,3 +1,4 @@
+import { toClamp } from "@/builder/lib/clampCalculator";
 import {
 	BackgroundStyle,
 	BorderCornerStyle,
@@ -21,7 +22,7 @@ function resolveColor(color?: ColorSettings | string): string | undefined {
 // Helper: FluidSize to CSS value (minimal approach: use min value)
 function fluidToCss(size?: FluidSize): string | undefined {
 	if (!size) return undefined;
-	return `${size.min}${size.sizeUnit}`;
+	return toClamp(size);
 }
 
 // Helper: SpacingValue to CSS value
