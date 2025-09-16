@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import EmptyChildrenPlaceholder from "@/builder/components/ui/_partials/EmptyChildrenPlaceholder";
+import { mapStylePropsToCss } from "@/builder/lib/style/mapStylePropsToCss";
 import { DragDropContext } from "@/components/builder/_partials/DragAndDropContext";
 import { ComponentRenderer } from "../../lib/renderers/ComponentRenderer";
 import {
@@ -22,7 +23,7 @@ export const Grid: React.FC<GridProps> = ({ component }) => {
 			className="relative   bg-white"
 			style={{
 				order: component.order || 0, // Use order property for positioning
-				...((component.props?.style as Record<string, unknown>) || {}),
+				...mapStylePropsToCss(component.props?.style),
 			}}
 		>
 			{/* Render children in a grid layout */}

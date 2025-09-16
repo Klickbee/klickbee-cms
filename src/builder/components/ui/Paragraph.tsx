@@ -1,4 +1,5 @@
 import React from "react";
+import { mapStylePropsToCss } from "@/builder/lib/style/mapStylePropsToCss";
 import { BuilderComponent } from "../../types/components/components";
 
 interface ParagraphProps {
@@ -15,7 +16,7 @@ export const Paragraph: React.FC<ParagraphProps> = ({ component }) => {
 			className="relative   bg-white"
 			style={{
 				order: component.order || 0, // Use order property for positioning
-				...((component.props?.style as Record<string, unknown>) || {}),
+				...mapStylePropsToCss(component.props?.style),
 			}}
 		>
 			<p className=" text-gray-700 leading-relaxed">{content}</p>

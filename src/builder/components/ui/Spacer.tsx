@@ -1,4 +1,5 @@
 import React from "react";
+import { mapStylePropsToCss } from "@/builder/lib/style/mapStylePropsToCss";
 import { BuilderComponent } from "../../types/components/components";
 
 interface SpacerProps {
@@ -19,7 +20,7 @@ export const Spacer: React.FC<SpacerProps> = ({ component }) => {
 				height: `${height.number}${height.unit}`, // Use height from props or default to 50px
 				order: component.order || 0, // Use order property for positioning
 				width: "100%",
-				...((component.props?.style as Record<string, unknown>) || {}),
+				...mapStylePropsToCss(component.props?.style),
 			}}
 		>
 			<div className="absolute top-0 left-0 text-white text-xs px-2 py-1"></div>

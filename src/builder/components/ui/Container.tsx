@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import EmptyChildrenPlaceholder from "@/builder/components/ui/_partials/EmptyChildrenPlaceholder";
+import { mapStylePropsToCss } from "@/builder/lib/style/mapStylePropsToCss";
 import {
 	BuilderComponent,
 	canHaveChildren,
@@ -20,7 +21,7 @@ export const Container: React.FC<ContainerProps> = ({ component }) => {
 			className="relative   max-w-screen-lg mx-auto bg-white"
 			style={{
 				order: component.order || 0, // Use order property for positioning
-				...((component.props?.style as Record<string, unknown>) || {}),
+				...mapStylePropsToCss(component.props?.style),
 			}}
 		>
 			{/* Render children if they exist */}
