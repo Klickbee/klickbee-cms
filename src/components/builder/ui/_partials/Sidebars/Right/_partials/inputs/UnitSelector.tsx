@@ -4,7 +4,7 @@ import {
 	PercentUnit,
 	TimeUnit,
 } from "@/builder/types/components/properties/componentStylePropsType";
-import { SizeUnit } from "@/builder/types/settings/FluidSize";
+import { SizeUnit, sizeUnits } from "@/builder/types/settings/FluidSize";
 import {
 	Select,
 	SelectContent,
@@ -23,6 +23,14 @@ export default function UnitSelector<
 	T extends SizeUnit | PercentUnit | TimeUnit,
 >({ unit, onUnitChange, variant = "default" }: UnitSelectorProps<T>) {
 	const getUnitOptions = () => {
+		const unitsArraySelectItems: React.JSX.Element[] = [];
+		sizeUnits.forEach((unit) => {
+			unitsArraySelectItems.push(
+				<SelectItem key={unit} value={unit}>
+					{unit}
+				</SelectItem>,
+			);
+		});
 		// Pour les unités d'opacité, on affiche juste %
 		if (unit === "%") {
 			return [
@@ -43,17 +51,7 @@ export default function UnitSelector<
 			];
 		}
 		// Pour les unités de taille, on affiche px, rem, em
-		return [
-			<SelectItem key="px" value="px">
-				px
-			</SelectItem>,
-			<SelectItem key="rem" value="rem">
-				rem
-			</SelectItem>,
-			<SelectItem key="em" value="em">
-				em
-			</SelectItem>,
-		];
+		return unitsArraySelectItems;
 	};
 
 	return (
