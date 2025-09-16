@@ -11,12 +11,10 @@ import { Button } from "@/components/ui/button";
 
 export default function BuilderPreviewViewport({
 	bp,
-	content,
 	handleAddBreakpoint,
 	handleRemoveBreakpoint,
 }: {
 	bp: { name: string; width: number };
-	content: BuilderComponent[];
 	handleAddBreakpoint: () => void;
 	handleRemoveBreakpoint: (breakpointName: string) => void;
 }) {
