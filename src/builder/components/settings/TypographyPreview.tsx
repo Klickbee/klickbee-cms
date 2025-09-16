@@ -34,10 +34,7 @@ export default function TypographyPreview({
 						key={typo.key ? typo.key : idx}
 						style={{
 							fontFamily: typo.fontFamily,
-							fontSize: toClamp(
-								typo.fontSize,
-								`${typography.maxWidth}px`,
-							),
+							fontSize: toClamp(typo.fontSize),
 							fontStyle: typo.fontStyle,
 							fontWeight: typo.fontWeight,
 							letterSpacing: `${typo.letterSpacing}${typo.letterSpacingUnits}`,
