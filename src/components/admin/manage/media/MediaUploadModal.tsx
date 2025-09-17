@@ -169,7 +169,7 @@ export default function MediaUploadModal({
 									(PDF)
 								</p>
 								<p className="text-xs text-muted-foreground">
-									Taille maximum: 10MB
+									Taille maximum: 50MB
 								</p>
 							</div>
 

@@ -35,11 +35,11 @@ export async function POST(request: Request) {
 		);
 	}
 
-	// 10MB limit
-	const maxSize = 10 * 1024 * 1024;
+	// 50MB limit
+	const maxSize = 50 * 1024 * 1024;
 	if (file.size > maxSize) {
 		return NextResponse.json(
-			{ error: "Le fichier est trop volumineux (limite: 10MB)" },
+			{ error: "Le fichier est trop volumineux (limite: 50MB)" },
 			{ status: 413 },
 		);
 	}
