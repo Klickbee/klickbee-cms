@@ -111,7 +111,7 @@ export default function MediaDetailModal({
 				<div className="relative w-full h-full overflow-hidden">
 					<Image
 						alt={media.filename}
-						className="object-cover"
+						className="object-contain"
 						fill
 						sizes="(max-width: 768px) 100vw, 50vw"
 						src={media.url}
