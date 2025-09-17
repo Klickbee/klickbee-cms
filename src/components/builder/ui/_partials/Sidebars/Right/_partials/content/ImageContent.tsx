@@ -25,7 +25,7 @@ export default function ImageContent({ component }: ImageContentProps) {
 				acceptedTypes={["png", "jpeg", "jpg", "svg"]}
 				initialFile={src}
 				label={t("image")}
-				maxSize={2}
+				maxSize={10}
 				mode="image"
 				onFileChange={(fileUrl) => updateSrc(fileUrl || "")}
 			/>
