@@ -4,10 +4,10 @@ import { isAuthenticatedGuard } from "@/feature/auth/lib/session";
 import { prisma } from "@/lib/prisma";
 
 export const getSetting = async (key: string, userId?: string | null) => {
-	const authError = await isAuthenticatedGuard();
-	if (authError) {
-		return authError as never;
-	}
+	// const authError = await isAuthenticatedGuard();
+	// if (authError) {
+	// 	return authError as never;
+	// }
 
 	if (userId) {
 		const userSetting = await prisma.userSettings.findUnique({

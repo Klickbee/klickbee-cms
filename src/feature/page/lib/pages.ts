@@ -56,6 +56,26 @@ export const getPageById = async (id: number) => {
 	});
 };
 
+export const getPublicPageById = async (id: number) => {
+	return prisma.page.findUnique({
+		select: {
+			content: true,
+			createdAt: true,
+			id: true,
+			isPublished: true,
+			metaDescription: true,
+			metaKeywords: true,
+			metaTitle: true,
+			parentId: true,
+			publishedAt: true,
+			slug: true,
+			title: true,
+			updatedAt: true,
+		},
+		where: { id },
+	});
+};
+
 export const createPage = async (data: {
 	title: string;
 	slug: string;
