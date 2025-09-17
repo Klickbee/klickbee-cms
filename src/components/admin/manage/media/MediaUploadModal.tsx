@@ -52,10 +52,10 @@ export default function MediaUploadModal({
 			return false;
 		}
 
-		// 10MB limit
-		const maxSize = 10 * 1024 * 1024;
+		// 50MB limit
+		const maxSize = 50 * 1024 * 1024;
 		if (file.size > maxSize) {
-			toast.error("Le fichier est trop volumineux (limite: 10MB)");
+			toast.error("Le fichier est trop volumineux (limite: 50MB)");
 			return false;
 		}
 
