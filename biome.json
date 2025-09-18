@@ -11,7 +11,9 @@
 		},
 		"enabled": true
 	},
-	"files": { "ignoreUnknown": false },
+	"files": {
+		"ignoreUnknown": false
+	},
 	"formatter": {
 		"attributePosition": "auto",
 		"bracketSameLine": false,
@@ -41,7 +43,11 @@
 		"lineWidth": 80,
 		"useEditorconfig": true
 	},
-	"html": { "formatter": { "selfCloseVoidElements": "always" } },
+	"html": {
+		"formatter": {
+			"selfCloseVoidElements": "always"
+		}
+	},
 	"javascript": {
 		"formatter": {
 			"arrowParentheses": "always",
@@ -99,7 +105,12 @@
 				"noUnusedImports": "error",
 				"noUnusedLabels": "error",
 				"noUnusedPrivateClassMembers": "error",
-				"noUnusedVariables": "error",
+				"noUnusedVariables": {
+					"options": {
+						"ignoreRestSiblings": true
+					},
+					"level": "error"
+				},
 				"useIsNan": "error",
 				"useJsxKeyInIterable": "error",
 				"useValidForDirection": "error",
@@ -127,7 +138,9 @@
 				"noCompareNegZero": "error",
 				"noConsole": {
 					"level": "error",
-					"options": { "allow": ["warn", "error"] }
+					"options": {
+						"allow": ["warn", "error"]
+					}
 				},
 				"noControlCharactersInRegex": "error",
 				"noDebugger": "error",
@@ -164,7 +177,9 @@
 			"includes": ["*.ts", "*.tsx", "*.mts", "*.cts"],
 			"linter": {
 				"rules": {
-					"complexity": { "noArguments": "error" },
+					"complexity": {
+						"noArguments": "error"
+					},
 					"correctness": {
 						"noConstAssign": "off",
 						"noGlobalObjectCalls": "off",
@@ -175,7 +190,9 @@
 						"noUnreachable": "off",
 						"noUnreachableSuper": "off"
 					},
-					"style": { "useConst": "error" },
+					"style": {
+						"useConst": "error"
+					},
 					"suspicious": {
 						"noClassAssign": "off",
 						"noDuplicateClassMembers": "off",
