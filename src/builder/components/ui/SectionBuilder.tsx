@@ -18,7 +18,7 @@ export const SectionBuilder: React.FC<SectionProps> = ({ component }) => {
 
 	return (
 		<section
-			className="relative bg-white w-full p-2"
+			className="relative bg-white w-full"
 			style={{
 				...mapStylePropsToCss(component.props?.style),
 			}}
