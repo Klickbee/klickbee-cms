@@ -28,8 +28,7 @@ export default function BuilderStyleSizeAndSpacing({
 	const styleProps = useStyleProps(component, {
 		sizeAndSpacing: STYLE_DEFAULTS.SIZE_AND_SPACING,
 	});
-	const sizeSpacing =
-		styleProps.sizeAndSpacing || STYLE_DEFAULTS.SIZE_AND_SPACING;
+	const sizeSpacing = styleProps.sizeAndSpacing;
 	const { updateNestedProperty } = useStyleUpdate(component);
 
 	return (
@@ -41,7 +40,7 @@ export default function BuilderStyleSizeAndSpacing({
 				onEmpty={() =>
 					updateNestedProperty("sizeAndSpacing", (current) => {
 						const curr = current || {};
-						const { ...rest } = curr as SizeSpacingStyle;
+						const { width, ...rest } = curr as SizeSpacingStyle;
 						return rest as SizeSpacingStyle;
 					})
 				}
@@ -71,6 +70,13 @@ export default function BuilderStyleSizeAndSpacing({
 			<PropertyUnitInput
 				label={t("height")}
 				layout="row"
+				onEmpty={() =>
+					updateNestedProperty("sizeAndSpacing", (current) => {
+						const curr = current || {};
+						const { height, ...rest } = curr as SizeSpacingStyle;
+						return rest as SizeSpacingStyle;
+					})
+				}
 				onUnitChange={(unit) =>
 					updateNestedProperty("sizeAndSpacing", (current) => ({
 						...current,
