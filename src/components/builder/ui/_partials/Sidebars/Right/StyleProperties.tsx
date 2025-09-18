@@ -29,7 +29,7 @@ export default function BuilderStyleProperties() {
 	}
 
 	return (
-		<Accordion defaultValue={["layout"]} type="multiple">
+		<Accordion collapsible type="single">
 			<AccordionItem value="layout">
 				<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 data-[state=open]:border-b">
 					{t("Layout.Layout")}
