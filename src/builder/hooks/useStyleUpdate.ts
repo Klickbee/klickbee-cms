@@ -14,15 +14,11 @@ import {
 /**
  * Hook to handle style property updates in the builder store
  */
-/** TODO : implement sizing reset
- * e.g : when setting a value for width, when you remove this value (select it then backspace or just backspace) it should remove with css property in css
- **/
 
 export function useStyleUpdate(component: BuilderComponent) {
 	const setCurrentComponent = useCurrentComponentStore(
 		(state) => state.setCurrentComponent,
 	);
-	// console.log(component)
 
 	const currentPage = useCurrentPageStore((state) => state.currentPage);
 
@@ -30,8 +26,6 @@ export function useStyleUpdate(component: BuilderComponent) {
 
 	const updateStyle = useCallback(
 		(updates: Partial<ComponentStyleProps>) => {
-			// console.log(updates)
-			// console.log(component.props.style)
 			// Update the component's style properties
 			const updatedComponent: BuilderComponent = {
 				...component,
@@ -52,7 +46,6 @@ export function useStyleUpdate(component: BuilderComponent) {
 				updatedComponent,
 			);
 			setCurrentPage(currentPage);
-			// console.log(currentPage.content);
 		},
 		[component, setCurrentComponent, currentPage, setCurrentPage],
 	);
