@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { Button } from "@/builder/components/ui/Button";
 // Leaf UI components (do not rely on editor-only contexts)
 import { Checkbox } from "@/builder/components/ui/Checkbox";
 import { Dropdown } from "@/builder/components/ui/Dropdown";
@@ -96,14 +97,18 @@ function PublicGrid({ component }: { component: BuilderComponent }) {
 // Fallback: render nothing for unsupported types in public mode
 function UnknownPublic({ component }: { component: BuilderComponent }) {
 	// Intentionally render nothing on public site for unknown components
-	return null;
+	return (
+		<div style={{ backgroundColor: "red" }}>
+			<h1>not working</h1>
+		</div>
+	);
 }
 
 const publicComponentMap: Record<
 	ComponentType,
 	React.FC<{ component: BuilderComponent }>
 > = {
-	button: UnknownPublic,
+	button: Button,
 	checkbox: Checkbox,
 
 	// CMS
