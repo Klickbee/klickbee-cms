@@ -21,7 +21,10 @@ import { Text } from "@/builder/components/ui/Text";
 import { TextField } from "@/builder/components/ui/TextField";
 import { Video } from "@/builder/components/ui/Video";
 import { useDeleteComponentContext } from "@/builder/contexts/DeleteComponentContext";
+import { useDuplicateComponent } from "@/builder/hooks/useDuplicateComponent";
 import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent";
+import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
+import { useStyleClipboardStore } from "@/builder/store/storeStyleClipboard";
 import {
 	BuilderComponent,
 	ComponentType,
@@ -101,6 +104,33 @@ interface ComponentRendererProps {
 	isDropTarget?: boolean;
 }
 
+function updateStyleInTree(
+	list: BuilderComponent[],
+	targetId: string,
+	newStyle: Record<string, unknown>,
+): boolean {
+	for (const node of list) {
+		if (node.id === targetId) {
+			node.props = {
+				...node.props,
+				style: { ...newStyle },
+			};
+			return true;
+		}
+		if (
+			node.children &&
+			updateStyleInTree(
+				node.children as BuilderComponent[],
+				targetId,
+				newStyle,
+			)
+		) {
+			return true;
+		}
+	}
+	return false;
+}
+
 export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 	component,
 	onDragOver,
@@ -114,6 +144,9 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 		(state) => state.setCurrentComponent,
 	);
 	const { confirmDelete } = useDeleteComponentContext();
+	const { duplicateComponent } = useDuplicateComponent();
+	const { clipboard, copy } = useStyleClipboardStore();
+	const { currentPage, setCurrentPage } = useCurrentPageStore();
 
 	// Get the component from the registry or use the default component
 	const ComponentToRender = componentMap[component.type] || DefaultComponent;
@@ -147,6 +180,43 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 				</div>
 			</ContextMenuTrigger>
 			<ContextMenuContent onClick={(e) => e.stopPropagation()}>
+				<ContextMenuItem
+					onClick={(e) => {
+						e.stopPropagation();
+						duplicateComponent(component.id);
+					}}
+				>
+					Duplicate (Ctrl+D)
+				</ContextMenuItem>
+				<ContextMenuItem
+					onClick={(e) => {
+						e.stopPropagation();
+						copy(component.props?.style);
+					}}
+				>
+					Copy style
+				</ContextMenuItem>
+				<ContextMenuItem
+					onClick={(e) => {
+						e.stopPropagation();
+						if (!clipboard) return;
+						const working = Array.isArray(currentPage.content)
+							? (JSON.parse(
+									JSON.stringify(currentPage.content),
+								) as BuilderComponent[])
+							: [];
+						if (
+							updateStyleInTree(working, component.id, clipboard)
+						) {
+							setCurrentPage({
+								...currentPage,
+								content: working,
+							});
+						}
+					}}
+				>
+					Paste style
+				</ContextMenuItem>
 				<ContextMenuItem
 					className={"text-destructive"}
 					onClick={(e) => {
