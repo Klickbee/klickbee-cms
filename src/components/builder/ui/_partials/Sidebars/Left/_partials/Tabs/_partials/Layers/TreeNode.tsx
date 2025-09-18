@@ -123,7 +123,31 @@ export function TreeNode({ node, level = 0, parentId = null }: TreeNodeProps) {
 							setExpanded(
 								!isCurrentComponent(node.id) ? true : !expanded,
 							);
-							setCurrentComponent(node);
+							// Ensure we set the freshest version of the component from the current page tree
+							const findById = (
+								list: BuilderComponent[],
+								id: string,
+							): BuilderComponent | null => {
+								for (const n of list) {
+									if (n.id === id) return n;
+									if (n.children) {
+										const found = findById(
+											n.children as BuilderComponent[],
+											id,
+										);
+										if (found) return found;
+									}
+								}
+								return null;
+							};
+							let selected = null as BuilderComponent | null;
+							if (Array.isArray(currentPage.content)) {
+								selected = findById(
+									currentPage.content as BuilderComponent[],
+									node.id,
+								);
+							}
+							setCurrentComponent(selected ?? node);
 						}}
 						onDragEnter={() => setOverInside(true)}
 						onDragLeave={() => setOverInside(false)}
