@@ -75,14 +75,15 @@ export default function BuilderContentProperties() {
 			case "submitbutton":
 				return <SubmitButtonContent component={currentComponent} />;
 			default:
-				return (
-					<div className="text-sm text-gray-500 py-4">
-						No content properties available for{" "}
-						{currentComponent.type}
-					</div>
-				);
+				return null;
 		}
 	};
+
+	const content = renderContentComponent();
+
+	if (!content) {
+		return null;
+	}
 
 	return (
 		<Accordion defaultValue={["content"]} type="multiple">
@@ -91,7 +92,7 @@ export default function BuilderContentProperties() {
 					Content
 				</AccordionTrigger>
 				<AccordionContent className="px-4 py-3 border-b border-zinc-200">
-					{renderContentComponent()}
+					{content}
 				</AccordionContent>
 			</AccordionItem>
 		</Accordion>
