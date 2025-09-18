@@ -1,10 +1,8 @@
+import { getBuilderMaxWidth } from "@/builder/lib/breakpoints";
 import { FluidSize } from "@/builder/types/settings/FluidSize";
-import { useSetting } from "@/feature/settings/queries/useSettings";
 
-export function toClamp(size: FluidSize): string {
-	const breakpointMaxWidth =
-		JSON.parse(useSetting("builder_breakpoints").data?.value || "[]")[0]
-			?.width || 1440;
+export function toClamp(size: FluidSize, breakpointMaxWidth?: number): string {
+	const maxWidth = breakpointMaxWidth ?? getBuilderMaxWidth() ?? 1440;
 
 	if (size.max == size.min) return `${size.max}${size.sizeUnit}`;
 	if (size.min == undefined) {
@@ -17,7 +15,6 @@ export function toClamp(size: FluidSize): string {
 	const min = size.min;
 	const max = size.max;
 
-	const maxWidth = breakpointMaxWidth;
 	const sizeUnit = size.sizeUnit;
 
 	let slope: number;
