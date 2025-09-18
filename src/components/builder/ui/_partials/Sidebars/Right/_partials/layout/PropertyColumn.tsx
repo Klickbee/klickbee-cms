@@ -7,6 +7,7 @@ interface PropertyColumnProps {
 	children: React.ReactNode;
 	className?: string;
 	action?: React.ReactNode;
+	variant?: "embedded" | "opacity" | "default" | "no-wrap";
 }
 
 export default function PropertyColumn({
@@ -14,6 +15,7 @@ export default function PropertyColumn({
 	children,
 	className,
 	action,
+	variant = "embedded",
 }: PropertyColumnProps) {
 	return (
 		<div className={cn("flex flex-col gap-2", className)}>

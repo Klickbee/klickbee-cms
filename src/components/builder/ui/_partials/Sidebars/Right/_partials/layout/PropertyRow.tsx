@@ -7,6 +7,7 @@ interface PropertyRowProps {
 	children: React.ReactNode;
 	className?: string;
 	labelWidth?: string;
+	variant?: string;
 }
 
 export default function PropertyRow({
@@ -14,6 +15,7 @@ export default function PropertyRow({
 	children,
 	className,
 	labelWidth = "w-[100px]",
+	variant = "default",
 }: PropertyRowProps) {
 	return (
 		<div className={cn("flex items-center gap-2 w-full", className)}>

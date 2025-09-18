@@ -17,6 +17,7 @@ interface PropertyUnitInputProps<T extends SizeUnit | PercentUnit | TimeUnit> {
 	placeholder?: string;
 	className?: string;
 	onEmpty?: () => void;
+	variant?: "embedded" | "default" | "no-wrap" | "opacity";
 }
 
 export default function PropertyUnitInput<
@@ -31,6 +32,7 @@ export default function PropertyUnitInput<
 	placeholder = "0",
 	className,
 	onEmpty,
+	variant = "embedded",
 }: PropertyUnitInputProps<T>) {
 	const unitInput = (
 		<SimpleUnitInput
@@ -41,12 +43,17 @@ export default function PropertyUnitInput<
 			placeholder={placeholder}
 			unit={unit}
 			value={value}
+			variant={variant}
 		/>
 	);
 
 	return layout === "row" ? (
-		<PropertyRow label={label}>{unitInput}</PropertyRow>
+		<PropertyRow label={label} variant={variant}>
+			{unitInput}
+		</PropertyRow>
 	) : (
-		<PropertyColumn label={label}>{unitInput}</PropertyColumn>
+		<PropertyColumn label={label} variant={variant}>
+			{unitInput}
+		</PropertyColumn>
 	);
 }
