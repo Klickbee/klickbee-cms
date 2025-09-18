@@ -5,7 +5,9 @@ export function toClamp(size: FluidSize): string {
 	const breakpointMaxWidth =
 		JSON.parse(useSetting("builder_breakpoints").data?.value || "[]")[0]
 			?.width || 1440;
-	if (size.max == size.min || size.min == undefined) {
+
+	if (size.max == size.min) return `${size.max}${size.sizeUnit}`;
+	if (size.min == undefined) {
 		size.min = compressNumber(size.max);
 	}
 	if (size.max == undefined) {
