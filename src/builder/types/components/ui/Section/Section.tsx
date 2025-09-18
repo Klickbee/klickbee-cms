@@ -12,9 +12,26 @@ export const SectionBC: SectionBCI = {
 			background: {},
 			bordersAndCorners: {},
 			effects: {},
-			layout: {},
+			layout: {
+				display: "block",
+			},
 			position: {},
-			sizeAndSpacing: {},
+			sizeAndSpacing: {
+				margin: {
+					bottom: { max: 0, maxWidth: 1440, min: 0, sizeUnit: "px" },
+					key: "default-margin",
+					left: { max: 0, maxWidth: 1440, min: 0, sizeUnit: "px" },
+					right: { max: 0, maxWidth: 1440, min: 0, sizeUnit: "px" },
+					top: { max: 0, maxWidth: 1440, min: 0, sizeUnit: "px" },
+				},
+				padding: {
+					bottom: { max: 0, maxWidth: 1440, min: 0, sizeUnit: "px" },
+					key: "default-padding",
+					left: { max: 0, maxWidth: 1440, min: 0, sizeUnit: "px" },
+					right: { max: 0, maxWidth: 1440, min: 0, sizeUnit: "px" },
+					top: { max: 0, maxWidth: 1440, min: 0, sizeUnit: "px" },
+				},
+			},
 		},
 	},
 	type: "section",
