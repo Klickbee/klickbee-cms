@@ -16,6 +16,7 @@ interface PropertyUnitInputProps<T extends SizeUnit | PercentUnit | TimeUnit> {
 	layout?: "row" | "column";
 	placeholder?: string;
 	className?: string;
+	onEmpty?: () => void;
 }
 
 export default function PropertyUnitInput<
@@ -29,10 +30,12 @@ export default function PropertyUnitInput<
 	layout = "row",
 	placeholder = "0",
 	className,
+	onEmpty,
 }: PropertyUnitInputProps<T>) {
 	const unitInput = (
 		<SimpleUnitInput
 			className={className}
+			onEmpty={onEmpty}
 			onUnitChange={onUnitChange}
 			onValueChange={onValueChange}
 			placeholder={placeholder}
