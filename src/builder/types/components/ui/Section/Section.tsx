@@ -13,6 +13,7 @@ export const SectionBC: SectionBCI = {
 			bordersAndCorners: {},
 			effects: {},
 			layout: {},
+			position: {},
 			sizeAndSpacing: {},
 		},
 	},
