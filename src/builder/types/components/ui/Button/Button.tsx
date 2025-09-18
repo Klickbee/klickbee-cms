@@ -15,10 +15,11 @@ export const ButtonBC: ButtonBCI = {
 		},
 		style: {
 			background: {
-				color: "#0000",
+				color: "#000000",
 			},
 			bordersAndCorners: {},
 			effects: {},
+			position: {},
 			sizeAndSpacing: {
 				padding: {
 					bottom: {
@@ -46,10 +47,6 @@ export const ButtonBC: ButtonBCI = {
 						min: 1,
 						sizeUnit: "rem",
 					},
-				},
-				width: {
-					number: 100,
-					unit: "px",
 				},
 			},
 			typography: {

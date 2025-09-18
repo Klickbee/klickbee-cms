@@ -10,6 +10,7 @@ export interface ButtonBcStyleProps
 		| "effects"
 		| "sizeAndSpacing"
 		| "typography"
+		| "position"
 	> {}
 
 export interface ButtonBcContentProps
