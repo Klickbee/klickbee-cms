@@ -12,6 +12,7 @@ import { STYLE_DEFAULTS } from "@/builder/constants/styleDefaults";
 import { useStyleProps } from "@/builder/hooks/useStyleProps";
 import { useStyleUpdate } from "@/builder/hooks/useStyleUpdate";
 import { BuilderComponent } from "@/builder/types/components/components";
+import { SizeSpacingStyle } from "@/builder/types/components/properties/componentStylePropsType";
 import PropertyQuadInput from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyQuadInput";
 import PropertyUnitInput from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyUnitInput";
 import { Button } from "@/components/ui/button";
@@ -37,6 +38,13 @@ export default function BuilderStyleSizeAndSpacing({
 			<PropertyUnitInput
 				label={t("width")}
 				layout="row"
+				onEmpty={() =>
+					updateNestedProperty("sizeAndSpacing", (current) => {
+						const curr = current || {};
+						const { ...rest } = curr as SizeSpacingStyle;
+						return rest as SizeSpacingStyle;
+					})
+				}
 				onUnitChange={(unit) =>
 					updateNestedProperty("sizeAndSpacing", (current) => ({
 						...current,
