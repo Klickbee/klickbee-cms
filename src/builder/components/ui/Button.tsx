@@ -1,6 +1,7 @@
 import React from "react";
 import { mapStylePropsToCss } from "@/builder/lib/style/mapStylePropsToCss";
 import { BuilderComponent } from "@/builder/types/components/components";
+import { Button as ButtonShadcn } from "@/components/ui/button";
 
 interface ButtonProps {
 	component: BuilderComponent;
@@ -36,7 +37,7 @@ export const Button: React.FC<ButtonProps> = ({ component }) => {
 	}, [href]);
 
 	return (
-		<button
+		<ButtonShadcn
 			className={className}
 			onClick={handleClick}
 			style={commonStyle}
@@ -44,6 +45,6 @@ export const Button: React.FC<ButtonProps> = ({ component }) => {
 		>
 			{Icon}
 			<p>{text}</p>
-		</button>
+		</ButtonShadcn>
 	);
 };
