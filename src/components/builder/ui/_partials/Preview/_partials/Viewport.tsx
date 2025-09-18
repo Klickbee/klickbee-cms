@@ -1,5 +1,6 @@
 import { Play, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { useBuilderShortcuts } from "@/builder/hooks/useBuilderShortcuts";
 import { ComponentRenderer } from "@/builder/lib/renderers/ComponentRenderer";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
 import {
@@ -20,6 +21,7 @@ export default function BuilderPreviewViewport({
 }) {
 	const { currentPage, setCurrentPage } = useCurrentPageStore();
 	const [targetComponent, setTargetComponent] = useState<string | null>(null);
+	useBuilderShortcuts();
 
 	return (
 		<div className="flex flex-col gap-2" key={bp.name}>

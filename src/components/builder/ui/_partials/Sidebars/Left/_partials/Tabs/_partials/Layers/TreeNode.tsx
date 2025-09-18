@@ -3,8 +3,11 @@
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { useDeleteComponentContext } from "@/builder/contexts/DeleteComponentContext";
+import { useDuplicateComponent } from "@/builder/hooks/useDuplicateComponent";
 import { useMoveComponent } from "@/builder/hooks/useMoveComponent";
 import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent";
+import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
+import { useStyleClipboardStore } from "@/builder/store/storeStyleClipboard";
 import {
 	BuilderComponent,
 	canHaveChildren,
@@ -36,6 +39,9 @@ export function TreeNode({ node, level = 0, parentId = null }: TreeNodeProps) {
 		(state) => state.setCurrentComponent,
 	);
 	const { moveComponent } = useMoveComponent();
+	const { duplicateComponent } = useDuplicateComponent();
+	const { clipboard, copy } = useStyleClipboardStore();
+	const { currentPage, setCurrentPage } = useCurrentPageStore();
 	const hasChildren = node.children && node.children.length > 0;
 	const currentComponent = useCurrentComponentStore(
 		(state) => state.currentComponent,
@@ -161,6 +167,46 @@ export function TreeNode({ node, level = 0, parentId = null }: TreeNodeProps) {
 				</div>
 			</ContextMenuTrigger>
 			<ContextMenuContent>
+				<ContextMenuItem onClick={() => duplicateComponent(node.id)}>
+					Duplicate (Ctrl+D)
+				</ContextMenuItem>
+				<ContextMenuItem onClick={() => copy(node.props?.style)}>
+					Copy style
+				</ContextMenuItem>
+				<ContextMenuItem
+					onClick={() => {
+						if (!clipboard) return;
+						const working = Array.isArray(currentPage.content)
+							? (JSON.parse(
+									JSON.stringify(currentPage.content),
+								) as BuilderComponent[])
+							: [];
+						const update = (list: BuilderComponent[]): boolean => {
+							for (const n of list) {
+								if (n.id === node.id) {
+									n.props = {
+										...n.props,
+										style: { ...clipboard },
+									};
+									return true;
+								}
+								if (
+									n.children &&
+									update(n.children as BuilderComponent[])
+								)
+									return true;
+							}
+							return false;
+						};
+						if (update(working))
+							setCurrentPage({
+								...currentPage,
+								content: working,
+							});
+					}}
+				>
+					Paste style
+				</ContextMenuItem>
 				<ContextMenuItem
 					className={"text-destructive"}
 					onClick={() => confirmDelete(node.id, parentId, node.type)}

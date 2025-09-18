@@ -1,5 +1,6 @@
 "use client";
 
+import { useBuilderShortcuts } from "@/builder/hooks/useBuilderShortcuts";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
 import { BuilderComponent } from "@/builder/types/components/components";
 import {
@@ -10,6 +11,7 @@ import {
 
 export default function BuilderTabLayers() {
 	const currentPage = useCurrentPageStore((state) => state.currentPage);
+	useBuilderShortcuts();
 
 	const contentNodes: BuilderComponent[] =
 		currentPage.content && Array.isArray(currentPage.content)
