@@ -105,6 +105,17 @@ export default function BuilderStyleSizeAndSpacing({
 					<PropertyUnitInput
 						label={t("minWidth")}
 						layout="row"
+						onEmpty={() =>
+							updateNestedProperty(
+								"sizeAndSpacing",
+								(current) => {
+									const curr = current || {};
+									const { minWidth, ...rest } =
+										curr as SizeSpacingStyle;
+									return rest as SizeSpacingStyle;
+								},
+							)
+						}
 						onUnitChange={(unit) =>
 							updateNestedProperty(
 								"sizeAndSpacing",
@@ -138,6 +149,17 @@ export default function BuilderStyleSizeAndSpacing({
 					<PropertyUnitInput
 						label={t("maxWidth")}
 						layout="row"
+						onEmpty={() =>
+							updateNestedProperty(
+								"sizeAndSpacing",
+								(current) => {
+									const curr = current || {};
+									const { maxWidth, ...rest } =
+										curr as SizeSpacingStyle;
+									return rest as SizeSpacingStyle;
+								},
+							)
+						}
 						onUnitChange={(unit) =>
 							updateNestedProperty(
 								"sizeAndSpacing",
@@ -171,6 +193,17 @@ export default function BuilderStyleSizeAndSpacing({
 					<PropertyUnitInput
 						label={t("minHeight")}
 						layout="row"
+						onEmpty={() =>
+							updateNestedProperty(
+								"sizeAndSpacing",
+								(current) => {
+									const curr = current || {};
+									const { minHeight, ...rest } =
+										curr as SizeSpacingStyle;
+									return rest as SizeSpacingStyle;
+								},
+							)
+						}
 						onUnitChange={(unit) =>
 							updateNestedProperty(
 								"sizeAndSpacing",
@@ -204,6 +237,17 @@ export default function BuilderStyleSizeAndSpacing({
 					<PropertyUnitInput
 						label={t("maxHeight")}
 						layout="row"
+						onEmpty={() =>
+							updateNestedProperty(
+								"sizeAndSpacing",
+								(current) => {
+									const curr = current || {};
+									const { maxHeight, ...rest } =
+										curr as SizeSpacingStyle;
+									return rest as SizeSpacingStyle;
+								},
+							)
+						}
 						onUnitChange={(unit) =>
 							updateNestedProperty(
 								"sizeAndSpacing",
