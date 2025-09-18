@@ -1,4 +1,4 @@
-import { Plane, RectangleHorizontal as Rectangle } from "lucide-react";
+import { RectangleHorizontal as Rectangle } from "lucide-react";
 import { ButtonBCI } from "./ButtonType";
 
 export const ButtonBC: ButtonBCI = {
@@ -9,7 +9,8 @@ export const ButtonBC: ButtonBCI = {
 	props: {
 		content: {
 			href: "#",
-			icon: <Plane />,
+			// Use a serializable value for icon to avoid server/client reference issues during save
+			icon: "",
 			text: "Button",
 		},
 		style: {
