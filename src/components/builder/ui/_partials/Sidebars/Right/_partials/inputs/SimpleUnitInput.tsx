@@ -16,6 +16,7 @@ interface SimpleUnitInputProps<T extends SizeUnit | PercentUnit | TimeUnit> {
 	onUnitChange: (unit: T) => void;
 	placeholder?: string;
 	className?: string;
+	onEmpty?: () => void;
 }
 
 export default function SimpleUnitInput<
@@ -27,6 +28,7 @@ export default function SimpleUnitInput<
 	onUnitChange,
 	placeholder = "0",
 	className,
+	onEmpty,
 }: SimpleUnitInputProps<T>) {
 	return (
 		<div
@@ -40,6 +42,7 @@ export default function SimpleUnitInput<
 				<NumberInput
 					className="border-none shadow-none bg-transparent h-auto flex-1 [&>div]:pl-3 [&>div]:pr-2 [&>div]:py-2"
 					hideIcon
+					onEmpty={onEmpty}
 					onValueChange={onValueChange}
 					placeholder={placeholder}
 					value={value}
