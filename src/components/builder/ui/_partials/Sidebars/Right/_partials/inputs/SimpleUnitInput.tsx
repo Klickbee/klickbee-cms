@@ -17,6 +17,7 @@ interface SimpleUnitInputProps<T extends SizeUnit | PercentUnit | TimeUnit> {
 	placeholder?: string;
 	className?: string;
 	onEmpty?: () => void;
+	variant?: "embedded" | "default" | "no-wrap" | "opacity";
 }
 
 export default function SimpleUnitInput<
@@ -29,6 +30,7 @@ export default function SimpleUnitInput<
 	placeholder = "0",
 	className,
 	onEmpty,
+	variant = "embedded",
 }: SimpleUnitInputProps<T>) {
 	return (
 		<div
@@ -57,7 +59,7 @@ export default function SimpleUnitInput<
 				<UnitSelector
 					onUnitChange={onUnitChange}
 					unit={unit}
-					variant="embedded"
+					variant={variant}
 				/>
 			</div>
 		</div>

@@ -16,7 +16,7 @@ import {
 interface UnitSelectorProps<T extends SizeUnit | PercentUnit | TimeUnit> {
 	unit: T;
 	onUnitChange: (unit: T) => void;
-	variant?: "default" | "embedded" | "no-wrap";
+	variant?: "default" | "embedded" | "no-wrap" | "opacity";
 }
 
 export default function UnitSelector<
@@ -32,7 +32,7 @@ export default function UnitSelector<
 			);
 		});
 		// Pour les unités d'opacité, on affiche juste %
-		if (unit === "%" && variant != "no-wrap") {
+		if (variant === "opacity") {
 			return [
 				<SelectItem key="%" value="%">
 					%
