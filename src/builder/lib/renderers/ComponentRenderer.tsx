@@ -1,4 +1,5 @@
 import React from "react";
+import { Button } from "@/builder/components/ui/Button";
 import { Checkbox } from "@/builder/components/ui/Checkbox";
 import { Container } from "@/builder/components/ui/Container";
 import { Dropdown } from "@/builder/components/ui/Dropdown";
@@ -56,7 +57,7 @@ const componentMap: Record<
 	ComponentType,
 	React.FC<{ component: BuilderComponent }>
 > = {
-	button: DefaultComponent,
+	button: Button,
 	checkbox: Checkbox,
 	cmstemplate: DefaultComponent,
 	container: Container,
