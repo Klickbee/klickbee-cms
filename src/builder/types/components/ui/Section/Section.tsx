@@ -12,9 +12,7 @@ export const SectionBC: SectionBCI = {
 			background: {},
 			bordersAndCorners: {},
 			effects: {},
-			layout: {
-				display: "block",
-			},
+			layout: {},
 			position: {},
 			sizeAndSpacing: {
 				margin: {
