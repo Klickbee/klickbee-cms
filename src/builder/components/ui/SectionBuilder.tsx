@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import EmptyChildrenPlaceholder from "@/builder/components/ui/_partials/EmptyChildrenPlaceholder";
+import { useBuilderMaxWidth } from "@/builder/hooks/useBuilderMaxWidth";
 import { mapStylePropsToCss } from "@/builder/lib/style/mapStylePropsToCss";
 import {
 	BuilderComponent,
@@ -13,6 +14,8 @@ interface SectionProps {
 }
 
 export const SectionBuilder: React.FC<SectionProps> = ({ component }) => {
+	// Initialize the builder max width cache from settings
+	useBuilderMaxWidth();
 	// Get the setTargetComponent function from context
 	const dragDropContext = useContext(DragDropContext);
 
