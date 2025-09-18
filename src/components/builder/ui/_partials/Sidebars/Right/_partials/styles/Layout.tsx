@@ -91,7 +91,7 @@ export default function BuilderStyleLayout({
 					{ label: "Grid", value: "grid" },
 					{ label: "Inline Grid", value: "inline-grid" },
 				]}
-				value={layoutStyles.display || "flex"}
+				value={layoutStyles.display || "block"}
 			/>
 
 			{/* Flex Layout Controls */}
