@@ -1,4 +1,5 @@
 import type { FormValues } from "@/app/admin/[adminKey]/(dashboard)/manage/settings/builder/page";
+import { useBuilderMaxWidth } from "@/builder/hooks/useBuilderMaxWidth";
 import { toClamp } from "@/builder/lib/clampCalculator";
 import { useGoogleFontLink } from "@/builder/utils/query/useGoogleFontLink";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,6 +16,8 @@ function GoogleFontLoader({ fontFamily }: { fontFamily: string }) {
 export default function TypographyPreview({
 	typography,
 }: TypographyPreviewProps) {
+	// Initialize the builder max width cache from settings for clamp()
+	useBuilderMaxWidth();
 	// Liste unique des familles de polices
 	const fontFamilies = Array.from(
 		new Set(typography.typographies.map((t) => t.fontFamily)),
