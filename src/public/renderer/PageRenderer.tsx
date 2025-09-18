@@ -177,7 +177,7 @@ export function PageRenderer({
 	}
 
 	return (
-		<div className={wrapperClassName}>
+		<>
 			{rootComponents
 				.slice()
 				.sort((a, b) => (a.order || 0) - (b.order || 0))
@@ -187,6 +187,6 @@ export function PageRenderer({
 						key={component.id}
 					/>
 				))}
-		</div>
+		</>
 	);
 }
