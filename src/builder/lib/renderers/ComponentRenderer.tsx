@@ -11,10 +11,12 @@ import { Heading } from "@/builder/components/ui/Heading";
 import { Image } from "@/builder/components/ui/Image";
 import { Link } from "@/builder/components/ui/Link";
 import { List } from "@/builder/components/ui/List";
+import { NavigationMenu } from "@/builder/components/ui/NavigationMenu";
 import { Paragraph } from "@/builder/components/ui/Paragraph";
 import { RadioGroup } from "@/builder/components/ui/RadioGroup";
 import { RichText } from "@/builder/components/ui/RichText";
 import { SectionBuilder } from "@/builder/components/ui/SectionBuilder";
+import { Slider } from "@/builder/components/ui/Slider";
 import { Spacer } from "@/builder/components/ui/Spacer";
 import { SubmitButton } from "@/builder/components/ui/SubmitButton";
 import { Text } from "@/builder/components/ui/Text";
@@ -95,6 +97,8 @@ const componentMap: Record<
 	// Default for undefined
 	undefined: DefaultComponent,
 	video: Video,
+	slider: Slider,
+	navigationmenu: NavigationMenu,
 };
 
 interface ComponentRendererProps {
