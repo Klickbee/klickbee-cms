@@ -19,6 +19,7 @@ const groupLabels: Record<string, string> = {
 	text: "Text & Content",
 	media: "Media",
 	form: "Form",
+	navigation: "Navigation",
 };
 
 const groups: ComponentGroup[] = Object.entries(groupLabels).map(
