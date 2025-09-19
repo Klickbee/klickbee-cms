@@ -40,12 +40,12 @@ export function useStyleUpdate(component: BuilderComponent) {
 
 			// Update the current component in the store
 			setCurrentComponent(updatedComponent);
-			currentPage.content = updatePageContent(
+			const updatedContent = updatePageContent(
 				currentPage.content,
 				component.id,
 				updatedComponent,
 			);
-			setCurrentPage(currentPage);
+			setCurrentPage({ ...currentPage, content: updatedContent });
 		},
 		[component, setCurrentComponent, currentPage, setCurrentPage],
 	);

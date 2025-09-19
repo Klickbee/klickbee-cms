@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useDeleteComponentContext } from "@/builder/contexts/DeleteComponentContext";
 import { useDuplicateComponent } from "@/builder/hooks/useDuplicateComponent";
 import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent";
+import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
 
 export function useBuilderShortcuts() {
 	const currentComponent = useCurrentComponentStore(
@@ -11,9 +12,30 @@ export function useBuilderShortcuts() {
 	);
 	const { duplicateComponent } = useDuplicateComponent();
 	const { confirmDelete } = useDeleteComponentContext();
+	const undo = useCurrentPageStore((s) => s.undo);
+	const redo = useCurrentPageStore((s) => s.redo);
 
 	useEffect(() => {
 		const handler = (e: KeyboardEvent) => {
+			// Undo (Ctrl/Cmd + Z)
+			if ((e.ctrlKey || e.metaKey) && (e.key === "z" || e.key === "Z")) {
+				e.preventDefault();
+				if (e.shiftKey) {
+					redo();
+				} else {
+					undo();
+				}
+				return;
+			}
+
+			// Redo (Ctrl/Cmd + Y)
+			if ((e.ctrlKey || e.metaKey) && (e.key === "y" || e.key === "Y")) {
+				e.preventDefault();
+				redo();
+				return;
+			}
+
+			// Below actions require a selected component
 			if (!currentComponent || currentComponent.id === "none") return;
 
 			// Delete key
@@ -32,5 +54,5 @@ export function useBuilderShortcuts() {
 
 		document.addEventListener("keydown", handler);
 		return () => document.removeEventListener("keydown", handler);
-	}, [currentComponent, duplicateComponent, confirmDelete]);
+	}, [currentComponent, duplicateComponent, confirmDelete, undo, redo]);
 }
