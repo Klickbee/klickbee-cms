@@ -159,13 +159,15 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 	const isSelected = currentComponent.id === component.id;
 
 	// Determine the appropriate class based on component state
-	let className = "";
+	// Use a full-coverage after pseudo-element to avoid layout shifts from borders
+	let className =
+		"relative after:content-[''] after:absolute after:inset-0 after:pointer-events-none";
 	if (isSelected) {
-		className = "border-2 border-blue-500";
+		className += " after:border-2 after:border-blue-500";
 	} else if (isDropTarget) {
-		className = "border-2 border-green-500 bg-green-50";
+		className += " after:border-2 after:border-green-500 bg-green-50";
 	} else {
-		className = "hover:border-2 hover:border-blue-500";
+		className += " hover:after:border-2 hover:after:border-blue-500";
 	}
 
 	return (
