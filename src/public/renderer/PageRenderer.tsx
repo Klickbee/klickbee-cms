@@ -12,9 +12,11 @@ import { Heading } from "@/builder/components/ui/Heading";
 import { Image } from "@/builder/components/ui/Image";
 import { Link as LinkComp } from "@/builder/components/ui/Link";
 import { List } from "@/builder/components/ui/List";
+import { NavigationMenu } from "@/builder/components/ui/NavigationMenu";
 import { Paragraph } from "@/builder/components/ui/Paragraph";
 import { RadioGroup } from "@/builder/components/ui/RadioGroup";
 import { RichText } from "@/builder/components/ui/RichText";
+import { Slider } from "@/builder/components/ui/Slider";
 import { Spacer } from "@/builder/components/ui/Spacer";
 import { SubmitButton } from "@/builder/components/ui/SubmitButton";
 import { Text } from "@/builder/components/ui/Text";
@@ -144,6 +146,8 @@ const publicComponentMap: Record<
 	textfield: TextField,
 	undefined: UnknownPublic,
 	video: Video,
+	slider: Slider,
+	navigationmenu: NavigationMenu,
 };
 
 export function PublicComponentRenderer({
