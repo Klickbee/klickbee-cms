@@ -2,6 +2,17 @@ export type ListType = "bulleted" | "numbered";
 export type FieldType = "text" | "email" | "password";
 export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
 
+export type NavigationItem = {
+	label: string;
+	href: string;
+	target?: string; // _blank, _self, etc.
+	rel?: string;
+	ariaLabel?: string;
+	icon?: React.ReactNode | string;
+	activeMatch?: string; // regex or pathname startsWith
+	children?: NavigationItem[]; // sub-menu items
+};
+
 export interface ComponentContentProps {
 	text?: string; // General text content (buttons, links, labels, etc.)
 	content?: string; // Formatted text (rich text blocks)
@@ -16,6 +27,9 @@ export interface ComponentContentProps {
 	code?: string; // Custom embed HTML or iframe
 	listType?: ListType; // List type (bulleted or numbered)
 	items?: string[]; // Array of text items
+	// Navigation-specific
+	navItems?: NavigationItem[]; // Structured navigation items
+	orientation?: "horizontal" | "vertical"; // Orientation of navigation (used by NavigationMenu)
 	successMessage?: string; // Text after successful form submission
 	errorMessage?: string; // Text after failed submission
 	name?: string; // Field identifier

@@ -1,5 +1,6 @@
 import { Play, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { useBuilderShortcuts } from "@/builder/hooks/useBuilderShortcuts";
 import { ComponentRenderer } from "@/builder/lib/renderers/ComponentRenderer";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
 import {
@@ -11,17 +12,16 @@ import { Button } from "@/components/ui/button";
 
 export default function BuilderPreviewViewport({
 	bp,
-	content,
 	handleAddBreakpoint,
 	handleRemoveBreakpoint,
 }: {
 	bp: { name: string; width: number };
-	content: BuilderComponent[];
 	handleAddBreakpoint: () => void;
 	handleRemoveBreakpoint: (breakpointName: string) => void;
 }) {
 	const { currentPage, setCurrentPage } = useCurrentPageStore();
 	const [targetComponent, setTargetComponent] = useState<string | null>(null);
+	useBuilderShortcuts();
 
 	return (
 		<div className="flex flex-col gap-2" key={bp.name}>
@@ -160,12 +160,19 @@ export default function BuilderPreviewViewport({
 				}}
 				style={{
 					backgroundColor: "white",
+					containerType: "inline-size",
 					minHeight: "1000px",
 					position: "relative",
 					transition: "all 0.2s ease",
-					width: `${bp.width / 1.5}px`,
+					width: `${bp.width}px`,
 				}}
 			>
+				<div
+					style={{
+						transformOrigin: "top left",
+						width: `${bp.width}px`,
+					}}
+				></div>
 				{/* Render components for this breakpoint */}
 				{currentPage.content &&
 					Array.isArray(currentPage.content) &&

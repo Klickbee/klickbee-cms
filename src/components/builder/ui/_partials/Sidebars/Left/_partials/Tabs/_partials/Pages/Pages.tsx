@@ -42,6 +42,7 @@ import {
 	useSetAsHomePage,
 	useUpdatePageParent,
 } from "@/feature/page/queries/usePageActions";
+import { usePageById } from "@/feature/page/queries/usePageById";
 import { usePages } from "@/feature/page/queries/usePages";
 import { Page, PageLight } from "@/feature/page/types/page";
 import { useSetting } from "@/feature/settings/queries/useSettings";
@@ -63,6 +64,18 @@ export default function BuilderTabPagesPages() {
 		value: Number(currentHomepageRaw?.value),
 	};
 	const { addPage } = useAddPage();
+
+	const { data: homepage } = usePageById(currentHomepage.value);
+
+	useEffect(() => {
+		if (
+			currentPage &&
+			currentPage.id === -1 &&
+			typeof homepage !== "undefined"
+		) {
+			setCurrentPage(homepage as PageLight);
+		}
+	}, [currentPage?.id, homepage, setCurrentPage]);
 
 	// Initialize page action hooks
 	const duplicatePage = useDuplicatePage();
