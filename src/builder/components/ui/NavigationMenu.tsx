@@ -59,11 +59,7 @@ export const NavigationMenu: React.FC<NavigationMenuProps> = ({
 			>
 				{items.map((item, i) => (
 					<li key={i}>
-						<a
-							className="text-blue-600 hover:underline"
-							href={item.href}
-							target={item.target}
-						>
+						<a className="" href={item.href} target={item.target}>
 							{item.label}
 						</a>
 					</li>
