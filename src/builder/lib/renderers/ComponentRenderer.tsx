@@ -2,6 +2,7 @@ import React from "react";
 import { Button } from "@/builder/components/ui/Button";
 import { Checkbox } from "@/builder/components/ui/Checkbox";
 import { Container } from "@/builder/components/ui/Container";
+import { Divider } from "@/builder/components/ui/Divider";
 import { Dropdown } from "@/builder/components/ui/Dropdown";
 import { Embed } from "@/builder/components/ui/Embed";
 import { FileUpload } from "@/builder/components/ui/FileUpload";
@@ -66,7 +67,7 @@ const componentMap: Record<
 	checkbox: Checkbox,
 	cmstemplate: DefaultComponent,
 	container: Container,
-	divider: DefaultComponent,
+	divider: Divider,
 	dropdown: Dropdown,
 	email: DefaultComponent,
 	embed: Embed,
