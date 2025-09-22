@@ -254,23 +254,62 @@ function applyTypography(typography?: TypographyStyle): React.CSSProperties {
 	return css;
 }
 
+function colorWithOpacity(color: string, opacity: number): string {
+	const pct = Math.round(Math.min(Math.max(opacity, 0), 1) * 100);
+	// Use modern CSS color-mix to apply opacity regardless of color space or variables
+	return `color-mix(in srgb, ${color} ${pct}%, transparent)`;
+}
+
 function applyBackground(bg?: BackgroundStyle): React.CSSProperties {
 	const css: React.CSSProperties = {};
 	if (!bg) return css;
 
 	if (bg.color) css.backgroundColor = resolveColor(bg.color);
 
+	const layers: string[] = [];
+
+	// Overlay on top
+	if (bg.overlay) {
+		const op =
+			typeof bg.overlay.opacity === "number" ? bg.overlay.opacity : 1;
+		if (bg.overlay.gradient) {
+			const og = bg.overlay.gradient;
+			const c0 = resolveColor(og.colors[0]) ?? "transparent";
+			const c1 = resolveColor(og.colors[1]) ?? "transparent";
+			const p0 = og.positions?.[0] ?? 0;
+			const p1 = og.positions?.[1] ?? 100;
+			const cc0 = colorWithOpacity(c0, op);
+			const cc1 = colorWithOpacity(c1, op);
+			if (og.type === "linear") {
+				const angle = og.angle ?? 180;
+				layers.push(
+					`linear-gradient(${angle}deg, ${cc0} ${p0}%, ${cc1} ${p1}%)`,
+				);
+			} else {
+				layers.push(
+					`radial-gradient(circle, ${cc0} ${p0}%, ${cc1} ${p1}%)`,
+				);
+			}
+		} else if (bg.overlay.color) {
+			const base = resolveColor(bg.overlay.color) ?? "#000000";
+			const mix = colorWithOpacity(base, op);
+			layers.push(`linear-gradient(0deg, ${mix}, ${mix})`);
+		}
+	}
+
+	// Gradient beneath overlay
 	if (bg.gradient) {
 		const angle = bg.gradient.angle ?? 180;
 		const c0 = resolveColor(bg.gradient.colors[0]) ?? "transparent";
 		const c1 = resolveColor(bg.gradient.colors[1]) ?? "transparent";
 		const p0 = bg.gradient.positions?.[0] ?? 0;
 		const p1 = bg.gradient.positions?.[1] ?? 100;
-		css.backgroundImage = `linear-gradient(${angle}deg, ${c0} ${p0}%, ${c1} ${p1}%)`;
+		layers.push(`linear-gradient(${angle}deg, ${c0} ${p0}%, ${c1} ${p1}%)`);
 	}
 
+	// Image at the bottom
 	if (bg.image) {
-		css.backgroundImage = `url(${bg.image.src})`;
+		layers.push(`url(${bg.image.src})`);
 		if (bg.image.size) css.backgroundSize = bg.image.size;
 		if (bg.image.repeat) css.backgroundRepeat = bg.image.repeat;
 		if (bg.image.attachment) css.backgroundAttachment = bg.image.attachment;
@@ -290,6 +329,10 @@ function applyBackground(bg?: BackgroundStyle): React.CSSProperties {
 				css.backgroundPosition = `${x} ${y}`;
 			}
 		}
+	}
+
+	if (layers.length) {
+		css.backgroundImage = layers.join(", ");
 	}
 
 	return css;
