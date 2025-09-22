@@ -334,25 +334,25 @@ export default function BuilderStyleSizeAndSpacing({
 									...(top !== undefined && {
 										top: {
 											...current.padding.top,
-											min: top,
+											max: top,
 										},
 									}),
 									...(right !== undefined && {
 										right: {
 											...current.padding.right,
-											min: right,
+											max: right,
 										},
 									}),
 									...(bottom !== undefined && {
 										bottom: {
 											...current.padding.bottom,
-											min: bottom,
+											max: bottom,
 										},
 									}),
 									...(left !== undefined && {
 										left: {
 											...current.padding.left,
-											min: left,
+											max: left,
 										},
 									}),
 								}
@@ -361,10 +361,10 @@ export default function BuilderStyleSizeAndSpacing({
 				}}
 				unit={sizeSpacing.padding?.top.sizeUnit || "px"}
 				values={{
-					bottom: sizeSpacing.padding?.bottom.min || 0,
-					left: sizeSpacing.padding?.left.min || 0,
-					right: sizeSpacing.padding?.right.min || 0,
-					top: sizeSpacing.padding?.top.min || 0,
+					bottom: sizeSpacing.padding?.bottom.max || 0,
+					left: sizeSpacing.padding?.left.max || 0,
+					right: sizeSpacing.padding?.right.max || 0,
+					top: sizeSpacing.padding?.top.max || 0,
 				}}
 			/>
 
@@ -412,25 +412,25 @@ export default function BuilderStyleSizeAndSpacing({
 									...(top !== undefined && {
 										top: {
 											...current.margin.top,
-											min: top,
+											max: top,
 										},
 									}),
 									...(right !== undefined && {
 										right: {
 											...current.margin.right,
-											min: right,
+											max: right,
 										},
 									}),
 									...(bottom !== undefined && {
 										bottom: {
 											...current.margin.bottom,
-											min: bottom,
+											max: bottom,
 										},
 									}),
 									...(left !== undefined && {
 										left: {
 											...current.margin.left,
-											min: left,
+											max: left,
 										},
 									}),
 								}
@@ -439,10 +439,10 @@ export default function BuilderStyleSizeAndSpacing({
 				}}
 				unit={sizeSpacing.margin?.top.sizeUnit || "px"}
 				values={{
-					bottom: sizeSpacing.margin?.bottom.min || 0,
-					left: sizeSpacing.margin?.left.min || 0,
-					right: sizeSpacing.margin?.right.min || 0,
-					top: sizeSpacing.margin?.top.min || 0,
+					bottom: sizeSpacing.margin?.bottom.max || 0,
+					left: sizeSpacing.margin?.left.max || 0,
+					right: sizeSpacing.margin?.right.max || 0,
+					top: sizeSpacing.margin?.top.max || 0,
 				}}
 			/>
 		</div>
