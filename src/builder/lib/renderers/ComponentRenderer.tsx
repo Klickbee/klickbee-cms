@@ -161,7 +161,7 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 	// Determine the appropriate class based on component state
 	// Use a full-coverage after pseudo-element to avoid layout shifts from borders
 	let className =
-		"relative after:content-[''] after:absolute after:inset-0 after:pointer-events-none";
+		"relative after:content-[''] after:absolute after:inset-0 after:pointer-events-none after:z-10";
 	if (isSelected) {
 		className += " after:border-2 after:border-blue-500";
 	} else if (isDropTarget) {
