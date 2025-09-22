@@ -4,6 +4,7 @@ import React from "react";
 import { Button } from "@/builder/components/ui/Button";
 // Leaf UI components (do not rely on editor-only contexts)
 import { Checkbox } from "@/builder/components/ui/Checkbox";
+import { Divider } from "@/builder/components/ui/Divider";
 import { Dropdown } from "@/builder/components/ui/Dropdown";
 import { Embed } from "@/builder/components/ui/Embed";
 import { FileUpload } from "@/builder/components/ui/FileUpload";
@@ -57,7 +58,7 @@ function PublicContainer({ component }: { component: BuilderComponent }) {
 		...mapStylePropsToCss(component.props?.style),
 	};
 	return (
-		<div className="max-w-screen-lg mx-auto" style={style}>
+		<div className="" style={style}>
 			{Array.isArray(component.children)
 				? component.children
 						.slice()
@@ -116,7 +117,7 @@ const publicComponentMap: Record<
 	// CMS
 	cmstemplate: UnknownPublic,
 	container: PublicContainer,
-	divider: UnknownPublic,
+	divider: Divider,
 	dropdown: Dropdown,
 	email: UnknownPublic,
 	embed: Embed,
