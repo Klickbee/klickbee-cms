@@ -66,7 +66,6 @@ export default function BuilderTabPagesPages() {
 	const { addPage } = useAddPage();
 
 	const { data: homepage } = usePageById(currentHomepage.value);
-
 	useEffect(() => {
 		if (
 			currentPage &&
