@@ -27,6 +27,8 @@ export const getAllPages = async () => {
 			slug: true,
 			title: true,
 			updatedAt: true,
+			pageHeaderId: true,
+			pageFooterId: true,
 		},
 	});
 };
