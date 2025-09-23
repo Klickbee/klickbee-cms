@@ -99,9 +99,11 @@ export function TreeView({ contentNodes }: TreeViewProps) {
 								{isParentComponent(contentNode) && (
 									<>
 										<ContextMenuItem>
+											{/* TODO : implement set as header*/}
 											Set as header
 										</ContextMenuItem>
 										<ContextMenuItem>
+											{/* TODO : implement set as footer*/}
 											Set as footer
 										</ContextMenuItem>
 									</>
