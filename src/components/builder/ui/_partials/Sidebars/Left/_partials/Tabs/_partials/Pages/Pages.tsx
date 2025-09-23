@@ -66,12 +66,9 @@ export default function BuilderTabPagesPages() {
 	const { addPage } = useAddPage();
 
 	const { data: homepage } = usePageById(currentHomepage.value);
+
 	useEffect(() => {
-		if (
-			currentPage &&
-			currentPage.id === -1 &&
-			typeof homepage !== "undefined"
-		) {
+		if (currentPage && currentPage?.id === -1 && homepage) {
 			setCurrentPage(homepage as PageLight);
 		}
 	}, [currentPage?.id, homepage, setCurrentPage]);
