@@ -533,6 +533,23 @@
 		"ToneOfVoiceLabel": "Tone of Voice",
 		"ToneOfVoicePlaceholder": "Enter your tone of voice"
 	},
+	"SettingsContact": {
+		"ContactEmailLabel": "Your Contact Email",
+		"ContactEmailPlaceholder": "john.doe@klickbee.com",
+		"ContactInformationFormTitle": "Contact Information",
+		"ContactInformationUpdateError": "Error updating contact information",
+		"ContactInformationUpdateSuccess": "Contact information updated successfully",
+		"ContactNotificationFormTitle": "Set Notification",
+		"ContactNotificationUpdateError": "Error updating contact notifications",
+		"ContactNotificationUpdateSuccess": "Contact notifications updated successfully",
+		"ContactPhoneLabel": "Your Phone Number",
+		"ContactPhonePlaceholder": "+12 3456 7890",
+		"EmailRecipientLabel": "Email(s) to receive contact form submissions",
+		"EmailRecipientPlaceholder": "Digimap Agency",
+		"EnableSubmissionConfirmationLabel": "Enable submission confirmation email",
+		"ManageContact": "Contact Settings",
+		"ManageContactSubtitle": "Configure contact information and form settings"
+	},
 	"SettingsUsers": {
 		"Add": "Add User",
 		"CreateUser": "Create User",
