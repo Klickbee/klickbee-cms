@@ -117,14 +117,7 @@ export default function ContactNotificationForm() {
 							control={contactNotificationForm.control}
 							name="enableSubmissionConfirmation"
 							render={({ field }) => (
-								<FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-									<div className="space-y-0.5">
-										<FormLabel className="text-base">
-											{t(
-												"EnableSubmissionConfirmationLabel",
-											)}
-										</FormLabel>
-									</div>
+								<FormItem className="flex flex-row items-center">
 									<FormControl>
 										<Checkbox
 											checked={field.value}
@@ -132,6 +125,13 @@ export default function ContactNotificationForm() {
 											onCheckedChange={field.onChange}
 										/>
 									</FormControl>
+									<div className="space-y-0.5">
+										<FormLabel className="text-base">
+											{t(
+												"EnableSubmissionConfirmationLabel",
+											)}
+										</FormLabel>
+									</div>
 								</FormItem>
 							)}
 						/>
