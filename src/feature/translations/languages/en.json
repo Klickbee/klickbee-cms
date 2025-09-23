@@ -533,6 +533,23 @@
 		"ToneOfVoiceLabel": "Tone of Voice",
 		"ToneOfVoicePlaceholder": "Enter your tone of voice"
 	},
+	"SettingsContact": {
+		"ContactEmailLabel": "Contact Email",
+		"ContactEmailPlaceholder": "Enter contact email address",
+		"ContactInformationFormTitle": "Contact Information",
+		"ContactInformationUpdateError": "Error updating contact information",
+		"ContactInformationUpdateSuccess": "Contact information updated successfully",
+		"ContactNotificationFormTitle": "Contact Notifications",
+		"ContactNotificationUpdateError": "Error updating contact notifications",
+		"ContactNotificationUpdateSuccess": "Contact notifications updated successfully",
+		"ContactPhoneLabel": "Contact Phone",
+		"ContactPhonePlaceholder": "Enter contact phone number",
+		"EmailRecipientLabel": "Email Recipient",
+		"EmailRecipientPlaceholder": "Enter email address to receive contact form submissions",
+		"EnableSubmissionConfirmationLabel": "Enable Submission Confirmation",
+		"ManageContact": "Contact Settings",
+		"ManageContactSubtitle": "Configure contact information and form settings"
+	},
 	"SettingsUsers": {
 		"Add": "Add User",
 		"CreateUser": "Create User",

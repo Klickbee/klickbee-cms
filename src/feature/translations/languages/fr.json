@@ -534,6 +534,23 @@
 		"ToneOfVoiceLabel": "Ton de la voix",
 		"ToneOfVoicePlaceholder": "Entrez votre ton de rédaction"
 	},
+	"SettingsContact": {
+		"ContactEmailLabel": "Email de contact",
+		"ContactEmailPlaceholder": "Entrez l'adresse email de contact",
+		"ContactInformationFormTitle": "Informations de contact",
+		"ContactInformationUpdateError": "Erreur lors de la mise à jour des informations de contact",
+		"ContactInformationUpdateSuccess": "Informations de contact mises à jour avec succès",
+		"ContactNotificationFormTitle": "Notifications de contact",
+		"ContactNotificationUpdateError": "Erreur lors de la mise à jour des notifications de contact",
+		"ContactNotificationUpdateSuccess": "Notifications de contact mises à jour avec succès",
+		"ContactPhoneLabel": "Téléphone de contact",
+		"ContactPhonePlaceholder": "Entrez le numéro de téléphone de contact",
+		"EmailRecipientLabel": "Destinataire email",
+		"EmailRecipientPlaceholder": "Entrez l'adresse email qui recevra les soumissions du formulaire de contact",
+		"EnableSubmissionConfirmationLabel": "Activer la confirmation de soumission",
+		"ManageContact": "Paramètres de contact",
+		"ManageContactSubtitle": "Configurer les informations de contact et les paramètres du formulaire"
+	},
 	"SettingsUsers": {
 		"Add": "Ajouter un utilisateur",
 		"CreateUser": "Créer un utilisateur",
