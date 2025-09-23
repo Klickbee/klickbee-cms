@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronDown, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useDeleteComponentContext } from "@/builder/contexts/DeleteComponentContext";
 import { useDuplicateComponent } from "@/builder/hooks/useDuplicateComponent";
 import { useMoveComponent } from "@/builder/hooks/useMoveComponent";
@@ -231,6 +231,12 @@ export function TreeNode({ node, level = 0, parentId = null }: TreeNodeProps) {
 				>
 					Paste style
 				</ContextMenuItem>
+				{isParentComponent(node) && (
+					<>
+						<ContextMenuItem>Set as header</ContextMenuItem>
+						<ContextMenuItem>Set as footer</ContextMenuItem>
+					</>
+				)}
 				<ContextMenuItem
 					className={"text-destructive"}
 					onClick={() => confirmDelete(node.id, parentId, node.type)}
