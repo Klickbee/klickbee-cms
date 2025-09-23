@@ -1,4 +1,0 @@
--- AlterTable
-ALTER TABLE "contact" ALTER COLUMN "email" DROP NOT NULL,
-ALTER COLUMN "number" DROP NOT NULL,
-ALTER COLUMN "name" DROP NOT NULL;
