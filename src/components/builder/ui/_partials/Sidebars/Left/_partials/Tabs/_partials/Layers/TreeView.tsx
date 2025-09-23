@@ -13,6 +13,7 @@ import {
 	ContextMenuItem,
 	ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import { useCreateHeader } from "@/feature/page/queries/useHeaderActions";
 import { EmptyState } from "./EmptyState";
 import { TreeNode } from "./TreeNode";
 
@@ -25,6 +26,7 @@ export function TreeView({ contentNodes }: TreeViewProps) {
 	const { duplicateComponent } = useDuplicateComponent();
 	const { clipboard, copy } = useStyleClipboardStore();
 	const { currentPage, setCurrentPage } = useCurrentPageStore();
+	const { mutate: createHeader } = useCreateHeader();
 
 	return (
 		<div>
@@ -98,7 +100,14 @@ export function TreeView({ contentNodes }: TreeViewProps) {
 								</ContextMenuItem>
 								{isParentComponent(contentNode) && (
 									<>
-										<ContextMenuItem>
+										<ContextMenuItem
+											onClick={() => {
+												createHeader({
+													content: contentNode,
+													pageId: currentPage.id,
+												});
+											}}
+										>
 											{/* TODO : implement set as header*/}
 											Set as header
 										</ContextMenuItem>
