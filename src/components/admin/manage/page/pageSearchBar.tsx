@@ -1,47 +1,25 @@
 "use client";
 
-import { SearchIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
-import { Input } from "@/components/ui/input";
+import SearchBar from "@/components/admin/_partials/searchBar";
+import { usePages } from "@/feature/page/queries/usePages";
+import { usePageSearchStore } from "@/feature/page/stores/storePageSearch";
 
-interface PageSearchBarProps {
-	searchTerm: string;
-	onSearchChange: (searchTerm: string) => void;
-}
-
-export default function PageSearchBar({
-	searchTerm,
-	onSearchChange,
-}: PageSearchBarProps) {
+export default function PageSearchBar() {
+	const { data: pages } = usePages();
+	const { searchQuery } = usePageSearchStore();
 	const t = useTranslations("Pages");
-	const [localValue, setLocalValue] = useState(searchTerm);
 
-	// Debounce search
-	useEffect(() => {
-		const timeoutId = setTimeout(() => {
-			onSearchChange(localValue);
-		}, 300);
+	const hasInitialData = Array.isArray(pages) && pages.length > 0;
 
-		return () => clearTimeout(timeoutId);
-	}, [localValue, onSearchChange]);
-
-	// Synchronise with the searchTerm prop
-	useEffect(() => {
-		setLocalValue(searchTerm);
-	}, [searchTerm]);
+	if (!hasInitialData && !searchQuery) {
+		return null;
+	}
 
 	return (
-		<div className="w-full max-w-md relative">
-			<SearchIcon className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-			<Input
-				className="pl-8"
-				onChange={(e) => {
-					setLocalValue(e.target.value);
-				}}
-				placeholder={t("Search")}
-				value={localValue}
-			/>
-		</div>
+		<SearchBar
+			placeholder={t("Search")}
+			useSearchStore={usePageSearchStore}
+		/>
 	);
 }
