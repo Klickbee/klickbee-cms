@@ -1,17 +1,45 @@
-"use client";
-import { useAdminKeyStore } from "@/feature/admin-key/stores/storeAdminKey";
-import { useUserStore } from "@/feature/user/stores/storeUser";
+import { dehydrate } from "@tanstack/query-core";
+import { HydrationBoundary } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
+import CardListLayout from "@/components/admin/_partials/cardListLayout";
+import DashboardTitle from "@/components/admin/_partials/dashboardTitle";
+import CollectionItemActionButton from "@/components/admin/dashboard/collectionItemActionButton";
+import CollectionItemPagination from "@/components/admin/dashboard/collectionItemPagination";
+import CollectionItemSearchBar from "@/components/admin/dashboard/collectionItemSearchBar";
+import CollectionItemSortSelector from "@/components/admin/dashboard/collectionItemSortSelector";
+import CollectionItemTable from "@/components/admin/dashboard/collectionItemTable";
+import { CollectionItemProvider } from "@/feature/dashboard/contexts/collectionItemContext";
+import { allCollectionItemsOptions } from "@/feature/dashboard/options/allCollectionItemsOptions";
+import { getQueryClient } from "@/lib/getQueryClient";
 
 export default function AdminPage() {
-	const adminKey = useAdminKeyStore((state) => state.adminKey);
-	const currentUser = useUserStore((state) => state.user);
+	const t = useTranslations("Dashboard");
+
+	const queryClient = getQueryClient();
+	void queryClient.prefetchQuery(allCollectionItemsOptions);
 
 	return (
-		<div className="flex flex-col min-h-screen items-center justify-center bg-muted">
-			<h1 className="text-2xl font-bold">
-				Admin Page with key {adminKey}
-			</h1>
-			{currentUser && <p>Current user id is : {currentUser.id}</p>}
-		</div>
+		<HydrationBoundary state={dehydrate(queryClient)}>
+			<DashboardTitle
+				subtitle="DashboardSubtitle"
+				title="DashboardTitle"
+				translationNamespace="Dashboard"
+			/>
+			<section className="py-6 px-8">
+				<CollectionItemProvider>
+					<CardListLayout
+						actionButtons={<CollectionItemActionButton />}
+						createButtonText={t("ContentManagerLinkText")}
+						createUrl="/manage/content"
+						searchBar={<CollectionItemSearchBar />}
+						sortSelector={<CollectionItemSortSelector />}
+						title={t("CollectionItemsTitle")}
+					>
+						<CollectionItemTable />
+						<CollectionItemPagination />
+					</CardListLayout>
+				</CollectionItemProvider>
+			</section>
+		</HydrationBoundary>
 	);
 }
