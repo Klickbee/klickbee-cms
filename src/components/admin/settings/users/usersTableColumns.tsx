@@ -1,7 +1,8 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import { Edit } from "lucide-react";
-import Link from "next/link";
-import { ActionsDropdown } from "@/components/admin/_partials/table/actions-dropdown";
+import {
+	ActionConfig,
+	ActionsDropdown,
+} from "@/components/admin/_partials/table/actions-dropdown";
 import { DateCell } from "@/components/admin/_partials/table/date-cell";
 import {
 	SelectColumnCell,
@@ -9,7 +10,6 @@ import {
 } from "@/components/admin/_partials/table/select-column";
 import { SortableColumnHeader } from "@/components/admin/_partials/table/sortable-column-header";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { User } from "@/feature/user/types/user";
 
 const columnHelper = createColumnHelper<User>();
@@ -65,24 +65,28 @@ export function createColumns(
 			),
 		}),
 		columnHelper.display({
-			cell: ({ row }) => (
-				<ActionsDropdown
-					deleteDescription={t("DeleteUserDescription")}
-					deleteTitle={t("DeleteUserTitle")}
-					onDelete={onDeleteUser}
-					row={row}
-					tCommon={tCommon}
-				>
-					<DropdownMenuItem asChild>
-						<Link
-							href={`/admin/${adminKey}/manage/settings/users/${row.original.id}`}
-						>
-							<Edit className="mr-2 h-4 w-4" />
-							{tCommon("Edit")}
-						</Link>
-					</DropdownMenuItem>
-				</ActionsDropdown>
-			),
+			cell: ({ row }) => {
+				const actions: ActionConfig[] = [
+					{
+						href: `/admin/${adminKey}/manage/settings/users/${row.original.id}`,
+						label: tCommon("Edit"),
+						type: "edit",
+					},
+					{
+						label: tCommon("Delete"),
+						onClick: () => onDeleteUser(row.original.id),
+						type: "delete",
+					},
+				];
+
+				return (
+					<ActionsDropdown
+						actions={actions}
+						row={row}
+						tCommon={tCommon}
+					/>
+				);
+			},
 			header: "",
 			id: "actions",
 		}),
