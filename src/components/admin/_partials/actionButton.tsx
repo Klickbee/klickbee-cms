@@ -122,7 +122,9 @@ export default function ActionButton({
 						<AlertDialogContent>
 							<AlertDialogHeader>
 								<AlertDialogTitle>
-									{t("DeleteTitle")}
+									{t("DeleteTitle", {
+										count: selectedItems.length,
+									})}
 								</AlertDialogTitle>
 								<AlertDialogDescription>
 									{t("DeleteDescription", {
