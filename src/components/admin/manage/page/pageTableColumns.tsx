@@ -71,7 +71,9 @@ export function createColumns(
 			cell: ({ row }) => {
 				const actions: ActionConfig[] = [
 					{
-						href: generateAdminLink("builder"),
+						href: generateAdminLink(
+							"manage/pages/" + row.original.id,
+						),
 						label: tCommon("Edit"),
 						type: "edit",
 					},
