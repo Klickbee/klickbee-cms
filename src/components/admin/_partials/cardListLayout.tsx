@@ -10,8 +10,9 @@ interface CardListLayoutProps {
 	title: string;
 	createUrl?: string;
 	createButtonText?: string;
+	icon?: React.ReactNode;
 	searchBar?: React.ReactNode;
-	sortSelector?: React.ReactNode;
+	filterSelector?: React.ReactNode;
 	actionButtons?: React.ReactNode;
 	children: React.ReactNode;
 }
@@ -20,8 +21,9 @@ export default function CardListLayout({
 	title,
 	createUrl,
 	createButtonText = "Go to Content Manager",
+	icon,
 	searchBar,
-	sortSelector,
+	filterSelector,
 	actionButtons,
 	children,
 }: CardListLayoutProps) {
@@ -37,6 +39,7 @@ export default function CardListLayout({
 						className="bg-zinc-950 text-white hover:bg-zinc-950/90"
 					>
 						<Link href={`/admin/${adminKey}${createUrl}`}>
+							{icon && <span className="mr-2">{icon}</span>}
 							{createButtonText}
 						</Link>
 					</Button>
@@ -47,7 +50,7 @@ export default function CardListLayout({
 					<div className="w-[320px]">{searchBar}</div>
 					<div className="flex items-center gap-3">
 						{actionButtons}
-						{sortSelector}
+						{filterSelector}
 					</div>
 				</div>
 				{children}
