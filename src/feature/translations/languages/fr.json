@@ -340,13 +340,13 @@
 		"DraftStatus": "Brouillon",
 		"DuplicateError": "Erreur lors de la duplication des éléments",
 		"DuplicateSuccess": "{count} élément(s) dupliqué(s) avec succès",
+		"FilterBy": "Filtrer par",
 		"NoCollectionItemsDescription": "Vous n'avez pas encore créé d'éléments de collection. Commencez par créer du contenu pour voir vos éléments ici.",
 		"NoCollectionItemsTitle": "Aucun élément de collection",
 		"PendingStatus": "En attente",
 		"PublishedStatus": "Publié",
 		"SearchCollectionItems": "Rechercher des éléments de collection...",
 		"SeoScore": "Score SEO",
-		"SortBy": "Trier par",
 		"Status": "Statut"
 	},
 	"Errors": {
@@ -577,7 +577,12 @@
 		"ManageContactSubtitle": "Configurer les informations de contact et les paramètres du formulaire"
 	},
 	"SettingsUsers": {
+		"ActiveUsers": "Utilisateurs actifs",
 		"Add": "Ajouter un utilisateur",
+		"AdminUsers": "Administrateurs",
+		"AllUsers": "Tous les utilisateurs",
+		"CreatedNewest": "Plus récents",
+		"CreatedOldest": "Plus anciens",
 		"CreateUser": "Créer un utilisateur",
 		"CreateUserError": "Erreur lors de la création de l'utilisateur",
 		"CreateUserSubtitle": "Ajouter un nouveau compte utilisateur",
@@ -594,11 +599,18 @@
 		"DeleteUsersSuccess": "{count, plural, =1 {# utilisateur supprimé} other {# utilisateurs supprimés}} avec succès",
 		"DeleteUsersTitle": "Supprimer les utilisateurs",
 		"DeleteUserTitle": "Supprimer l'utilisateur",
+		"EmailAsc": "Email (A-Z)",
+		"EmailDesc": "Email (Z-A)",
+		"FilterBy": "Filtrer par",
+		"InactiveUsers": "Utilisateurs inactifs",
 		"ManageUsers": "Gérer les utilisateurs",
 		"ManageUsersSubtitle": "Gérer les comptes utilisateurs et les permissions",
+		"NameAsc": "Nom (A-Z)",
+		"NameDesc": "Nom (Z-A)",
 		"NameNotAvailable": "Nom non disponible",
 		"NoUsersFound": "Aucun utilisateur trouvé",
 		"Profile": "Profil",
+		"RegularUsers": "Utilisateurs standard",
 		"SearchUsers": "Rechercher des utilisateurs...",
 		"SendInvite": "Envoyer une invitation",
 		"SendingInvitation": "Envoi de l'invitation en cours...",
@@ -606,7 +618,8 @@
 		"UpdateUserError": "Erreur lors de la modification de l'utilisateur",
 		"UpdateUserSubtitle": "Modifier les informations de l'utilisateur",
 		"UpdateUserSuccess": "Utilisateur modifié avec succès",
-		"UpdatingUser": "Modification en cours..."
+		"UpdatingUser": "Modification en cours...",
+		"UsersListTitle": "Utilisateurs"
 	},
 	"SpacingEditor": {
 		"AddGap": "Ajouter un gap",

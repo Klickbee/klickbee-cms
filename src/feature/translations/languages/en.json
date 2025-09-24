@@ -340,13 +340,13 @@
 		"DraftStatus": "Draft",
 		"DuplicateError": "Error duplicating items",
 		"DuplicateSuccess": "{count} item(s) duplicated successfully",
+		"FilterBy": "Filter by",
 		"NoCollectionItemsDescription": "You haven't created any collection items yet. Start by creating content to see your items here.",
 		"NoCollectionItemsTitle": "No collection items",
 		"PendingStatus": "Pending",
 		"PublishedStatus": "Published",
 		"SearchCollectionItems": "Search collection items...",
 		"SeoScore": "SEO Score",
-		"SortBy": "Sort by",
 		"Status": "Status"
 	},
 	"Errors": {
@@ -576,7 +576,12 @@
 		"ManageContactSubtitle": "Configure contact information and form settings"
 	},
 	"SettingsUsers": {
+		"ActiveUsers": "Active users",
 		"Add": "Add User",
+		"AdminUsers": "Admin users",
+		"AllUsers": "All users",
+		"CreatedNewest": "Newest first",
+		"CreatedOldest": "Oldest first",
 		"CreateUser": "Create User",
 		"CreateUserError": "Error creating user",
 		"CreateUserSubtitle": "Add a new user account",
@@ -593,11 +598,18 @@
 		"DeleteUsersSuccess": "{count, plural, =1 {# user deleted} other {# users deleted}} successfully",
 		"DeleteUsersTitle": "Delete Users",
 		"DeleteUserTitle": "Delete User",
+		"EmailAsc": "Email (A-Z)",
+		"EmailDesc": "Email (Z-A)",
+		"FilterBy": "Filter by",
+		"InactiveUsers": "Inactive users",
 		"ManageUsers": "Manage Users",
 		"ManageUsersSubtitle": "Manage user accounts and permissions",
+		"NameAsc": "Name (A-Z)",
+		"NameDesc": "Name (Z-A)",
 		"NameNotAvailable": "Name not available",
 		"NoUsersFound": "No users found",
 		"Profile": "Profile",
+		"RegularUsers": "Regular users",
 		"SearchUsers": "Search users...",
 		"SendInvite": "Send Invitation",
 		"SendingInvitation": "Sending invitation...",
@@ -605,7 +617,8 @@
 		"UpdateUserError": "Error updating user",
 		"UpdateUserSubtitle": "Update user information",
 		"UpdateUserSuccess": "User updated successfully",
-		"UpdatingUser": "Updating user..."
+		"UpdatingUser": "Updating user...",
+		"UsersListTitle": "Users"
 	},
 	"SpacingEditor": {
 		"AddGap": "Add gap",
