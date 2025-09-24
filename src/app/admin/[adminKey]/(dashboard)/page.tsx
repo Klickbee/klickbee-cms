@@ -4,9 +4,9 @@ import { useTranslations } from "next-intl";
 import CardListLayout from "@/components/admin/_partials/cardListLayout";
 import DashboardTitle from "@/components/admin/_partials/dashboardTitle";
 import CollectionItemActionButton from "@/components/admin/dashboard/collectionItemActionButton";
+import CollectionItemSortSelector from "@/components/admin/dashboard/collectionItemFilterSelector";
 import CollectionItemPagination from "@/components/admin/dashboard/collectionItemPagination";
 import CollectionItemSearchBar from "@/components/admin/dashboard/collectionItemSearchBar";
-import CollectionItemSortSelector from "@/components/admin/dashboard/collectionItemSortSelector";
 import CollectionItemTable from "@/components/admin/dashboard/collectionItemTable";
 import { CollectionItemProvider } from "@/feature/dashboard/contexts/collectionItemContext";
 import { allCollectionItemsOptions } from "@/feature/dashboard/options/allCollectionItemsOptions";
@@ -31,8 +31,8 @@ export default function AdminPage() {
 						actionButtons={<CollectionItemActionButton />}
 						createButtonText={t("ContentManagerLinkText")}
 						createUrl="/manage/content"
+						filterSelector={<CollectionItemSortSelector />}
 						searchBar={<CollectionItemSearchBar />}
-						sortSelector={<CollectionItemSortSelector />}
 						title={t("CollectionItemsTitle")}
 					>
 						<CollectionItemTable />
