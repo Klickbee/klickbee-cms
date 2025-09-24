@@ -63,7 +63,7 @@ export function useGenericTable<TData extends { id: string | number }>({
 		},
 	});
 
-	// Synchroniser la sélection du table vers le store
+	// Synchroniser la sélection du table vers le stores
 	useEffect(() => {
 		if (setSelectedItems) {
 			const selectedIds = Object.keys(rowSelection).filter(
@@ -73,7 +73,7 @@ export function useGenericTable<TData extends { id: string | number }>({
 		}
 	}, [rowSelection, setSelectedItems]);
 
-	// Synchroniser la sélection du store vers le table (uniquement quand selectedItems passe de >0 à 0)
+	// Synchroniser la sélection du stores vers le table (uniquement quand selectedItems passe de >0 à 0)
 	useEffect(() => {
 		const currentLength = selectedItems?.length ?? 0;
 		const prevLength = prevSelectedItemsLength.current ?? 0;

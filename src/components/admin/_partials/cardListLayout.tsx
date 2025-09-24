@@ -1,9 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import CardTitle from "@/components/admin/manage/CardTitle";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAdminKeyStore } from "@/feature/admin-key/stores/storeAdminKey";
 
 interface CardListLayoutProps {
