@@ -1,16 +1,19 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { Plus } from "lucide-react";
+import { useTranslations } from "next-intl";
+import CardListLayout from "@/components/admin/_partials/cardListLayout";
 import DashboardTitle from "@/components/admin/_partials/dashboardTitle";
-import CardTitle from "@/components/admin/manage/CardTitle";
 import UserActionButton from "@/components/admin/settings/users/actionButton";
 import UsersPagination from "@/components/admin/settings/users/pagination";
 import UserSearchBar from "@/components/admin/settings/users/searchBar";
+import UserFilterSelector from "@/components/admin/settings/users/userFilterSelector";
 import UsersTable from "@/components/admin/settings/users/usersTable";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { UsersTableProvider } from "@/feature/user/contexts/UsersTableContext";
 import { allUsersOptions } from "@/feature/user/options/allUsersOptions";
 import { getQueryClient } from "@/lib/getQueryClient";
 
 export default function Page() {
+	const t = useTranslations("SettingsUsers");
 	const queryClient = getQueryClient();
 	void queryClient.prefetchQuery(allUsersOptions);
 
@@ -22,19 +25,20 @@ export default function Page() {
 				translationNamespace="SettingsUsers"
 			/>
 			<section className="py-6 px-8">
-				<Card className="gap-0 py-0">
-					<CardHeader className="py-3 px-4 gap-0 flex flex-row justify-between items-center border-b">
-						<CardTitle>Users</CardTitle>
-						<UserActionButton />
-					</CardHeader>
-					<CardContent className="p-4 flex flex-col gap-4">
-						<UsersTableProvider>
-							<UserSearchBar />
-							<UsersTable />
-							<UsersPagination />
-						</UsersTableProvider>
-					</CardContent>
-				</Card>
+				<UsersTableProvider>
+					<CardListLayout
+						actionButtons={<UserActionButton />}
+						createButtonText={t("Add")}
+						createUrl="/manage/settings/users/create"
+						filterSelector={<UserFilterSelector />}
+						icon={<Plus />}
+						searchBar={<UserSearchBar />}
+						title={t("UsersListTitle")}
+					>
+						<UsersTable />
+						<UsersPagination />
+					</CardListLayout>
+				</UsersTableProvider>
 			</section>
 		</HydrationBoundary>
 	);
