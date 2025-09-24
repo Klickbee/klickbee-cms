@@ -7,7 +7,6 @@ import { useUserSelectionStore } from "@/feature/user/stores/storeUserSelection"
 export default function UserActionButton() {
 	return (
 		<ActionButton
-			createUrl="/manage/settings/users/create"
 			translationNamespace="SettingsUsers"
 			useDeleteMutation={useDeleteUsers}
 			useSelectionStore={useUserSelectionStore}
