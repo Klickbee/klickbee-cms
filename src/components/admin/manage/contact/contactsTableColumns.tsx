@@ -1,7 +1,8 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import { Eye } from "lucide-react";
-import Link from "next/link";
-import { ActionsDropdown } from "@/components/admin/_partials/table/actions-dropdown";
+import {
+	ActionConfig,
+	ActionsDropdown,
+} from "@/components/admin/_partials/table/actions-dropdown";
 import { DateCell } from "@/components/admin/_partials/table/date-cell";
 import { FormattedIdLink } from "@/components/admin/_partials/table/formatted-id-link";
 import {
@@ -9,7 +10,6 @@ import {
 	SelectColumnHeader,
 } from "@/components/admin/_partials/table/select-column";
 import { SortableColumnHeader } from "@/components/admin/_partials/table/sortable-column-header";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Contact } from "@/feature/contact/types/contact";
 
 const columnHelper = createColumnHelper<Contact>();
@@ -63,24 +63,28 @@ export function createColumns(
 			),
 		}),
 		columnHelper.display({
-			cell: ({ row }) => (
-				<ActionsDropdown
-					deleteDescription={t("DeleteContactDescription")}
-					deleteTitle={t("DeleteContactTitle")}
-					onDelete={onDeleteContact}
-					row={row}
-					tCommon={tCommon}
-				>
-					<DropdownMenuItem asChild>
-						<Link
-							href={`/admin/${adminKey}/manage/contact/${row.original.id}`}
-						>
-							<Eye className="mr-2 h-4 w-4" />
-							{t("ViewContact")}
-						</Link>
-					</DropdownMenuItem>
-				</ActionsDropdown>
-			),
+			cell: ({ row }) => {
+				const actions: ActionConfig[] = [
+					{
+						href: `/admin/${adminKey}/manage/contact/${row.original.id}`,
+						label: t("ViewContact"),
+						type: "preview",
+					},
+					{
+						label: tCommon("Delete"),
+						onClick: () => onDeleteContact(row.original.id),
+						type: "delete",
+					},
+				];
+
+				return (
+					<ActionsDropdown
+						actions={actions}
+						row={row}
+						tCommon={tCommon}
+					/>
+				);
+			},
 			header: "",
 			id: "actions",
 		}),
