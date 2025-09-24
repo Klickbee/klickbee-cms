@@ -1,13 +1,13 @@
 import { create } from "zustand";
 
-interface CollectionItemSortStore {
-	sortBy: string;
-	setSortBy: (sort: string) => void;
+interface CollectionItemFilterStore {
+	filterBy: string;
+	setFilterBy: (filter: string) => void;
 }
 
-export const useCollectionItemSortStore = create<CollectionItemSortStore>(
+export const useCollectionItemFilterStore = create<CollectionItemFilterStore>(
 	(set) => ({
-		setSortBy: (sort: string) => set({ sortBy: sort }),
-		sortBy: "all",
+		filterBy: "all",
+		setFilterBy: (filter: string) => set({ filterBy: filter }),
 	}),
 );
