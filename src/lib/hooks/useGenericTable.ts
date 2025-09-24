@@ -10,13 +10,14 @@ import {
 	SortingState,
 	useReactTable,
 } from "@tanstack/react-table";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface UseGenericTableOptions<TData extends { id: string | number }> {
 	data: TData[];
 	columns: ColumnDef<TData>[];
-	searchQuery: string;
-	setSelectedItems: (items: string[]) => void;
+	searchQuery?: string;
+	setSelectedItems?: (items: string[]) => void;
+	selectedItems?: string[];
 }
 
 export function useGenericTable<TData extends { id: string | number }>({
@@ -24,6 +25,7 @@ export function useGenericTable<TData extends { id: string | number }>({
 	columns,
 	searchQuery,
 	setSelectedItems,
+	selectedItems,
 }: UseGenericTableOptions<TData>) {
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -32,6 +34,8 @@ export function useGenericTable<TData extends { id: string | number }>({
 		pageIndex: 0,
 		pageSize: 10,
 	});
+
+	const prevSelectedItemsLength = useRef<number | undefined>(undefined);
 
 	const tableData = Array.isArray(data) ? data : [];
 
@@ -52,20 +56,35 @@ export function useGenericTable<TData extends { id: string | number }>({
 		onSortingChange: setSorting,
 		state: {
 			columnFilters,
-			globalFilter: searchQuery,
+			globalFilter: searchQuery || "",
 			pagination,
 			rowSelection,
 			sorting,
 		},
 	});
 
-	// Synchroniser la sélection
+	// Synchroniser la sélection du table vers le store
 	useEffect(() => {
-		const selectedIds = Object.keys(rowSelection).filter(
-			(id) => rowSelection[id],
-		);
-		setSelectedItems(selectedIds);
+		if (setSelectedItems) {
+			const selectedIds = Object.keys(rowSelection).filter(
+				(id) => rowSelection[id],
+			);
+			setSelectedItems(selectedIds);
+		}
 	}, [rowSelection, setSelectedItems]);
+
+	// Synchroniser la sélection du store vers le table (uniquement quand selectedItems passe de >0 à 0)
+	useEffect(() => {
+		const currentLength = selectedItems?.length ?? 0;
+		const prevLength = prevSelectedItemsLength.current ?? 0;
+
+		// Si on avait des éléments sélectionnés et qu'on n'en a plus
+		if (prevLength > 0 && currentLength === 0) {
+			setRowSelection({});
+		}
+
+		prevSelectedItemsLength.current = currentLength;
+	}, [selectedItems]);
 
 	return table;
 }
