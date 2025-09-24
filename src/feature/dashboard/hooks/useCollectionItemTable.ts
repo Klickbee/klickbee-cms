@@ -11,7 +11,7 @@ import { useDeleteCollectionItems } from "@/feature/dashboard/queries/useDeleteC
 import { useDuplicateCollectionItems } from "@/feature/dashboard/queries/useDuplicateCollectionItems";
 import { useCollectionItemSearchStore } from "@/feature/dashboard/stores/storeCollectionItemSearch";
 import { useCollectionItemSelectionStore } from "@/feature/dashboard/stores/storeCollectionItemSelection";
-import { useCollectionItemSortStore } from "@/feature/dashboard/stores/storeCollectionItemSort";
+import { useCollectionItemFilterStore } from "@/feature/dashboard/stores/storeCollectionItemSort";
 import { useGenericTable } from "@/lib/hooks/useGenericTable";
 
 export function useCollectionItemTable() {
@@ -22,7 +22,7 @@ export function useCollectionItemTable() {
 	const { searchQuery } = useCollectionItemSearchStore();
 	const { selectedItems, setSelectedItems, clearSelection } =
 		useCollectionItemSelectionStore();
-	const { sortBy } = useCollectionItemSortStore();
+	const { filterBy } = useCollectionItemFilterStore();
 
 	const deleteMutation = useDeleteCollectionItems();
 	const duplicateMutation = useDuplicateCollectionItems();
@@ -34,12 +34,12 @@ export function useCollectionItemTable() {
 
 		// Filtrer par statut si nécessaire
 		const filteredData =
-			sortBy === "all"
+			filterBy === "all"
 				? rawData
-				: rawData.filter((item) => item.status === sortBy);
+				: rawData.filter((item) => item.status === filterBy);
 
 		return filteredData;
-	}, [collectionItems, sortBy]);
+	}, [collectionItems, filterBy]);
 
 	const handleDuplicate = (id: string) => {
 		duplicateMutation.mutate([id], {
