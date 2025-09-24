@@ -4,7 +4,7 @@ import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import DashboardTitle from "@/components/admin/_partials/dashboardTitle";
-import EmptyState from "@/components/admin/manage/EmptyState";
+import EmptyState from "@/components/admin/_partials/emptyState";
 import MediaDetailModal from "@/components/admin/manage/media/MediaDetailModal";
 import MediaTypeFilter from "@/components/admin/manage/media/MediaFilter";
 import MediaGrid from "@/components/admin/manage/media/MediaGrid";

@@ -1,6 +1,6 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import DashboardTitle from "@/components/admin/_partials/dashboardTitle";
-import SeoPage from "@/components/admin/manage/Page/seo";
+import SeoPage from "@/components/admin/manage/page/seo";
 import { pageByIdOptions } from "@/feature/page/options/pageByIdOptions";
 import type { Page } from "@/feature/page/types/page";
 import { getQueryClient } from "@/lib/getQueryClient";

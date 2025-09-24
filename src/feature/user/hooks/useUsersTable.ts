@@ -4,7 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { useLocale, useTranslations } from "next-intl";
 import { useCallback } from "react";
 import { toast } from "sonner";
-import { createColumns } from "@/components/admin/settings/users/usersTableColumns";
+import { createColumns } from "@/components/admin/settings/users/userTableColumns";
 import { useAdminKeyStore } from "@/feature/admin-key/stores/storeAdminKey";
 import { allUsersOptions } from "@/feature/user/options/allUsersOptions";
 import { useAllUsers } from "@/feature/user/queries/useAllUsers";

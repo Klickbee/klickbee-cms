@@ -3,9 +3,9 @@ import { useTranslations } from "next-intl";
 import CardListLayout from "@/components/admin/_partials/cardListLayout";
 import DashboardTitle from "@/components/admin/_partials/dashboardTitle";
 import ContactActionButton from "@/components/admin/manage/contact/contactActionButton";
+import ContactPagination from "@/components/admin/manage/contact/contactPagination";
 import ContactSearchBar from "@/components/admin/manage/contact/contactSearchBar";
-import ContactsPagination from "@/components/admin/manage/contact/contactsPagination";
-import ContactsTable from "@/components/admin/manage/contact/contactsTable";
+import ContactTable from "@/components/admin/manage/contact/contactTable";
 import { ContactsTableProvider } from "@/feature/contact/contexts/ContactsTableContext";
 import { allContactsOptions } from "@/feature/contact/options/allContactsOptions";
 import { getQueryClient } from "@/lib/getQueryClient";
@@ -30,8 +30,8 @@ export default function Page() {
 						searchBar={<ContactSearchBar />}
 						title={t("ManageContacts")}
 					>
-						<ContactsTable />
-						<ContactsPagination />
+						<ContactTable />
+						<ContactPagination />
 					</CardListLayout>
 				</ContactsTableProvider>
 			</section>

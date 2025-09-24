@@ -1,0 +1,13 @@
+{
+	"permissions": {
+		"allow": [
+			"mcp__figma-dev-mode-mcp-server__get_code",
+			"mcp__figma-dev-mode-mcp-server__get_metadata",
+			"Read(/C:\\Users\\Lucas\\WebstormProjects\\klickbee-cms\\src\\builder\\types\\components\\ui\\Button/**)",
+			"mcp__figma-dev-mode-mcp-server__get_image",
+			"Bash(npm run check:*)"
+		],
+		"ask": [],
+		"deny": []
+	}
+}
