@@ -21,6 +21,7 @@ export default function BuilderTabLayers() {
 	return (
 		<div className={"divide-y"}>
 			<PageTitle title={currentPage.title} />
+			<div className="flex flex-col gap-2 px-4 py-2 text-sm"></div>
 			<div className="flex flex-col gap-2 px-4 py-2 text-sm">
 				<TreeView contentNodes={contentNodes} />
 			</div>

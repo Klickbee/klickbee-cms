@@ -1,5 +1,7 @@
 import { JsonValue } from "@prisma/client/runtime/library";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createPage } from "@/feature/page/lib/pages";
+import { PageLight } from "@/feature/page/types/page";
 
 export function useCreatePage() {
 	const queryClient = useQueryClient();
@@ -11,14 +13,17 @@ export function useCreatePage() {
 			content?: JsonValue;
 			parentId?: number | null;
 		}) => {
-			const res = await fetch("/api/admin/pages", {
-				body: JSON.stringify(data),
-				headers: { "Content-Type": "application/json" },
-				method: "POST",
-			});
-
-			if (!res.ok) throw new Error("Failed to create page");
-			return res.json();
+			try {
+				return (await createPage({
+					title: data.title,
+					slug: data.slug,
+					content: data.content,
+					parentId: data.parentId,
+				})) as PageLight;
+			} catch (error) {
+				console.error("Error creating page:", error);
+				throw error;
+			}
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["pages"] });

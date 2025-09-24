@@ -53,6 +53,8 @@ export const getPageById = async (id: number) => {
 			slug: true,
 			title: true,
 			updatedAt: true,
+			pageHeaderId: true,
+			pageFooterId: true,
 		},
 		where: { id },
 	});
@@ -97,20 +99,20 @@ export const createPage = async (data: {
 			slug: data.slug,
 			title: data.title,
 		},
-		select: {
-			content: true,
-			createdAt: true,
-			id: true,
-			isPublished: true,
-			metaDescription: true,
-			metaKeywords: true,
-			metaTitle: true,
-			parentId: true,
-			publishedAt: true,
-			slug: true,
-			title: true,
-			updatedAt: true,
-		},
+		// select: {
+		// 	content: true,
+		// 	createdAt: true,
+		// 	id: true,
+		// 	isPublished: true,
+		// 	metaDescription: true,
+		// 	metaKeywords: true,
+		// 	metaTitle: true,
+		// 	parentId: true,
+		// 	publishedAt: true,
+		// 	slug: true,
+		// 	title: true,
+		// 	updatedAt: true,
+		// },
 	});
 };
 

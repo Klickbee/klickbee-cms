@@ -7,13 +7,13 @@ import {
 	BuilderComponent,
 	isParentComponent,
 } from "@/builder/types/components/components";
+import { HeaderFooterContextItems } from "@/components/builder/ui/_partials/Sidebars/Left/_partials/Tabs/_partials/Layers/_partials/HeaderFooterContextItems";
 import {
 	ContextMenu,
 	ContextMenuContent,
 	ContextMenuItem,
 	ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import { useCreateHeader } from "@/feature/page/queries/useHeaderActions";
 import { EmptyState } from "./EmptyState";
 import { TreeNode } from "./TreeNode";
 
@@ -26,7 +26,6 @@ export function TreeView({ contentNodes }: TreeViewProps) {
 	const { duplicateComponent } = useDuplicateComponent();
 	const { clipboard, copy } = useStyleClipboardStore();
 	const { currentPage, setCurrentPage } = useCurrentPageStore();
-	const { mutate: createHeader } = useCreateHeader();
 
 	return (
 		<div>
@@ -99,23 +98,10 @@ export function TreeView({ contentNodes }: TreeViewProps) {
 									Paste style
 								</ContextMenuItem>
 								{isParentComponent(contentNode) && (
-									<>
-										<ContextMenuItem
-											onClick={() => {
-												createHeader({
-													content: contentNode,
-													pageId: currentPage.id,
-												});
-											}}
-										>
-											{/* TODO : implement set as header*/}
-											Set as header
-										</ContextMenuItem>
-										<ContextMenuItem>
-											{/* TODO : implement set as footer*/}
-											Set as footer
-										</ContextMenuItem>
-									</>
+									<HeaderFooterContextItems
+										currentPage={currentPage}
+										node={contentNode}
+									/>
 								)}
 								<ContextMenuItem
 									className={"text-destructive"}

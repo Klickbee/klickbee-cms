@@ -6,6 +6,8 @@ const emptyPage: PageLight = {
 	id: -1,
 	slug: "",
 	title: "",
+	pageHeaderId: null,
+	pageFooterId: null,
 };
 
 type CurrentPageStore = {

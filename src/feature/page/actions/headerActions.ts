@@ -52,3 +52,12 @@ export async function getHeaderByPageId(pageId: number) {
 	}
 	return header;
 }
+
+export async function setAsHeader(headerId: number, pageId: number) {
+	return prisma.page.update({
+		where: { id: pageId },
+		data: {
+			pageHeaderId: headerId,
+		},
+	});
+}

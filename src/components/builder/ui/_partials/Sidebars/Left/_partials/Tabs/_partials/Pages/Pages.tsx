@@ -240,6 +240,8 @@ export default function BuilderTabPagesPages() {
 									id: page.id,
 									slug: page.slug,
 									title: page.title,
+									pageHeaderId: page.pageHeaderId,
+									pageFooterId: page.pageFooterId,
 								})
 							}
 							size="sm"

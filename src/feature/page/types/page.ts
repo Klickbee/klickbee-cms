@@ -4,7 +4,10 @@ import type { Page } from "@/generated/prisma";
 
 export type { Page } from "@/generated/prisma";
 
-export type PageLight = Pick<Page, "id" | "title" | "slug" | "content">;
+export type PageLight = Pick<Page, "id" | "title" | "slug" | "content"> & {
+	pageHeaderId?: Page["pageHeaderId"];
+	pageFooterId?: Page["pageFooterId"];
+};
 
 declare global {
 	namespace PrismaJson {

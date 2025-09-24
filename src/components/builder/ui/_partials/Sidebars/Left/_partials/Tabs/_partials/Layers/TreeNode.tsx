@@ -13,13 +13,13 @@ import {
 	canHaveChildren,
 	isParentComponent,
 } from "@/builder/types/components/components";
+import { HeaderFooterContextItems } from "@/components/builder/ui/_partials/Sidebars/Left/_partials/Tabs/_partials/Layers/_partials/HeaderFooterContextItems";
 import {
 	ContextMenu,
 	ContextMenuContent,
 	ContextMenuItem,
 	ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import { useCreateHeader } from "@/feature/page/queries/useHeaderActions";
 import { cn } from "@/lib/utils";
 
 interface TreeNodeProps {
@@ -47,8 +47,6 @@ export function TreeNode({ node, level = 0, parentId = null }: TreeNodeProps) {
 	const currentComponent = useCurrentComponentStore(
 		(state) => state.currentComponent,
 	);
-
-	const { mutate: createHeader } = useCreateHeader();
 
 	const isCurrentComponent = (id: string) => {
 		return currentComponent.id === id;
@@ -235,19 +233,10 @@ export function TreeNode({ node, level = 0, parentId = null }: TreeNodeProps) {
 					Paste style
 				</ContextMenuItem>
 				{isParentComponent(node) && (
-					<>
-						<ContextMenuItem
-							onClick={() => {
-								createHeader({
-									content: node,
-									pageId: currentPage.id,
-								});
-							}}
-						>
-							Set as header
-						</ContextMenuItem>
-						<ContextMenuItem>Set as footer</ContextMenuItem>
-					</>
+					<HeaderFooterContextItems
+						currentPage={currentPage}
+						node={node}
+					/>
 				)}
 				<ContextMenuItem
 					className={"text-destructive"}
