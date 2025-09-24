@@ -176,15 +176,15 @@ model Collection {
 }
 
 model CollectionItem {
-  id           Int        @id @default(autoincrement())
-  collectionId Int
-  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
-  title        String
-  slug         String     @unique
-  content      Json
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-
+  id              Int        @id @default(autoincrement())
+  collectionId    Int
+  collection      Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  title           String
+  slug            String     @unique
+  content         Json
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  author          String
   // SEO fields
   metaTitle       String?
   metaDescription String?
