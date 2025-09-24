@@ -1,5 +1,7 @@
 import { JsonValue } from "@prisma/client/runtime/library";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { allPagesOptions } from "@/feature/page/options/allPagesOptions";
+import { lastPageIdOptions } from "@/feature/page/options/lastPageIdOptions";
 
 export function useCreatePage() {
 	const queryClient = useQueryClient();
@@ -21,8 +23,8 @@ export function useCreatePage() {
 			return res.json();
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["pages"] });
-			queryClient.invalidateQueries({ queryKey: ["lastPageId"] });
+			queryClient.invalidateQueries(allPagesOptions);
+			queryClient.invalidateQueries(lastPageIdOptions);
 		},
 	});
 }

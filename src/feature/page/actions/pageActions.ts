@@ -20,7 +20,7 @@ export const duplicatePage = async (pageId: number) => {
 	});
 
 	if (!originalPage) {
-		throw new Error("Page not found");
+		throw new Error("page not found");
 	}
 
 	// Generate a unique slug for the duplicated page

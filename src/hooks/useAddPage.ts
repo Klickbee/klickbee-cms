@@ -40,7 +40,7 @@ export const useAddPage = () => {
 		const newPage = await createPage.mutateAsync({
 			content: {},
 			slug: `page-${lastPageId}`,
-			title: "New Page " + lastPageId,
+			title: "New page " + lastPageId,
 		});
 
 		// If it's the first page or if no homepage is defined,

@@ -1,9 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
-import { getAllPages } from "../lib/pages";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { allPagesOptions } from "@/feature/page/options/allPagesOptions";
 
 export function usePages() {
-	return useQuery({
-		queryFn: async () => await getAllPages(),
-		queryKey: ["pages"] as const,
-	});
+	return useSuspenseQuery(allPagesOptions);
 }
