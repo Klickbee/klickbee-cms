@@ -500,6 +500,8 @@
 		"MetaTitle": "Meta Title (50-60 characters)",
 		"Name": "Page name",
 		"NameNotAvailable": "Page name not available",
+		"NoPagesDescription": "You haven't created any pages yet. Build beautiful, high-performing pages to showcase your content and connect with your audience.",
+		"NoPagesTitle": "You haven't created any pages yet",
 		"NoResultsFound": "No pages found",
 		"Search": "Search pages...",
 		"SelectNewHomepage": "Select new homepage",
