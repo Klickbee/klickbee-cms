@@ -8,7 +8,7 @@ import FilterSelector, {
 import {
 	type UserFilterType,
 	useUserFilterStore,
-} from "@/feature/user/stores/storeUserSort";
+} from "@/feature/user/stores/storeUserFilter";
 
 export default function UserFilterSelector() {
 	const t = useTranslations("SettingsUsers");
