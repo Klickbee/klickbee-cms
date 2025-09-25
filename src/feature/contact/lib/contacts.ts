@@ -57,33 +57,6 @@ export const getContactById = async (id: string) => {
 	});
 };
 
-export const deleteContact = async (id: string) => {
-	const authError = await isAuthenticatedGuard();
-	if (authError) {
-		return authError;
-	}
-
-	if (process.env.NODE_ENV === "development") {
-		const mock = getMockContactById(parseInt(id));
-		if (!mock) {
-			throw new Error("Contact not found");
-		}
-		// delete mock contact from mockContacts
-		const index = mockContacts.findIndex(
-			(contact) => contact.id === parseInt(id),
-		);
-		if (index !== -1) {
-			mockContacts.splice(index, 1);
-		}
-
-		return mock;
-	}
-
-	return prisma.contact.delete({
-		where: { id: parseInt(id) },
-	});
-};
-
 export const deleteContacts = async (ids: string[]) => {
 	const authError = await isAuthenticatedGuard();
 	if (authError) {
