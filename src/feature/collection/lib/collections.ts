@@ -1,3 +1,5 @@
+"use server";
+
 import { InputJsonValue } from "@prisma/client/runtime/library";
 import { Prisma } from "@/generated/prisma";
 import { prisma } from "@/lib/prisma";
@@ -19,12 +21,13 @@ export const getAllCollections = async (): Promise<
 > => {
 	const collections = await prisma.collection.findMany({
 		include: {
+			items: true,
 			templates: true,
 		},
 	});
-
 	return collections.map((collection) => ({
 		...mapPrismaCollectionToCollection(collection),
+		items: collection.items.map(mapPrismaCollectionItemToCollectionItem),
 		templates: collection.templates.map(
 			mapPrismaCollectionTemplateToCollectionTemplate,
 		),
@@ -83,7 +86,7 @@ export const createCollection = async (data: {
 };
 
 export const updateCollection = async (
-	id: number,
+	slug: string,
 	data: {
 		name?: string;
 		slug?: string;
@@ -91,7 +94,7 @@ export const updateCollection = async (
 ): Promise<Collection> => {
 	const collection = await prisma.collection.update({
 		data,
-		where: { id },
+		where: { slug },
 	});
 
 	return mapPrismaCollectionToCollection(collection);
@@ -100,6 +103,16 @@ export const updateCollection = async (
 export const deleteCollection = async (id: number): Promise<void> => {
 	await prisma.collection.delete({
 		where: { id },
+	});
+};
+
+export const deleteCollections = async (ids: string[]) => {
+	return prisma.collection.deleteMany({
+		where: {
+			id: {
+				in: ids.map((id) => parseInt(id)),
+			},
+		},
 	});
 };
 
@@ -148,11 +161,29 @@ export const getCollectionItems = async (
 	return items.map(mapPrismaCollectionItemToCollectionItem);
 };
 
+export const getCollectionItemsByCollectionSlug = async (
+	collectionSlug: string,
+): Promise<{
+	collectionItems: CollectionItem[];
+	collectionName: string;
+}> => {
+	const collection = await getCollectionBySlug(collectionSlug);
+	if (!collection) {
+		throw new Error(`Collection with slug "${collectionSlug}" not found`);
+	}
+	const collectionsItems = await getCollectionItems(collection.id);
+
+	return {
+		collectionItems: collectionsItems,
+		collectionName: collection.name,
+	};
+};
+
 export const createCollectionItem = async (data: {
 	title: string;
 	slug: string;
 	content: JsonNull | InputJsonValue;
-	collectionId: number;
+	collectionSlug: string;
 	author: string;
 	metaTitle?: string;
 	metaDescription?: string;
@@ -160,8 +191,18 @@ export const createCollectionItem = async (data: {
 	isPublished?: boolean;
 	publishedAt?: Date;
 }): Promise<CollectionItem> => {
+	const collection = await getCollectionBySlug(data.collectionSlug);
+	if (!collection) {
+		throw new Error(
+			`Collection with slug "${data.collectionSlug}" not found`,
+		);
+	}
+
 	const item = await prisma.collectionItem.create({
-		data,
+		data: {
+			...data,
+			collectionId: collection.id,
+		},
 	});
 
 	return mapPrismaCollectionItemToCollectionItem(item);
