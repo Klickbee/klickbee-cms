@@ -35,9 +35,12 @@ export default function CardListLayout({
 				{createUrl && (
 					<Button
 						asChild
-						className="bg-zinc-950 text-white hover:bg-zinc-950/90"
+						className="bg-zinc-950 text-white hover:bg-zinc-950/90 flex items-center"
 					>
-						<Link href={`/admin/${adminKey}${createUrl}`}>
+						<Link
+							className="flex items-center"
+							href={`/admin/${adminKey}${createUrl}`}
+						>
 							{icon && <span className="mr-2">{icon}</span>}
 							{createButtonText}
 						</Link>
