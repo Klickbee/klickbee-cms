@@ -1,12 +1,12 @@
 import DashboardTitle from "@/components/admin/_partials/dashboardTitle";
 import CollectionItemCreateForm from "@/components/admin/manage/collectionItems/create/collectionItemCreateForm";
 
-export default function Page({
+export default async function Page({
 	params,
 }: {
-	params: { collectionSlug: string; adminKey: string };
+	params: Promise<{ collectionSlug: string }>;
 }) {
-	const { collectionSlug } = params;
+	const { collectionSlug } = await params;
 	return (
 		<section className="flex flex-col gap-4">
 			<DashboardTitle
