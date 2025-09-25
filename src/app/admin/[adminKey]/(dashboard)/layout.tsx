@@ -6,6 +6,7 @@ import { getLocale, getMessages } from "next-intl/server";
 import { Sidebar } from "@/components/admin/_partials/sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
+import { allCollectionsOptions } from "@/feature/collection/options/allCollectionsOptions";
 import { userServerOptions } from "@/feature/user/options/userServerOptions";
 import { getQueryClient } from "@/lib/getQueryClient";
 import { UserProvider } from "@/providers/UserProvider";
@@ -23,6 +24,7 @@ export default async function AdminLayout({
 
 	const queryClient = getQueryClient();
 	await queryClient.prefetchQuery(userServerOptions);
+	await queryClient.prefetchQuery(allCollectionsOptions);
 
 	const currentUser = queryClient.getQueryData(userServerOptions.queryKey);
 
