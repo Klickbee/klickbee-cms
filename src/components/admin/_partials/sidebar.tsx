@@ -40,7 +40,7 @@ import {
 	SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { useAdminKeyStore } from "@/feature/admin-key/stores/storeAdminKey";
-import { useCollections } from "@/feature/collection/queries/useCollections";
+import { useAllCollections } from "@/feature/collection/queries/useAllCollections";
 import { useCurrentUser } from "@/feature/user/queries/useUser";
 
 export function Sidebar() {
@@ -48,7 +48,7 @@ export function Sidebar() {
 	const adminKey = useAdminKeyStore((state) => state.adminKey);
 	const pathname = usePathname();
 	const { data: user } = useCurrentUser();
-	const { data: collections } = useCollections();
+	const { data: collections } = useAllCollections();
 	const items = [
 		{
 			href: `/admin/${adminKey}/`,
@@ -68,17 +68,12 @@ export function Sidebar() {
 		{
 			children:
 				collections?.map((collection) => ({
-					href: `/admin/${adminKey}/manage/content/${collection.slug}`,
+					href: `/admin/${adminKey}/manage/content/items/${collection.slug}`,
 					label: collection.name,
 				})) || [],
 			href: `/admin/${adminKey}/manage/content`,
 			icon: Layers,
 			label: t("Content"),
-		},
-		{
-			href: `/admin/${adminKey}/manage/users`,
-			icon: User,
-			label: t("Users"),
 		},
 		{
 			href: `/admin/${adminKey}/manage/contact`,
@@ -151,24 +146,48 @@ export function Sidebar() {
 									}
 								>
 									{item.href ? (
-										<SidebarMenuButton className="text-black data-[active=true]:bg-primary data-[active=true]:text-secondary">
-											<a
-												className="flex items-center w-full gap-2"
+										<SidebarMenuButton
+											asChild
+											className="text-black data-[active=true]:bg-primary data-[active=true]:text-secondary"
+											data-active={
+												pathname === item.href ||
+												pathname.startsWith(
+													item.href +
+														(item.href.endsWith("/")
+															? ""
+															: "/"),
+												) ||
+												item.children?.some(
+													(child) =>
+														pathname === child.href,
+												)
+											}
+										>
+											<Link
+												className="flex items-center w-full"
 												href={item.href}
 											>
 												<item.icon className="h-4 w-4" />
-												{item.label}
-											</a>
-											<CollapsibleTrigger
-												asChild
-												className={"cursor-pointer"}
-											>
-												<ChevronRight className="ml-auto h-4 w-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-											</CollapsibleTrigger>
+												<span>{item.label}</span>
+												<CollapsibleTrigger
+													asChild
+													className={
+														"cursor-pointer ml-auto"
+													}
+												>
+													<ChevronRight className="h-4 w-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+												</CollapsibleTrigger>
+											</Link>
 										</SidebarMenuButton>
 									) : (
 										<CollapsibleTrigger asChild>
-											<SidebarMenuButton className="text-black data-[active=true]:bg-primary data-[active=true]:text-secondary">
+											<SidebarMenuButton
+												className="text-black data-[active=true]:bg-primary data-[active=true]:text-secondary"
+												data-active={item.children?.some(
+													(child) =>
+														pathname === child.href,
+												)}
+											>
 												<item.icon className="h-4 w-4" />
 												{item.label}
 												<ChevronRight className="ml-auto h-4 w-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
@@ -204,11 +223,21 @@ export function Sidebar() {
 								<SidebarMenuButton
 									asChild
 									className="text-black data-[active=true]:bg-primary data-[active=true]:text-secondary"
-									data-active={pathname === item.href}
+									data-active={
+										pathname === item.href ||
+										(item.href.endsWith("/") &&
+											pathname ===
+												item.href.slice(0, -1)) ||
+										(!item.href.endsWith("/") &&
+											pathname === item.href + "/")
+									}
 								>
-									<Link href={item.href}>
+									<Link
+										className="flex items-center w-full"
+										href={item.href}
+									>
 										<item.icon className="h-4 w-4" />
-										{item.label}
+										<span>{item.label}</span>
 									</Link>
 								</SidebarMenuButton>
 							</SidebarMenuItem>
