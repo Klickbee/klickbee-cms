@@ -1,7 +1,7 @@
-import type {
-	MediaDeleteResponse,
-	MediaFile,
-	MediaUploadResponse,
+import {
+	type MediaDeleteResponse,
+	type MediaFile,
+	type MediaUploadResponse,
 } from "../types/media";
 
 export const uploadMedia = async (file: File): Promise<MediaUploadResponse> => {
@@ -21,15 +21,10 @@ export const uploadMedia = async (file: File): Promise<MediaUploadResponse> => {
 	return response.json();
 };
 
-export const deleteMedia = async (
-	filename: string,
-): Promise<MediaDeleteResponse> => {
-	const response = await fetch(
-		`/api/admin/media?filename=${encodeURIComponent(filename)}`,
-		{
-			method: "DELETE",
-		},
-	);
+export const deleteMedia = async (id: number): Promise<MediaDeleteResponse> => {
+	const response = await fetch(`/api/admin/media?id=${id}`, {
+		method: "DELETE",
+	});
 
 	if (!response.ok) {
 		const error = await response.json();

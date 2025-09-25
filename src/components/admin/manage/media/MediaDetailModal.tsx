@@ -1,9 +1,12 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery } from "@tanstack/react-query";
 import { CopyIcon, FileIcon } from "lucide-react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import {
 	AlertDialog,
@@ -22,11 +25,25 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useDeleteMedia } from "@/feature/media/queries/useDeleteMedia";
+import { useUpdateMedia } from "@/feature/media/queries/useUpdateMedia";
+import {
+	type MediaUpdateSchema,
+	mediaUpdateSchema,
+} from "@/feature/media/schemas/mediaUpdateSchema";
 import type { MediaFile } from "@/feature/media/types/media";
+import { userByIdForEditOptions } from "@/feature/user/options/userByIdOptions";
+import { UserToUpdate } from "@/feature/user/types/user";
 import { formatDate } from "@/lib/utils";
 
 type Props = {
@@ -45,15 +62,38 @@ export default function MediaDetailModal({
 	const t = useTranslations("Media");
 	const tCommon = useTranslations("Common");
 	const deleteMediaMutation = useDeleteMedia();
-	// const [isEditing, setIsEditing] = useState(false);
+	const updateMediaMutation = useUpdateMedia();
 	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-	const [metadata, setMetadata] = useState({
-		altText: "",
-		caption: "",
-		description: "",
-		title: "",
-	});
 	const locale = useLocale();
+
+	// Initialize form
+	const form = useForm<MediaUpdateSchema>({
+		defaultValues: {
+			altText: "",
+			caption: "",
+			description: "",
+		},
+		resolver: zodResolver(mediaUpdateSchema),
+	});
+
+	// Initialize form with media data
+	useEffect(() => {
+		if (media) {
+			form.reset({
+				altText: media.altText || "",
+				caption: media.caption || "",
+				description: media.description || "",
+			});
+		}
+	}, [media, form]);
+
+	const { data: user } = useQuery(
+		userByIdForEditOptions(media?.userId || ""),
+	);
+	let userData: UserToUpdate | null = null;
+	if (user) {
+		userData = user as UserToUpdate;
+	}
 
 	if (!media) return null;
 
@@ -78,7 +118,7 @@ export default function MediaDetailModal({
 	const handleDownload = () => {
 		const link = document.createElement("a");
 		link.href = media.url;
-		link.download = media.filename;
+		link.download = media.fileName;
 		document.body.appendChild(link);
 		link.click();
 		document.body.removeChild(link);
@@ -90,7 +130,7 @@ export default function MediaDetailModal({
 
 	const confirmDelete = async () => {
 		try {
-			await deleteMediaMutation.mutateAsync(media.filename);
+			await deleteMediaMutation.mutateAsync(media.id);
 			toast.success(t("DeleteSuccess"));
 			setShowDeleteConfirm(false);
 			onClose();
@@ -105,12 +145,26 @@ export default function MediaDetailModal({
 		setShowDeleteConfirm(false);
 	};
 
+	const onSubmit = async (data: MediaUpdateSchema) => {
+		try {
+			await updateMediaMutation.mutateAsync({
+				id: media.id,
+				...data,
+			});
+			toast.success(t("SaveSuccess"));
+			onUpdate?.(media); // Trigger refresh if callback provided
+		} catch (error) {
+			console.error("Error updating media:", error);
+			toast.error(t("SaveError"));
+		}
+	};
+
 	const renderMediaPreview = () => {
-		if (media.category === "image") {
+		if (media.category === "IMAGE") {
 			return (
 				<div className="relative w-full h-full overflow-hidden">
 					<Image
-						alt={media.filename}
+						alt={media.fileName}
 						className="object-contain"
 						fill
 						sizes="(max-width: 768px) 100vw, 50vw"
@@ -120,7 +174,7 @@ export default function MediaDetailModal({
 			);
 		}
 
-		if (media.category === "video") {
+		if (media.category === "VIDEO") {
 			return (
 				<div className="relative w-full h-80 bg-gray-100 overflow-hidden rounded-lg">
 					<video
@@ -136,14 +190,14 @@ export default function MediaDetailModal({
 		}
 
 		// Document preview
-		const extension = media.filename.split(".").pop()?.toUpperCase() || "";
+		const extension = media.fileName.split(".").pop()?.toUpperCase() || "";
 		return (
 			<div className="relative w-full h-80 bg-gray-100 overflow-hidden rounded-lg flex flex-col items-center justify-center">
 				<FileIcon className="w-20 h-20 text-gray-400 mb-4" />
 				<span className="text-2xl font-medium text-gray-600 mb-2">
 					{extension}
 				</span>
-				<span className="text-sm text-gray-500">{media.filename}</span>
+				<span className="text-sm text-gray-500">{media.fileName}</span>
 			</div>
 		);
 	};
@@ -190,9 +244,8 @@ export default function MediaDetailModal({
 									<span className="text-sm font-medium w-28">
 										{t("UploadBy")}
 									</span>
-									{/* TODO: to be replaced when media model will be created */}
 									<span className="text-sm">
-										: {media.filename}
+										: {userData?.name}
 									</span>
 								</div>
 								<div className="flex">
@@ -201,7 +254,7 @@ export default function MediaDetailModal({
 									</span>
 									{/* TODO: to be replaced when media model will be created */}
 									<span className="text-sm">
-										: {media.filename}
+										: {media.fileName}
 									</span>
 								</div>
 								<div className="flex">
@@ -209,7 +262,7 @@ export default function MediaDetailModal({
 										{t("FileName")}
 									</span>
 									<span className="text-sm">
-										: {media.filename}
+										: {media.fileName}
 									</span>
 								</div>
 								<div className="flex">
@@ -228,7 +281,7 @@ export default function MediaDetailModal({
 										: {formatFileSize(media.size)}
 									</span>
 								</div>
-								{media.category === "image" && (
+								{media.category === "IMAGE" && (
 									<div className="flex">
 										<span className="text-sm font-medium w-28">
 											{t("Dimensions")}
@@ -241,94 +294,99 @@ export default function MediaDetailModal({
 							</div>
 						</div>
 
-						{/* Meta Data */}
+						{/* Meta Data Form */}
 						<div>
 							<h3 className="font-medium mb-2">
 								{t("MetaData")}
 							</h3>
-							{/* TODO: create a form when media model will be created */}
-							<div className="space-y-4">
-								<div className="flex">
-									<Label
-										className="text-sm font-medium w-28"
-										htmlFor="altText"
-									>
-										{t("AltText")}
-									</Label>
-									<Input
-										className="flex-1"
-										id="altText"
-										onChange={(e) =>
-											setMetadata((prev) => ({
-												...prev,
-												altText: e.target.value,
-											}))
-										}
-										placeholder={t("EnterAltText")}
-										value={metadata.altText}
+							<Form {...form}>
+								<form
+									className="space-y-4"
+									onSubmit={form.handleSubmit(onSubmit)}
+								>
+									<FormField
+										control={form.control}
+										name="altText"
+										render={({ field }) => (
+											<FormItem>
+												<div className="flex items-center">
+													<FormLabel className="text-sm font-medium w-28">
+														{t("AltText")}
+													</FormLabel>
+													<FormControl>
+														<Input
+															{...field}
+															className="flex-1"
+															placeholder={t(
+																"EnterAltText",
+															)}
+															value={
+																field.value ||
+																""
+															}
+														/>
+													</FormControl>
+												</div>
+												<FormMessage />
+											</FormItem>
+										)}
 									/>
-								</div>
-								<div className="flex">
-									<Label
-										className="text-sm font-medium w-28"
-										htmlFor="title"
-									>
-										{t("Title")}
-									</Label>
-									<Input
-										className="flex-1"
-										id="title"
-										onChange={(e) =>
-											setMetadata((prev) => ({
-												...prev,
-												title: e.target.value,
-											}))
-										}
-										placeholder={t("EnterTitle")}
-										value={metadata.title}
+									<FormField
+										control={form.control}
+										name="caption"
+										render={({ field }) => (
+											<FormItem>
+												<div className="flex items-center">
+													<FormLabel className="text-sm font-medium w-28">
+														{t("Caption")}
+													</FormLabel>
+													<FormControl>
+														<Input
+															{...field}
+															className="flex-1"
+															placeholder={t(
+																"EnterCaption",
+															)}
+															value={
+																field.value ||
+																""
+															}
+														/>
+													</FormControl>
+												</div>
+												<FormMessage />
+											</FormItem>
+										)}
 									/>
-								</div>
-								<div className="flex">
-									<Label
-										className="text-sm font-medium w-28"
-										htmlFor="caption"
-									>
-										{t("Caption")}
-									</Label>
-									<Input
-										className="flex-1"
-										id="caption"
-										onChange={(e) =>
-											setMetadata((prev) => ({
-												...prev,
-												caption: e.target.value,
-											}))
-										}
-										placeholder={t("EnterCaption")}
-										value={metadata.caption}
+									<FormField
+										control={form.control}
+										name="description"
+										render={({ field }) => (
+											<FormItem>
+												<div className="flex items-start">
+													<FormLabel className="text-sm font-medium w-28 pt-2">
+														{t("Description")}
+													</FormLabel>
+													<FormControl>
+														<Textarea
+															{...field}
+															className="flex-1"
+															placeholder={t(
+																"EnterDescription",
+															)}
+															value={
+																field.value ||
+																""
+															}
+														/>
+													</FormControl>
+												</div>
+												<FormMessage />
+											</FormItem>
+										)}
 									/>
-								</div>
-								<div className="flex">
-									<Label
-										className="text-sm font-medium w-28"
-										htmlFor="description"
-									>
-										{t("Description")}
-									</Label>
-									<Textarea
-										className="flex-1"
-										id="description"
-										onChange={(e) =>
-											setMetadata((prev) => ({
-												...prev,
-												description: e.target.value,
-											}))
-										}
-										placeholder={t("EnterDescription")}
-										value={metadata.description}
-									/>
-								</div>
-							</div>
+								</form>
+							</Form>
 						</div>
 
 						{/* File URL */}
@@ -354,7 +412,7 @@ export default function MediaDetailModal({
 						</div>
 
 						{/* Action Buttons */}
-						<div className="grid grid-cols-2 pt-4 border-t items-center">
+						<div className="flex justify-between pt-4 border-t items-center">
 							<a
 								className="tex-sm font-medium text-blue-800 underline hover:text-blue-600"
 								href={media.url}
@@ -363,7 +421,17 @@ export default function MediaDetailModal({
 							>
 								{t("ViewMediaFile")}
 							</a>
-							<div className="flex justify-around flex-wrap border-s">
+							<div className="flex flex-wrap gap-2 border-s ps-4">
+								<Button
+									disabled={updateMediaMutation.isPending}
+									onClick={form.handleSubmit(onSubmit)}
+									size="sm"
+									variant="default"
+								>
+									{updateMediaMutation.isPending
+										? tCommon("Saving")
+										: tCommon("Save")}
+								</Button>
 								<Button
 									onClick={handleDownload}
 									size="sm"

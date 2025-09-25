@@ -2,7 +2,7 @@ import { queryOptions } from "@tanstack/react-query";
 import { headers } from "next/headers";
 import { auth } from "@/feature/auth/lib/auth";
 
-async function getCurrentUser() {
+export async function getCurrentUser() {
 	try {
 		const headersList = await headers();
 		const session = await auth.api.getSession({

@@ -1,1 +1,1 @@
-export { DELETE, GET, POST } from "@/feature/media/api/apiUploadMedia";
+export { DELETE, GET, POST, PUT } from "@/feature/media/api/apiUploadMedia";
