@@ -40,7 +40,7 @@ export function createColumns(
 				</SortableColumnHeader>
 			),
 		}),
-		columnHelper.accessor("collection", {
+		columnHelper.accessor("collectionName", {
 			cell: ({ getValue }) => (
 				<span className="text-muted-foreground">{getValue()}</span>
 			),
@@ -122,12 +122,12 @@ export function createColumns(
 			cell: ({ row }) => {
 				const actions: ActionConfig[] = [
 					{
-						href: `/admin/${adminKey}/collections/${row.original.collection}/${row.original.id}`,
+						href: `/admin/${adminKey}/manage/content/${row.original.collectionSlug}/${row.original.id}`,
 						label: tCommon("Edit"),
 						type: "edit",
 					},
 					{
-						href: `/admin/${adminKey}/collections/${row.original.collection}/${row.original.id}/preview`,
+						href: `/admin/${adminKey}/manage/content/${row.original.collectionSlug}/${row.original.id}/preview`,
 						label: "Preview",
 						target: "_blank",
 						type: "preview",
@@ -139,7 +139,7 @@ export function createColumns(
 						type: "duplicate",
 					},
 					{
-						href: `/admin/${adminKey}/collections/${row.original.collection}/${row.original.id}/seo`,
+						href: `/admin/${adminKey}/manage/content/${row.original.collectionSlug}/${row.original.id}/seo`,
 						label: "SEO",
 						type: "seo",
 					},
