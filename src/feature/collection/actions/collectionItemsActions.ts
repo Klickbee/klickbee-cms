@@ -55,7 +55,7 @@ export async function createCollectionItemAction(data: {
 	slug: string;
 	author: string;
 	content: JsonNull | InputJsonValue;
-	collectionId: number;
+	collectionSlug: string;
 	metaTitle?: string;
 	metaDescription?: string;
 	metaKeywords?: string;

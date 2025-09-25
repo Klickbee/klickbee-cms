@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
 
 	try {
 		const body = await req.json();
-		const { action, id, ...data } = body;
+		const { action, id, slug, ...data } = body;
 
 		switch (action) {
 			case "create": {
@@ -82,10 +82,7 @@ export async function POST(req: NextRequest) {
 						{ status: 400 },
 					);
 				}
-				const updatedCollection = await updateCollection(
-					Number(id),
-					data,
-				);
+				const updatedCollection = await updateCollection(slug, data);
 				return NextResponse.json(updatedCollection);
 			}
 

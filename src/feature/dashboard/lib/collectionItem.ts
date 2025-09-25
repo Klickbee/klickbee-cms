@@ -31,7 +31,8 @@ export const getAllCollectionItems = async () => {
 		const seoScore = seoScores[index % seoScores.length];
 
 		return {
-			collection: item.collection.name,
+			collectionName: item.collection.name,
+			collectionSlug: item.collection.slug,
 			datePost: item.createdAt,
 			id: item.id,
 			name: item.title,
