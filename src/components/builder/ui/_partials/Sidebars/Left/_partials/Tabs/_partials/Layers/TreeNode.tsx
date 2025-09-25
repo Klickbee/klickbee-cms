@@ -28,9 +28,15 @@ interface TreeNodeProps {
 	level?: number;
 	parentId?: string | null;
 	isDragging?: boolean;
+	type?: "header" | "footer" | "content";
 }
 
-export function TreeNode({ node, level = 0, parentId = null }: TreeNodeProps) {
+export function TreeNode({
+	node,
+	level = 0,
+	parentId = null,
+	type,
+}: TreeNodeProps) {
 	const { confirmDelete } = useDeleteComponentContext();
 	const [expanded, setExpanded] = useState(true);
 	const [overBefore, setOverBefore] = useState(false);
@@ -165,7 +171,13 @@ export function TreeNode({ node, level = 0, parentId = null }: TreeNodeProps) {
 							<span className="w-4 h-4" />
 						)}
 						{node.icon}
-						<span className="ml-2">{node.label}</span>
+						<span className="ml-2">
+							{type == "header" && parentId == null
+								? "Header"
+								: type == "footer" && parentId == null
+									? "Footer"
+									: node.label}
+						</span>
 					</div>
 					{/* Children and after zone */}
 					<div className="ml-4">
@@ -232,7 +244,7 @@ export function TreeNode({ node, level = 0, parentId = null }: TreeNodeProps) {
 				>
 					Paste style
 				</ContextMenuItem>
-				{isParentComponent(node) && (
+				{isParentComponent(node) && type == "content" && (
 					<HeaderFooterContextItems
 						currentPage={currentPage}
 						node={node}

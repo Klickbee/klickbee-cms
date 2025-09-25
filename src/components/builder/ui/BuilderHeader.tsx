@@ -9,13 +9,17 @@ import { BuilderComponent } from "@/builder/types/components/components";
 import EditableName from "@/components/builder/ui/_partials/EditableName";
 import { Button } from "@/components/ui/button";
 import { useAdminKeyStore } from "@/feature/admin-key/stores/storeAdminKey";
+import { useUpdateHeader } from "@/feature/page/queries/useHeaderActions";
 import { useUpdatePageContent } from "@/feature/page/queries/usePageActions";
+import { usePageHeader } from "@/feature/page/queries/usePageHeader";
 
 export default function BuilderHeader() {
 	const currentPage = useCurrentPageStore((state) => state.currentPage);
+	const { data: currentPageHeader } = usePageHeader(currentPage.id);
 	const adminKey = useAdminKeyStore((state) => state.adminKey);
 	const [isSaving, setIsSaving] = useState(false);
 	const updatePageContent = useUpdatePageContent();
+	const updatePageHeader = useUpdateHeader();
 
 	const handleSave = async () => {
 		if (currentPage.id === -1) {
@@ -25,6 +29,13 @@ export default function BuilderHeader() {
 
 		setIsSaving(true);
 		try {
+			if (currentPageHeader) {
+				await updatePageHeader.mutateAsync({
+					headerId: currentPageHeader.id,
+					content: currentPageHeader.content as BuilderComponent[],
+					pageId: currentPage.id,
+				});
+			}
 			await updatePageContent.mutateAsync({
 				content: currentPage.content as BuilderComponent[],
 				pageId: currentPage.id,

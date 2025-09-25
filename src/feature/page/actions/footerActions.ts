@@ -5,12 +5,12 @@ import {
 } from "@/builder/types/components/components";
 import prisma from "@/lib/prisma";
 
-// Create a header for a page, optionally linking to a pageId
-export async function createHeader(
+// Create a footer for a page, optionally linking to a pageId
+export async function createFooter(
 	content: ParentBuilderComponent,
 	pageId?: number,
 ) {
-	return prisma.pageHeader.create({
+	return prisma.pageFooter.create({
 		data: {
 			content: JSON.parse(JSON.stringify(content)),
 			...(pageId ? { pages: { connect: { id: pageId } } } : {}),
@@ -18,12 +18,12 @@ export async function createHeader(
 	});
 }
 
-// Update the content of a header by its id
-export async function updateHeaderContent(
+// Update the content of a footer by its id
+export async function updateFooterContent(
 	id: number,
 	content: BuilderComponent[],
 ) {
-	return prisma.pageHeader.update({
+	return prisma.pageFooter.update({
 		where: { id },
 		data: {
 			content: JSON.parse(JSON.stringify(content)),
@@ -31,9 +31,9 @@ export async function updateHeaderContent(
 	});
 }
 
-// Get a header by pageId, or fallback to the default header
-export async function getHeaderByPageId(pageId: number) {
-	let header = await prisma.pageHeader.findFirst({
+// Get a footer by pageId, or fallback to the default footer
+export async function getFooterByPageId(pageId: number) {
+	let footer = await prisma.pageFooter.findFirst({
 		where: {
 			pages: {
 				some: {
@@ -43,31 +43,31 @@ export async function getHeaderByPageId(pageId: number) {
 		},
 	});
 
-	if (!header) {
-		header = await prisma.pageHeader.findFirst({
+	if (!footer) {
+		footer = await prisma.pageFooter.findFirst({
 			where: {
 				isDefault: true,
 			},
 		});
 	}
-	return header;
+	return footer;
 }
 
-export async function setAsHeader(
+export async function setAsFooter(
 	pageId: number,
-	headerId?: number,
+	footerId?: number,
 	content?: ParentBuilderComponent,
 ) {
-	if (headerId) {
+	if (footerId) {
 		return prisma.page.update({
 			where: { id: pageId },
 			data: {
-				pageHeaderId: headerId,
+				pageFooterId: footerId,
 			},
 		});
 	} else if (content) {
-		const header = await createHeader(content);
-		return await setAsHeader(pageId, header.id);
+		const footer = await createFooter(content);
+		return await setAsFooter(pageId, footer.id);
 	}
-	throw new Error("Either headerId or content must be provided");
+	throw new Error("Either footerId or content must be provided");
 }

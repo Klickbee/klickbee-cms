@@ -1,5 +1,6 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
@@ -23,6 +24,7 @@ export function useStyleUpdate(component: BuilderComponent) {
 	const currentPage = useCurrentPageStore((state) => state.currentPage);
 
 	const setCurrentPage = useCurrentPageStore((state) => state.setCurrentPage);
+	const queryClient = useQueryClient();
 
 	const updateStyle = useCallback(
 		(updates: Partial<ComponentStyleProps>) => {
@@ -46,8 +48,44 @@ export function useStyleUpdate(component: BuilderComponent) {
 				updatedComponent,
 			);
 			setCurrentPage({ ...currentPage, content: updatedContent });
+
+			// Also update header/footer query caches if the component belongs there
+			// queryClient.setQueryData(
+			// 	["page-header", currentPage.id] as const,
+			// 	(prev: any) => {
+			// 		if (!prev || !prev.content) return prev;
+			// 		return {
+			// 			...prev,
+			// 			content: updateSingleRoot(
+			// 				prev.content as BuilderComponent,
+			// 				component.id,
+			// 				updatedComponent,
+			// 			),
+			// 		};
+			// 	},
+			// );
+			// queryClient.setQueryData(
+			// 	["page-footer", currentPage.id] as const,
+			// 	(prev: any) => {
+			// 		if (!prev || !prev.content) return prev;
+			// 		return {
+			// 			...prev,
+			// 			content: updateSingleRoot(
+			// 				prev.content as BuilderComponent,
+			// 				component.id,
+			// 				updatedComponent,
+			// 			),
+			// 		};
+			// 	},
+			// );
 		},
-		[component, setCurrentComponent, currentPage, setCurrentPage],
+		[
+			component,
+			setCurrentComponent,
+			currentPage,
+			setCurrentPage,
+			queryClient,
+		],
 	);
 
 	// Helper function for updating a single style field
@@ -214,3 +252,37 @@ function updatePageContent(
 
 	return updateInTree(pageContent as BuilderComponent[]);
 }
+
+// Update a single-root (header/footer) tree
+// function updateSingleRoot(
+// 	root: BuilderComponent,
+// 	componentId: string,
+// 	componentContent: BuilderComponent,
+// ): BuilderComponent {
+// 	const updateNode = (node: BuilderComponent): BuilderComponent => {
+// 		if (node.id === componentId) {
+// 			return {
+// 				...node,
+// 				props: {
+// 					...node.props,
+// 					content: {
+// 						...(node.props?.content ?? {}),
+// 						...(componentContent.props?.content ?? {}),
+// 					},
+// 					style: {
+// 						...(node.props?.style ?? {}),
+// 						...(componentContent.props?.style ?? {}),
+// 					},
+// 				},
+// 			};
+// 		}
+// 		if (node.children && node.children.length) {
+// 			return {
+// 				...node,
+// 				children: (node.children as BuilderComponent[]).map(updateNode),
+// 			};
+// 		}
+// 		return node;
+// 	};
+// 	return updateNode(root);
+// }
