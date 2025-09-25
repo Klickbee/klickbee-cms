@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import type { MediaFile } from "../types/media";
 
-export type MediaTypeFilter = "all" | "image" | "video" | "document";
+export type MediaTypeFilter = "all" | "IMAGE" | "VIDEO" | "DOCUMENT";
 
 export function useMediaSearch(mediaFiles: MediaFile[]) {
 	const [searchTerm, setSearchTerm] = useState("");
@@ -22,7 +22,7 @@ export function useMediaSearch(mediaFiles: MediaFile[]) {
 			const lowerSearchTerm = searchTerm.toLowerCase();
 			filtered = filtered.filter((media) => {
 				return (
-					media.filename.toLowerCase().includes(lowerSearchTerm) ||
+					media.fileName.toLowerCase().includes(lowerSearchTerm) ||
 					media.type.toLowerCase().includes(lowerSearchTerm) ||
 					media.category.toLowerCase().includes(lowerSearchTerm)
 				);

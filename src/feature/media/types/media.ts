@@ -1,13 +1,25 @@
+import { User } from "@/feature/user/types/user";
+import { Media as PrismaMedia } from "@/generated/prisma";
+
 export type MediaFile = {
-	filename: string;
-	url: string;
-	type: string;
-	category: "image" | "video" | "document";
+	id: number;
+	altText?: string | null;
+	caption?: string | null;
+	category: "IMAGE" | "VIDEO" | "DOCUMENT";
+	description?: string | null;
+	fileName: string;
+	height?: number | null;
 	size: number;
-	createdAt: string;
-	modifiedAt: string;
-	width?: number;
-	height?: number;
+	type: string;
+	url: string;
+	width?: number | null;
+	createdAt: Date;
+	updatedAt: Date;
+	userId: string;
+};
+
+export type MediaWithUser = MediaFile & {
+	uploadedBy: User;
 };
 
 export type MediaUploadResponse = {
@@ -23,4 +35,25 @@ export type MediaListResponse = {
 
 export type MediaDeleteResponse = {
 	message: string;
+};
+
+export const mapPrismaMediaToMediaFile = (
+	prismaMedia: PrismaMedia,
+): MediaFile => {
+	return {
+		altText: prismaMedia.altText,
+		caption: prismaMedia.caption,
+		category: prismaMedia.category,
+		createdAt: prismaMedia.createdAt,
+		description: prismaMedia.description,
+		fileName: prismaMedia.fileName,
+		height: prismaMedia.height,
+		id: prismaMedia.id,
+		size: prismaMedia.size,
+		type: prismaMedia.type,
+		updatedAt: prismaMedia.updatedAt,
+		url: prismaMedia.url,
+		userId: prismaMedia.userId,
+		width: prismaMedia.width,
+	};
 };

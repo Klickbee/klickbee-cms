@@ -17,7 +17,7 @@ export default function MediaGrid({ files, onMediaClick }: Props) {
 		<div className="grid grid-cols-1 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-4">
 			{files.map((file) => (
 				<MediaCard
-					key={file.filename}
+					key={file.fileName}
 					media={file}
 					onClick={onMediaClick}
 				/>
