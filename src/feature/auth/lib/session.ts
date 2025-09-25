@@ -1,21 +1,20 @@
-import { headers } from "next/headers";
+import { getSession } from "better-auth/api";
 import { NextResponse } from "next/server";
-import { auth } from "@/feature/auth/lib/auth";
 
-async function getSession() {
-	try {
-		return await auth.api.getSession({
-			headers: await headers(),
-		});
-	} catch (error) {
-		console.error("Error getting session:", error);
-		return null;
-	}
-}
+// async function getSession() {
+// 	try {
+// 		return await auth.api.getSession({
+// 			headers: await headers(),
+// 		});
+// 	} catch (error) {
+// 		console.error("Error getting session:", error);
+// 		return null;
+// 	}
+// }
 
 export async function isAuthenticatedGuard() {
 	try {
-		const session = await getSession();
+		const session = getSession();
 
 		if (!session) {
 			return NextResponse.json(

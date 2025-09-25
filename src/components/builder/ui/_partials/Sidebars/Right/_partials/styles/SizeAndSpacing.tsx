@@ -12,6 +12,7 @@ import { STYLE_DEFAULTS } from "@/builder/constants/styleDefaults";
 import { useStyleProps } from "@/builder/hooks/useStyleProps";
 import { useStyleUpdate } from "@/builder/hooks/useStyleUpdate";
 import { BuilderComponent } from "@/builder/types/components/components";
+import { SizeSpacingStyle } from "@/builder/types/components/properties/componentStylePropsType";
 import PropertyQuadInput from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyQuadInput";
 import PropertyUnitInput from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyUnitInput";
 import { Button } from "@/components/ui/button";
@@ -27,8 +28,7 @@ export default function BuilderStyleSizeAndSpacing({
 	const styleProps = useStyleProps(component, {
 		sizeAndSpacing: STYLE_DEFAULTS.SIZE_AND_SPACING,
 	});
-	const sizeSpacing =
-		styleProps.sizeAndSpacing || STYLE_DEFAULTS.SIZE_AND_SPACING;
+	const sizeSpacing = styleProps.sizeAndSpacing;
 	const { updateNestedProperty } = useStyleUpdate(component);
 
 	return (
@@ -37,6 +37,13 @@ export default function BuilderStyleSizeAndSpacing({
 			<PropertyUnitInput
 				label={t("width")}
 				layout="row"
+				onEmpty={() =>
+					updateNestedProperty("sizeAndSpacing", (current) => {
+						const curr = current || {};
+						const { width, ...rest } = curr as SizeSpacingStyle;
+						return rest as SizeSpacingStyle;
+					})
+				}
 				onUnitChange={(unit) =>
 					updateNestedProperty("sizeAndSpacing", (current) => ({
 						...current,
@@ -63,6 +70,13 @@ export default function BuilderStyleSizeAndSpacing({
 			<PropertyUnitInput
 				label={t("height")}
 				layout="row"
+				onEmpty={() =>
+					updateNestedProperty("sizeAndSpacing", (current) => {
+						const curr = current || {};
+						const { height, ...rest } = curr as SizeSpacingStyle;
+						return rest as SizeSpacingStyle;
+					})
+				}
 				onUnitChange={(unit) =>
 					updateNestedProperty("sizeAndSpacing", (current) => ({
 						...current,
@@ -91,6 +105,17 @@ export default function BuilderStyleSizeAndSpacing({
 					<PropertyUnitInput
 						label={t("minWidth")}
 						layout="row"
+						onEmpty={() =>
+							updateNestedProperty(
+								"sizeAndSpacing",
+								(current) => {
+									const curr = current || {};
+									const { minWidth, ...rest } =
+										curr as SizeSpacingStyle;
+									return rest as SizeSpacingStyle;
+								},
+							)
+						}
 						onUnitChange={(unit) =>
 							updateNestedProperty(
 								"sizeAndSpacing",
@@ -124,6 +149,17 @@ export default function BuilderStyleSizeAndSpacing({
 					<PropertyUnitInput
 						label={t("maxWidth")}
 						layout="row"
+						onEmpty={() =>
+							updateNestedProperty(
+								"sizeAndSpacing",
+								(current) => {
+									const curr = current || {};
+									const { maxWidth, ...rest } =
+										curr as SizeSpacingStyle;
+									return rest as SizeSpacingStyle;
+								},
+							)
+						}
 						onUnitChange={(unit) =>
 							updateNestedProperty(
 								"sizeAndSpacing",
@@ -157,6 +193,17 @@ export default function BuilderStyleSizeAndSpacing({
 					<PropertyUnitInput
 						label={t("minHeight")}
 						layout="row"
+						onEmpty={() =>
+							updateNestedProperty(
+								"sizeAndSpacing",
+								(current) => {
+									const curr = current || {};
+									const { minHeight, ...rest } =
+										curr as SizeSpacingStyle;
+									return rest as SizeSpacingStyle;
+								},
+							)
+						}
 						onUnitChange={(unit) =>
 							updateNestedProperty(
 								"sizeAndSpacing",
@@ -190,6 +237,17 @@ export default function BuilderStyleSizeAndSpacing({
 					<PropertyUnitInput
 						label={t("maxHeight")}
 						layout="row"
+						onEmpty={() =>
+							updateNestedProperty(
+								"sizeAndSpacing",
+								(current) => {
+									const curr = current || {};
+									const { maxHeight, ...rest } =
+										curr as SizeSpacingStyle;
+									return rest as SizeSpacingStyle;
+								},
+							)
+						}
 						onUnitChange={(unit) =>
 							updateNestedProperty(
 								"sizeAndSpacing",
@@ -276,25 +334,25 @@ export default function BuilderStyleSizeAndSpacing({
 									...(top !== undefined && {
 										top: {
 											...current.padding.top,
-											min: top,
+											max: top,
 										},
 									}),
 									...(right !== undefined && {
 										right: {
 											...current.padding.right,
-											min: right,
+											max: right,
 										},
 									}),
 									...(bottom !== undefined && {
 										bottom: {
 											...current.padding.bottom,
-											min: bottom,
+											max: bottom,
 										},
 									}),
 									...(left !== undefined && {
 										left: {
 											...current.padding.left,
-											min: left,
+											max: left,
 										},
 									}),
 								}
@@ -303,10 +361,10 @@ export default function BuilderStyleSizeAndSpacing({
 				}}
 				unit={sizeSpacing.padding?.top.sizeUnit || "px"}
 				values={{
-					bottom: sizeSpacing.padding?.bottom.min || 0,
-					left: sizeSpacing.padding?.left.min || 0,
-					right: sizeSpacing.padding?.right.min || 0,
-					top: sizeSpacing.padding?.top.min || 0,
+					bottom: sizeSpacing.padding?.bottom.max || 0,
+					left: sizeSpacing.padding?.left.max || 0,
+					right: sizeSpacing.padding?.right.max || 0,
+					top: sizeSpacing.padding?.top.max || 0,
 				}}
 			/>
 
@@ -354,25 +412,25 @@ export default function BuilderStyleSizeAndSpacing({
 									...(top !== undefined && {
 										top: {
 											...current.margin.top,
-											min: top,
+											max: top,
 										},
 									}),
 									...(right !== undefined && {
 										right: {
 											...current.margin.right,
-											min: right,
+											max: right,
 										},
 									}),
 									...(bottom !== undefined && {
 										bottom: {
 											...current.margin.bottom,
-											min: bottom,
+											max: bottom,
 										},
 									}),
 									...(left !== undefined && {
 										left: {
 											...current.margin.left,
-											min: left,
+											max: left,
 										},
 									}),
 								}
@@ -381,10 +439,10 @@ export default function BuilderStyleSizeAndSpacing({
 				}}
 				unit={sizeSpacing.margin?.top.sizeUnit || "px"}
 				values={{
-					bottom: sizeSpacing.margin?.bottom.min || 0,
-					left: sizeSpacing.margin?.left.min || 0,
-					right: sizeSpacing.margin?.right.min || 0,
-					top: sizeSpacing.margin?.top.min || 0,
+					bottom: sizeSpacing.margin?.bottom.max || 0,
+					left: sizeSpacing.margin?.left.max || 0,
+					right: sizeSpacing.margin?.right.max || 0,
+					top: sizeSpacing.margin?.top.max || 0,
 				}}
 			/>
 		</div>

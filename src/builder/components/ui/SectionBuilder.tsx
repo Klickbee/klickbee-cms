@@ -1,5 +1,7 @@
 import React, { useContext } from "react";
 import EmptyChildrenPlaceholder from "@/builder/components/ui/_partials/EmptyChildrenPlaceholder";
+import { useBuilderMaxWidth } from "@/builder/hooks/useBuilderMaxWidth";
+import { mapStylePropsToCss } from "@/builder/lib/style/mapStylePropsToCss";
 import {
 	BuilderComponent,
 	canHaveChildren,
@@ -12,15 +14,22 @@ interface SectionProps {
 }
 
 export const SectionBuilder: React.FC<SectionProps> = ({ component }) => {
+	// Initialize the builder max width cache from settings
+	useBuilderMaxWidth();
 	// Get the setTargetComponent function from context
 	const dragDropContext = useContext(DragDropContext);
 
 	return (
-		<section className="relative bg-white w-full p-2">
+		<section
+			className="relative bg-white w-full"
+			style={{
+				...mapStylePropsToCss(component.props?.style),
+			}}
+		>
 			{!component.children || component.children.length === 0 ? (
 				<EmptyChildrenPlaceholder />
 			) : (
-				<div className="">
+				<>
 					{component.children
 						.slice() // Create a copy of the array to avoid mutating the original
 						.sort((a, b) => (a.order || 0) - (b.order || 0)) // Sort by order
@@ -54,7 +63,7 @@ export const SectionBuilder: React.FC<SectionProps> = ({ component }) => {
 								}}
 							/>
 						))}
-				</div>
+				</>
 			)}
 		</section>
 	);

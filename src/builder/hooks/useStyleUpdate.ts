@@ -1,7 +1,9 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent";
+import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
 import { BuilderComponent } from "@/builder/types/components/components";
 import {
 	BoxShadowStyle,
@@ -13,10 +15,16 @@ import {
 /**
  * Hook to handle style property updates in the builder store
  */
+
 export function useStyleUpdate(component: BuilderComponent) {
 	const setCurrentComponent = useCurrentComponentStore(
 		(state) => state.setCurrentComponent,
 	);
+
+	const currentPage = useCurrentPageStore((state) => state.currentPage);
+
+	const setCurrentPage = useCurrentPageStore((state) => state.setCurrentPage);
+	const queryClient = useQueryClient();
 
 	const updateStyle = useCallback(
 		(updates: Partial<ComponentStyleProps>) => {
@@ -34,11 +42,50 @@ export function useStyleUpdate(component: BuilderComponent) {
 
 			// Update the current component in the store
 			setCurrentComponent(updatedComponent);
+			const updatedContent = updatePageContent(
+				currentPage.content,
+				component.id,
+				updatedComponent,
+			);
+			setCurrentPage({ ...currentPage, content: updatedContent });
 
-			// TODO: Also need to update the component in the page content array
-			// This would require a page store update to persist changes
+			// Also update header/footer query caches if the component belongs there
+			// queryClient.setQueryData(
+			// 	["page-header", currentPage.id] as const,
+			// 	(prev: any) => {
+			// 		if (!prev || !prev.content) return prev;
+			// 		return {
+			// 			...prev,
+			// 			content: updateSingleRoot(
+			// 				prev.content as BuilderComponent,
+			// 				component.id,
+			// 				updatedComponent,
+			// 			),
+			// 		};
+			// 	},
+			// );
+			// queryClient.setQueryData(
+			// 	["page-footer", currentPage.id] as const,
+			// 	(prev: any) => {
+			// 		if (!prev || !prev.content) return prev;
+			// 		return {
+			// 			...prev,
+			// 			content: updateSingleRoot(
+			// 				prev.content as BuilderComponent,
+			// 				component.id,
+			// 				updatedComponent,
+			// 			),
+			// 		};
+			// 	},
+			// );
 		},
-		[component, setCurrentComponent],
+		[
+			component,
+			setCurrentComponent,
+			currentPage,
+			setCurrentPage,
+			queryClient,
+		],
 	);
 
 	// Helper function for updating a single style field
@@ -161,3 +208,81 @@ export function useStyleUpdate(component: BuilderComponent) {
 		updateStyle,
 	};
 }
+
+function updatePageContent(
+	pageContent: PrismaJson.PageContentMetaType,
+	componentId: string,
+	componentContent: BuilderComponent,
+): PrismaJson.PageContentMetaType {
+	// If content is not an array, return as-is (schema allows {})
+
+	if (!Array.isArray(pageContent)) return pageContent;
+
+	const updateInTree = (nodes: BuilderComponent[]): BuilderComponent[] => {
+		return nodes.map((node) => {
+			// If this is the node to update, merge its props with the new content/style
+			if (node.id === componentId) {
+				return {
+					...node,
+					props: {
+						...node.props,
+						content: {
+							...(node.props?.content ?? {}),
+							...(componentContent.props?.content ?? {}),
+						},
+						style: {
+							...(node.props?.style ?? {}),
+							...(componentContent.props?.style ?? {}),
+						},
+					},
+				};
+			}
+
+			// Otherwise, recurse into children if present
+			if (node.children && node.children.length) {
+				return {
+					...node,
+					children: updateInTree(node.children as BuilderComponent[]),
+				};
+			}
+
+			return node;
+		});
+	};
+
+	return updateInTree(pageContent as BuilderComponent[]);
+}
+
+// Update a single-root (header/footer) tree
+// function updateSingleRoot(
+// 	root: BuilderComponent,
+// 	componentId: string,
+// 	componentContent: BuilderComponent,
+// ): BuilderComponent {
+// 	const updateNode = (node: BuilderComponent): BuilderComponent => {
+// 		if (node.id === componentId) {
+// 			return {
+// 				...node,
+// 				props: {
+// 					...node.props,
+// 					content: {
+// 						...(node.props?.content ?? {}),
+// 						...(componentContent.props?.content ?? {}),
+// 					},
+// 					style: {
+// 						...(node.props?.style ?? {}),
+// 						...(componentContent.props?.style ?? {}),
+// 					},
+// 				},
+// 			};
+// 		}
+// 		if (node.children && node.children.length) {
+// 			return {
+// 				...node,
+// 				children: (node.children as BuilderComponent[]).map(updateNode),
+// 			};
+// 		}
+// 		return node;
+// 	};
+// 	return updateNode(root);
+// }

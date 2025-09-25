@@ -1,27 +1,32 @@
 import { Play, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { useBuilderShortcuts } from "@/builder/hooks/useBuilderShortcuts";
 import { ComponentRenderer } from "@/builder/lib/renderers/ComponentRenderer";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
+import { useCurrentPageHeaderStore } from "@/builder/store/storeCurrentPageHeader";
 import {
 	BuilderComponent,
 	canHaveChildren,
 } from "@/builder/types/components/components";
 import { componentsList } from "@/builder/types/components/ui/componentsList";
 import { Button } from "@/components/ui/button";
+import { usePageFooter } from "@/feature/page/queries/usePageFooter";
 
 export default function BuilderPreviewViewport({
 	bp,
-	content,
 	handleAddBreakpoint,
 	handleRemoveBreakpoint,
 }: {
 	bp: { name: string; width: number };
-	content: BuilderComponent[];
 	handleAddBreakpoint: () => void;
 	handleRemoveBreakpoint: (breakpointName: string) => void;
 }) {
 	const { currentPage, setCurrentPage } = useCurrentPageStore();
+	const { currentPageHeader } = useCurrentPageHeaderStore();
+	// const {data: pageHeader} = usePageHeader(currentPage.id);
+	const { data: pageFooter } = usePageFooter(currentPage.id);
 	const [targetComponent, setTargetComponent] = useState<string | null>(null);
+	useBuilderShortcuts();
 
 	return (
 		<div className="flex flex-col gap-2" key={bp.name}>
@@ -153,6 +158,7 @@ export default function BuilderPreviewViewport({
 							content: currentContent,
 						};
 						setCurrentPage(updatedPage);
+
 						setTargetComponent(null);
 					} catch (error) {
 						console.error("Error dropping component:", error);
@@ -160,12 +166,45 @@ export default function BuilderPreviewViewport({
 				}}
 				style={{
 					backgroundColor: "white",
-					minHeight: "1000px",
+					containerType: "inline-size",
+					display: "flex",
+					flexDirection: "column",
+					minHeight: "100vh",
 					position: "relative",
 					transition: "all 0.2s ease",
-					width: `${bp.width / 1.5}px`,
+					width: `${bp.width}px`,
 				}}
 			>
+				<div
+					style={{
+						transformOrigin: "top left",
+						width: `${bp.width}px`,
+					}}
+				></div>
+				{/* Render header if exists */}
+				{currentPageHeader?.content && (
+					<ComponentRenderer
+						component={
+							currentPageHeader.content as BuilderComponent
+						}
+						isDropTarget={
+							targetComponent ===
+							(currentPageHeader.content as BuilderComponent).id
+						}
+						onDragLeave={() => {
+							setTargetComponent(null);
+						}}
+						onDragOver={(e) => {
+							const headerComp =
+								currentPageHeader.content as BuilderComponent;
+							if (canHaveChildren(headerComp.type)) {
+								e.stopPropagation();
+								e.preventDefault();
+								setTargetComponent(headerComp.id);
+							}
+						}}
+					/>
+				)}
 				{/* Render components for this breakpoint */}
 				{currentPage.content &&
 					Array.isArray(currentPage.content) &&
@@ -193,6 +232,31 @@ export default function BuilderPreviewViewport({
 								/>
 							</div>
 						))}
+
+				{/* Render footer if exists */}
+				{pageFooter?.content && (
+					<div className={"mt-auto"}>
+						<ComponentRenderer
+							component={pageFooter.content as BuilderComponent}
+							isDropTarget={
+								targetComponent ===
+								(pageFooter.content as BuilderComponent).id
+							}
+							onDragLeave={() => {
+								setTargetComponent(null);
+							}}
+							onDragOver={(e) => {
+								const footerComp =
+									pageFooter.content as BuilderComponent;
+								if (canHaveChildren(footerComp.type)) {
+									e.stopPropagation();
+									e.preventDefault();
+									setTargetComponent(footerComp.id);
+								}
+							}}
+						/>
+					</div>
+				)}
 			</div>
 		</div>
 	);

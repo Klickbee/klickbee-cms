@@ -15,10 +15,11 @@ type ComponentGroup = {
 };
 
 const groupLabels: Record<string, string> = {
-	form: "Form",
 	layout: "Layout",
-	media: "Media",
 	text: "Text & Content",
+	media: "Media",
+	form: "Form",
+	navigation: "Navigation",
 };
 
 const groups: ComponentGroup[] = Object.entries(groupLabels).map(

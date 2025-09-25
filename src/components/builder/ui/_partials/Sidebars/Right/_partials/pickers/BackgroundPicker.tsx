@@ -29,6 +29,7 @@ interface BackgroundPickerProps {
 		attachment?: BackgroundAttachment;
 	};
 	onImageChange?: (image: BackgroundPickerProps["imageValue"]) => void;
+	allowedTypes?: Array<"color" | "gradient" | "image">;
 }
 
 export default function BackgroundPicker({
@@ -40,6 +41,7 @@ export default function BackgroundPicker({
 	onGradientChange,
 	imageValue = { position: "center", size: "cover", src: "" },
 	onImageChange,
+	allowedTypes = ["color", "gradient", "image"],
 }: BackgroundPickerProps) {
 	const t = useTranslations("Builder.RightSidebar.Background");
 

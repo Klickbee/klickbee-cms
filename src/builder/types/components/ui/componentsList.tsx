@@ -18,10 +18,12 @@ import { ImageBC } from "./Image/Image";
 import { InputBC } from "./Input/Input";
 import { LinkBC } from "./Link/Link";
 import { ListBC } from "./List/List";
+import { NavigationMenuBC } from "./NavigationMenu/NavigationMenu";
 import { ParagraphBC } from "./Paragraph/Paragraph";
 import { RadioGroupBC } from "./RadioGroup/RadioGroup";
 import { RichTextBC } from "./RichText/RichText";
 import { SectionBC } from "./Section/Section";
+import { SliderBC } from "./Slider/Slider";
 import { SpacerBC } from "./Spacer/Spacer";
 import { SubmitButtonBC } from "./SubmitButton/SubmitButton";
 import { TextBC } from "./Text/Text";
@@ -43,12 +45,14 @@ export const componentsList: BuilderComponent[] = [
 	ParagraphBC,
 	RichTextBC,
 	LinkBC,
+	NavigationMenuBC,
 	ButtonBC,
 
 	// Media components
 	ImageBC,
 	VideoBC,
 	EmbedBC,
+	SliderBC,
 	FileUploadBC,
 
 	// Form components

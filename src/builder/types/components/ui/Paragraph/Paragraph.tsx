@@ -10,7 +10,6 @@ export const ParagraphBC: ParagraphBCI = {
 		content: {},
 		style: {
 			effects: {},
-
 			sizeAndSpacing: {},
 			typography: {},
 		},

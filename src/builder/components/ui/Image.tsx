@@ -1,4 +1,5 @@
 import React from "react";
+import { mapStylePropsToCss } from "@/builder/lib/style/mapStylePropsToCss";
 import { BuilderComponent } from "../../types/components/components";
 
 interface ImageProps {
@@ -21,22 +22,16 @@ export const Image: React.FC<ImageProps> = ({ component }) => {
 	};
 
 	return (
-		<div
-			className="relative   bg-white"
+		<img
+			alt={alt}
+			className="max-w-full h-auto"
+			height={height.number}
+			src={src}
 			style={{
 				order: component.order || 0, // Use order property for positioning
-				...((component.props?.style as Record<string, unknown>) || {}),
+				...mapStylePropsToCss(component.props?.style),
 			}}
-		>
-			<div className="">
-				<img
-					alt={alt}
-					className="max-w-full h-auto"
-					height={height.number}
-					src={src}
-					width={width.number}
-				/>
-			</div>
-		</div>
+			width={width.number}
+		/>
 	);
 };

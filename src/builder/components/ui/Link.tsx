@@ -1,4 +1,5 @@
 import React from "react";
+import { mapStylePropsToCss } from "@/builder/lib/style/mapStylePropsToCss";
 import { BuilderComponent } from "../../types/components/components";
 
 interface LinkProps {
@@ -13,23 +14,17 @@ export const Link: React.FC<LinkProps> = ({ component }) => {
 	const rel = target === "_blank" ? "noopener noreferrer" : "";
 
 	return (
-		<div
-			className="relative   bg-white"
+		<a
+			className="text-blue-600 hover:underline"
+			href={href}
+			rel={rel}
 			style={{
 				order: component.order || 0, // Use order property for positioning
-				...((component.props?.style as Record<string, unknown>) || {}),
+				...mapStylePropsToCss(component.props?.style),
 			}}
+			target={target}
 		>
-			<div className="">
-				<a
-					className="text-blue-600 hover:underline"
-					href={href}
-					rel={rel}
-					target={target}
-				>
-					{text}
-				</a>
-			</div>
-		</div>
+			{text}
+		</a>
 	);
 };

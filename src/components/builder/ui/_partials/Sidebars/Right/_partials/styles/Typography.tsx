@@ -163,7 +163,7 @@ export default function BuilderStyleTypography({
 					}))
 				}
 				unit={typography.fontSize?.sizeUnit || "px"}
-				value={typography.fontSize?.min || 16}
+				value={typography.fontSize?.max || 16}
 			/>
 
 			{/* Font Weight */}

@@ -12,6 +12,7 @@ interface NumberInputProps {
 	className?: string;
 	icon?: LucideIcon;
 	hideIcon?: boolean;
+	onEmpty?: () => void;
 }
 
 export default function NumberInput({
@@ -21,6 +22,7 @@ export default function NumberInput({
 	className,
 	icon,
 	hideIcon = false,
+	onEmpty,
 }: NumberInputProps) {
 	const [inputValue, setInputValue] = useState(value.toString());
 
@@ -33,9 +35,19 @@ export default function NumberInput({
 		const newValue = e.target.value;
 		setInputValue(newValue);
 
-		// Only call onValueChange if it's a valid number or empty
-		if (newValue === "" || !isNaN(Number(newValue))) {
-			onValueChange(newValue === "" ? 0 : Number(newValue));
+		// If empty, trigger onEmpty (if provided) else fallback to 0 for backward compatibility
+		if (newValue === "") {
+			if (onEmpty) {
+				onEmpty();
+			} else {
+				onValueChange(0);
+			}
+			return;
+		}
+
+		// Only call onValueChange if it's a valid number
+		if (!isNaN(Number(newValue))) {
+			onValueChange(Number(newValue));
 		}
 	};
 
@@ -54,7 +66,8 @@ export default function NumberInput({
 				)}
 				<Input
 					className="border-none shadow-none p-0 h-auto text-xs font-normal bg-transparent flex-1 focus-visible:ring-0 focus:ring-0 [&_input]:focus-visible:ring-0 [&_input]:focus:ring-0"
-					onChange={handleChange}
+					onBlur={handleChange}
+					onChange={(e) => setInputValue(e.target.value)}
 					placeholder={placeholder}
 					type="number"
 					value={inputValue}
