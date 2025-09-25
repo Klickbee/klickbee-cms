@@ -5,14 +5,14 @@ import { toast } from "sonner";
 import { createColumns } from "@/components/admin/manage/contact/contactTableColumns";
 import { useAdminKeyStore } from "@/feature/admin-key/stores/storeAdminKey";
 import { useAllContacts } from "@/feature/contact/queries/useAllContacts";
-import { useDeleteContact } from "@/feature/contact/queries/useDeleteContact";
+import { useDeleteContacts } from "@/feature/contact/queries/useDeleteContacts";
 import { useContactSearchStore } from "@/feature/contact/stores/storeContactSearch";
 import { useContactSelectionStore } from "@/feature/contact/stores/storeContactSelection";
 import { useGenericTable } from "@/lib/hooks/useGenericTable";
 
 export function useContactsTable() {
 	const { data: contacts } = useAllContacts();
-	const deleteContactMutation = useDeleteContact();
+	const deleteContactMutation = useDeleteContacts();
 	const adminKey = useAdminKeyStore((state) => state.adminKey);
 	const { setSelectedItems, clearSelection } = useContactSelectionStore();
 	const { searchQuery } = useContactSearchStore();
@@ -24,7 +24,7 @@ export function useContactsTable() {
 
 	const handleDeleteContact = useCallback(
 		(contactId: number) => {
-			deleteContactMutation.mutate(contactId.toString(), {
+			deleteContactMutation.mutate([contactId.toString()], {
 				onError: () => toast.error(t("DeleteContactError")),
 				onSettled: () => clearSelection(),
 				onSuccess: () => toast.success(t("DeleteContactSuccess")),
