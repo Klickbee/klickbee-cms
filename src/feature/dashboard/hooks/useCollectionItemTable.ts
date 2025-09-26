@@ -33,12 +33,9 @@ export function useCollectionItemTable() {
 		const rawData = Array.isArray(collectionItems) ? collectionItems : [];
 
 		// Filtrer par statut si nécessaire
-		const filteredData =
-			filterBy === "all"
-				? rawData
-				: rawData.filter((item) => item.status === filterBy);
-
-		return filteredData;
+		return filterBy === "all"
+			? rawData
+			: rawData.filter((item) => item.status === filterBy);
 	}, [collectionItems, filterBy]);
 
 	const handleDuplicate = (id: string) => {

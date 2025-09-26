@@ -1,9 +1,10 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { useLocale, useTranslations } from "next-intl";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { toast } from "sonner";
 import { createCollectionItemColumns } from "@/components/admin/manage/collectionItems/collectionItemTableColumns";
 import { useAdminKeyStore } from "@/feature/admin-key/stores/storeAdminKey";
+import { useCollectionItemFilterStore } from "@/feature/collection/stores/storeCollectionItemFilter";
 import { useCollectionItemSearchStore } from "@/feature/collection/stores/storeCollectionItemSearch";
 import { useCollectionItemSelectionStore } from "@/feature/collection/stores/storeCollectionItemSelection";
 import { useCollectionItemsBySlug } from "@/feature/collectionItem/queries/useCollectionItemsBySlug";
@@ -16,17 +17,34 @@ export function useCollectionItemsTable(collectionSlug: string) {
 
 	const { data } = useCollectionItemsBySlug(collectionSlug);
 	const deleteCollectionItemsMutation = useDeleteCollectionItems();
-
 	const { setSelectedItems, clearSelection } =
 		useCollectionItemSelectionStore();
 	const { searchQuery } = useCollectionItemSearchStore();
+	const { filterBy } = useCollectionItemFilterStore();
 
 	const t = useTranslations("CollectionItems");
 	const tCommon = useTranslations("Common");
 
-	const collectionItemsData = Array.isArray(data.collectionItems)
-		? data.collectionItems
-		: [];
+	const collectionItemsData = useMemo(() => {
+		const rawData = Array.isArray(data.collectionItems)
+			? data.collectionItems
+			: [];
+
+		return filterBy === "all"
+			? rawData
+			: rawData.filter((item) => {
+					const isScheduled =
+						!item.isPublished &&
+						item.publishedAt &&
+						new Date(item.publishedAt) > new Date();
+					const status = item.isPublished
+						? "published"
+						: isScheduled
+							? "scheduled"
+							: "draft";
+					return status === filterBy;
+				});
+	}, [data, filterBy]);
 
 	const handleDeleteCollectionItem = useCallback(
 		(itemId: number) => {

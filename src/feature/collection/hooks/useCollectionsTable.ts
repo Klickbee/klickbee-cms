@@ -32,22 +32,10 @@ export function useCollectionsTable() {
 		[deleteCollectionMutation, t, clearSelection],
 	);
 
-	const handleDuplicateCollection = useCallback((collectionId: number) => {
-		// TODO: Implement duplicate functionality
-		toast.info("Duplicate functionality coming soon");
-	}, []);
-
-	const handleRenameCollection = useCallback((collectionId: number) => {
-		// TODO: Implement rename functionality
-		toast.info("Rename functionality coming soon");
-	}, []);
-
 	const columns = createColumns(
 		t,
 		tCommon,
 		handleDeleteCollection,
-		handleDuplicateCollection,
-		handleRenameCollection,
 		adminKey ?? "",
 	);
 
