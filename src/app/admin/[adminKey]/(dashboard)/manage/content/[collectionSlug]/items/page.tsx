@@ -9,7 +9,6 @@ import CollectionItemFilterSelector from "@/components/admin/manage/collectionIt
 import CollectionItemPagination from "@/components/admin/manage/collectionItems/collectionItemPagination";
 import CollectionItemSearchBar from "@/components/admin/manage/collectionItems/collectionItemSearchBar";
 import CollectionItemTable from "@/components/admin/manage/collectionItems/collectionItemTable";
-import { CollectionItemsTableProvider } from "@/feature/collectionItem/contexts/CollectionItemsTableContext";
 import { allCollectionItemsBySlugOptions } from "@/feature/collectionItem/options/allCollectionItemsBySlugOptions";
 import { getQueryClient } from "@/lib/getQueryClient";
 
@@ -40,20 +39,18 @@ export default function CollectionItemsPage({
 				translationNamespace="CollectionItems"
 			/>
 			<section className="py-6 px-8">
-				<CollectionItemsTableProvider collectionSlug={collectionSlug}>
-					<CardListLayout
-						actionButtons={<CollectionItemActionButton />}
-						createButtonText={t("CreateNew")}
-						createUrl={`/manage/content/items/${collectionSlug}/create`}
-						filterSelector={<CollectionItemFilterSelector />}
-						icon={<Plus />}
-						searchBar={<CollectionItemSearchBar />}
-						title={`${t("ManageItems")} - ${collectionName}`}
-					>
-						<CollectionItemTable />
-						<CollectionItemPagination />
-					</CardListLayout>
-				</CollectionItemsTableProvider>
+				<CardListLayout
+					actionButtons={<CollectionItemActionButton />}
+					createButtonText={t("CreateNew")}
+					createUrl={`/manage/content/${collectionSlug}/items/create`}
+					filterSelector={<CollectionItemFilterSelector />}
+					icon={<Plus />}
+					searchBar={<CollectionItemSearchBar />}
+					title={`${t("ManageItems")} - ${collectionName}`}
+				>
+					<CollectionItemTable collectionSlug={collectionSlug} />
+					<CollectionItemPagination collectionSlug={collectionSlug} />
+				</CardListLayout>
 			</section>
 		</HydrationBoundary>
 	);
