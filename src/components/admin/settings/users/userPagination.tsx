@@ -1,10 +1,10 @@
 "use client";
 
 import TanStackPagination from "@/components/admin/_partials/tanstackPagination";
-import { useUsersTableContext } from "@/feature/user/contexts/UsersTableContext";
+import { useUsersTable } from "@/feature/user/hooks/useUsersTable";
 
 export default function UsersPagination() {
-	const table = useUsersTableContext();
+	const table = useUsersTable();
 
 	return <TanStackPagination table={table} />;
 }
