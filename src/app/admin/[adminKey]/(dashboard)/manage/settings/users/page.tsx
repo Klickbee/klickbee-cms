@@ -8,7 +8,6 @@ import UserFilterSelector from "@/components/admin/settings/users/userFilterSele
 import UsersPagination from "@/components/admin/settings/users/userPagination";
 import UserSearchBar from "@/components/admin/settings/users/userSearchBar";
 import UserTable from "@/components/admin/settings/users/userTable";
-import { UsersTableProvider } from "@/feature/user/contexts/UsersTableContext";
 import { allUsersOptions } from "@/feature/user/options/allUsersOptions";
 import { getQueryClient } from "@/lib/getQueryClient";
 
@@ -25,20 +24,18 @@ export default function Page() {
 				translationNamespace="SettingsUsers"
 			/>
 			<section className="py-6 px-8">
-				<UsersTableProvider>
-					<CardListLayout
-						actionButtons={<UserActionButton />}
-						createButtonText={t("Add")}
-						createUrl="/manage/settings/users/create"
-						filterSelector={<UserFilterSelector />}
-						icon={<Plus />}
-						searchBar={<UserSearchBar />}
-						title={t("UsersListTitle")}
-					>
-						<UserTable />
-						<UsersPagination />
-					</CardListLayout>
-				</UsersTableProvider>
+				<CardListLayout
+					actionButtons={<UserActionButton />}
+					createButtonText={t("Add")}
+					createUrl="/manage/settings/users/create"
+					filterSelector={<UserFilterSelector />}
+					icon={<Plus />}
+					searchBar={<UserSearchBar />}
+					title={t("UsersListTitle")}
+				>
+					<UserTable />
+					<UsersPagination />
+				</CardListLayout>
 			</section>
 		</HydrationBoundary>
 	);
