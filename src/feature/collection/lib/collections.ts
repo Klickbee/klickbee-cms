@@ -184,7 +184,7 @@ export const createCollectionItem = async (data: {
 	slug: string;
 	content: JsonNull | InputJsonValue;
 	collectionSlug: string;
-	author: string;
+	authorId: string;
 	metaTitle?: string;
 	metaDescription?: string;
 	metaKeywords?: string;
