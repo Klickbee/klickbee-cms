@@ -31,6 +31,7 @@ model User {
 
   // Relations
   UserSettings UserSettings[]
+  collectionItems CollectionItem[]
 
   role       String?   @default("user")
   banned     Boolean?
@@ -185,7 +186,11 @@ model CollectionItem {
   content         Json
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
-  author          String
+  
+  // Author relation
+  authorId        String
+  author          User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  
   // SEO fields
   metaTitle       String?
   metaDescription String?
