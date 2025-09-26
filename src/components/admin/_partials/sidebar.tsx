@@ -68,7 +68,7 @@ export function Sidebar() {
 		{
 			children:
 				collections?.map((collection) => ({
-					href: `/admin/${adminKey}/manage/content/items/${collection.slug}`,
+					href: `/admin/${adminKey}/manage/content/${collection.slug}/items`,
 					label: collection.name,
 				})) || [],
 			href: `/admin/${adminKey}/manage/content`,
