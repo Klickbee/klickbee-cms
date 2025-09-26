@@ -17,8 +17,6 @@ export function createColumns(
 	t: (key: string) => string,
 	tCommon: (key: string) => string,
 	onDeleteCollection: (collectionId: number) => void,
-	onDuplicateCollection: (collectionId: number) => void,
-	onRenameCollection: (collectionId: number) => void,
 	adminKey: string,
 ) {
 	return [
@@ -33,7 +31,7 @@ export function createColumns(
 			cell: ({ getValue, row }) => (
 				<Link
 					className="cursor-pointer hover:text-blue-600 transition-colors"
-					href={`/admin/${adminKey}/manage/content/items/${row.original.slug}`}
+					href={`/admin/${adminKey}/manage/content/${row.original.slug}/items`}
 				>
 					{getValue() || t("NameNotAvailable")}
 				</Link>
@@ -60,16 +58,6 @@ export function createColumns(
 					{
 						href: `/admin/${adminKey}/manage/content/${row.original.slug}/edit`,
 						label: tCommon("Edit"),
-						type: "edit",
-					},
-					{
-						label: tCommon("Duplicate"),
-						onClick: () => onDuplicateCollection(row.original.id),
-						type: "duplicate",
-					},
-					{
-						label: t("Rename"),
-						onClick: () => onRenameCollection(row.original.id),
 						type: "edit",
 					},
 					{

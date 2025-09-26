@@ -3,10 +3,16 @@
 import { useTranslations } from "next-intl";
 import EmptyState from "@/components/admin/_partials/emptyState";
 import TanstackTable from "@/components/admin/_partials/table/tanstackTable";
-import { useCollectionItemsTableContext } from "@/feature/collectionItem/contexts/CollectionItemsTableContext";
+import { useCollectionItemsTable } from "@/feature/collectionItem/hooks/useCollectionItemsTable";
 
-export default function CollectionItemTable() {
-	const table = useCollectionItemsTableContext();
+interface CollectionItemTableProps {
+	collectionSlug: string;
+}
+
+export default function CollectionItemTable({
+	collectionSlug,
+}: CollectionItemTableProps) {
+	const table = useCollectionItemsTable(collectionSlug);
 	const t = useTranslations("CollectionItems");
 
 	if (!table.getRowModel().rows?.length) {

@@ -36,7 +36,7 @@ export default function CollectionItemCreateForm({
 					onSuccess: () => {
 						toast.success(t("CreateCollectionItemSuccess"));
 						router.push(
-							`/admin/${adminKey}/manage/content/items/${collectionSlug}`,
+							`/admin/${adminKey}/manage/content/${collectionSlug}/items`,
 						); // Redirect to collection items list
 					},
 				},

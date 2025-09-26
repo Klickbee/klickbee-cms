@@ -1,10 +1,16 @@
 "use client";
 
 import TanStackPagination from "@/components/admin/_partials/tanstackPagination";
-import { useCollectionItemsTableContext } from "@/feature/collectionItem/contexts/CollectionItemsTableContext";
+import { useCollectionItemsTable } from "@/feature/collectionItem/hooks/useCollectionItemsTable";
 
-export default function CollectionItemPagination() {
-	const table = useCollectionItemsTableContext();
+interface CollectionItemPaginationProps {
+	collectionSlug: string;
+}
+
+export default function CollectionItemPagination({
+	collectionSlug,
+}: CollectionItemPaginationProps) {
+	const table = useCollectionItemsTable(collectionSlug);
 
 	return <TanStackPagination table={table} />;
 }

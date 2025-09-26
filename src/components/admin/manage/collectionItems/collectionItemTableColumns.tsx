@@ -133,7 +133,7 @@ export function createCollectionItemColumns(
 			cell: ({ row }) => {
 				const actions: ActionConfig[] = [
 					{
-						href: `/admin/${adminKey}/manage/content/items/${collectionSlug}/${row.original.slug}`,
+						href: `/admin/${adminKey}/manage/content/${collectionSlug}/items/${row.original.slug}`,
 						label: t("EditItem"),
 						type: "edit",
 					},

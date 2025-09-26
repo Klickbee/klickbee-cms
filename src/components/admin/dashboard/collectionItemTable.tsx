@@ -3,10 +3,10 @@
 import { useTranslations } from "next-intl";
 import EmptyState from "@/components/admin/_partials/emptyState";
 import TanstackTable from "@/components/admin/_partials/table/tanstackTable";
-import { useCollectionItemContext } from "@/feature/dashboard/contexts/collectionItemContext";
+import { useCollectionItemTable } from "@/feature/dashboard/hooks/useCollectionItemTable";
 
 export default function CollectionItemTable() {
-	const table = useCollectionItemContext();
+	const table = useCollectionItemTable();
 	const t = useTranslations("Dashboard");
 
 	if (!table.getRowModel().rows?.length) {
