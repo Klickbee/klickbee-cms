@@ -49,25 +49,19 @@ export default function CollectionItemCreateForm({
 
 	const initialValues = {
 		collectionSlug,
-		content: JSON.stringify({ key: "value" }),
+		// content: JSON.stringify({ key: "value" }),
 		isPublished: false,
 		metaDescription: "",
-		metaKeywords: "",
 		metaTitle: "",
 		publishedAt: "",
 		slug: "",
-		title: "",
 	};
 
 	return (
 		<CollectionItemForm
 			initialValues={initialValues}
-			isSubmitting={createCollectionItemMutation.isPending}
 			onSubmit={handleSubmit}
 			schema={createCollectionItemSchema}
-			submitButtonText={t("CreateCollectionItem")}
-			submittingText={t("CreatingCollectionItem")}
-			title={t("CreateCollectionItem")}
 		/>
 	);
 }

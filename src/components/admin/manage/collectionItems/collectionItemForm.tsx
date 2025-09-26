@@ -1,12 +1,15 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { type FieldValues, useForm } from "react-hook-form";
 import { z } from "zod";
+import GoogleSearchPreview from "@/components/admin/_partials/googleSearchPreview";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
+import { DatePicker } from "@/components/ui/datepicker";
 import {
 	Form,
 	FormControl,
@@ -16,140 +19,108 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useAutoSlug } from "@/hooks/useAutoSlug";
+import { useAllAuthors } from "@/feature/collectionItem/queries/useAllAuthors";
 
 interface CollectionItemFormProps {
 	schema: z.ZodType;
-	title: string;
 	initialValues: FieldValues;
 	onSubmit: (values: FieldValues) => Promise<void>;
-	isSubmitting: boolean;
-	submitButtonText: string;
-	submittingText: string;
 }
 
 export default function CollectionItemForm({
 	schema,
-	title,
 	initialValues,
 	onSubmit,
-	isSubmitting,
-	submitButtonText,
-	submittingText,
 }: CollectionItemFormProps) {
 	const t = useTranslations("CollectionItems");
+	const { data: authors } = useAllAuthors();
 
 	const form = useForm({
-		defaultValues: initialValues,
+		defaultValues: {
+			...initialValues,
+			publishedAt: initialValues.publishedAt || new Date().toISOString(),
+		},
 		resolver: zodResolver(
 			schema as z.ZodObject<Record<string, z.ZodString>>,
 		),
 	});
 
-	const { handleNameChange, handleSlugChange } = useAutoSlug(
-		form,
-		initialValues.slug,
-	);
-
-	const handleSubmit = form.handleSubmit(async (values) => {
-		await onSubmit(values);
-	});
-
 	return (
-		<Card className="w-full">
-			<CardHeader>
-				<CardTitle>{title}</CardTitle>
-			</CardHeader>
-			<CardContent>
-				<Form {...form}>
-					<form className="space-y-8" onSubmit={handleSubmit}>
-						<FormField
-							control={form.control}
-							name="title"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>{t("Title")}</FormLabel>
-									<FormControl>
-										<Input
-											placeholder={t("TitlePlaceholder")}
-											{...field}
-											onChange={(e) => {
-												field.onChange(e);
-												handleNameChange(
-													e.target.value,
-												);
-											}}
-										/>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name="slug"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>{t("Slug")}</FormLabel>
-									<FormControl>
-										<Input
-											placeholder={t("SlugPlaceholder")}
-											{...field}
-											onChange={(e) => {
-												field.onChange(e);
-												handleSlugChange(
-													e.target.value,
-												);
-											}}
-										/>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name="author"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>{t("Author")}</FormLabel>
-									<FormControl>
-										<Input
-											placeholder={t("AuthorPlaceholder")}
-											{...field}
-										/>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name="content"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>{t("ContentJSON")}</FormLabel>
-									<FormControl>
-										<Textarea
-											placeholder={t(
-												"ContentJSONPlaceholder",
-											)}
-											rows={10}
-											{...field}
-										/>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
+		<Form {...form}>
+			<form
+				className="space-y-8 flex gap-8"
+				onSubmit={form.handleSubmit(onSubmit)}
+			>
+				<div className="flex flex-1 flex-col gap-8">
+					<Card className="gap-0 py-0">
+						<CardHeader className="py-6 px-4 gap-0 flex flex-row justify-between items-center border-b">
+							<CardTitle>Détails</CardTitle>
+						</CardHeader>
+						<CardContent className="p-4 flex flex-col gap-4"></CardContent>
+					</Card>
 
-						{/* SEO Settings */}
-						<div className="pt-4 border-t">
-							<h3 className="text-lg font-medium mb-4">
-								{t("SEOSettings")}
-							</h3>
-							<div className="space-y-8">
+					<Card className="gap-0 py-0">
+						<CardHeader className="py-3 px-4 gap-0 flex flex-row justify-between items-center border-b border-zinc-200">
+							<p className="font-semibold text-zinc-950 text-[16px] leading-6">
+								SEO Settings
+							</p>
+						</CardHeader>
+						<CardContent className="p-4 flex flex-col gap-6">
+							{(form.watch("metaTitle") ||
+								form.watch("metaDescription") ||
+								form.watch("slug")) && (
+								<div>
+									<FormLabel className="text-sm font-medium text-zinc-700 mb-3 block">
+										Aperçu Google Search
+									</FormLabel>
+									<GoogleSearchPreview
+										baseUrl="https://example.com"
+										formValues={{
+											metaDescription:
+												form.watch("metaDescription") ||
+												"",
+											metaTitle:
+												form.watch("metaTitle") || "",
+											slug: form.watch("slug") || "",
+										}}
+										page={{
+											metaDescription: "",
+											metaTitle: "",
+											slug: form.watch("slug") || "",
+											title:
+												initialValues.name ||
+												"Untitled",
+										}}
+									/>
+								</div>
+							)}
+							<div className="space-y-6">
+								<FormField
+									control={form.control}
+									name="slug"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>{t("Slug")}</FormLabel>
+											<FormControl>
+												<Input
+													placeholder={t(
+														"SlugPlaceholder",
+													)}
+													{...field}
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
 								<FormField
 									control={form.control}
 									name="metaTitle"
@@ -183,7 +154,7 @@ export default function CollectionItemForm({
 													placeholder={t(
 														"MetaDescriptionPlaceholder",
 													)}
-													rows={10}
+													rows={4}
 													{...field}
 												/>
 											</FormControl>
@@ -191,92 +162,161 @@ export default function CollectionItemForm({
 										</FormItem>
 									)}
 								/>
-								<FormField
-									control={form.control}
-									name="metaKeywords"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>
-												{t("MetaKeywords")}
-											</FormLabel>
-											<FormControl>
-												<Input
-													placeholder={t(
-														"MetaKeywordsPlaceholder",
-													)}
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
+								<Button
+									className="flex items-center gap-2 text-white hover:text-white bg-gradient-to-b from-[#AB57F7] to-[#9333EA]"
+									size="sm"
+									type="button"
+									variant="outline"
+								>
+									<Sparkles className="w-4 h-4" />
+									Generate with AI
+								</Button>
+							</div>
+						</CardContent>
+					</Card>
+				</div>
+
+				<Card className="gap-0 py-0 flex-1 max-w-[300px] h-fit">
+					<CardHeader className="py-6 px-4 gap-0 flex flex-row justify-between items-center border-b">
+						<CardTitle>{t("PublishingSettings")}</CardTitle>
+					</CardHeader>
+					<CardContent className="p-4 flex flex-col gap-6">
+						<div className="space-y-6">
+							<FormField
+								control={form.control}
+								name="publishedAt"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>
+											{t("PublishDate")}
+										</FormLabel>
+										<FormControl>
+											<DatePicker
+												onChange={(date) =>
+													field.onChange(
+														date?.toISOString(),
+													)
+												}
+												placeholder={t(
+													"PublishDatePlaceholder",
+												)}
+												value={
+													field.value
+														? new Date(field.value)
+														: undefined
+												}
+											/>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="authorId"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>{t("Author")}</FormLabel>
+										<FormControl>
+											<Select
+												onValueChange={field.onChange}
+												value={field.value}
+											>
+												<SelectTrigger className="w-full">
+													<SelectValue
+														placeholder={t(
+															"SelectAuthor",
+														)}
+													/>
+												</SelectTrigger>
+												<SelectContent>
+													{authors &&
+														authors.length ===
+															0 && (
+															<p className="p-4 text-zinc-500">
+																No authors
+																found.
+															</p>
+														)}
+													{authors &&
+														authors.map(
+															(author) => (
+																<SelectItem
+																	key={
+																		author.id
+																	}
+																	value={
+																		author.id
+																	}
+																>
+																	<div className="flex items-center w-full">
+																		<Avatar className="w-5 h-5 mr-2">
+																			<AvatarImage
+																				alt={
+																					author.name ||
+																					"Author Avatar"
+																				}
+																				src={
+																					author.image ||
+																					undefined
+																				}
+																			/>
+																			<AvatarFallback>
+																				{author.name
+																					? author.name.charAt(
+																							0,
+																						)
+																					: "A"}
+																			</AvatarFallback>
+																		</Avatar>
+																		{author.name ||
+																			"Unknown Author"}
+																	</div>
+																</SelectItem>
+															),
+														)}
+												</SelectContent>
+											</Select>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<div className="flex flex-col gap-3">
+								<Button
+									className="w-full bg-zinc-950 hover:bg-zinc-800 text-white disabled:opacity-50"
+									disabled={!form.formState.isValid}
+									onClick={() => {
+										const values = form.getValues();
+										onSubmit({
+											...values,
+											isPublished: true,
+										});
+									}}
+									type="button"
+								>
+									Publish
+								</Button>
+								<Button
+									className="w-full"
+									disabled={!form.formState.isValid}
+									onClick={() => {
+										const values = form.getValues();
+										onSubmit({
+											...values,
+											isPublished: false,
+										});
+									}}
+									type="button"
+									variant="outline"
+								>
+									Save as Draft
+								</Button>
 							</div>
 						</div>
-
-						{/* Publishing Settings */}
-						<div className="pt-4 border-t">
-							<h3 className="text-lg font-medium mb-4">
-								{t("PublishingSettings")}
-							</h3>
-							<div className="space-y-8">
-								<FormField
-									control={form.control}
-									name="isPublished"
-									render={({ field }) => (
-										<FormItem className="flex items-center space-x-3 space-y-0">
-											<FormControl>
-												<Checkbox
-													checked={field.value}
-													onCheckedChange={(
-														checked,
-													) =>
-														field.onChange(checked)
-													}
-												/>
-											</FormControl>
-											<FormLabel className="font-normal">
-												{t("IsPublished")}
-											</FormLabel>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name="publishedAt"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>
-												{t("PublishDate")}
-											</FormLabel>
-											<FormControl>
-												<Input
-													placeholder={t(
-														"PublishDatePlaceholder",
-													)}
-													type="datetime-local"
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-							</div>
-						</div>
-
-						{/* Submit Button */}
-						<Button
-							className="w-fit bg-blue-500 text-white hover:bg-blue-600"
-							disabled={!form.formState.isValid || isSubmitting}
-							type="submit"
-						>
-							{isSubmitting ? submittingText : submitButtonText}
-						</Button>
-					</form>
-				</Form>
-			</CardContent>
-		</Card>
+					</CardContent>
+				</Card>
+			</form>
+		</Form>
 	);
 }
