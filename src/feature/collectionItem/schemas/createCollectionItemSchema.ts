@@ -2,9 +2,8 @@ import { z } from "zod";
 
 export const createCollectionItemSchema = z
 	.object({
-		author: z.string().min(1, { message: "Author is required" }),
+		authorId: z.string().min(1, { message: "Author is required" }),
 		collectionSlug: z.string({ message: "Collection slug is required" }),
-		// parse content as JSON to ensure it's valid JSON
 		content: z.string().refine(
 			(val) => {
 				try {
@@ -16,9 +15,7 @@ export const createCollectionItemSchema = z
 			},
 			{ message: "Content must be valid JSON" },
 		),
-		isPublished: z.boolean().optional().default(false),
 		metaDescription: z.string().optional(),
-		metaKeywords: z.string().optional(),
 		metaTitle: z.string().optional(),
 		publishDate: z.string().optional(),
 		publishedAt: z.date().optional(),
