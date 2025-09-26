@@ -8,7 +8,6 @@ import PageActionButton from "@/components/admin/manage/page/pageActionButton";
 import PagesPagination from "@/components/admin/manage/page/pagePagination";
 import PageSearchBar from "@/components/admin/manage/page/pageSearchBar";
 import PageTable from "@/components/admin/manage/page/pageTable";
-import { PagesTableProvider } from "@/feature/page/contexts/pagesTableContext";
 import { allPagesOptions } from "@/feature/page/options/allPagesOptions";
 import { getQueryClient } from "@/lib/getQueryClient";
 
@@ -26,19 +25,17 @@ export default function AdminPagesPage() {
 				translationNamespace="Pages"
 			/>
 			<section className="py-6 px-8">
-				<PagesTableProvider>
-					<CardListLayout
-						actionButtons={<PageActionButton />}
-						createButtonText={t("CreateNew")}
-						createUrl="/builder?action=create_page"
-						icon={<Plus />}
-						searchBar={<PageSearchBar />}
-						title={t("ListTitle")}
-					>
-						<PageTable />
-						<PagesPagination />
-					</CardListLayout>
-				</PagesTableProvider>
+				<CardListLayout
+					actionButtons={<PageActionButton />}
+					createButtonText={t("CreateNew")}
+					createUrl="/builder?action=create_page"
+					icon={<Plus />}
+					searchBar={<PageSearchBar />}
+					title={t("ListTitle")}
+				>
+					<PageTable />
+					<PagesPagination />
+				</CardListLayout>
 			</section>
 		</HydrationBoundary>
 	);

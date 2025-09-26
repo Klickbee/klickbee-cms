@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { duplicatePages } from "@/feature/page/actions/duplicatePages";
+import { duplicatePages } from "@/feature/page/lib/pages";
 import { allPagesOptions } from "@/feature/page/options/allPagesOptions";
 
 export function useDuplicatePages() {

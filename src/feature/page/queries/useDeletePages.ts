@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deletePages } from "@/feature/page/actions/deletePages";
+import { deletePages } from "@/feature/page/lib/pages";
 import { allPagesOptions } from "@/feature/page/options/allPagesOptions";
 
 export function useDeletePages() {

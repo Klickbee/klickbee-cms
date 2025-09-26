@@ -3,10 +3,10 @@
 import { useTranslations } from "next-intl";
 import EmptyState from "@/components/admin/_partials/emptyState";
 import TanstackTable from "@/components/admin/_partials/table/tanstackTable";
-import { usePagesTableContext } from "@/feature/page/contexts/pagesTableContext";
+import { usePagesTable } from "@/feature/page/hooks/usePagesTable";
 
 export default function PageTable() {
-	const table = usePagesTableContext();
+	const table = usePagesTable();
 	const t = useTranslations("Pages");
 
 	if (!table.getRowModel().rows?.length) {
