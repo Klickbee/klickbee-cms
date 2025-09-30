@@ -1,6 +1,5 @@
 import { existsSync } from "fs";
 import { mkdir, unlink, writeFile } from "fs/promises";
-import sizeOf from "image-size";
 import { NextResponse } from "next/server";
 import { join } from "path";
 import {
@@ -70,10 +69,6 @@ export async function POST(request: Request) {
 			? "VIDEO"
 			: "DOCUMENT";
 	const url = `/uploads/media/${file.name}`;
-	let dimensions: { width: number; height: number } | null = null;
-	if (category === "IMAGE") {
-		dimensions = sizeOf(buffer);
-	}
 
 	try {
 		await writeFile(filePath, buffer);
@@ -86,13 +81,9 @@ export async function POST(request: Request) {
 			createdAt: new Date(),
 			description: null,
 			fileName,
-			height: dimensions?.height || null,
-			size: file.size,
-			type: file.type,
 			updatedAt: new Date(),
 			url,
 			userId: currentUser?.id || "0",
-			width: dimensions?.width || null,
 		});
 		return NextResponse.json(newMedia, {
 			headers: { "Content-Type": "application/json" },

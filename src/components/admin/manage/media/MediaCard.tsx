@@ -35,7 +35,7 @@ export default function MediaCard({ media, onClick }: Props) {
 						muted
 						preload="metadata"
 					>
-						<source src={media.url} type={media.type} />
+						<source src={media.url} />
 					</video>
 					<div className="absolute inset-0 bg-black/20 flex items-center justify-center">
 						<div className="bg-white/90 rounded-full p-3">

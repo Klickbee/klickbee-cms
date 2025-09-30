@@ -23,7 +23,6 @@ export function useMediaSearch(mediaFiles: MediaFile[]) {
 			filtered = filtered.filter((media) => {
 				return (
 					media.fileName.toLowerCase().includes(lowerSearchTerm) ||
-					media.type.toLowerCase().includes(lowerSearchTerm) ||
 					media.category.toLowerCase().includes(lowerSearchTerm)
 				);
 			});

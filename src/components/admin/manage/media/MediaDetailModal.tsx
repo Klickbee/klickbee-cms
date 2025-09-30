@@ -36,6 +36,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useDeleteMedia } from "@/feature/media/queries/useDeleteMedia";
+import { useMediaMetadata } from "@/feature/media/queries/useMediaMetadata";
 import { useUpdateMedia } from "@/feature/media/queries/useUpdateMedia";
 import {
 	type MediaUpdateSchema,
@@ -65,6 +66,13 @@ export default function MediaDetailModal({
 	const updateMediaMutation = useUpdateMedia();
 	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 	const locale = useLocale();
+
+	// Fetch media metadata
+	const { data: metadata, isLoading: metadataLoading } = useMediaMetadata(
+		media?.fileName || "",
+		media?.url || "",
+		!!media,
+	);
 
 	// Initialize form
 	const form = useForm<MediaUpdateSchema>({
@@ -182,7 +190,7 @@ export default function MediaDetailModal({
 						controls
 						preload="metadata"
 					>
-						<source src={media.url} type={media.type} />
+						<source src={media.url} type={metadata?.type} />
 						Votre navigateur ne supporte pas la lecture vidéo.
 					</video>
 				</div>
@@ -252,10 +260,8 @@ export default function MediaDetailModal({
 									<span className="text-sm font-medium w-28">
 										{t("UploadedTo")}
 									</span>
-									{/* TODO: to be replaced when media model will be created */}
-									<span className="text-sm">
-										: {media.fileName}
-									</span>
+									{/* TODO:  */}
+									<span className="text-sm">: TODO</span>
 								</div>
 								<div className="flex">
 									<span className="text-sm font-medium w-28">
@@ -278,7 +284,12 @@ export default function MediaDetailModal({
 										{t("FileSize")}
 									</span>
 									<span className="text-sm">
-										: {formatFileSize(media.size)}
+										:{" "}
+										{metadataLoading
+											? "Chargement..."
+											: metadata
+												? formatFileSize(metadata.size)
+												: "N/A"}
 									</span>
 								</div>
 								{media.category === "IMAGE" && (
@@ -287,7 +298,13 @@ export default function MediaDetailModal({
 											{t("Dimensions")}
 										</span>
 										<span className="text-sm">
-											: {media.width} x {media.height}
+											:{" "}
+											{metadataLoading
+												? "Chargement..."
+												: metadata?.width &&
+														metadata?.height
+													? `${metadata.width} x ${metadata.height}`
+													: "N/A"}
 										</span>
 									</div>
 								)}

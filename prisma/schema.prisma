@@ -223,11 +223,7 @@ model Media {
   category          MediaCategory
   description       String?
   fileName          String
-  height            Int?
-  size              Int
-  type              String
   url               String
-  width             Int?
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
   uploadedBy        User            @relation(fields: [userId], references: [id])
