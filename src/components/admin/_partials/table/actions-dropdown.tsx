@@ -1,4 +1,5 @@
-import { MoreHorizontal, Trash } from "lucide-react";
+import { Copy, Edit, Eye, MoreHorizontal, Search, Trash } from "lucide-react";
+import Link from "next/link";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -18,13 +19,40 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+export interface ActionConfig {
+	type: "edit" | "preview" | "duplicate" | "seo" | "delete" | "custom";
+	label: string;
+	href?: string;
+	onClick?: () => void;
+	target?: "_blank" | "_self";
+	className?: string;
+}
+
 interface ActionsDropdownProps<T, TId = string | number> {
 	row: { original: T };
-	onDelete: (id: TId) => void;
-	deleteTitle: string;
-	deleteDescription: string;
+	actions?: ActionConfig[];
+	onDelete?: (id: TId) => void;
+	deleteTitle?: string;
+	deleteDescription?: string;
 	tCommon: (key: string) => string;
 	children?: React.ReactNode;
+}
+
+function getActionIcon(type: ActionConfig["type"]) {
+	switch (type) {
+		case "edit":
+			return <Edit className="mr-2 h-4 w-4" />;
+		case "preview":
+			return <Eye className="mr-2 h-4 w-4" />;
+		case "duplicate":
+			return <Copy className="mr-2 h-4 w-4" />;
+		case "seo":
+			return <Search className="mr-2 h-4 w-4" />;
+		case "delete":
+			return <Trash className="mr-2 h-4 w-4" />;
+		default:
+			return null;
+	}
 }
 
 export function ActionsDropdown<
@@ -32,6 +60,7 @@ export function ActionsDropdown<
 	TId = T["id"],
 >({
 	row,
+	actions = [],
 	onDelete,
 	deleteTitle,
 	deleteDescription,
@@ -48,42 +77,86 @@ export function ActionsDropdown<
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="end">
-					{children}
-					<AlertDialog>
-						<AlertDialogTrigger asChild>
+					{actions.map((action, index) => {
+						if (action.type === "delete") {
+							return (
+								<AlertDialog key={index}>
+									<AlertDialogTrigger asChild>
+										<DropdownMenuItem
+											className="text-destructive"
+											onSelect={(e) => e.preventDefault()}
+										>
+											{getActionIcon(action.type)}
+											{action.label}
+										</DropdownMenuItem>
+									</AlertDialogTrigger>
+									<AlertDialogContent>
+										<AlertDialogHeader>
+											<AlertDialogTitle>
+												{deleteTitle || "Delete Item"}
+											</AlertDialogTitle>
+											<AlertDialogDescription>
+												{deleteDescription ||
+													"This action cannot be undone."}
+											</AlertDialogDescription>
+										</AlertDialogHeader>
+										<AlertDialogFooter>
+											<AlertDialogCancel>
+												{tCommon("Cancel")}
+											</AlertDialogCancel>
+											<AlertDialogAction
+												aria-label={`Confirm deletion of ${row.original.name || "item"}`}
+												className="bg-destructive text-white hover:bg-destructive/90"
+												onClick={() => {
+													if (action.onClick)
+														action.onClick();
+													if (onDelete)
+														onDelete(
+															row.original
+																.id as TId,
+														);
+												}}
+											>
+												{tCommon("Delete")}
+											</AlertDialogAction>
+										</AlertDialogFooter>
+									</AlertDialogContent>
+								</AlertDialog>
+							);
+						}
+
+						if (action.href) {
+							return (
+								<DropdownMenuItem asChild key={index}>
+									<Link
+										className={action.className}
+										href={action.href}
+										rel={
+											action.target === "_blank"
+												? "noopener noreferrer"
+												: undefined
+										}
+										target={action.target}
+									>
+										{getActionIcon(action.type)}
+										{action.label}
+									</Link>
+								</DropdownMenuItem>
+							);
+						}
+
+						return (
 							<DropdownMenuItem
-								className="text-destructive"
-								onSelect={(e) => e.preventDefault()}
+								className={action.className}
+								key={index}
+								onClick={action.onClick}
 							>
-								<Trash className="mr-2 h-4 w-4" />
-								{tCommon("Delete")}
+								{getActionIcon(action.type)}
+								{action.label}
 							</DropdownMenuItem>
-						</AlertDialogTrigger>
-						<AlertDialogContent>
-							<AlertDialogHeader>
-								<AlertDialogTitle>
-									{deleteTitle}
-								</AlertDialogTitle>
-								<AlertDialogDescription>
-									{deleteDescription}
-								</AlertDialogDescription>
-							</AlertDialogHeader>
-							<AlertDialogFooter>
-								<AlertDialogCancel>
-									{tCommon("Cancel")}
-								</AlertDialogCancel>
-								<AlertDialogAction
-									aria-label={`Confirm deletion of ${row.original.name || "item"}`}
-									className="bg-destructive text-white hover:bg-destructive/90"
-									onClick={() =>
-										onDelete(row.original.id as TId)
-									}
-								>
-									{tCommon("Delete")}
-								</AlertDialogAction>
-							</AlertDialogFooter>
-						</AlertDialogContent>
-					</AlertDialog>
+						);
+					})}
+					{children}
 				</DropdownMenuContent>
 			</DropdownMenu>
 		</div>

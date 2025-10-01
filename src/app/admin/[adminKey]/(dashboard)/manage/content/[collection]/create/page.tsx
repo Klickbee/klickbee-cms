@@ -29,6 +29,7 @@ export default function CreateCollectionItemPage({
 	// Form state
 	const [title, setTitle] = useState<string>("");
 	const [slug, setSlug] = useState<string>("");
+	const [author, setAuthor] = useState<string>("Admin"); // Replace with actual user data in a real app
 	const [content, setContent] = useState<string>("");
 	const [metaTitle, setMetaTitle] = useState<string>("");
 	const [metaDescription, setMetaDescription] = useState<string>("");
@@ -80,6 +81,7 @@ export default function CreateCollectionItemPage({
 			setError(null);
 
 			const itemData = {
+				author,
 				collectionId,
 				content: JSON.parse(content),
 				isPublished,
@@ -161,6 +163,17 @@ export default function CreateCollectionItemPage({
 								placeholder="enter-slug"
 								required
 								value={slug}
+							/>
+						</div>
+
+						<div className="space-y-2">
+							<Label htmlFor="author">Author *</Label>
+							<Input
+								id="author"
+								onChange={(e) => setAuthor(e.target.value)}
+								placeholder="Author name"
+								required
+								value={author}
 							/>
 						</div>
 
