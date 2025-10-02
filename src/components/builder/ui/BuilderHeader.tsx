@@ -5,21 +5,25 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
+import { useCurrentPageFooterStore } from "@/builder/store/storeCurrentPageFooter";
+import { useCurrentPageHeaderStore } from "@/builder/store/storeCurrentPageHeader";
 import { BuilderComponent } from "@/builder/types/components/components";
 import EditableName from "@/components/builder/ui/_partials/EditableName";
 import { Button } from "@/components/ui/button";
 import { useAdminKeyStore } from "@/feature/admin-key/stores/storeAdminKey";
+import { useUpdateFooter } from "@/feature/page/queries/useFooterActions";
 import { useUpdateHeader } from "@/feature/page/queries/useHeaderActions";
 import { useUpdatePageContent } from "@/feature/page/queries/usePageActions";
-import { usePageHeader } from "@/feature/page/queries/usePageHeader";
 
 export default function BuilderHeader() {
 	const currentPage = useCurrentPageStore((state) => state.currentPage);
-	const { data: currentPageHeader } = usePageHeader(currentPage.id);
+	const { currentPageHeader } = useCurrentPageHeaderStore();
+	const { currentPageFooter } = useCurrentPageFooterStore();
 	const adminKey = useAdminKeyStore((state) => state.adminKey);
 	const [isSaving, setIsSaving] = useState(false);
 	const updatePageContent = useUpdatePageContent();
 	const updatePageHeader = useUpdateHeader();
+	const updateFooter = useUpdateFooter();
 
 	const handleSave = async () => {
 		if (currentPage.id === -1) {
@@ -29,15 +33,49 @@ export default function BuilderHeader() {
 
 		setIsSaving(true);
 		try {
-			if (currentPageHeader) {
+			// Save header if present (use store data to capture in-session edits)
+			if (currentPageHeader && currentPageHeader.id !== -1) {
+				const headerContentArray: BuilderComponent[] = Array.isArray(
+					currentPageHeader.content,
+				)
+					? (currentPageHeader.content as unknown as BuilderComponent[])
+					: currentPageHeader.content &&
+							typeof currentPageHeader.content === "object"
+						? [
+								currentPageHeader.content as unknown as BuilderComponent,
+							]
+						: [];
 				await updatePageHeader.mutateAsync({
 					headerId: currentPageHeader.id,
-					content: currentPageHeader.content as BuilderComponent[],
+					content: headerContentArray,
 					pageId: currentPage.id,
 				});
 			}
+
+			// Save footer if present (use store data to capture in-session edits)
+			if (currentPageFooter && currentPageFooter.id !== -1) {
+				const footerContentArray: BuilderComponent[] = Array.isArray(
+					currentPageFooter.content,
+				)
+					? (currentPageFooter.content as unknown as BuilderComponent[])
+					: currentPageFooter.content &&
+							typeof currentPageFooter.content === "object"
+						? [
+								currentPageFooter.content as unknown as BuilderComponent,
+							]
+						: [];
+				await updateFooter.mutateAsync({
+					footerId: currentPageFooter.id,
+					content: footerContentArray,
+					pageId: currentPage.id,
+				});
+			}
+
+			// Save page body content
 			await updatePageContent.mutateAsync({
-				content: currentPage.content as BuilderComponent[],
+				content: (Array.isArray(currentPage.content)
+					? currentPage.content
+					: []) as unknown as BuilderComponent[],
 				pageId: currentPage.id,
 			});
 			toast.success("Page content saved successfully");

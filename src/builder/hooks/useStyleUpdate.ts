@@ -4,6 +4,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
+import { useCurrentPageFooterStore } from "@/builder/store/storeCurrentPageFooter";
+import { useCurrentPageHeaderStore } from "@/builder/store/storeCurrentPageHeader";
 import { BuilderComponent } from "@/builder/types/components/components";
 import {
 	BoxShadowStyle,
@@ -22,6 +24,10 @@ export function useStyleUpdate(component: BuilderComponent) {
 	);
 
 	const currentPage = useCurrentPageStore((state) => state.currentPage);
+	const { currentPageHeader, setCurrentPageHeader } =
+		useCurrentPageHeaderStore();
+	const { currentPageFooter, setCurrentPageFooter } =
+		useCurrentPageFooterStore();
 
 	const setCurrentPage = useCurrentPageStore((state) => state.setCurrentPage);
 	const queryClient = useQueryClient();
@@ -42,42 +48,51 @@ export function useStyleUpdate(component: BuilderComponent) {
 
 			// Update the current component in the store
 			setCurrentComponent(updatedComponent);
-			const updatedContent = updatePageContent(
+			const newPageContent = updatePageContent(
 				currentPage.content,
 				component.id,
 				updatedComponent,
 			);
-			setCurrentPage({ ...currentPage, content: updatedContent });
-
-			// Also update header/footer query caches if the component belongs there
-			// queryClient.setQueryData(
-			// 	["page-header", currentPage.id] as const,
-			// 	(prev: any) => {
-			// 		if (!prev || !prev.content) return prev;
-			// 		return {
-			// 			...prev,
-			// 			content: updateSingleRoot(
-			// 				prev.content as BuilderComponent,
-			// 				component.id,
-			// 				updatedComponent,
-			// 			),
-			// 		};
-			// 	},
-			// );
-			// queryClient.setQueryData(
-			// 	["page-footer", currentPage.id] as const,
-			// 	(prev: any) => {
-			// 		if (!prev || !prev.content) return prev;
-			// 		return {
-			// 			...prev,
-			// 			content: updateSingleRoot(
-			// 				prev.content as BuilderComponent,
-			// 				component.id,
-			// 				updatedComponent,
-			// 			),
-			// 		};
-			// 	},
-			// );
+			if (newPageContent !== currentPage.content) {
+				setCurrentPage({ ...currentPage, content: newPageContent });
+			} else {
+				// Try header
+				if (currentPageHeader?.content) {
+					const belongsToHeader = containsComponentId(
+						currentPageHeader.content as BuilderComponent,
+						component.id,
+					);
+					if (belongsToHeader) {
+						const updatedHeaderRoot = updateSingleRoot(
+							currentPageHeader.content as BuilderComponent,
+							component.id,
+							updatedComponent,
+						);
+						setCurrentPageHeader({
+							...currentPageHeader,
+							content: updatedHeaderRoot,
+						});
+					}
+				}
+				// Try footer
+				if (currentPageFooter?.content) {
+					const belongsToFooter = containsComponentId(
+						currentPageFooter.content as BuilderComponent,
+						component.id,
+					);
+					if (belongsToFooter) {
+						const updatedFooterRoot = updateSingleRoot(
+							currentPageFooter.content as BuilderComponent,
+							component.id,
+							updatedComponent,
+						);
+						setCurrentPageFooter({
+							...currentPageFooter,
+							content: updatedFooterRoot,
+						});
+					}
+				}
+			}
 		},
 		[
 			component,
@@ -85,6 +100,10 @@ export function useStyleUpdate(component: BuilderComponent) {
 			currentPage,
 			setCurrentPage,
 			queryClient,
+			currentPageHeader,
+			setCurrentPageHeader,
+			currentPageFooter,
+			setCurrentPageFooter,
 		],
 	);
 
@@ -254,35 +273,49 @@ function updatePageContent(
 }
 
 // Update a single-root (header/footer) tree
-// function updateSingleRoot(
-// 	root: BuilderComponent,
-// 	componentId: string,
-// 	componentContent: BuilderComponent,
-// ): BuilderComponent {
-// 	const updateNode = (node: BuilderComponent): BuilderComponent => {
-// 		if (node.id === componentId) {
-// 			return {
-// 				...node,
-// 				props: {
-// 					...node.props,
-// 					content: {
-// 						...(node.props?.content ?? {}),
-// 						...(componentContent.props?.content ?? {}),
-// 					},
-// 					style: {
-// 						...(node.props?.style ?? {}),
-// 						...(componentContent.props?.style ?? {}),
-// 					},
-// 				},
-// 			};
-// 		}
-// 		if (node.children && node.children.length) {
-// 			return {
-// 				...node,
-// 				children: (node.children as BuilderComponent[]).map(updateNode),
-// 			};
-// 		}
-// 		return node;
-// 	};
-// 	return updateNode(root);
-// }
+function updateSingleRoot(
+	root: BuilderComponent,
+	componentId: string,
+	componentContent: BuilderComponent,
+): BuilderComponent {
+	const updateNode = (node: BuilderComponent): BuilderComponent => {
+		if (node.id === componentId) {
+			return {
+				...node,
+				props: {
+					...node.props,
+					content: {
+						...(node.props?.content ?? {}),
+						...(componentContent.props?.content ?? {}),
+					},
+					style: {
+						...(node.props?.style ?? {}),
+						...(componentContent.props?.style ?? {}),
+					},
+				},
+			};
+		}
+		if (node.children && node.children.length) {
+			return {
+				...node,
+				children: (node.children as BuilderComponent[]).map(updateNode),
+			};
+		}
+		return node;
+	};
+	return updateNode(root);
+}
+
+function containsComponentId(
+	root: BuilderComponent,
+	targetId: string,
+): boolean {
+	if (!root) return false;
+	if (root.id === targetId) return true;
+	if (root.children && (root.children as BuilderComponent[]).length) {
+		return (root.children as BuilderComponent[]).some((child) =>
+			containsComponentId(child, targetId),
+		);
+	}
+	return false;
+}

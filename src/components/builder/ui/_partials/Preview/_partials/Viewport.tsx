@@ -1,16 +1,13 @@
 import { Play, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useBuilderShortcuts } from "@/builder/hooks/useBuilderShortcuts";
-import { ComponentRenderer } from "@/builder/lib/renderers/ComponentRenderer";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
+import { useCurrentPageFooterStore } from "@/builder/store/storeCurrentPageFooter";
 import { useCurrentPageHeaderStore } from "@/builder/store/storeCurrentPageHeader";
-import {
-	BuilderComponent,
-	canHaveChildren,
-} from "@/builder/types/components/components";
+import { BuilderComponent } from "@/builder/types/components/components";
 import { componentsList } from "@/builder/types/components/ui/componentsList";
 import { Button } from "@/components/ui/button";
-import { usePageFooter } from "@/feature/page/queries/usePageFooter";
+import ComponentRendering from "./ComponentRendering";
 
 export default function BuilderPreviewViewport({
 	bp,
@@ -23,8 +20,7 @@ export default function BuilderPreviewViewport({
 }) {
 	const { currentPage, setCurrentPage } = useCurrentPageStore();
 	const { currentPageHeader } = useCurrentPageHeaderStore();
-	// const {data: pageHeader} = usePageHeader(currentPage.id);
-	const { data: pageFooter } = usePageFooter(currentPage.id);
+	const { currentPageFooter } = useCurrentPageFooterStore();
 	const [targetComponent, setTargetComponent] = useState<string | null>(null);
 	useBuilderShortcuts();
 
@@ -183,79 +179,50 @@ export default function BuilderPreviewViewport({
 				></div>
 				{/* Render header if exists */}
 				{currentPageHeader?.content && (
-					<ComponentRenderer
-						component={
-							currentPageHeader.content as BuilderComponent
+					<ComponentRendering
+						content={
+							Array.isArray(currentPageHeader.content)
+								? (currentPageHeader.content as unknown as BuilderComponent[])
+								: currentPageHeader.content &&
+										typeof currentPageHeader.content ===
+											"object"
+									? [
+											currentPageHeader.content as unknown as BuilderComponent,
+										]
+									: []
 						}
-						isDropTarget={
-							targetComponent ===
-							(currentPageHeader.content as BuilderComponent).id
-						}
-						onDragLeave={() => {
-							setTargetComponent(null);
-						}}
-						onDragOver={(e) => {
-							const headerComp =
-								currentPageHeader.content as BuilderComponent;
-							if (canHaveChildren(headerComp.type)) {
-								e.stopPropagation();
-								e.preventDefault();
-								setTargetComponent(headerComp.id);
-							}
-						}}
+						setTargetComponent={setTargetComponent}
+						targetComponent={targetComponent}
 					/>
 				)}
 				{/* Render components for this breakpoint */}
-				{currentPage.content &&
-					Array.isArray(currentPage.content) &&
-					(currentPage.content as unknown as BuilderComponent[])
-						.slice() // Create a copy of the array to avoid mutating the original
-						.sort((a, b) => (a.order || 0) - (b.order || 0)) // Sort by order
-						.map((component) => (
-							<div key={component.id}>
-								<ComponentRenderer
-									component={component}
-									isDropTarget={
-										targetComponent === component.id
-									}
-									onDragLeave={() => {
-										setTargetComponent(null);
-									}}
-									onDragOver={(e) => {
-										// Only allow dropping onto container components
-										if (canHaveChildren(component.type)) {
-											e.stopPropagation();
-											e.preventDefault();
-											setTargetComponent(component.id);
-										}
-									}}
-								/>
-							</div>
-						))}
+				{Array.isArray(currentPage.content) && (
+					<ComponentRendering
+						content={
+							currentPage.content as unknown as BuilderComponent[]
+						}
+						setTargetComponent={setTargetComponent}
+						targetComponent={targetComponent}
+					/>
+				)}
 
 				{/* Render footer if exists */}
-				{pageFooter?.content && (
-					<div className={"mt-auto"}>
-						<ComponentRenderer
-							component={pageFooter.content as BuilderComponent}
-							isDropTarget={
-								targetComponent ===
-								(pageFooter.content as BuilderComponent).id
-							}
-							onDragLeave={() => {
-								setTargetComponent(null);
-							}}
-							onDragOver={(e) => {
-								const footerComp =
-									pageFooter.content as BuilderComponent;
-								if (canHaveChildren(footerComp.type)) {
-									e.stopPropagation();
-									e.preventDefault();
-									setTargetComponent(footerComp.id);
-								}
-							}}
-						/>
-					</div>
+				{currentPageFooter?.content && (
+					<ComponentRendering
+						content={
+							Array.isArray(currentPageFooter.content)
+								? (currentPageFooter.content as unknown as BuilderComponent[])
+								: currentPageFooter.content &&
+										typeof currentPageFooter.content ===
+											"object"
+									? [
+											currentPageFooter.content as unknown as BuilderComponent,
+										]
+									: []
+						}
+						setTargetComponent={setTargetComponent}
+						targetComponent={targetComponent}
+					/>
 				)}
 			</div>
 		</div>

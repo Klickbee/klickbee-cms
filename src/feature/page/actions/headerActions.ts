@@ -53,6 +53,12 @@ export async function getHeaderByPageId(pageId: number) {
 	return header;
 }
 
+export async function getHeaderById(pageHeaderId: number) {
+	return prisma.pageHeader.findUnique({
+		where: { id: pageHeaderId },
+	});
+}
+
 export async function setAsHeader(
 	pageId: number,
 	headerId?: number,

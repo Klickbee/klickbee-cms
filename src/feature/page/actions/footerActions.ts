@@ -53,6 +53,12 @@ export async function getFooterByPageId(pageId: number) {
 	return footer;
 }
 
+export async function getFooterById(pageFooterId: number) {
+	return prisma.pageFooter.findUnique({
+		where: { id: pageFooterId },
+	});
+}
+
 export async function setAsFooter(
 	pageId: number,
 	footerId?: number,

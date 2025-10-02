@@ -4,6 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
+import { useCurrentPageFooterStore } from "@/builder/store/storeCurrentPageFooter";
 import { useCurrentPageHeaderStore } from "@/builder/store/storeCurrentPageHeader";
 import { BuilderComponent } from "@/builder/types/components/components";
 import { ComponentContentProps } from "@/builder/types/components/properties/componentContentPropsType";
@@ -18,6 +19,8 @@ export function useContentUpdate(component: BuilderComponent) {
 	const currentPage = useCurrentPageStore((state) => state.currentPage);
 	const { currentPageHeader, setCurrentPageHeader } =
 		useCurrentPageHeaderStore();
+	const { currentPageFooter, setCurrentPageFooter } =
+		useCurrentPageFooterStore();
 
 	const setCurrentPage = useCurrentPageStore((state) => state.setCurrentPage);
 	const queryClient = useQueryClient();
@@ -66,37 +69,25 @@ export function useContentUpdate(component: BuilderComponent) {
 						});
 					}
 				}
+				// Also try updating footer content if footer exists
+				if (currentPageFooter?.content) {
+					const belongsToFooter = containsComponentId(
+						currentPageFooter.content as BuilderComponent,
+						component.id,
+					);
+					if (belongsToFooter) {
+						const updatedFooterRoot = updateSingleRoot(
+							currentPageFooter.content as BuilderComponent,
+							component.id,
+							updatedComponent,
+						);
+						setCurrentPageFooter({
+							...currentPageFooter,
+							content: updatedFooterRoot,
+						});
+					}
+				}
 			}
-
-			// Also update header/footer query caches so they stay in sync
-			// queryClient.setQueryData(
-			// 	["page-header", currentPage.id] as const,
-			// 	(prev: any) => {
-			// 		if (!prev || !prev.content) return prev;
-			// 		return {
-			// 			...prev,
-			// 			content: updateSingleRoot(
-			// 				prev.content as BuilderComponent,
-			// 				component.id,
-			// 				updatedComponent,
-			// 			),
-			// 		};
-			// 	},
-			// );
-			// queryClient.setQueryData(
-			// 	["page-footer", currentPage.id] as const,
-			// 	(prev: any) => {
-			// 		if (!prev || !prev.content) return prev;
-			// 		return {
-			// 			...prev,
-			// 			content: updateSingleRoot(
-			// 				prev.content as BuilderComponent,
-			// 				component.id,
-			// 				updatedComponent,
-			// 			),
-			// 		};
-			// 	},
-			// );
 		},
 		[
 			component,
@@ -106,6 +97,8 @@ export function useContentUpdate(component: BuilderComponent) {
 			queryClient,
 			currentPageHeader,
 			setCurrentPageHeader,
+			currentPageFooter,
+			setCurrentPageFooter,
 		],
 	);
 
@@ -223,11 +216,17 @@ function updatePageContent(
 	// If content is not an array, return as-is (schema allows {})
 	if (!Array.isArray(pageContent)) return pageContent;
 
+	let updated = false;
+
 	const updateInTree = (nodes: BuilderComponent[]): BuilderComponent[] => {
-		return nodes.map((node) => {
+		let anyChildChanged = false;
+		const result: BuilderComponent[] = [];
+
+		for (const node of nodes) {
 			// If this is the node to update, merge its props with the new content/style
 			if (node.id === componentId) {
-				return {
+				updated = true;
+				const newNode: BuilderComponent = {
 					...node,
 					props: {
 						...node.props,
@@ -241,21 +240,32 @@ function updatePageContent(
 						},
 					},
 				};
+				result.push(newNode);
+				anyChildChanged = true; // node replaced
+				continue;
 			}
 
-			// Otherwise, recurse into children if present
-			if (node.children && node.children.length) {
-				return {
-					...node,
-					children: updateInTree(node.children as BuilderComponent[]),
-				};
+			let newNode = node;
+			if (node.children && (node.children as BuilderComponent[]).length) {
+				const updatedChildren = updateInTree(
+					node.children as BuilderComponent[],
+				);
+				if (updatedChildren !== node.children) {
+					newNode = {
+						...node,
+						children: updatedChildren,
+					};
+					anyChildChanged = true;
+				}
 			}
+			result.push(newNode);
+		}
 
-			return node;
-		});
+		return anyChildChanged ? result : nodes;
 	};
 
-	return updateInTree(pageContent as BuilderComponent[]);
+	const updatedContent = updateInTree(pageContent as BuilderComponent[]);
+	return updated ? updatedContent : pageContent;
 }
 
 // Update a single-root (header/footer) tree
