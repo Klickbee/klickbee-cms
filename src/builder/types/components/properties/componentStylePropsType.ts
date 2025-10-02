@@ -116,6 +116,18 @@ export type TypographyStyle = {
 	listStyle?: ListStyle;
 };
 
+export type BackgroundOverlay = {
+	// Overlay can be a solid color or a gradient (like background)
+	color?: ColorSettings | string;
+	gradient?: {
+		type: GradientType;
+		angle?: number; // 0-360° (only for linear)
+		colors: [ColorSettings | string, ColorSettings | string];
+		positions: [number, number]; // 0-100%
+	};
+	opacity?: number; // 0 (transparent) to 1 (opaque)
+};
+
 export type BackgroundStyle = {
 	color?: ColorSettings | string;
 	gradient?: {
@@ -131,6 +143,7 @@ export type BackgroundStyle = {
 		repeat?: ImageRepeat;
 		attachment?: BackgroundAttachment;
 	};
+	overlay?: BackgroundOverlay; // Color overlay applied on top of image/gradient
 };
 
 export type BorderCornerStyle = {

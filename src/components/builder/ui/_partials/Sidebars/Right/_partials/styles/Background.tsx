@@ -13,6 +13,7 @@ import {
 } from "@/builder/types/components/properties/componentStylePropsType";
 import PropertyRow from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyRow";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
 	Popover,
 	PopoverContent,
@@ -71,126 +72,338 @@ export default function BuilderStyleBackground({
 			: t(backgroundType);
 
 	return (
-		<PropertyRow label={t("title")}>
-			<Popover onOpenChange={setIsOpen} open={isOpen}>
-				<PopoverTrigger asChild>
-					<Button
-						className="w-[150px] h-8 justify-start text-left font-normal"
-						variant="outline"
+		<>
+			<PropertyRow label={t("title")}>
+				<Popover onOpenChange={setIsOpen} open={isOpen}>
+					<PopoverTrigger asChild>
+						<Button
+							className="w-[150px] h-8 justify-start text-left font-normal"
+							variant="outline"
+						>
+							<div className="flex items-center gap-2 flex-1">
+								<div
+									className={`w-4 h-4 rounded border border-zinc-200 ${backgroundType === "image" ? "bg-gray-300" : ""}`}
+									style={previewStyle}
+								/>
+								<span className="flex-1 text-xs truncate">
+									{backgroundText}
+								</span>
+							</div>
+							<ChevronDown className="h-3 w-3 shrink-0 opacity-50" />
+						</Button>
+					</PopoverTrigger>
+					<PopoverContent
+						align="center"
+						className="w-80 p-0"
+						side="bottom"
 					>
-						<div className="flex items-center gap-2 flex-1">
-							<div
-								className={`w-4 h-4 rounded border border-zinc-200 ${backgroundType === "image" ? "bg-gray-300" : ""}`}
-								style={previewStyle}
-							/>
-							<span className="flex-1 text-xs truncate">
-								{backgroundText}
-							</span>
-						</div>
-						<ChevronDown className="h-3 w-3 shrink-0 opacity-50" />
-					</Button>
-				</PopoverTrigger>
-				<PopoverContent
-					align="center"
-					className="w-80 p-0"
-					side="bottom"
-				>
-					<div className="p-3">
-						<BackgroundPicker
-							colorValue={backgroundStyle.color || "#171717"}
-							gradientValue={backgroundStyle.gradient}
-							imageValue={
-								backgroundStyle.image
-									? backgroundStyle.image
-									: {
-											position: "center",
-											size: "cover" as ImageSize,
-											src: "",
-										}
-							}
-							onColorChange={(color) =>
-								updateNestedProperty(
-									"background",
-									(currentColor) => ({
-										...currentColor,
-										color,
-									}),
-								)
-							}
-							onGradientChange={(gradient) =>
-								updateNestedProperty(
-									"background",
-									(currentGradient) => ({
-										...currentGradient,
-										gradient,
-									}),
-								)
-							}
-							onImageChange={(image) => {
-								if (image) {
+						<div className="p-3">
+							<BackgroundPicker
+								colorValue={backgroundStyle.color || "#171717"}
+								gradientValue={backgroundStyle.gradient}
+								imageValue={
+									backgroundStyle.image
+										? backgroundStyle.image
+										: {
+												position: "center",
+												size: "cover" as ImageSize,
+												src: "",
+											}
+								}
+								onColorChange={(color) =>
 									updateNestedProperty(
 										"background",
-										(currentImage) => ({
-											...currentImage,
-											image,
+										(currentColor) => ({
+											...currentColor,
+											color,
 										}),
-									);
+									)
 								}
-							}}
-							onTypeChange={(type) => {
-								setSelectedType(type);
-								// Reset other types and set defaults when switching
-								if (type === "color") {
-									updateNestedProperty("background", () => ({
-										gradient: undefined,
-									}));
-									updateNestedProperty("background", () => ({
-										image: undefined,
-									}));
-								} else if (type === "gradient") {
-									updateNestedProperty("background", () => ({
-										image: undefined,
-									}));
-									if (!backgroundStyle.gradient) {
+								onGradientChange={(gradient) =>
+									updateNestedProperty(
+										"background",
+										(currentGradient) => ({
+											...currentGradient,
+											gradient,
+										}),
+									)
+								}
+								onImageChange={(image) => {
+									if (image) {
 										updateNestedProperty(
 											"background",
-											() => ({
-												gradient: {
-													angle: 90,
-													colors: [
-														"#0052d4",
-														"#6fb1fc",
-													],
-													positions: [0, 100],
-													type: "linear",
-												},
+											(currentImage) => ({
+												...currentImage,
+												image,
 											}),
 										);
 									}
-								} else if (type === "image") {
-									updateNestedProperty("background", () => ({
-										gradient: undefined,
-									}));
-									if (!backgroundStyle.image) {
+								}}
+								onTypeChange={(type) => {
+									setSelectedType(type);
+									// Reset other types and set defaults when switching
+									if (type === "color") {
 										updateNestedProperty(
 											"background",
 											() => ({
-												image: {
-													position: "center",
-													repeat: "no-repeat",
-													size: "cover",
-													src: "",
-												},
+												gradient: undefined,
 											}),
 										);
+										updateNestedProperty(
+											"background",
+											() => ({
+												image: undefined,
+											}),
+										);
+									} else if (type === "gradient") {
+										updateNestedProperty(
+											"background",
+											() => ({
+												image: undefined,
+											}),
+										);
+										if (!backgroundStyle.gradient) {
+											updateNestedProperty(
+												"background",
+												() => ({
+													gradient: {
+														angle: 90,
+														colors: [
+															"#0052d4",
+															"#6fb1fc",
+														],
+														positions: [0, 100],
+														type: "linear",
+													},
+												}),
+											);
+										}
+									} else if (type === "image") {
+										updateNestedProperty(
+											"background",
+											() => ({
+												gradient: undefined,
+											}),
+										);
+										if (!backgroundStyle.image) {
+											updateNestedProperty(
+												"background",
+												() => ({
+													image: {
+														position: "center",
+														repeat: "no-repeat",
+														size: "cover",
+														src: "",
+													},
+												}),
+											);
+										}
 									}
-								}
+								}}
+								selectedType={backgroundType}
+							/>
+						</div>
+					</PopoverContent>
+				</Popover>
+			</PropertyRow>
+			<PropertyRow label="Overlay">
+				<div className="flex items-center mt-2 gap-2">
+					{/* Overlay type + editor popover */}
+					{(() => {
+						const overlayType: "color" | "gradient" =
+							backgroundStyle.overlay?.gradient
+								? "gradient"
+								: "color";
+						const overlayPreviewStyle =
+							overlayType === "color"
+								? {
+										backgroundColor: String(
+											backgroundStyle.overlay?.color ||
+												"#000000",
+										),
+									}
+								: {
+										background: getGradientCSS(
+											backgroundStyle.overlay?.gradient,
+										),
+									};
+						const overlayText =
+							overlayType === "color"
+								? String(
+										backgroundStyle.overlay?.color ||
+											"#000000",
+									)
+								: t("gradient");
+						return (
+							<Popover>
+								<PopoverTrigger asChild>
+									<Button
+										className="w-[150px] h-8 justify-start text-left font-normal"
+										variant="outline"
+									>
+										<div className="flex items-center gap-2 flex-1">
+											<div
+												className="w-4 h-4 rounded border border-zinc-200"
+												style={overlayPreviewStyle}
+											/>
+											<span className="flex-1 text-xs truncate">
+												{overlayText}
+											</span>
+										</div>
+										<ChevronDown className="h-3 w-3 shrink-0 opacity-50" />
+									</Button>
+								</PopoverTrigger>
+								<PopoverContent
+									align="center"
+									className="w-80 p-0"
+									side="bottom"
+								>
+									<div className="p-3">
+										<BackgroundPicker
+											allowedTypes={["color", "gradient"]}
+											colorValue={String(
+												backgroundStyle.overlay
+													?.color || "#000000",
+											)}
+											gradientValue={
+												backgroundStyle.overlay
+													?.gradient
+											}
+											onColorChange={(color) =>
+												updateNestedProperty(
+													"background",
+													(curr) => ({
+														...curr,
+														overlay: {
+															...(curr?.overlay ?? {
+																opacity: 0.4,
+															}),
+															color,
+															gradient: undefined,
+														},
+													}),
+												)
+											}
+											onGradientChange={(gradient) =>
+												updateNestedProperty(
+													"background",
+													(curr) => ({
+														...curr,
+														overlay: {
+															...(curr?.overlay ?? {
+																opacity: 0.4,
+																color: "#000000",
+															}),
+															gradient,
+															color: undefined,
+														},
+													}),
+												)
+											}
+											onTypeChange={(type) => {
+												if (type === "color") {
+													updateNestedProperty(
+														"background",
+														(curr) => ({
+															...curr,
+															overlay: {
+																...(curr?.overlay ?? {
+																	opacity: 0.4,
+																}),
+																gradient:
+																	undefined,
+																color: String(
+																	curr
+																		?.overlay
+																		?.color ||
+																		"#000000",
+																),
+															},
+														}),
+													);
+												} else {
+													updateNestedProperty(
+														"background",
+														(curr) => ({
+															...curr,
+															overlay: {
+																...(curr?.overlay ?? {
+																	opacity: 0.4,
+																	color: "#000000",
+																}),
+																gradient: curr
+																	?.overlay
+																	?.gradient ?? {
+																	angle: 90,
+																	colors: [
+																		"#0052d4",
+																		"#6fb1fc",
+																	],
+																	positions: [
+																		0, 100,
+																	],
+																	type: "linear",
+																},
+																color: undefined,
+															},
+														}),
+													);
+												}
+											}}
+											selectedType={overlayType}
+										/>
+									</div>
+								</PopoverContent>
+							</Popover>
+						);
+					})()}
+
+					{/* Opacity */}
+					<div className="relative w-[90px]">
+						<Input
+							className="h-8 text-xs pr-6"
+							max={100}
+							min={0}
+							onChange={(e) => {
+								const val = Math.max(
+									0,
+									Math.min(
+										100,
+										parseInt(e.target.value || "0", 10),
+									),
+								);
+								updateNestedProperty("background", (curr) => ({
+									...curr,
+									overlay: {
+										...(curr?.overlay ?? {
+											color: "#000000",
+											gradient: undefined,
+										}),
+										opacity: val / 100,
+									},
+								}));
 							}}
-							selectedType={backgroundType}
+							type="number"
+							value={
+								Math.round(
+									(backgroundStyle.overlay?.opacity ?? 40) *
+										100,
+								) /
+									100 >
+								100
+									? 100
+									: Math.round(
+											(backgroundStyle.overlay?.opacity ??
+												0.4) * 100,
+										)
+							}
 						/>
+						<span className="absolute right-1 top-1/2 -translate-y-1/2 text-xs text-zinc-500">
+							%
+						</span>
 					</div>
-				</PopoverContent>
-			</Popover>
-		</PropertyRow>
+				</div>
+			</PropertyRow>
+		</>
 	);
 }

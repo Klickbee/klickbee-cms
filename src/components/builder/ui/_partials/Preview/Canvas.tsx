@@ -1,9 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
 import { Breakpoint } from "@/builder/types/breakpoint";
-import { BuilderComponent } from "@/builder/types/components/components";
 import BuilderPreviewViewport from "@/components/builder/ui/_partials/Preview/_partials/Viewport";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,7 +20,7 @@ import {
 
 export default function BuilderPreviewCanvas() {
 	const containerRef = useRef<HTMLDivElement>(null);
-	const [zoom, setZoom] = useState(1);
+	const [zoom, setZoom] = useState(0.85);
 	const [offset, setOffset] = useState({ x: 0, y: 0 });
 	const [isDragging, setIsDragging] = useState(false);
 	const start = useRef({ x: 0, y: 0 });
@@ -37,7 +35,6 @@ export default function BuilderPreviewCanvas() {
 	const breakpoints = breakpointsRaw?.value
 		? JSON.parse(breakpointsRaw.value)
 		: [];
-	const currentPage = useCurrentPageStore((state) => state.currentPage);
 	const setSettingMutation = useSetSetting();
 
 	const addBreakpoint = (newBreakpoint: Breakpoint) => {
@@ -145,9 +142,6 @@ export default function BuilderPreviewCanvas() {
 						{breakpoints.map((bp: Breakpoint) => (
 							<BuilderPreviewViewport
 								bp={bp}
-								content={
-									currentPage.content as BuilderComponent[]
-								}
 								handleAddBreakpoint={handleAddBreakpoint}
 								handleRemoveBreakpoint={
 									initiateRemoveBreakpoint

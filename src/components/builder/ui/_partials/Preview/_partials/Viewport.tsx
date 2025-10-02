@@ -1,27 +1,28 @@
 import { Play, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { ComponentRenderer } from "@/builder/lib/renderers/ComponentRenderer";
+import { useBuilderShortcuts } from "@/builder/hooks/useBuilderShortcuts";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
-import {
-	BuilderComponent,
-	canHaveChildren,
-} from "@/builder/types/components/components";
+import { useCurrentPageFooterStore } from "@/builder/store/storeCurrentPageFooter";
+import { useCurrentPageHeaderStore } from "@/builder/store/storeCurrentPageHeader";
+import { BuilderComponent } from "@/builder/types/components/components";
 import { componentsList } from "@/builder/types/components/ui/componentsList";
 import { Button } from "@/components/ui/button";
+import ComponentRendering from "./ComponentRendering";
 
 export default function BuilderPreviewViewport({
 	bp,
-	content,
 	handleAddBreakpoint,
 	handleRemoveBreakpoint,
 }: {
 	bp: { name: string; width: number };
-	content: BuilderComponent[];
 	handleAddBreakpoint: () => void;
 	handleRemoveBreakpoint: (breakpointName: string) => void;
 }) {
 	const { currentPage, setCurrentPage } = useCurrentPageStore();
+	const { currentPageHeader } = useCurrentPageHeaderStore();
+	const { currentPageFooter } = useCurrentPageFooterStore();
 	const [targetComponent, setTargetComponent] = useState<string | null>(null);
+	useBuilderShortcuts();
 
 	return (
 		<div className="flex flex-col gap-2" key={bp.name}>
@@ -153,6 +154,7 @@ export default function BuilderPreviewViewport({
 							content: currentContent,
 						};
 						setCurrentPage(updatedPage);
+
 						setTargetComponent(null);
 					} catch (error) {
 						console.error("Error dropping component:", error);
@@ -160,39 +162,68 @@ export default function BuilderPreviewViewport({
 				}}
 				style={{
 					backgroundColor: "white",
-					minHeight: "1000px",
+					containerType: "inline-size",
+					display: "flex",
+					flexDirection: "column",
+					minHeight: "100vh",
 					position: "relative",
 					transition: "all 0.2s ease",
-					width: `${bp.width / 1.5}px`,
+					width: `${bp.width}px`,
 				}}
 			>
+				<div
+					style={{
+						transformOrigin: "top left",
+						width: `${bp.width}px`,
+					}}
+				></div>
+				{/* Render header if exists */}
+				{currentPageHeader?.content && (
+					<ComponentRendering
+						content={
+							Array.isArray(currentPageHeader.content)
+								? (currentPageHeader.content as unknown as BuilderComponent[])
+								: currentPageHeader.content &&
+										typeof currentPageHeader.content ===
+											"object"
+									? [
+											currentPageHeader.content as unknown as BuilderComponent,
+										]
+									: []
+						}
+						setTargetComponent={setTargetComponent}
+						targetComponent={targetComponent}
+					/>
+				)}
 				{/* Render components for this breakpoint */}
-				{currentPage.content &&
-					Array.isArray(currentPage.content) &&
-					(currentPage.content as unknown as BuilderComponent[])
-						.slice() // Create a copy of the array to avoid mutating the original
-						.sort((a, b) => (a.order || 0) - (b.order || 0)) // Sort by order
-						.map((component) => (
-							<div key={component.id}>
-								<ComponentRenderer
-									component={component}
-									isDropTarget={
-										targetComponent === component.id
-									}
-									onDragLeave={() => {
-										setTargetComponent(null);
-									}}
-									onDragOver={(e) => {
-										// Only allow dropping onto container components
-										if (canHaveChildren(component.type)) {
-											e.stopPropagation();
-											e.preventDefault();
-											setTargetComponent(component.id);
-										}
-									}}
-								/>
-							</div>
-						))}
+				{Array.isArray(currentPage.content) && (
+					<ComponentRendering
+						content={
+							currentPage.content as unknown as BuilderComponent[]
+						}
+						setTargetComponent={setTargetComponent}
+						targetComponent={targetComponent}
+					/>
+				)}
+
+				{/* Render footer if exists */}
+				{currentPageFooter?.content && (
+					<ComponentRendering
+						content={
+							Array.isArray(currentPageFooter.content)
+								? (currentPageFooter.content as unknown as BuilderComponent[])
+								: currentPageFooter.content &&
+										typeof currentPageFooter.content ===
+											"object"
+									? [
+											currentPageFooter.content as unknown as BuilderComponent,
+										]
+									: []
+						}
+						setTargetComponent={setTargetComponent}
+						targetComponent={targetComponent}
+					/>
+				)}
 			</div>
 		</div>
 	);

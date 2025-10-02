@@ -9,6 +9,7 @@ export interface SectionBcStyleProps
 		| "effects"
 		| "layout"
 		| "sizeAndSpacing"
+		| "position"
 	> {}
 
 export interface SectionBcContentProps {}

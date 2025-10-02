@@ -18,7 +18,7 @@ interface FileUploaderProps {
 export default function FileUploader({
 	initialFile,
 	onFileChange,
-	maxSize = 2,
+	maxSize = 10,
 	acceptedTypes = ["svg"],
 	placeholder = "http://localhost:3845/assets/91210b31ffb7440374c0375c1a8959abf348506c.png",
 	label = "Icon",

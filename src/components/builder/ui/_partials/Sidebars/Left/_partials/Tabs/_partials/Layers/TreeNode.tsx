@@ -1,15 +1,19 @@
 "use client";
 
 import { ChevronDown, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useDeleteComponentContext } from "@/builder/contexts/DeleteComponentContext";
+import { useDuplicateComponent } from "@/builder/hooks/useDuplicateComponent";
 import { useMoveComponent } from "@/builder/hooks/useMoveComponent";
 import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent";
+import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
+import { useStyleClipboardStore } from "@/builder/store/storeStyleClipboard";
 import {
 	BuilderComponent,
 	canHaveChildren,
 	isParentComponent,
 } from "@/builder/types/components/components";
+import { HeaderFooterContextItems } from "@/components/builder/ui/_partials/Sidebars/Left/_partials/Tabs/_partials/Layers/_partials/HeaderFooterContextItems";
 import {
 	ContextMenu,
 	ContextMenuContent,
@@ -24,9 +28,15 @@ interface TreeNodeProps {
 	level?: number;
 	parentId?: string | null;
 	isDragging?: boolean;
+	type?: "header" | "footer" | "content";
 }
 
-export function TreeNode({ node, level = 0, parentId = null }: TreeNodeProps) {
+export function TreeNode({
+	node,
+	level = 0,
+	parentId = null,
+	type,
+}: TreeNodeProps) {
 	const { confirmDelete } = useDeleteComponentContext();
 	const [expanded, setExpanded] = useState(true);
 	const [overBefore, setOverBefore] = useState(false);
@@ -36,6 +46,9 @@ export function TreeNode({ node, level = 0, parentId = null }: TreeNodeProps) {
 		(state) => state.setCurrentComponent,
 	);
 	const { moveComponent } = useMoveComponent();
+	const { duplicateComponent } = useDuplicateComponent();
+	const { clipboard, copy } = useStyleClipboardStore();
+	const { currentPage, setCurrentPage } = useCurrentPageStore();
 	const hasChildren = node.children && node.children.length > 0;
 	const currentComponent = useCurrentComponentStore(
 		(state) => state.currentComponent,
@@ -117,7 +130,31 @@ export function TreeNode({ node, level = 0, parentId = null }: TreeNodeProps) {
 							setExpanded(
 								!isCurrentComponent(node.id) ? true : !expanded,
 							);
-							setCurrentComponent(node);
+							// Ensure we set the freshest version of the component from the current page tree
+							const findById = (
+								list: BuilderComponent[],
+								id: string,
+							): BuilderComponent | null => {
+								for (const n of list) {
+									if (n.id === id) return n;
+									if (n.children) {
+										const found = findById(
+											n.children as BuilderComponent[],
+											id,
+										);
+										if (found) return found;
+									}
+								}
+								return null;
+							};
+							let selected = null as BuilderComponent | null;
+							if (Array.isArray(currentPage.content)) {
+								selected = findById(
+									currentPage.content as BuilderComponent[],
+									node.id,
+								);
+							}
+							setCurrentComponent(selected ?? node);
 						}}
 						onDragEnter={() => setOverInside(true)}
 						onDragLeave={() => setOverInside(false)}
@@ -134,7 +171,13 @@ export function TreeNode({ node, level = 0, parentId = null }: TreeNodeProps) {
 							<span className="w-4 h-4" />
 						)}
 						{node.icon}
-						<span className="ml-2">{node.label}</span>
+						<span className="ml-2">
+							{type == "header" && parentId == null
+								? "Header"
+								: type == "footer" && parentId == null
+									? "Footer"
+									: node.label}
+						</span>
 					</div>
 					{/* Children and after zone */}
 					<div className="ml-4">
@@ -161,6 +204,52 @@ export function TreeNode({ node, level = 0, parentId = null }: TreeNodeProps) {
 				</div>
 			</ContextMenuTrigger>
 			<ContextMenuContent>
+				<ContextMenuItem onClick={() => duplicateComponent(node.id)}>
+					Duplicate (Ctrl+D)
+				</ContextMenuItem>
+				<ContextMenuItem onClick={() => copy(node.props?.style)}>
+					Copy style
+				</ContextMenuItem>
+				<ContextMenuItem
+					onClick={() => {
+						if (!clipboard) return;
+						const working = Array.isArray(currentPage.content)
+							? (JSON.parse(
+									JSON.stringify(currentPage.content),
+								) as BuilderComponent[])
+							: [];
+						const update = (list: BuilderComponent[]): boolean => {
+							for (const n of list) {
+								if (n.id === node.id) {
+									n.props = {
+										...n.props,
+										style: { ...clipboard },
+									};
+									return true;
+								}
+								if (
+									n.children &&
+									update(n.children as BuilderComponent[])
+								)
+									return true;
+							}
+							return false;
+						};
+						if (update(working))
+							setCurrentPage({
+								...currentPage,
+								content: working,
+							});
+					}}
+				>
+					Paste style
+				</ContextMenuItem>
+				{isParentComponent(node) && type == "content" && (
+					<HeaderFooterContextItems
+						currentPage={currentPage}
+						node={node}
+					/>
+				)}
 				<ContextMenuItem
 					className={"text-destructive"}
 					onClick={() => confirmDelete(node.id, parentId, node.type)}

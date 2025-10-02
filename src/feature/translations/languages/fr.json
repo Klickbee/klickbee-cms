@@ -129,7 +129,17 @@
 				"type": "Type",
 				"url": "URL",
 				"video": "Vidéo",
-				"videoUrl": "URL de la vidéo"
+				"videoUrl": "URL de la vidéo",
+				"orientation": "Orientation",
+				"horizontal": "Horizontal",
+				"vertical": "Vertical",
+				"navigationItems": "Éléments de navigation",
+				"navigationItem": "Élément de navigation",
+				"addItem": "Ajouter un élément",
+				"label": "Libellé",
+				"target": "Cible",
+				"remove": "Supprimer",
+				"title": "Contenu"
 			},
 			"Effects": {
 				"addMoreBoxShadow": "Ajouter plus d'ombre",

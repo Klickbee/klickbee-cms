@@ -171,6 +171,8 @@ export const COMPONENT_DEFAULTS: Record<
 		required: CONTENT_DEFAULTS.FIELD_REQUIRED,
 		type: "text",
 	},
+	slider: {},
+	navigationmenu: {},
 	undefined: {},
 	video: {
 		autoplay: CONTENT_DEFAULTS.DEFAULT_AUTOPLAY,

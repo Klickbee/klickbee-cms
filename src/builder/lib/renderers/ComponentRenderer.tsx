@@ -1,6 +1,8 @@
 import React from "react";
+import { Button } from "@/builder/components/ui/Button";
 import { Checkbox } from "@/builder/components/ui/Checkbox";
 import { Container } from "@/builder/components/ui/Container";
+import { Divider } from "@/builder/components/ui/Divider";
 import { Dropdown } from "@/builder/components/ui/Dropdown";
 import { Embed } from "@/builder/components/ui/Embed";
 import { FileUpload } from "@/builder/components/ui/FileUpload";
@@ -10,17 +12,22 @@ import { Heading } from "@/builder/components/ui/Heading";
 import { Image } from "@/builder/components/ui/Image";
 import { Link } from "@/builder/components/ui/Link";
 import { List } from "@/builder/components/ui/List";
+import { NavigationMenu } from "@/builder/components/ui/NavigationMenu";
 import { Paragraph } from "@/builder/components/ui/Paragraph";
 import { RadioGroup } from "@/builder/components/ui/RadioGroup";
 import { RichText } from "@/builder/components/ui/RichText";
 import { SectionBuilder } from "@/builder/components/ui/SectionBuilder";
+import { Slider } from "@/builder/components/ui/Slider";
 import { Spacer } from "@/builder/components/ui/Spacer";
 import { SubmitButton } from "@/builder/components/ui/SubmitButton";
 import { Text } from "@/builder/components/ui/Text";
 import { TextField } from "@/builder/components/ui/TextField";
 import { Video } from "@/builder/components/ui/Video";
 import { useDeleteComponentContext } from "@/builder/contexts/DeleteComponentContext";
+import { useDuplicateComponent } from "@/builder/hooks/useDuplicateComponent";
 import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent";
+import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
+import { useStyleClipboardStore } from "@/builder/store/storeStyleClipboard";
 import {
 	BuilderComponent,
 	ComponentType,
@@ -56,11 +63,11 @@ const componentMap: Record<
 	ComponentType,
 	React.FC<{ component: BuilderComponent }>
 > = {
-	button: DefaultComponent,
+	button: Button,
 	checkbox: Checkbox,
 	cmstemplate: DefaultComponent,
 	container: Container,
-	divider: DefaultComponent,
+	divider: Divider,
 	dropdown: Dropdown,
 	email: DefaultComponent,
 	embed: Embed,
@@ -91,6 +98,8 @@ const componentMap: Record<
 	// Default for undefined
 	undefined: DefaultComponent,
 	video: Video,
+	slider: Slider,
+	navigationmenu: NavigationMenu,
 };
 
 interface ComponentRendererProps {
@@ -98,6 +107,33 @@ interface ComponentRendererProps {
 	onDragOver?: (e: React.DragEvent<HTMLDivElement>) => void;
 	onDragLeave?: () => void;
 	isDropTarget?: boolean;
+}
+
+function updateStyleInTree(
+	list: BuilderComponent[],
+	targetId: string,
+	newStyle: Record<string, unknown>,
+): boolean {
+	for (const node of list) {
+		if (node.id === targetId) {
+			node.props = {
+				...node.props,
+				style: { ...newStyle },
+			};
+			return true;
+		}
+		if (
+			node.children &&
+			updateStyleInTree(
+				node.children as BuilderComponent[],
+				targetId,
+				newStyle,
+			)
+		) {
+			return true;
+		}
+	}
+	return false;
 }
 
 export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
@@ -113,6 +149,9 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 		(state) => state.setCurrentComponent,
 	);
 	const { confirmDelete } = useDeleteComponentContext();
+	const { duplicateComponent } = useDuplicateComponent();
+	const { clipboard, copy } = useStyleClipboardStore();
+	const { currentPage, setCurrentPage } = useCurrentPageStore();
 
 	// Get the component from the registry or use the default component
 	const ComponentToRender = componentMap[component.type] || DefaultComponent;
@@ -121,13 +160,15 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 	const isSelected = currentComponent.id === component.id;
 
 	// Determine the appropriate class based on component state
-	let className = "";
+	// Use a full-coverage after pseudo-element to avoid layout shifts from borders
+	let className =
+		"relative after:content-[''] after:absolute after:inset-0 after:pointer-events-none after:z-10";
 	if (isSelected) {
-		className = "border-2 border-blue-500";
+		className += " after:border-2 after:border-blue-500";
 	} else if (isDropTarget) {
-		className = "border-2 border-green-500 bg-green-50";
+		className += " after:border-2 after:border-green-500 bg-green-50";
 	} else {
-		className = "hover:border-2 hover:border-blue-500";
+		className += " hover:after:border-2 hover:after:border-blue-500";
 	}
 
 	return (
@@ -146,6 +187,43 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 				</div>
 			</ContextMenuTrigger>
 			<ContextMenuContent onClick={(e) => e.stopPropagation()}>
+				<ContextMenuItem
+					onClick={(e) => {
+						e.stopPropagation();
+						duplicateComponent(component.id);
+					}}
+				>
+					Duplicate (Ctrl+D)
+				</ContextMenuItem>
+				<ContextMenuItem
+					onClick={(e) => {
+						e.stopPropagation();
+						copy(component.props?.style);
+					}}
+				>
+					Copy style
+				</ContextMenuItem>
+				<ContextMenuItem
+					onClick={(e) => {
+						e.stopPropagation();
+						if (!clipboard) return;
+						const working = Array.isArray(currentPage.content)
+							? (JSON.parse(
+									JSON.stringify(currentPage.content),
+								) as BuilderComponent[])
+							: [];
+						if (
+							updateStyleInTree(working, component.id, clipboard)
+						) {
+							setCurrentPage({
+								...currentPage,
+								content: working,
+							});
+						}
+					}}
+				>
+					Paste style
+				</ContextMenuItem>
 				<ContextMenuItem
 					className={"text-destructive"}
 					onClick={(e) => {

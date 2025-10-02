@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const sizeUnits = ["px", "em", "rem"] as const;
+export const sizeUnits = ["px", "em", "rem", "%"] as const;
 export type SizeUnit = (typeof sizeUnits)[number];
 
 /**
@@ -33,7 +33,7 @@ export const fluidSizeSchema = z.object({
 	widthUnit: z
 		.enum(sizeUnits, {
 			errorMap: () => ({
-				message: "Width unit must be one of: px, em, rem",
+				message: "Width unit must be one of: px, em, rem, %",
 			}),
 		})
 		.optional(),

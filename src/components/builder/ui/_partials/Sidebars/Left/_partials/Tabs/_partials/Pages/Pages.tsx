@@ -14,6 +14,7 @@ import { File, Home, MoreHorizontal, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
+import { useCurrentPageHeaderStore } from "@/builder/store/storeCurrentPageHeader";
 import EditableSlug from "@/components/builder/ui/_partials/Sidebars/Left/_partials/Tabs/_partials/Pages/_partials/EditableSlug";
 import { Button } from "@/components/ui/button";
 import {
@@ -42,8 +43,11 @@ import {
 	useSetAsHomePage,
 	useUpdatePageParent,
 } from "@/feature/page/queries/usePageActions";
+import { usePageById } from "@/feature/page/queries/usePageById";
+import { usePageHeader } from "@/feature/page/queries/usePageHeader";
 import { usePages } from "@/feature/page/queries/usePages";
 import { Page, PageLight } from "@/feature/page/types/page";
+import { PageHeaderLight } from "@/feature/page/types/pageHeader";
 import { useSetting } from "@/feature/settings/queries/useSettings";
 import { useAddPage } from "@/hooks/useAddPage";
 
@@ -58,17 +62,37 @@ export default function BuilderTabPagesPages() {
 	const { data: pages } = usePages();
 	const currentPage = useCurrentPageStore((state) => state.currentPage);
 	const setCurrentPage = useCurrentPageStore((state) => state.setCurrentPage);
+	const { setCurrentPageHeader } = useCurrentPageHeaderStore();
 	const { data: currentHomepageRaw } = useSetting("current_homepage_id");
 	const currentHomepage = {
 		value: Number(currentHomepageRaw?.value),
 	};
 	const { addPage } = useAddPage();
 
+	const { data: homepage } = usePageById(currentHomepage.value);
+
+	useEffect(() => {
+		if (currentPage && currentPage?.id === -1 && homepage) {
+			setCurrentPage(homepage as PageLight);
+		}
+	}, [currentPage?.id, homepage, setCurrentPage]);
+
 	// Initialize page action hooks
 	const duplicatePage = useDuplicatePage();
 	const deletePage = useDeletePage();
 	const setAsHomePage = useSetAsHomePage();
 	const updatePageParent = useUpdatePageParent();
+
+	// Sync current page header whenever currentPage changes
+	const currentPageIdForHeader = currentPage?.id ?? -1;
+	const { data: currentPageHeaderData } = usePageHeader(
+		currentPageIdForHeader,
+	);
+	useEffect(() => {
+		if (currentPageHeaderData) {
+			setCurrentPageHeader(currentPageHeaderData as PageHeaderLight);
+		}
+	}, [currentPageHeaderData, setCurrentPageHeader]);
 
 	// State for drag and drop
 	const [activeId, setActiveId] = useState<number | null>(null);
@@ -231,6 +255,8 @@ export default function BuilderTabPagesPages() {
 									id: page.id,
 									slug: page.slug,
 									title: page.title,
+									pageHeaderId: page.pageHeaderId,
+									pageFooterId: page.pageFooterId,
 								})
 							}
 							size="sm"
