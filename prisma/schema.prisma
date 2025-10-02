@@ -30,6 +30,7 @@ model User {
 
   // Relations
   UserSettings UserSettings[]
+  medias       Media[]
 
   role       String?   @default("user")
   banned     Boolean?
@@ -234,4 +235,28 @@ model PageFooter {
 
   pages     Page[]
   isDefault Boolean @default(false)
+}
+
+// === Media Models ===
+
+enum MediaCategory {
+  DOCUMENT
+  IMAGE
+  VIDEO
+}
+
+model Media {
+  id                Int             @id @default(autoincrement())
+  altText           String?
+  caption           String?
+  category          MediaCategory
+  description       String?
+  fileName          String
+  url               String
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  uploadedBy        User            @relation(fields: [userId], references: [id])
+  userId            String
+
+  @@map("media")
 }

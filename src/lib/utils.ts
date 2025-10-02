@@ -12,7 +12,7 @@ export function slugify(text: string): string {
 		.replace(/^-|-$/g, "");
 }
 
-export function formatDate(dateString: string, locale?: string) {
+export function formatDate(dateString: string | Date, locale?: string) {
 	const date = new Date(dateString);
 	const resolvedLocale =
 		locale ||

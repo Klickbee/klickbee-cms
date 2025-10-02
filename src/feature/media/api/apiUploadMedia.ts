@@ -1,8 +1,16 @@
 import { existsSync } from "fs";
-import { mkdir, readdir, readFile, stat, unlink, writeFile } from "fs/promises";
-import sizeOf from "image-size";
+import { mkdir, unlink, writeFile } from "fs/promises";
 import { NextResponse } from "next/server";
 import { join } from "path";
+import {
+	createMedia,
+	deleteMedia,
+	getAllMedias,
+	getMediaById,
+	updateMedia,
+} from "@/feature/media/lib/media";
+import { mediaUpdateSchema } from "@/feature/media/schemas/mediaUpdateSchema";
+import { getCurrentUser } from "@/feature/user/options/userServerOptions";
 
 export async function POST(request: Request) {
 	const formData = await request.formData();
@@ -54,18 +62,33 @@ export async function POST(request: Request) {
 	}
 
 	const filePath = join(uploadDir, file.name);
+	const fileName = file.name;
+	const category = file.type.startsWith("image/")
+		? "IMAGE"
+		: file.type.startsWith("video/")
+			? "VIDEO"
+			: "DOCUMENT";
+	const url = `/uploads/media/${file.name}`;
 
 	try {
 		await writeFile(filePath, buffer);
+		const currentUser = await getCurrentUser();
 
-		const url = `/uploads/media/${file.name}`;
-		return NextResponse.json(
-			{ fileName: file.name, size: file.size, type: file.type, url },
-			{
-				headers: { "Content-Type": "application/json" },
-				status: 200,
-			},
-		);
+		const newMedia = await createMedia({
+			altText: null,
+			caption: null,
+			category,
+			createdAt: new Date(),
+			description: null,
+			fileName,
+			updatedAt: new Date(),
+			url,
+			userId: currentUser?.id || "0",
+		});
+		return NextResponse.json(newMedia, {
+			headers: { "Content-Type": "application/json" },
+			status: 200,
+		});
 	} catch (error) {
 		console.error("Error saving file:", error);
 		return NextResponse.json(
@@ -83,54 +106,7 @@ export async function GET() {
 	}
 
 	try {
-		const files = await readdir(uploadDir);
-		const mediaFiles = await Promise.all(
-			files.map(async (filename) => {
-				const filePath = join(uploadDir, filename);
-				let dimensions;
-				const stats = await stat(filePath);
-				const url = `/uploads/media/${filename}`;
-
-				// Get file extension and mime type
-				const extension = filename.split(".").pop()?.toLowerCase();
-				let type = "application/octet-stream";
-				let category = "document";
-
-				if (
-					["jpg", "jpeg", "png", "gif", "webp", "svg"].includes(
-						extension || "",
-					)
-				) {
-					type = `image/${extension === "jpg" ? "jpeg" : extension}`;
-					category = "image";
-					const buffer = await readFile(filePath);
-					dimensions = sizeOf(buffer);
-				} else if (["mp4", "webm"].includes(extension || "")) {
-					type = `video/${extension}`;
-					category = "video";
-				} else if (["pdf"].includes(extension || "")) {
-					type = "application/pdf";
-					category = "document";
-				}
-
-				return {
-					category,
-					createdAt: stats.birthtime,
-					filename,
-					height: dimensions?.height,
-					modifiedAt: stats.mtime,
-					size: stats.size,
-					type,
-					url,
-					width: dimensions?.width,
-				};
-			}),
-		);
-
-		// Sort by creation date, newest first
-		mediaFiles.sort(
-			(a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
-		);
+		const mediaFiles = await getAllMedias();
 
 		return NextResponse.json({ files: mediaFiles });
 	} catch (error) {
@@ -142,42 +118,99 @@ export async function GET() {
 	}
 }
 
+export async function PUT(request: Request) {
+	try {
+		const body = await request.json();
+		const { id, ...data } = body;
+
+		if (!id) {
+			return NextResponse.json(
+				{ error: "ID du média requis" },
+				{ status: 400 },
+			);
+		}
+
+		// Validate the data
+		const validatedData = mediaUpdateSchema.parse(data);
+
+		// Update media in database
+		const updatedMedia = await updateMedia(id, validatedData);
+
+		return NextResponse.json(updatedMedia, {
+			headers: { "Content-Type": "application/json" },
+			status: 200,
+		});
+	} catch (error) {
+		console.error("Error updating media:", error);
+		return NextResponse.json(
+			{ error: "Erreur lors de la mise à jour du média" },
+			{ status: 500 },
+		);
+	}
+}
+
 export async function DELETE(request: Request) {
 	const { searchParams } = new URL(request.url);
-	const filename = searchParams.get("filename");
+	const idParam = searchParams.get("id");
 
-	if (!filename) {
+	if (!idParam) {
 		return NextResponse.json(
-			{ error: "Nom de fichier requis" },
+			{ error: "ID du média requis" },
 			{ status: 400 },
 		);
 	}
 
-	const filePath = join(
-		process.cwd(),
-		"public",
-		"uploads",
-		"media",
-		filename,
-	);
-
-	if (!existsSync(filePath)) {
+	const id = parseInt(idParam, 10);
+	if (isNaN(id)) {
 		return NextResponse.json(
-			{ error: "Fichier non trouvé" },
-			{ status: 404 },
+			{ error: "ID du média invalide" },
+			{ status: 400 },
 		);
 	}
 
 	try {
-		await unlink(filePath);
+		// Get media info from database
+		const media = await getMediaById(id);
+		if (!media) {
+			return NextResponse.json(
+				{ error: "Média non trouvé" },
+				{ status: 404 },
+			);
+		}
+
+		// Extract filename from URL
+		const filename = media.url.split("/").pop();
+		if (!filename) {
+			return NextResponse.json(
+				{ error: "Nom de fichier invalide" },
+				{ status: 400 },
+			);
+		}
+
+		const filePath = join(
+			process.cwd(),
+			"public",
+			"uploads",
+			"media",
+			filename,
+		);
+
+		// Delete from database first
+		await deleteMedia(id);
+
+		// Delete physical file if it exists
+		if (existsSync(filePath)) {
+			await unlink(filePath);
+		}
+
 		return NextResponse.json(
-			{ message: "Fichier supprimé avec succès" },
+			{ message: "Média supprimé avec succès" },
 			{ status: 200 },
 		);
 	} catch (error) {
-		console.error("Error deleting file:", error);
+		console.error("Error deleting media:", error);
 		return NextResponse.json(
-			{ error: "Erreur lors de la suppression du fichier" },
+			{ error: "Erreur lors de la suppression du média" },
 			{ status: 500 },
 		);
 	}

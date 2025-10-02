@@ -12,11 +12,11 @@ type Props = {
 
 export default function MediaCard({ media, onClick }: Props) {
 	const renderThumbnail = () => {
-		if (media.category === "image") {
+		if (media.category === "IMAGE") {
 			return (
 				<div className="relative w-full h-50 bg-gray-100 rounded-t-lg overflow-hidden">
 					<Image
-						alt={media.filename}
+						alt={media.fileName}
 						className="object-cover"
 						fill
 						sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -26,7 +26,7 @@ export default function MediaCard({ media, onClick }: Props) {
 			);
 		}
 
-		if (media.category === "video") {
+		if (media.category === "VIDEO") {
 			return (
 				<div className="relative w-full h-32 bg-gray-100 rounded-t-lg overflow-hidden flex items-center justify-center">
 					{/* For now, show a placeholder. In a real implementation, you might generate video thumbnails */}
@@ -35,7 +35,7 @@ export default function MediaCard({ media, onClick }: Props) {
 						muted
 						preload="metadata"
 					>
-						<source src={media.url} type={media.type} />
+						<source src={media.url} />
 					</video>
 					<div className="absolute inset-0 bg-black/20 flex items-center justify-center">
 						<div className="bg-white/90 rounded-full p-3">
@@ -57,7 +57,7 @@ export default function MediaCard({ media, onClick }: Props) {
 				</div>
 				<div className="p-3">
 					<p className="text-sm font-semibold text-muted-foreground">
-						{media.filename}
+						{media.fileName}
 					</p>
 				</div>
 			</>
