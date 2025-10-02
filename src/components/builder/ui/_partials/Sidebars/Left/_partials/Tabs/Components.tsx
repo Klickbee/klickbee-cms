@@ -1,10 +1,13 @@
 "use client";
 
-import { Box, ChevronDown, ChevronUp, ComponentIcon } from "lucide-react";
+import { ChevronDown, ChevronUp, ComponentIcon } from "lucide-react";
 import { useState } from "react";
 import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
-import { BuilderComponent } from "@/builder/types/components/components";
+import {
+	BuilderComponent,
+	isParentComponent,
+} from "@/builder/types/components/components";
 import { componentsList } from "@/builder/types/components/ui/componentsList";
 import BuilderSearchComponent from "@/components/builder/ui/_partials/Sidebars/Left/Search";
 
@@ -36,6 +39,10 @@ export default function BuilderTabComponents() {
 	});
 
 	const currentPage = useCurrentPageStore((state) => state.currentPage);
+	const setCurrentPage = useCurrentPageStore((state) => state.setCurrentPage);
+	const _setTargetComponent = useCurrentComponentStore(
+		(state) => state.setCurrentComponent,
+	);
 	const currentComponent = useCurrentComponentStore(
 		(state) => state.currentComponent,
 	);
@@ -49,13 +56,12 @@ export default function BuilderTabComponents() {
 			const componentData = item;
 			// Get the current content as an array or initialize a new one
 			const currentContent = Array.isArray(currentPage.content)
-				? [...currentPage.content]
+				? currentPage.content
 				: [];
 
 			// Create the new component using the selected item from componentsList
 			const newComponent: BuilderComponent = {
 				groupId: componentData.groupId,
-				icon: componentData.icon || <Box className="w-4 h-4" />,
 				id: `${componentData.type}-${Date.now()}`, // Generate a unique ID for the instance
 				label: componentData.label,
 				order: currentContent.length + 1, // Root-level order based on position
@@ -76,13 +82,18 @@ export default function BuilderTabComponents() {
 							if (!components[i].children) {
 								components[i].children = [];
 							}
-							// Add the new component as a child
-							components[i].children?.push({
-								...newComponent,
-								order:
-									(components[i].children?.length || 0) + 1,
-							});
-							return true;
+							if (isParentComponent(components[i])) {
+								// Add the new component as a child
+								components[i].children?.push({
+									...newComponent,
+									order:
+										(components[i].children?.length || 0) +
+										1,
+								});
+								return true;
+							} else {
+								return false;
+							}
 						}
 						// Recursively check children
 						if (
@@ -105,12 +116,11 @@ export default function BuilderTabComponents() {
 			}
 
 			// Update the current page with the new content
-			// const updatedPage = {
-			// 	...currentPage,
-			// 	content: currentContent as unknown as JsonValue,
-			// };
-			// setCurrentPage(updatedPage);
-			// setTargetComponent(null);
+			const updatedPage = {
+				...currentPage,
+				content: currentContent,
+			};
+			setCurrentPage(updatedPage);
 		} catch (error) {
 			console.error("Error dropping component:", error);
 		}
