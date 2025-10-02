@@ -1,11 +1,8 @@
 "use client";
 
-import { useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
-import { useCurrentPageFooterStore } from "@/builder/store/storeCurrentPageFooter";
-import { useCurrentPageHeaderStore } from "@/builder/store/storeCurrentPageHeader";
 import { BuilderComponent } from "@/builder/types/components/components";
 import { ComponentContentProps } from "@/builder/types/components/properties/componentContentPropsType";
 
@@ -17,13 +14,7 @@ export function useContentUpdate(component: BuilderComponent) {
 		(state) => state.setCurrentComponent,
 	);
 	const currentPage = useCurrentPageStore((state) => state.currentPage);
-	const { currentPageHeader, setCurrentPageHeader } =
-		useCurrentPageHeaderStore();
-	const { currentPageFooter, setCurrentPageFooter } =
-		useCurrentPageFooterStore();
-
 	const setCurrentPage = useCurrentPageStore((state) => state.setCurrentPage);
-	const queryClient = useQueryClient();
 
 	const updateContent = useCallback(
 		(updates: Partial<ComponentContentProps>) => {
@@ -50,56 +41,9 @@ export function useContentUpdate(component: BuilderComponent) {
 			);
 			if (newPageContent !== currentPage.content) {
 				setCurrentPage({ ...currentPage, content: newPageContent });
-			} else {
-				// If not in page body, try updating header content if header exists
-				if (currentPageHeader?.content) {
-					const belongsToHeader = containsComponentId(
-						currentPageHeader.content as BuilderComponent,
-						component.id,
-					);
-					if (belongsToHeader) {
-						const updatedHeaderRoot = updateSingleRoot(
-							currentPageHeader.content as BuilderComponent,
-							component.id,
-							updatedComponent,
-						);
-						setCurrentPageHeader({
-							...currentPageHeader,
-							content: updatedHeaderRoot,
-						});
-					}
-				}
-				// Also try updating footer content if footer exists
-				if (currentPageFooter?.content) {
-					const belongsToFooter = containsComponentId(
-						currentPageFooter.content as BuilderComponent,
-						component.id,
-					);
-					if (belongsToFooter) {
-						const updatedFooterRoot = updateSingleRoot(
-							currentPageFooter.content as BuilderComponent,
-							component.id,
-							updatedComponent,
-						);
-						setCurrentPageFooter({
-							...currentPageFooter,
-							content: updatedFooterRoot,
-						});
-					}
-				}
 			}
 		},
-		[
-			component,
-			setCurrentComponent,
-			setCurrentPage,
-			currentPage,
-			queryClient,
-			currentPageHeader,
-			setCurrentPageHeader,
-			currentPageFooter,
-			setCurrentPageFooter,
-		],
+		[component, setCurrentComponent, setCurrentPage, currentPage],
 	);
 
 	// Helper functions for common update patterns
@@ -269,7 +213,7 @@ function updatePageContent(
 }
 
 // Update a single-root (header/footer) tree
-function updateSingleRoot(
+function _updateSingleRoot(
 	root: BuilderComponent,
 	componentId: string,
 	componentContent: BuilderComponent,
@@ -302,7 +246,7 @@ function updateSingleRoot(
 	return updateNode(root);
 }
 
-function containsComponentId(
+function _containsComponentId(
 	root: BuilderComponent,
 	targetId: string,
 ): boolean {
@@ -310,7 +254,7 @@ function containsComponentId(
 	if (root.id === targetId) return true;
 	if (root.children && (root.children as BuilderComponent[]).length) {
 		return (root.children as BuilderComponent[]).some((child) =>
-			containsComponentId(child, targetId),
+			_containsComponentId(child, targetId),
 		);
 	}
 	return false;

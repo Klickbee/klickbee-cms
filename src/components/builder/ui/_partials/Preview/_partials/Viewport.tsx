@@ -2,8 +2,6 @@ import { Play, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useBuilderShortcuts } from "@/builder/hooks/useBuilderShortcuts";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
-import { useCurrentPageFooterStore } from "@/builder/store/storeCurrentPageFooter";
-import { useCurrentPageHeaderStore } from "@/builder/store/storeCurrentPageHeader";
 import { BuilderComponent } from "@/builder/types/components/components";
 import { componentsList } from "@/builder/types/components/ui/componentsList";
 import { Button } from "@/components/ui/button";
@@ -19,8 +17,6 @@ export default function BuilderPreviewViewport({
 	handleRemoveBreakpoint: (breakpointName: string) => void;
 }) {
 	const { currentPage, setCurrentPage } = useCurrentPageStore();
-	const { currentPageHeader } = useCurrentPageHeaderStore();
-	const { currentPageFooter } = useCurrentPageFooterStore();
 	const [targetComponent, setTargetComponent] = useState<string | null>(null);
 	useBuilderShortcuts();
 
@@ -177,48 +173,11 @@ export default function BuilderPreviewViewport({
 						width: `${bp.width}px`,
 					}}
 				></div>
-				{/* Render header if exists */}
-				{currentPageHeader?.content && (
-					<ComponentRendering
-						content={
-							Array.isArray(currentPageHeader.content)
-								? (currentPageHeader.content as unknown as BuilderComponent[])
-								: currentPageHeader.content &&
-										typeof currentPageHeader.content ===
-											"object"
-									? [
-											currentPageHeader.content as unknown as BuilderComponent,
-										]
-									: []
-						}
-						setTargetComponent={setTargetComponent}
-						targetComponent={targetComponent}
-					/>
-				)}
 				{/* Render components for this breakpoint */}
 				{Array.isArray(currentPage.content) && (
 					<ComponentRendering
 						content={
 							currentPage.content as unknown as BuilderComponent[]
-						}
-						setTargetComponent={setTargetComponent}
-						targetComponent={targetComponent}
-					/>
-				)}
-
-				{/* Render footer if exists */}
-				{currentPageFooter?.content && (
-					<ComponentRendering
-						content={
-							Array.isArray(currentPageFooter.content)
-								? (currentPageFooter.content as unknown as BuilderComponent[])
-								: currentPageFooter.content &&
-										typeof currentPageFooter.content ===
-											"object"
-									? [
-											currentPageFooter.content as unknown as BuilderComponent,
-										]
-									: []
 						}
 						setTargetComponent={setTargetComponent}
 						targetComponent={targetComponent}

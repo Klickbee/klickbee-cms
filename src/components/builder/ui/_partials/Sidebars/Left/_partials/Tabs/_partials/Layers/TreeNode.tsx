@@ -13,7 +13,6 @@ import {
 	canHaveChildren,
 	isParentComponent,
 } from "@/builder/types/components/components";
-import { HeaderFooterContextItems } from "@/components/builder/ui/_partials/Sidebars/Left/_partials/Tabs/_partials/Layers/_partials/HeaderFooterContextItems";
 import {
 	ContextMenu,
 	ContextMenuContent,
@@ -171,13 +170,7 @@ export function TreeNode({
 							<span className="w-4 h-4" />
 						)}
 						{node.icon}
-						<span className="ml-2">
-							{type == "header" && parentId == null
-								? "Header"
-								: type == "footer" && parentId == null
-									? "Footer"
-									: node.label}
-						</span>
+						<span className="ml-2">{node.label}</span>
 					</div>
 					{/* Children and after zone */}
 					<div className="ml-4">
@@ -244,12 +237,6 @@ export function TreeNode({
 				>
 					Paste style
 				</ContextMenuItem>
-				{isParentComponent(node) && type == "content" && (
-					<HeaderFooterContextItems
-						currentPage={currentPage}
-						node={node}
-					/>
-				)}
 				<ContextMenuItem
 					className={"text-destructive"}
 					onClick={() => confirmDelete(node.id, parentId, node.type)}

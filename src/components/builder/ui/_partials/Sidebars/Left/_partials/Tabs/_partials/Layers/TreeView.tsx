@@ -3,11 +3,7 @@ import { useDeleteComponentContext } from "@/builder/contexts/DeleteComponentCon
 import { useDuplicateComponent } from "@/builder/hooks/useDuplicateComponent";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
 import { useStyleClipboardStore } from "@/builder/store/storeStyleClipboard";
-import {
-	BuilderComponent,
-	isParentComponent,
-} from "@/builder/types/components/components";
-import { HeaderFooterContextItems } from "@/components/builder/ui/_partials/Sidebars/Left/_partials/Tabs/_partials/Layers/_partials/HeaderFooterContextItems";
+import { BuilderComponent } from "@/builder/types/components/components";
 import {
 	ContextMenu,
 	ContextMenuContent,
@@ -98,13 +94,6 @@ export function TreeView({ contentNodes, type }: TreeViewProps) {
 								>
 									Paste style
 								</ContextMenuItem>
-								{isParentComponent(contentNode) &&
-									type == "content" && (
-										<HeaderFooterContextItems
-											currentPage={currentPage}
-											node={contentNode}
-										/>
-									)}
 								<ContextMenuItem
 									className={"text-destructive"}
 									onClick={() =>
