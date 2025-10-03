@@ -13,6 +13,7 @@ import {
 	canHaveChildren,
 	isParentComponent,
 } from "@/builder/types/components/components";
+import HeaderFooterContextItem from "@/components/builder/ui/_partials/Sidebars/Left/_partials/Tabs/_partials/Layers/_partials/HeaderFooterContextItem";
 import {
 	ContextMenu,
 	ContextMenuContent,
@@ -237,6 +238,7 @@ export function TreeNode({
 				>
 					Paste style
 				</ContextMenuItem>
+				<HeaderFooterContextItem node={node} />
 				<ContextMenuItem
 					className={"text-destructive"}
 					onClick={() => confirmDelete(node.id, parentId, node.type)}

@@ -4,6 +4,7 @@ import { useDuplicateComponent } from "@/builder/hooks/useDuplicateComponent";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
 import { useStyleClipboardStore } from "@/builder/store/storeStyleClipboard";
 import { BuilderComponent } from "@/builder/types/components/components";
+import HeaderFooterContextItem from "@/components/builder/ui/_partials/Sidebars/Left/_partials/Tabs/_partials/Layers/_partials/HeaderFooterContextItem";
 import {
 	ContextMenu,
 	ContextMenuContent,
@@ -94,6 +95,7 @@ export function TreeView({ contentNodes, type }: TreeViewProps) {
 								>
 									Paste style
 								</ContextMenuItem>
+								<HeaderFooterContextItem node={contentNode} />
 								<ContextMenuItem
 									className={"text-destructive"}
 									onClick={() =>
