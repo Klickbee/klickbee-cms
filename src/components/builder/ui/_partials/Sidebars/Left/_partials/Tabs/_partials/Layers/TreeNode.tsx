@@ -74,8 +74,8 @@ export function TreeNode({
 		e.dataTransfer.dropEffect = "move";
 	};
 
-	const onDropAt =
-		(pos: "before" | "after" | "inside") => (e: React.DragEvent) => {
+	const onDropAt = (pos: "before" | "after" | "inside") => {
+		return (e: React.DragEvent) => {
 			e.preventDefault();
 			e.stopPropagation();
 			try {
@@ -98,6 +98,7 @@ export function TreeNode({
 				setOverAfter(false);
 			}
 		};
+	};
 
 	return (
 		<ContextMenu>
