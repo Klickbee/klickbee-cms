@@ -44,7 +44,7 @@ export const NavigationMenu: React.FC<NavigationMenuProps> = ({
 
 	return (
 		<nav
-			className="w-full"
+			className=""
 			style={{
 				order: component.order || 0,
 				...mapStylePropsToCss(component.props?.style),

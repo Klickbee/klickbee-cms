@@ -5,7 +5,7 @@ import {
 	BuilderComponent,
 	canHaveChildren,
 } from "@/builder/types/components/components";
-import { DragDropContext } from "../../../components/builder/_partials/DragAndDropContext";
+import { DragDropContext } from "@/components/builder/_partials/DragAndDropContext";
 import { ComponentRenderer } from "../../lib/renderers/ComponentRenderer";
 
 interface ContainerProps {
@@ -18,7 +18,7 @@ export const Container: React.FC<ContainerProps> = ({ component }) => {
 
 	return (
 		<div
-			className="relative bg-white"
+			className="relative container"
 			style={{
 				order: component.order || 0, // Use order property for positioning
 				...mapStylePropsToCss(component.props?.style),

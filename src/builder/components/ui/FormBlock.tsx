@@ -21,7 +21,7 @@ export const FormBlock: React.FC<FormBlockProps> = ({
 
 	return (
 		<div
-			className="relative bg-white"
+			className="relative"
 			style={{
 				order: component.order || 0, // Use order property for positioning
 				...mapStylePropsToCss(component.props?.style),

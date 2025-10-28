@@ -11,9 +11,13 @@ import { ComponentRenderer } from "../../lib/renderers/ComponentRenderer";
 
 interface SectionProps {
 	component: BuilderComponent;
+	isRoot?: boolean;
 }
 
-export const SectionBuilder: React.FC<SectionProps> = ({ component }) => {
+export const SectionBuilder: React.FC<SectionProps> = ({
+	component,
+	isRoot = false,
+}) => {
 	// Initialize the builder max width cache from settings
 	useBuilderMaxWidth();
 	// Get the setTargetComponent function from context
@@ -21,7 +25,7 @@ export const SectionBuilder: React.FC<SectionProps> = ({ component }) => {
 
 	return (
 		<section
-			className="relative bg-white w-full"
+			className={`relative bg-white ${isRoot ? "w-full" : ""}`}
 			style={{
 				...mapStylePropsToCss(component.props?.style),
 			}}
