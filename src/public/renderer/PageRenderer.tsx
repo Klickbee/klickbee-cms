@@ -23,6 +23,7 @@ import { SubmitButton } from "@/builder/components/ui/SubmitButton";
 import { Text } from "@/builder/components/ui/Text";
 import { TextField } from "@/builder/components/ui/TextField";
 import { Video } from "@/builder/components/ui/Video";
+import { normalizeToComponents } from "@/builder/lib/content/normalize";
 import { mapStylePropsToCss } from "@/builder/lib/style/mapStylePropsToCss";
 import type {
 	BuilderComponent,
@@ -30,13 +31,19 @@ import type {
 } from "@/builder/types/components/components";
 
 // Public-safe container components (no editor contexts, no placeholders)
-function PublicSection({ component }: { component: BuilderComponent }) {
+function PublicSection({
+	component,
+	isRoot = false,
+}: {
+	component: BuilderComponent;
+	isRoot?: boolean;
+}) {
 	const style: React.CSSProperties = {
 		order: component.order || 0,
 		...mapStylePropsToCss(component.props?.style),
 	};
 	return (
-		<section className="w-full" style={style}>
+		<section className={isRoot ? "w-full" : undefined} style={style}>
 			{Array.isArray(component.children)
 				? component.children
 						.slice()
@@ -58,7 +65,7 @@ function PublicContainer({ component }: { component: BuilderComponent }) {
 		...mapStylePropsToCss(component.props?.style),
 	};
 	return (
-		<div className="" style={style}>
+		<div className="container mx-auto" style={style}>
 			{Array.isArray(component.children)
 				? component.children
 						.slice()
@@ -162,36 +169,55 @@ export function PublicComponentRenderer({
 
 export function PageRenderer({
 	content,
+	headerContent,
 	wrapperClassName,
 }: {
 	content: unknown;
+	headerContent?: unknown;
 	wrapperClassName?: string;
 }) {
-	const rootComponents: BuilderComponent[] = Array.isArray(content)
-		? (content as BuilderComponent[])
-		: typeof content === "object" &&
-				content &&
-				Array.isArray(
-					(content as { components: BuilderComponent[] }).components,
-				)
-			? (content as { components: BuilderComponent[] }).components
-			: [];
+	const headerComponents = normalizeToComponents(headerContent);
+	const rootComponents = normalizeToComponents(content);
 
-	if (!rootComponents || rootComponents.length === 0) {
-		return null;
-	}
+	const hasAny = headerComponents.length > 0 || rootComponents.length > 0;
+	if (!hasAny) return null;
 
 	return (
 		<>
+			{headerComponents
+				.slice()
+				.sort((a, b) => (a.order || 0) - (b.order || 0))
+				.map((component) =>
+					component.type === "section" ? (
+						<PublicSection
+							component={component}
+							isRoot
+							key={component.id}
+						/>
+					) : (
+						<PublicComponentRenderer
+							component={component}
+							key={component.id}
+						/>
+					),
+				)}
 			{rootComponents
 				.slice()
 				.sort((a, b) => (a.order || 0) - (b.order || 0))
-				.map((component) => (
-					<PublicComponentRenderer
-						component={component}
-						key={component.id}
-					/>
-				))}
+				.map((component) =>
+					component.type === "section" ? (
+						<PublicSection
+							component={component}
+							isRoot
+							key={component.id}
+						/>
+					) : (
+						<PublicComponentRenderer
+							component={component}
+							key={component.id}
+						/>
+					),
+				)}
 		</>
 	);
 }
