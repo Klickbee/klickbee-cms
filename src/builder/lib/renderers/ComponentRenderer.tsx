@@ -107,6 +107,7 @@ interface ComponentRendererProps {
 	onDragOver?: (e: React.DragEvent<HTMLDivElement>) => void;
 	onDragLeave?: () => void;
 	isDropTarget?: boolean;
+	isRoot?: boolean;
 }
 
 function updateStyleInTree(
@@ -141,6 +142,7 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 	onDragOver,
 	onDragLeave,
 	isDropTarget,
+	isRoot,
 }) => {
 	const currentComponent = useCurrentComponentStore(
 		(state) => state.currentComponent,
@@ -183,7 +185,14 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 					onDragLeave={onDragLeave}
 					onDragOver={onDragOver}
 				>
-					<ComponentToRender component={component} />
+					{component.type === "section" ? (
+						<SectionBuilder
+							component={component}
+							isRoot={!!isRoot}
+						/>
+					) : (
+						<ComponentToRender component={component} />
+					)}
 				</div>
 			</ContextMenuTrigger>
 			<ContextMenuContent onClick={(e) => e.stopPropagation()}>
