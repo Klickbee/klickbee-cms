@@ -1,6 +1,10 @@
 "use client";
 
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
+import {
+	getDefaultPageHeader,
+	setHeaderToPage,
+} from "@/feature/page/_header/actions/pageHeaderActions";
 import { useCreatePage } from "@/feature/page/queries/useCreatePage";
 import { useLastPageId } from "@/feature/page/queries/useLastPageId";
 import { usePages } from "@/feature/page/queries/usePages";
@@ -42,6 +46,17 @@ export const useAddPage = () => {
 			slug: `page-${lastPageId}`,
 			title: "New Page " + lastPageId,
 		});
+
+		// Try to assign default header to this new page
+		try {
+			const defaultHeader = await getDefaultPageHeader();
+			if (defaultHeader?.id) {
+				await setHeaderToPage(newPage.id, defaultHeader.id);
+				// pageHeaderId is persisted server-side; local state reflects through queries/invalidation
+			}
+		} catch (e) {
+			console.warn("Failed to assign default header to new page", e);
+		}
 
 		// If it's the first page or if no homepage is defined,
 		// set this page as homepage
