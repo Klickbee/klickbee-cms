@@ -5,6 +5,7 @@ import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
 import { BuilderComponent } from "@/builder/types/components/components";
 import { componentsList } from "@/builder/types/components/ui/componentsList";
 import { Button } from "@/components/ui/button";
+import { usePageHeaderByPage } from "@/feature/page/_header/queries/usePageHeader";
 import ComponentRendering from "./ComponentRendering";
 
 export default function BuilderPreviewViewport({
@@ -19,6 +20,18 @@ export default function BuilderPreviewViewport({
 	const { currentPage, setCurrentPage } = useCurrentPageStore();
 	const [targetComponent, setTargetComponent] = useState<string | null>(null);
 	useBuilderShortcuts();
+
+	// Load and prepare page header components
+	const pageId =
+		currentPage?.id && currentPage.id > 0 ? currentPage.id : undefined;
+	const { data: pageHeader } = usePageHeaderByPage(pageId);
+	const headerComponents: BuilderComponent[] = Array.isArray(
+		pageHeader?.content,
+	)
+		? (pageHeader?.content as BuilderComponent[])
+		: pageHeader?.content
+			? ([pageHeader.content] as BuilderComponent[])
+			: [];
 
 	return (
 		<div className="flex flex-col gap-2" key={bp.name}>
@@ -173,12 +186,23 @@ export default function BuilderPreviewViewport({
 						width: `${bp.width}px`,
 					}}
 				></div>
+				{/* Render header if any */}
+				{headerComponents.length > 0 && (
+					<ComponentRendering
+						content={headerComponents}
+						isRoot
+						setTargetComponent={setTargetComponent}
+						targetComponent={targetComponent}
+					/>
+				)}
+
 				{/* Render components for this breakpoint */}
 				{Array.isArray(currentPage.content) && (
 					<ComponentRendering
 						content={
 							currentPage.content as unknown as BuilderComponent[]
 						}
+						isRoot
 						setTargetComponent={setTargetComponent}
 						targetComponent={targetComponent}
 					/>
