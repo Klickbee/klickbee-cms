@@ -8,10 +8,12 @@ export default function ComponentRendering({
 	content,
 	targetComponent,
 	setTargetComponent,
+	isRoot = false,
 }: {
 	content: BuilderComponent[];
 	targetComponent: string | null;
 	setTargetComponent: (id: string | null) => void;
+	isRoot?: boolean;
 }) {
 	if (!Array.isArray(content) || content.length === 0) {
 		return null;
@@ -27,6 +29,7 @@ export default function ComponentRendering({
 						<ComponentRenderer
 							component={component}
 							isDropTarget={targetComponent === component.id}
+							isRoot={isRoot}
 							onDragLeave={() => {
 								setTargetComponent(null);
 							}}
