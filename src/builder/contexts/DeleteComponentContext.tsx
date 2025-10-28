@@ -32,7 +32,9 @@ const DeleteComponentContext = createContext<
 
 // Provider component
 export function DeleteComponentProvider({ children }: { children: ReactNode }) {
-	const deleteComponentHook = useDeleteComponent({ showNotifications: true });
+	const deleteComponentHook = useDeleteComponent({
+		showNotifications: false,
+	});
 	const {
 		cancelDelete,
 		handleDelete,
@@ -52,7 +54,7 @@ export function DeleteComponentProvider({ children }: { children: ReactNode }) {
 			>
 				<DialogContent>
 					<DialogHeader>
-						<DialogTitle>Confirm Deletion</DialogTitle>
+						<DialogTitle>Confirm Deletiozn</DialogTitle>
 						<DialogDescription>
 							Are you sure you want to delete this{" "}
 							<b>
