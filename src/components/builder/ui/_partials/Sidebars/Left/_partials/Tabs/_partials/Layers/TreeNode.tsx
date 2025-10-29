@@ -13,6 +13,7 @@ import {
 	canHaveChildren,
 	isParentComponent,
 } from "@/builder/types/components/components";
+import { componentsList } from "@/builder/types/components/ui/componentsList";
 import HeaderFooterContextItem from "@/components/builder/ui/_partials/Sidebars/Left/_partials/Tabs/_partials/Layers/_partials/HeaderFooterContextItem";
 import {
 	ContextMenu,
@@ -285,7 +286,154 @@ export function TreeNode({
 				>
 					Paste style
 				</ContextMenuItem>
-				<HeaderFooterContextItem node={node} />
+				{/* Add child actions for parent components */}
+				{canHaveChildren(node.type) && (
+					<>
+						<ContextMenuItem
+							onClick={() => {
+								const listDef = componentsList.find(
+									(c) => c.type === "section",
+								);
+								const newComponent: BuilderComponent = {
+									groupId:
+										(listDef?.groupId as string) ||
+										"layout",
+									id: `section-${Date.now()}`,
+									label: listDef?.label || "Section",
+									order: (node.children?.length ?? 0) + 1,
+									props: {
+										content: listDef?.props?.content || {},
+										style: listDef?.props?.style || {},
+									},
+									type: "section",
+								};
+								if (type === "header") {
+									headerEditor.addComponent(
+										newComponent,
+										node.id,
+									);
+								} else if (type === "footer") {
+									footerEditor.addComponent(
+										newComponent,
+										node.id,
+									);
+								} else {
+									const working = Array.isArray(
+										currentPage.content,
+									)
+										? (JSON.parse(
+												JSON.stringify(
+													currentPage.content,
+												),
+											) as BuilderComponent[])
+										: [];
+									const addChild = (
+										list: BuilderComponent[],
+									): boolean => {
+										for (const n of list) {
+											if (n.id === node.id) {
+												if (!n.children)
+													n.children = [];
+												(
+													n.children as BuilderComponent[]
+												).push(newComponent);
+												return true;
+											}
+											if (
+												n.children &&
+												addChild(
+													n.children as BuilderComponent[],
+												)
+											)
+												return true;
+										}
+										return false;
+									};
+									if (addChild(working)) {
+										setCurrentPage({
+											...currentPage,
+											content: working,
+										});
+									}
+								}
+							}}
+						>
+							Add section
+						</ContextMenuItem>
+						<ContextMenuItem
+							onClick={() => {
+								const listDef = componentsList.find(
+									(c) => c.type === "container",
+								);
+								const newComponent: BuilderComponent = {
+									groupId:
+										(listDef?.groupId as string) ||
+										"layout",
+									id: `container-${Date.now()}`,
+									label: listDef?.label || "Container",
+									order: (node.children?.length ?? 0) + 1,
+									props: {
+										content: listDef?.props?.content || {},
+										style: listDef?.props?.style || {},
+									},
+									type: "container",
+								};
+								if (type === "header") {
+									headerEditor.addComponent(
+										newComponent,
+										node.id,
+									);
+								} else if (type === "footer") {
+									footerEditor.addComponent(
+										newComponent,
+										node.id,
+									);
+								} else {
+									const working = Array.isArray(
+										currentPage.content,
+									)
+										? (JSON.parse(
+												JSON.stringify(
+													currentPage.content,
+												),
+											) as BuilderComponent[])
+										: [];
+									const addChild = (
+										list: BuilderComponent[],
+									): boolean => {
+										for (const n of list) {
+											if (n.id === node.id) {
+												if (!n.children)
+													n.children = [];
+												(
+													n.children as BuilderComponent[]
+												).push(newComponent);
+												return true;
+											}
+											if (
+												n.children &&
+												addChild(
+													n.children as BuilderComponent[],
+												)
+											)
+												return true;
+										}
+										return false;
+									};
+									if (addChild(working)) {
+										setCurrentPage({
+											...currentPage,
+											content: working,
+										});
+									}
+								}
+							}}
+						>
+							Add container
+						</ContextMenuItem>
+					</>
+				)}
+				<HeaderFooterContextItem node={node} type={type} />
 				<ContextMenuItem
 					className={"text-destructive"}
 					onClick={() => {
