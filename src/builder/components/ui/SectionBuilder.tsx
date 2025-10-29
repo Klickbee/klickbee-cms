@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useContext } from "react";
 import EmptyChildrenPlaceholder from "@/builder/components/ui/_partials/EmptyChildrenPlaceholder";
 import { useBuilderMaxWidth } from "@/builder/hooks/useBuilderMaxWidth";
@@ -12,11 +14,13 @@ import { ComponentRenderer } from "../../lib/renderers/ComponentRenderer";
 interface SectionProps {
 	component: BuilderComponent;
 	isRoot?: boolean;
+	region?: "header" | "content" | "footer";
 }
 
 export const SectionBuilder: React.FC<SectionProps> = ({
 	component,
 	isRoot = false,
+	region = "content",
 }) => {
 	// Initialize the builder max width cache from settings
 	useBuilderMaxWidth();
@@ -65,6 +69,7 @@ export const SectionBuilder: React.FC<SectionProps> = ({
 										);
 									}
 								}}
+								region={region}
 							/>
 						))}
 				</>

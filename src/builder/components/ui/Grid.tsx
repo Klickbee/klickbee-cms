@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useContext } from "react";
 import EmptyChildrenPlaceholder from "@/builder/components/ui/_partials/EmptyChildrenPlaceholder";
 import { mapStylePropsToCss } from "@/builder/lib/style/mapStylePropsToCss";

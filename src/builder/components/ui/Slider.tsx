@@ -33,11 +33,11 @@ export const Slider: React.FC<SliderProps> = ({ component }) => {
 				? rawItems
 				: [
 						{
-							src: "https://via.placeholder.com/800x400?text=Slide+1",
+							src: "https://placehold.co/1024?text=Slide+1",
 							alt: "Slide 1",
 						},
 						{
-							src: "https://via.placeholder.com/800x400?text=Slide+2",
+							src: "https://placehold.co/1024?text=Slide+2",
 							alt: "Slide 2",
 						},
 					]

@@ -26,19 +26,29 @@ export const Button: React.FC<ButtonProps> = ({ component }) => {
 	const className =
 		"inline-flex items-center gap-2 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2";
 
-	const handleClick = React.useCallback(() => {
-		if (!href) return;
-		if (typeof window === "undefined") return;
-		if (href.startsWith("#")) {
-			window.location.hash = href.slice(1);
-		} else {
-			window.location.href = href;
-		}
-	}, [href]);
+	const handleClick = React.useCallback(
+		(e?: React.MouseEvent) => {
+			if (!href) return;
+			if (typeof window === "undefined") return;
+			// If inside builder viewport, do not navigate.
+			const el = (e?.currentTarget as HTMLElement) ?? null;
+			if (el && el.closest('[data-builder="true"]')) {
+				// Navigation disabled in builder; allow viewport click-capture to show toast.
+				return;
+			}
+			if (href.startsWith("#")) {
+				window.location.hash = href.slice(1);
+			} else {
+				window.location.href = href;
+			}
+		},
+		[href],
+	);
 
 	return (
 		<ButtonShadcn
 			className={className}
+			data-href={href || undefined}
 			onClick={handleClick}
 			style={commonStyle}
 			type="button"

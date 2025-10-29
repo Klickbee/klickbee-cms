@@ -10,7 +10,7 @@ export const Video: React.FC<VideoProps> = ({ component }) => {
 	// Default image source and alt text if not provided
 	const src =
 		(component.props?.content?.src as string) ||
-		"https://via.placeholder.com/400x300";
+		"https://placehold.co/1024?text=Upload+or+select+a+video";
 	const width = component.props?.style?.sizeAndSpacing?.width || {
 		number: 400,
 		unit: "px",
