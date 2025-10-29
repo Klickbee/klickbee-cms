@@ -11,12 +11,68 @@ export const Button: React.FC<ButtonProps> = ({ component }) => {
 	// Extract content with sensible fallbacks
 	const text = (component.props?.content?.text as string) || "Button";
 	const href = (component.props?.content?.href as string) || "";
-	// Only render icon if it's not a primitive string; avoid leaking client references in serialized state
+	// Icon color (optional). If provided, applies to React icons (currentColor) and to SVG URLs via masking.
+	const contentForColor = component.props?.content as
+		| { iconColor?: string }
+		| undefined;
+	const iconColor = contentForColor?.iconColor;
+	// Render icon from either a URL string (data URL or absolute/relative) or a ReactNode
 	const rawIcon = component.props?.content?.icon as unknown;
-	const Icon =
-		typeof rawIcon === "string"
-			? undefined
-			: (rawIcon as React.ReactNode | undefined);
+	let Icon: React.ReactNode | null = null;
+	if (typeof rawIcon === "string") {
+		const src = rawIcon.trim();
+		if (src) {
+			const isSvg =
+				src.endsWith(".svg") || src.startsWith("data:image/svg+xml");
+			if (iconColor && isSvg) {
+				// Use CSS mask to tint external SVGs with a solid color
+				Icon = (
+					<span
+						aria-hidden="true"
+						className="h-4 w-4 shrink-0"
+						style={{
+							backgroundColor: iconColor,
+							WebkitMaskImage: `url(${src})`,
+							maskImage: `url(${src})`,
+							WebkitMaskRepeat: "no-repeat",
+							maskRepeat: "no-repeat",
+							WebkitMaskSize: "contain",
+							maskSize: "contain",
+						}}
+					/>
+				);
+			} else {
+				Icon = (
+					<img
+						alt=""
+						aria-hidden="true"
+						className="h-4 w-4 shrink-0"
+						src={src}
+						style={iconColor ? { color: iconColor } : undefined}
+					/>
+				);
+			}
+		}
+	} else if (rawIcon) {
+		if (React.isValidElement(rawIcon)) {
+			type WithClassStyle = {
+				className?: string;
+				style?: React.CSSProperties;
+			};
+			const el = rawIcon as React.ReactElement<WithClassStyle>;
+			Icon = React.cloneElement<WithClassStyle>(el, {
+				className: ["h-4 w-4 shrink-0", el.props?.className]
+					.filter(Boolean)
+					.join(" "),
+				style: {
+					...(el.props?.style || {}),
+					...(iconColor ? { color: iconColor } : {}),
+				},
+			});
+		} else {
+			Icon = rawIcon as React.ReactNode;
+		}
+	}
 
 	const commonStyle: React.CSSProperties = {
 		order: component.order || 0,
