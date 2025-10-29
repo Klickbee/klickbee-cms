@@ -11,6 +11,8 @@ import {
 	ContextMenuItem,
 	ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import { useFooterEditor } from "@/feature/page/_footer/hooks/useFooterEditor";
+import { useHeaderEditor } from "@/feature/page/_header/hooks/useHeaderEditor";
 import { TreeNode } from "./TreeNode";
 
 interface TreeViewProps {
@@ -23,6 +25,10 @@ export function TreeView({ contentNodes, type }: TreeViewProps) {
 	const { duplicateComponent } = useDuplicateComponent();
 	const { clipboard, copy } = useStyleClipboardStore();
 	const { currentPage, setCurrentPage } = useCurrentPageStore();
+	const pageId =
+		currentPage?.id && currentPage.id > 0 ? currentPage.id : undefined;
+	const headerEditor = useHeaderEditor(pageId);
+	const footerEditor = useFooterEditor(pageId);
 
 	return (
 		<div>
@@ -40,9 +46,21 @@ export function TreeView({ contentNodes, type }: TreeViewProps) {
 							</ContextMenuTrigger>
 							<ContextMenuContent>
 								<ContextMenuItem
-									onClick={() =>
-										duplicateComponent(contentNode.id)
-									}
+									onClick={() => {
+										if (type === "header") {
+											headerEditor.duplicateComponent(
+												contentNode.id,
+											);
+											return;
+										}
+										if (type === "footer") {
+											footerEditor.duplicateComponent(
+												contentNode.id,
+											);
+											return;
+										}
+										duplicateComponent(contentNode.id);
+									}}
 								>
 									Duplicate (Ctrl+D)
 								</ContextMenuItem>
@@ -56,6 +74,20 @@ export function TreeView({ contentNodes, type }: TreeViewProps) {
 								<ContextMenuItem
 									onClick={() => {
 										if (!clipboard) return;
+										if (type === "header") {
+											headerEditor.pasteStyle(
+												contentNode.id,
+												clipboard,
+											);
+											return;
+										}
+										if (type === "footer") {
+											footerEditor.pasteStyle(
+												contentNode.id,
+												clipboard,
+											);
+											return;
+										}
 										const working = Array.isArray(
 											currentPage.content,
 										)
@@ -98,13 +130,23 @@ export function TreeView({ contentNodes, type }: TreeViewProps) {
 								<HeaderFooterContextItem node={contentNode} />
 								<ContextMenuItem
 									className={"text-destructive"}
-									onClick={() =>
-										confirmDelete(
-											contentNode.id,
-											null,
-											contentNode.type,
-										)
-									}
+									onClick={() => {
+										if (type === "header") {
+											headerEditor.deleteComponent(
+												contentNode.id,
+											);
+										} else if (type === "footer") {
+											footerEditor.deleteComponent(
+												contentNode.id,
+											);
+										} else {
+											confirmDelete(
+												contentNode.id,
+												null,
+												contentNode.type,
+											);
+										}
+									}}
 								>
 									Delete
 								</ContextMenuItem>

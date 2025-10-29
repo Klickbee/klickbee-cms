@@ -20,6 +20,8 @@ import {
 	ContextMenuItem,
 	ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import { useFooterEditor } from "@/feature/page/_footer/hooks/useFooterEditor";
+import { useHeaderEditor } from "@/feature/page/_header/hooks/useHeaderEditor";
 import { cn } from "@/lib/utils";
 
 interface TreeNodeProps {
@@ -49,6 +51,10 @@ export function TreeNode({
 	const { duplicateComponent } = useDuplicateComponent();
 	const { clipboard, copy } = useStyleClipboardStore();
 	const { currentPage, setCurrentPage } = useCurrentPageStore();
+	const pageId =
+		currentPage?.id && currentPage.id > 0 ? currentPage.id : undefined;
+	const headerEditor = useHeaderEditor(pageId);
+	const footerEditor = useFooterEditor(pageId);
 	const hasChildren = node.children && node.children.length > 0;
 	const currentComponent = useCurrentComponentStore(
 		(state) => state.currentComponent,
@@ -85,13 +91,31 @@ export function TreeNode({
 				if (sourceId === node.id) return;
 				// Prevent drop inside non-container
 				if (pos === "inside" && !canHaveChildren(node.type)) return;
-				moveComponent(
-					sourceId,
-					sourceParentId ?? null,
-					node.id,
-					parentId ?? null,
-					pos,
-				);
+				if (type === "header") {
+					headerEditor.moveComponent(
+						sourceId,
+						sourceParentId ?? null,
+						node.id,
+						parentId ?? null,
+						pos,
+					);
+				} else if (type === "footer") {
+					footerEditor.moveComponent(
+						sourceId,
+						sourceParentId ?? null,
+						node.id,
+						parentId ?? null,
+						pos,
+					);
+				} else {
+					moveComponent(
+						sourceId,
+						sourceParentId ?? null,
+						node.id,
+						parentId ?? null,
+						pos,
+					);
+				}
 			} finally {
 				setOverBefore(false);
 				setOverInside(false);
@@ -107,8 +131,10 @@ export function TreeNode({
 					{/* Drop zone: before */}
 					<div
 						className={cn(
-							"h-1 py-0.5 rounded mx-[-15px] overflow-hidden",
-							overBefore ? "bg-foreground/50" : "bg-transparent",
+							"h-0.5 rounded mx-[-15px] overflow-hidden",
+							overBefore
+								? "h-1 py-0.5 bg-foreground/50"
+								: "bg-transparent",
 						)}
 						onDragEnter={() => setOverBefore(true)}
 						onDragLeave={() => setOverBefore(false)}
@@ -184,13 +210,16 @@ export function TreeNode({
 									level={level + 1}
 									node={child}
 									parentId={node.id}
+									type={type}
 								/>
 							))}
 					</div>
 					<div
 						className={cn(
-							"h-1 py-0.5 rounded mx-[-15px] overflow-hidden",
-							overAfter ? "bg-foreground/50" : "bg-transparent",
+							"h-0.5 rounded mx-[-15px] overflow-hidden",
+							overAfter
+								? " py-0.5 bg-foreground/50"
+								: "bg-transparent",
 						)}
 						onDragEnter={() => setOverAfter(true)}
 						onDragLeave={() => setOverAfter(false)}
@@ -199,7 +228,17 @@ export function TreeNode({
 				</div>
 			</ContextMenuTrigger>
 			<ContextMenuContent>
-				<ContextMenuItem onClick={() => duplicateComponent(node.id)}>
+				<ContextMenuItem
+					onClick={() => {
+						if (type === "header") {
+							headerEditor.duplicateComponent(node.id);
+						} else if (type === "footer") {
+							footerEditor.duplicateComponent(node.id);
+						} else {
+							duplicateComponent(node.id);
+						}
+					}}
+				>
 					Duplicate (Ctrl+D)
 				</ContextMenuItem>
 				<ContextMenuItem onClick={() => copy(node.props?.style)}>
@@ -208,6 +247,13 @@ export function TreeNode({
 				<ContextMenuItem
 					onClick={() => {
 						if (!clipboard) return;
+						if (type === "header") {
+							headerEditor.pasteStyle(node.id, clipboard);
+							return;
+						} else if (type === "footer") {
+							footerEditor.pasteStyle(node.id, clipboard);
+							return;
+						}
 						const working = Array.isArray(currentPage.content)
 							? (JSON.parse(
 									JSON.stringify(currentPage.content),
@@ -242,7 +288,13 @@ export function TreeNode({
 				<HeaderFooterContextItem node={node} />
 				<ContextMenuItem
 					className={"text-destructive"}
-					onClick={() => confirmDelete(node.id, parentId, node.type)}
+					onClick={() => {
+						if (type === "header") {
+							headerEditor.deleteComponent(node.id);
+						} else {
+							confirmDelete(node.id, parentId, node.type);
+						}
+					}}
 				>
 					Delete
 				</ContextMenuItem>
