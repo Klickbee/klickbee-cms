@@ -35,7 +35,7 @@
 		"@tiptap/react": "^3.4.2",
 		"@tiptap/starter-kit": "^3.4.2",
 		"bcrypt": "^6.0.0",
-		"better-auth": "^1.3.3",
+		"better-auth": "^1.3.26",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"crypto-js": "^4.2.0",
