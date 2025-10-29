@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useDeleteComponentContext } from "@/builder/contexts/DeleteComponentContext";
 import { useDuplicateComponent } from "@/builder/hooks/useDuplicateComponent";
+import { useComponentClipboardStore } from "@/builder/store/storeComponentClipboard";
 import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
 import { useStyleClipboardStore } from "@/builder/store/storeStyleClipboard";
@@ -53,6 +54,82 @@ function updateStyleInTree(
 	return false;
 }
 
+function cloneContent(
+	content: BuilderComponent[] | unknown,
+): BuilderComponent[] {
+	if (Array.isArray(content)) {
+		return JSON.parse(JSON.stringify(content)) as BuilderComponent[];
+	}
+	return [];
+}
+
+function generateNewId(type: string) {
+	return `${type}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+}
+
+function remapIdsDeep(node: BuilderComponent): BuilderComponent {
+	const newId = generateNewId(node.type);
+	return {
+		...node,
+		id: newId,
+		children: node.children?.map((c) =>
+			remapIdsDeep(c as BuilderComponent),
+		),
+	};
+}
+
+function normalizeOrder(arr: BuilderComponent[]) {
+	arr.forEach((c, i) => {
+		c.order = i + 1;
+	});
+}
+
+function findNodeAndParent(
+	components: BuilderComponent[],
+	nodeId: string,
+	parent: BuilderComponent | null = null,
+): { node: BuilderComponent; parent: BuilderComponent | null } | null {
+	for (const comp of components) {
+		if (comp.id === nodeId) return { node: comp, parent };
+		if (comp.children && comp.children.length) {
+			const found = findNodeAndParent(
+				comp.children as BuilderComponent[],
+				nodeId,
+				comp,
+			);
+			if (found) return found;
+		}
+	}
+	return null;
+}
+
+function insertAsSiblingAfter(
+	working: BuilderComponent[],
+	targetId: string,
+	newNode: BuilderComponent,
+) {
+	const found = findNodeAndParent(working, targetId, null);
+	if (!found) {
+		// fallback to root append
+		working.push(newNode);
+		normalizeOrder(working);
+		return;
+	}
+	const { node, parent } = found;
+	if (parent) {
+		const siblings = parent.children as BuilderComponent[];
+		const idx = siblings.findIndex((c) => c.id === node.id);
+		const insertIndex = idx === -1 ? siblings.length : idx + 1;
+		siblings.splice(insertIndex, 0, newNode);
+		normalizeOrder(siblings);
+		return;
+	}
+	const idx = working.findIndex((c) => c.id === node.id);
+	const insertIndex = idx === -1 ? working.length : idx + 1;
+	working.splice(insertIndex, 0, newNode);
+	normalizeOrder(working);
+}
+
 export function useBuilderShortcuts() {
 	const currentComponent = useCurrentComponentStore(
 		(state) => state.currentComponent,
@@ -64,6 +141,8 @@ export function useBuilderShortcuts() {
 	const currentPage = useCurrentPageStore((s) => s.currentPage);
 	const setCurrentPage = useCurrentPageStore((s) => s.setCurrentPage);
 	const { clipboard, copy } = useStyleClipboardStore();
+	const { clipboard: componentClipboard, copy: copyComponent } =
+		useComponentClipboardStore();
 	const pageId =
 		currentPage?.id && currentPage.id > 0 ? currentPage.id : undefined;
 	const headerEditor = useHeaderEditor(pageId);
@@ -215,15 +294,23 @@ export function useBuilderShortcuts() {
 				return;
 			}
 
-			// Ctrl + C copy style
-			if ((e.ctrlKey || e.metaKey) && (e.key === "c" || e.key === "C")) {
+			// Ctrl + Shift + C copy style
+			if (
+				(e.ctrlKey || e.metaKey) &&
+				e.shiftKey &&
+				(e.key === "c" || e.key === "C")
+			) {
 				e.preventDefault();
 				copy((currentComponent as BuilderComponent).props?.style);
 				return;
 			}
 
-			// Ctrl + V paste style
-			if ((e.ctrlKey || e.metaKey) && (e.key === "v" || e.key === "V")) {
+			// Ctrl + Shift + V paste style
+			if (
+				(e.ctrlKey || e.metaKey) &&
+				e.shiftKey &&
+				(e.key === "v" || e.key === "V")
+			) {
 				e.preventDefault();
 				if (!clipboard) return;
 				if (isInHeader(currentComponent.id)) {
@@ -252,6 +339,56 @@ export function useBuilderShortcuts() {
 						setCurrentPage({ ...currentPage, content: working });
 					}
 				}
+				return;
+			}
+
+			// Ctrl + C copy component
+			if (
+				(e.ctrlKey || e.metaKey) &&
+				!e.shiftKey &&
+				(e.key === "c" || e.key === "C")
+			) {
+				e.preventDefault();
+				copyComponent(currentComponent as BuilderComponent);
+				return;
+			}
+
+			// Ctrl + V paste component
+			if (
+				(e.ctrlKey || e.metaKey) &&
+				!e.shiftKey &&
+				(e.key === "v" || e.key === "V")
+			) {
+				e.preventDefault();
+				const source = componentClipboard?.component;
+				if (!source) return;
+				const newNode = remapIdsDeep(
+					JSON.parse(JSON.stringify(source)) as BuilderComponent,
+				);
+
+				if (isInHeader(currentComponent.id)) {
+					const working = cloneContent(
+						headerEditor.header?.content ?? [],
+					);
+					insertAsSiblingAfter(working, currentComponent.id, newNode);
+					headerEditor.setHeaderContent(
+						working as unknown as BuilderComponent[],
+					);
+					return;
+				}
+				if (isInFooter(currentComponent.id)) {
+					const working = cloneContent(
+						footerEditor.footer?.content ?? [],
+					);
+					insertAsSiblingAfter(working, currentComponent.id, newNode);
+					footerEditor.setFooterContent(
+						working as unknown as BuilderComponent[],
+					);
+					return;
+				}
+				const working = cloneContent(currentPage.content);
+				insertAsSiblingAfter(working, currentComponent.id, newNode);
+				setCurrentPage({ ...currentPage, content: working });
 				return;
 			}
 		};
