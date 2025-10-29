@@ -17,7 +17,6 @@ interface ContainerProps {
 export const Container: React.FC<ContainerProps> = ({ component }) => {
 	// Get the setTargetComponent function from context
 	const dragDropContext = useContext(DragDropContext);
-
 	return (
 		<div
 			className="relative container"
