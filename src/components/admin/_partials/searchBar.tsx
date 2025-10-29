@@ -25,10 +25,10 @@ export default function SearchBar({
 	}, [deferredValue, setSearchQuery]);
 
 	return (
-		<div className="w-full max-w-md relative mb-4">
-			<SearchIcon className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+		<div className="w-full relative">
+			<SearchIcon className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
 			<Input
-				className="pl-8"
+				className="pl-10 h-9"
 				onChange={(e) => {
 					setLocalValue(e.target.value);
 				}}

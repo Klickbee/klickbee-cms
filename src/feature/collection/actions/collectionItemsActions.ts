@@ -53,6 +53,7 @@ export async function getCollectionItemsBySlug(
 export async function createCollectionItemAction(data: {
 	title: string;
 	slug: string;
+	author: string;
 	content: JsonNull | InputJsonValue;
 	collectionId: number;
 	metaTitle?: string;
