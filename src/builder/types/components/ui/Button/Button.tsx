@@ -11,6 +11,8 @@ export const ButtonBC: ButtonBCI = {
 			href: "#",
 			// Use a serializable value for icon to avoid server/client reference issues during save
 			icon: "",
+			// Icon color is optional; when omitted it inherits the button text color
+			iconColor: undefined,
 			text: "Button",
 		},
 		style: {

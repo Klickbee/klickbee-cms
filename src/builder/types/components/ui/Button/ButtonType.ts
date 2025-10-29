@@ -14,7 +14,10 @@ export interface ButtonBcStyleProps
 	> {}
 
 export interface ButtonBcContentProps
-	extends Pick<ComponentContentProps, "href" | "text" | "icon"> {}
+	extends Pick<
+		ComponentContentProps,
+		"href" | "text" | "icon" | "iconColor"
+	> {}
 
 export interface ButtonBCI extends BuilderComponent {
 	props: {
