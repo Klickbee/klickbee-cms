@@ -11,8 +11,8 @@ export const SliderBC: SliderBCI = {
 			autoplay: true,
 			interval: 3000,
 			items: [
-				"https://via.placeholder.com/800x400?text=Slide+1",
-				"https://via.placeholder.com/800x400?text=Slide+2",
+				"https://placehold.co/1024?text=Slide+1",
+				"https://placehold.co/1024??text=Slide+2",
 			],
 			showArrows: true,
 			showDots: true,
