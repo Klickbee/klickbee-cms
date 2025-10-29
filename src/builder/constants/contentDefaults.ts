@@ -78,7 +78,10 @@ export const COMPONENT_DEFAULTS: Record<
 		templateFieldName: CONTENT_DEFAULTS.DEFAULT_TEMPLATE_FIELD,
 	},
 	container: {},
-	divider: {},
+	divider: {
+		orientation: "horizontal",
+		size: "md",
+	},
 	dropdown: {
 		items: CONTENT_DEFAULTS.DEFAULT_LIST_ITEMS,
 		label: CONTENT_DEFAULTS.FIELD_LABEL,
