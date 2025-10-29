@@ -41,6 +41,7 @@ function PublicSection({
 	const style: React.CSSProperties = {
 		order: component.order || 0,
 		...mapStylePropsToCss(component.props?.style),
+		containerType: "inline-size",
 	};
 	return (
 		<section className={isRoot ? "w-full" : undefined} style={style}>
@@ -63,6 +64,7 @@ function PublicContainer({ component }: { component: BuilderComponent }) {
 	const style: React.CSSProperties = {
 		order: component.order || 0,
 		...mapStylePropsToCss(component.props?.style),
+		containerType: "inline-size",
 	};
 	return (
 		<div className="container mx-auto" style={style}>
@@ -170,20 +172,30 @@ export function PublicComponentRenderer({
 export function PageRenderer({
 	content,
 	headerContent,
+	footerContent,
 	wrapperClassName,
 }: {
 	content: unknown;
 	headerContent?: unknown;
+	footerContent?: unknown;
 	wrapperClassName?: string;
 }) {
 	const headerComponents = normalizeToComponents(headerContent);
 	const rootComponents = normalizeToComponents(content);
+	const footerComponents = normalizeToComponents(footerContent);
 
-	const hasAny = headerComponents.length > 0 || rootComponents.length > 0;
+	const hasAny =
+		headerComponents.length > 0 ||
+		rootComponents.length > 0 ||
+		footerComponents.length > 0;
 	if (!hasAny) return null;
 
 	return (
-		<>
+		<div
+			className={`${wrapperClassName ?? ""}`}
+			style={{ minHeight: "100vh", containerType: "inline-size" }}
+		>
+			{/* Header at the top */}
 			{headerComponents
 				.slice()
 				.sort((a, b) => (a.order || 0) - (b.order || 0))
@@ -201,7 +213,30 @@ export function PageRenderer({
 						/>
 					),
 				)}
-			{rootComponents
+
+			{/* Main content grows to push footer down */}
+			<main className="flex-1 flex flex-col">
+				{rootComponents
+					.slice()
+					.sort((a, b) => (a.order || 0) - (b.order || 0))
+					.map((component) =>
+						component.type === "section" ? (
+							<PublicSection
+								component={component}
+								isRoot
+								key={component.id}
+							/>
+						) : (
+							<PublicComponentRenderer
+								component={component}
+								key={component.id}
+							/>
+						),
+					)}
+			</main>
+
+			{/* Footer at the bottom */}
+			{footerComponents
 				.slice()
 				.sort((a, b) => (a.order || 0) - (b.order || 0))
 				.map((component) =>
@@ -218,6 +253,6 @@ export function PageRenderer({
 						/>
 					),
 				)}
-		</>
+		</div>
 	);
 }
