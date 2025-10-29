@@ -9,6 +9,14 @@ import { BuilderComponent } from "@/builder/types/components/components";
 import EditableName from "@/components/builder/ui/_partials/EditableName";
 import { Button } from "@/components/ui/button";
 import { useAdminKeyStore } from "@/feature/admin-key/stores/storeAdminKey";
+import {
+	usePageFooterByPage,
+	useUpdatePageFooter,
+} from "@/feature/page/_footer/queries/usePageFooter";
+import {
+	usePageHeaderByPage,
+	useUpdatePageHeader,
+} from "@/feature/page/_header/queries/usePageHeader";
 import { useUpdatePageContent } from "@/feature/page/queries/usePageActions";
 
 export default function BuilderHeader() {
@@ -16,6 +24,12 @@ export default function BuilderHeader() {
 	const adminKey = useAdminKeyStore((state) => state.adminKey);
 	const [isSaving, setIsSaving] = useState(false);
 	const updatePageContent = useUpdatePageContent();
+	const pageId =
+		currentPage?.id && currentPage.id > 0 ? currentPage.id : undefined;
+	const { data: pageHeader } = usePageHeaderByPage(pageId);
+	const updateHeader = useUpdatePageHeader();
+	const { data: pageFooter } = usePageFooterByPage(pageId);
+	const updateFooter = useUpdatePageFooter();
 
 	const handleSave = async () => {
 		if (currentPage.id === -1) {
@@ -32,27 +46,58 @@ export default function BuilderHeader() {
 					: []) as unknown as BuilderComponent[],
 				pageId: currentPage.id,
 			});
-			toast.success("Page content saved successfully");
+
+			// Also save header content if present for this page
+			if (pageHeader?.id) {
+				await updateHeader.mutateAsync({
+					pageHeaderId: pageHeader.id,
+					content: (Array.isArray(pageHeader.content)
+						? pageHeader.content
+						: pageHeader.content
+							? [pageHeader.content]
+							: []) as unknown as BuilderComponent[],
+				});
+			}
+
+			// Also save footer content if present for this page
+			if (pageFooter?.id) {
+				await updateFooter.mutateAsync({
+					pageFooterId: pageFooter.id,
+					content: (Array.isArray(pageFooter.content)
+						? pageFooter.content
+						: pageFooter.content
+							? [pageFooter.content]
+							: []) as unknown as BuilderComponent[],
+				});
+			}
+
+			toast.success("Page saved successfully");
 		} catch (error) {
-			console.error("Error saving page content:", error);
-			toast.error("Failed to save page content");
+			console.error("Error saving page:", error);
+			toast.error("Failed to save page");
 		} finally {
 			setIsSaving(false);
 		}
 	};
 
+	// Bridge Ctrl+S from global shortcut to this handler to ensure toasts and button state are used
 	useEffect(() => {
-		const handleKeyDown = (e: KeyboardEvent) => {
-			if ((e.ctrlKey || e.metaKey) && e.key === "s") {
-				e.preventDefault();
-				handleSave();
+		if (typeof window === "undefined") return;
+		// mark that a save handler is available
+		window.__builderHasSaveHandler = true;
+		const onSave = () => {
+			// Avoid duplicate triggers: rely on isSaving flag to ignore if already saving
+			if (!isSaving) {
+				void handleSave();
 			}
 		};
-		document.addEventListener("keydown", handleKeyDown);
+		window.addEventListener("builder:save", onSave as EventListener);
 		return () => {
-			document.removeEventListener("keydown", handleKeyDown);
+			window.removeEventListener("builder:save", onSave as EventListener);
+			// unset the flag when unmounting
+			delete window.__builderHasSaveHandler;
 		};
-	}, [currentPage, isSaving]);
+	}, [isSaving, handleSave]);
 
 	return (
 		<header className="flex items-center justify-between p-4 border-b h-16">
