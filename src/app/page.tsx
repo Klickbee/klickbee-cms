@@ -2,6 +2,10 @@
 
 import { Suspense } from "react";
 import {
+	useDefaultPageFooter,
+	usePageFooterByPage,
+} from "@/feature/page/_footer/queries/usePageFooter";
+import {
 	useDefaultPageHeader,
 	usePageHeaderByPage,
 } from "@/feature/page/_header/queries/usePageHeader";
@@ -13,12 +17,19 @@ function HomepageContent({ pageId }: { pageId: number }) {
 	const { data: page } = usePublicPageById(pageId);
 	const { data: header } = usePageHeaderByPage(pageId);
 	const { data: defaultHeader } = useDefaultPageHeader();
+	const { data: footer } = usePageFooterByPage(pageId);
+	const { data: defaultFooter } = useDefaultPageFooter();
 	const headerContent = header?.content ?? defaultHeader?.content;
+	const footerContent = footer?.content ?? defaultFooter?.content;
 	if (!page) {
 		return <div>Homepage not set</div>;
 	}
 	return (
-		<PageRenderer content={page.content} headerContent={headerContent} />
+		<PageRenderer
+			content={page.content}
+			footerContent={footerContent}
+			headerContent={headerContent}
+		/>
 	);
 }
 
