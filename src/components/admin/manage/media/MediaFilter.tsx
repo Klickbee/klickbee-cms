@@ -31,17 +31,17 @@ export default function MediaFilter({
 		{
 			icon: <ImageIcon className="w-4 h-4" />,
 			label: t("FilterImages"),
-			value: "image" as MediaTypeFilter,
+			value: "IMAGE" as MediaTypeFilter,
 		},
 		{
 			icon: <FileVideoIcon className="w-4 h-4" />,
 			label: t("FilterVideos"),
-			value: "video" as MediaTypeFilter,
+			value: "VIDEO" as MediaTypeFilter,
 		},
 		{
 			icon: <FileIcon className="w-4 h-4" />,
 			label: t("FilterDocuments"),
-			value: "document" as MediaTypeFilter,
+			value: "DOCUMENT" as MediaTypeFilter,
 		},
 	];
 
