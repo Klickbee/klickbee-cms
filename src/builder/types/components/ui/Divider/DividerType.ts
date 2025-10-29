@@ -7,7 +7,10 @@ export interface DividerBcStyleProps
 		"bordersAndCorners" | "effects" | "sizeAndSpacing"
 	> {}
 
-export interface DividerBcContentProps {}
+export interface DividerBcContentProps {
+	orientation?: "horizontal" | "vertical";
+	size?: "sm" | "md" | "lg";
+}
 
 export interface DividerBCI extends BuilderComponent {
 	props: {
