@@ -9,7 +9,10 @@ export interface ImageBcStyleProps
 	> {}
 
 export interface ImageBcContentProps
-	extends Pick<ComponentContentProps, "alt" | "src"> {}
+	extends Pick<
+		ComponentContentProps,
+		"alt" | "src" | "href" | "openInNewTab"
+	> {}
 
 export interface ImageBCI extends BuilderComponent {
 	props: {
