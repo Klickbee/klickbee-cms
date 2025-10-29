@@ -228,7 +228,7 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 						copy(component.props?.style);
 					}}
 				>
-					Copy style
+					Copy style (Ctrl+Shift+C)
 				</ContextMenuItem>
 				<ContextMenuItem
 					onClick={(e) => {
@@ -256,7 +256,7 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 						}
 					}}
 				>
-					Paste style
+					Paste style (Ctrl+Shift+V)
 				</ContextMenuItem>
 				<ContextMenuItem
 					className={"text-destructive"}
