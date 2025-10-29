@@ -23,8 +23,10 @@ import {
 
 export default function HeaderFooterContextItem({
 	node,
+	type = "content",
 }: {
 	node: BuilderComponent;
+	type?: "header" | "footer" | "content";
 }) {
 	const { currentPage, setCurrentPage } = useCurrentPageStore();
 	const pageId = currentPage?.id ?? -1;
@@ -205,7 +207,7 @@ export default function HeaderFooterContextItem({
 								Unlink Header
 							</ContextMenuItem>
 						</>
-					) : !isThisFooter ? (
+					) : type === "content" && !isThisFooter ? (
 						<ContextMenuItem onClick={handleSetAsHeader}>
 							Set as Header
 						</ContextMenuItem>
@@ -223,7 +225,7 @@ export default function HeaderFooterContextItem({
 								Unlink Footer
 							</ContextMenuItem>
 						</>
-					) : !isThisHeader ? (
+					) : type === "content" && !isThisHeader ? (
 						<ContextMenuItem onClick={handleSetAsFooter}>
 							Set as Footer
 						</ContextMenuItem>
