@@ -39,12 +39,12 @@ function PublicSection({
 	isRoot?: boolean;
 }) {
 	const style: React.CSSProperties = {
-		order: component.order || 0,
+		// SectionBuilder in builder does not set order explicitly
 		...mapStylePropsToCss(component.props?.style),
 		containerType: "inline-size",
 	};
 	return (
-		<section className={isRoot ? "w-full" : undefined} style={style}>
+		<section className={`${isRoot ? "relative w-full" : ""}`} style={style}>
 			{Array.isArray(component.children)
 				? component.children
 						.slice()
@@ -64,10 +64,9 @@ function PublicContainer({ component }: { component: BuilderComponent }) {
 	const style: React.CSSProperties = {
 		order: component.order || 0,
 		...mapStylePropsToCss(component.props?.style),
-		containerType: "inline-size",
 	};
 	return (
-		<div className="container mx-auto" style={style}>
+		<div className="relative container mx-auto" style={style}>
 			{Array.isArray(component.children)
 				? component.children
 						.slice()
@@ -91,7 +90,7 @@ function PublicGrid({ component }: { component: BuilderComponent }) {
 		gridTemplateColumns: `repeat(${columns}, 1fr)`,
 	};
 	return (
-		<div className="grid gap-4" style={style}>
+		<div className="grid" style={style}>
 			{Array.isArray(component.children)
 				? component.children
 						.slice()
@@ -108,12 +107,8 @@ function PublicGrid({ component }: { component: BuilderComponent }) {
 
 // Fallback: render nothing for unsupported types in public mode
 function UnknownPublic({ component }: { component: BuilderComponent }) {
-	// Intentionally render nothing on public site for unknown components
-	return (
-		<div style={{ backgroundColor: "red" }}>
-			<h1>not working</h1>
-		</div>
-	);
+	// Intentionally render nothing on public site for unknown components in public rendering
+	return null;
 }
 
 const publicComponentMap: Record<
@@ -191,10 +186,7 @@ export function PageRenderer({
 	if (!hasAny) return null;
 
 	return (
-		<div
-			className={`${wrapperClassName ?? ""}`}
-			style={{ minHeight: "100vh", containerType: "inline-size" }}
-		>
+		<>
 			{/* Header at the top */}
 			{headerComponents
 				.slice()
@@ -253,6 +245,6 @@ export function PageRenderer({
 						/>
 					),
 				)}
-		</div>
+		</>
 	);
 }
