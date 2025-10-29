@@ -22,19 +22,34 @@ interface UnitSelectorProps<T extends SizeUnit | PercentUnit | TimeUnit> {
 export default function UnitSelector<
 	T extends SizeUnit | PercentUnit | TimeUnit,
 >({ unit, onUnitChange, variant = "default" }: UnitSelectorProps<T>) {
-	const getUnitOptions = () => {
+	// Generate the list of SelectItem elements for available units.
+	// When variant === "no-wrap", we return only the items (to be embedded inside an existing Select)
+	// and we manually invoke onUnitChange when an item is selected.
+	const getUnitOptions = (attachHandlers: boolean = false) => {
 		const unitsArraySelectItems: React.JSX.Element[] = [];
-		sizeUnits.forEach((unit) => {
+		sizeUnits.forEach((u) => {
 			unitsArraySelectItems.push(
-				<SelectItem key={unit} value={unit}>
-					{unit}
+				<SelectItem
+					key={u}
+					value={u}
+					{...(attachHandlers
+						? { onClick: () => onUnitChange(u as T) }
+						: {})}
+				>
+					{u}
 				</SelectItem>,
 			);
 		});
 		// Pour les unités d'opacité, on affiche juste %
 		if (variant === "opacity") {
 			return [
-				<SelectItem key="%" value="%">
+				<SelectItem
+					key="%"
+					value="%"
+					{...(attachHandlers
+						? { onClick: () => onUnitChange("%" as T) }
+						: {})}
+				>
 					%
 				</SelectItem>,
 			];
@@ -42,10 +57,22 @@ export default function UnitSelector<
 		// Pour les unités de temps, on affiche ms et s
 		if (unit === "ms" || unit === "s") {
 			return [
-				<SelectItem key="ms" value="ms">
+				<SelectItem
+					key="ms"
+					value="ms"
+					{...(attachHandlers
+						? { onClick: () => onUnitChange("ms" as T) }
+						: {})}
+				>
 					ms
 				</SelectItem>,
-				<SelectItem key="s" value="s">
+				<SelectItem
+					key="s"
+					value="s"
+					{...(attachHandlers
+						? { onClick: () => onUnitChange("s" as T) }
+						: {})}
+				>
 					s
 				</SelectItem>,
 			];
@@ -55,7 +82,8 @@ export default function UnitSelector<
 	};
 
 	if (variant === "no-wrap") {
-		return getUnitOptions();
+		// In no-wrap mode, we attach click handlers so the provided onUnitChange is called.
+		return getUnitOptions(true);
 	} else {
 		return (
 			<Select onValueChange={onUnitChange} value={unit}>
