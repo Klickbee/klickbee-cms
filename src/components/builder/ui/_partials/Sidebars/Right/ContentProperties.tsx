@@ -12,6 +12,7 @@ import {
 import ButtonContent from "./_partials/content/ButtonContent";
 import CheckboxContent from "./_partials/content/CheckboxContent";
 import CMSTemplateContent from "./_partials/content/CMSTemplateContent";
+import DividerContent from "./_partials/content/DividerContent";
 import DropdownContent from "./_partials/content/DropdownContent";
 import EmbedContent from "./_partials/content/EmbedContent";
 import FileUploadContent from "./_partials/content/FileUploadContent";
@@ -79,6 +80,8 @@ export default function BuilderContentProperties() {
 				return <SubmitButtonContent component={currentComponent} />;
 			case "navigationmenu":
 				return <NavigationMenuContent component={currentComponent} />;
+			case "divider":
+				return <DividerContent component={currentComponent} />;
 			default:
 				return null;
 		}
