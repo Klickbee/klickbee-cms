@@ -10,6 +10,8 @@ import {
 } from "@/builder/types/components/components";
 import { componentsList } from "@/builder/types/components/ui/componentsList";
 import BuilderSearchComponent from "@/components/builder/ui/_partials/Sidebars/Left/Search";
+import { useFooterEditor } from "@/feature/page/_footer/hooks/useFooterEditor";
+import { useHeaderEditor } from "@/feature/page/_header/hooks/useHeaderEditor";
 
 type ComponentGroup = {
 	id: string;
@@ -46,6 +48,10 @@ export default function BuilderTabComponents() {
 	const currentComponent = useCurrentComponentStore(
 		(state) => state.currentComponent,
 	);
+	const pageId =
+		currentPage?.id && currentPage.id > 0 ? currentPage.id : undefined;
+	const headerEditor = useHeaderEditor(pageId);
+	const footerEditor = useFooterEditor(pageId);
 
 	const toggleGroup = (id: string) => {
 		setOpenGroups((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -56,7 +62,7 @@ export default function BuilderTabComponents() {
 			const componentData = item;
 			// Get the current content as an array or initialize a new one
 			const currentContent = Array.isArray(currentPage.content)
-				? currentPage.content
+				? [...currentPage.content]
 				: [];
 
 			// Create the new component using the selected item from componentsList
@@ -72,18 +78,33 @@ export default function BuilderTabComponents() {
 				type: componentData.type,
 			};
 
-			// If dropping onto a container component, add as a child
-			if (currentComponent) {
-				// Find the target component in the content array
+			// If a component is selected, try to add as a child of the selection
+			if (currentComponent && currentComponent.id !== "none") {
+				// If selected component belongs to header, delegate to header editor
+				if (headerEditor.containsNode(currentComponent.id)) {
+					headerEditor.addComponent(
+						newComponent,
+						currentComponent.id,
+					);
+					return;
+				}
+				// If selected component belongs to footer, delegate to footer editor
+				if (footerEditor.containsNode(currentComponent.id)) {
+					footerEditor.addComponent(
+						newComponent,
+						currentComponent.id,
+					);
+					return;
+				}
+
+				// Otherwise, operate on page body content
 				const findAndAddChild = (components: BuilderComponent[]) => {
 					for (let i = 0; i < components.length; i++) {
 						if (components[i].id === currentComponent.id) {
-							// Initialize children array if it doesn't exist
 							if (!components[i].children) {
 								components[i].children = [];
 							}
 							if (isParentComponent(components[i])) {
-								// Add the new component as a child
 								components[i].children?.push({
 									...newComponent,
 									order:
@@ -91,14 +112,14 @@ export default function BuilderTabComponents() {
 										1,
 								});
 								return true;
-							} else {
-								return false;
 							}
+							return false;
 						}
-						// Recursively check children
 						if (
 							components[i].children &&
-							findAndAddChild(components[i].children as [])
+							findAndAddChild(
+								components[i].children as BuilderComponent[],
+							)
 						) {
 							return true;
 						}
@@ -106,12 +127,11 @@ export default function BuilderTabComponents() {
 					return false;
 				};
 
-				// Try to add as a child, if not found add to root
 				if (!findAndAddChild(currentContent)) {
 					currentContent.push(newComponent);
 				}
 			} else {
-				// Add to root level
+				// No selection: add to root level of page body
 				currentContent.push(newComponent);
 			}
 
