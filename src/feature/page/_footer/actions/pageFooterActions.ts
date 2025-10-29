@@ -31,8 +31,15 @@ function sanitizeBuilderContent(
 		const record = val as Record<string, unknown>;
 		const out: Record<string, unknown> = {};
 		for (const key of Object.keys(record)) {
-			if (key === "icon") continue; // React.ReactNode - client reference
-			const cleaned = cleanse(record[key]);
+			const value = record[key];
+			// Preserve icon only if it's a serializable string; drop React nodes or other non-serializable values
+			if (key === "icon") {
+				if (typeof value === "string") {
+					out[key] = value;
+				}
+				continue;
+			}
+			const cleaned = cleanse(value);
 			if (cleaned !== undefined) out[key] = cleaned;
 		}
 		return out;
