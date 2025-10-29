@@ -2,6 +2,10 @@
 
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
 import {
+	getDefaultPageFooter,
+	setFooterToPage,
+} from "@/feature/page/_footer/actions/pageFooterActions";
+import {
 	getDefaultPageHeader,
 	setHeaderToPage,
 } from "@/feature/page/_header/actions/pageHeaderActions";
@@ -56,6 +60,17 @@ export const useAddPage = () => {
 			}
 		} catch (e) {
 			console.warn("Failed to assign default header to new page", e);
+		}
+
+		// Try to assign default footer to this new page
+		try {
+			const defaultFooter = await getDefaultPageFooter();
+			if (defaultFooter?.id) {
+				await setFooterToPage(newPage.id, defaultFooter.id);
+				// pageFooterId is persisted server-side; local state reflects through queries/invalidation
+			}
+		} catch (e) {
+			console.warn("Failed to assign default footer to new page", e);
 		}
 
 		// If it's the first page or if no homepage is defined,
