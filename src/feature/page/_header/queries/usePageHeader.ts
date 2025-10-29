@@ -110,6 +110,8 @@ export function useUpdatePageHeader() {
 			queryClient.invalidateQueries({
 				queryKey: ["pageHeader", data.id],
 			});
+			// Invalidate all pageHeaderByPage queries so header re-renders wherever used
+			queryClient.invalidateQueries({ queryKey: ["pageHeaderByPage"] });
 			queryClient.invalidateQueries({ queryKey: ["defaultPageHeader"] });
 		},
 	});
