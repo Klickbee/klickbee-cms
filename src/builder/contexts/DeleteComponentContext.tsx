@@ -54,7 +54,7 @@ export function DeleteComponentProvider({ children }: { children: ReactNode }) {
 			>
 				<DialogContent>
 					<DialogHeader>
-						<DialogTitle>Confirm Deletiozn</DialogTitle>
+						<DialogTitle>Confirm Deletion</DialogTitle>
 						<DialogDescription>
 							Are you sure you want to delete this{" "}
 							<b>
