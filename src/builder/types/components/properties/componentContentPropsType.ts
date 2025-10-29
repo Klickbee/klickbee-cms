@@ -20,6 +20,7 @@ export interface ComponentContentProps {
 	href?: string; // Link or action URL
 	openInNewTab?: boolean; // Open link in new tab
 	icon?: React.ReactNode | string; // Icon reference
+	iconColor?: string; // Hex or CSS color string for icon (applies to currentColor-based icons)
 	src?: string; // Media source (image/video)
 	alt?: string; // Alternative text for accessibility
 	autoplay?: boolean; // Autoplay for video
@@ -30,6 +31,7 @@ export interface ComponentContentProps {
 	// Navigation-specific
 	navItems?: NavigationItem[]; // Structured navigation items
 	orientation?: "horizontal" | "vertical"; // Orientation of navigation (used by NavigationMenu)
+	size?: "sm" | "md" | "lg"; // Generic size scale for components that support it (e.g., Divider)
 	successMessage?: string; // Text after successful form submission
 	errorMessage?: string; // Text after failed submission
 	name?: string; // Field identifier
