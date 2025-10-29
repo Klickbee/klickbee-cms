@@ -10,6 +10,8 @@ import {
 	EffectsStyle,
 	TextShadowStyle,
 } from "@/builder/types/components/properties/componentStylePropsType";
+import { useFooterEditor } from "@/feature/page/_footer/hooks/useFooterEditor";
+import { useHeaderEditor } from "@/feature/page/_header/hooks/useHeaderEditor";
 
 /**
  * Hook to handle style property updates in the builder store
@@ -22,6 +24,11 @@ export function useStyleUpdate(component: BuilderComponent) {
 
 	const currentPage = useCurrentPageStore((state) => state.currentPage);
 	const setCurrentPage = useCurrentPageStore((state) => state.setCurrentPage);
+
+	const pageId =
+		currentPage?.id && currentPage.id > 0 ? currentPage.id : undefined;
+	const headerEditor = useHeaderEditor(pageId);
+	const footerEditor = useFooterEditor(pageId);
 
 	const updateStyle = useCallback(
 		(updates: Partial<ComponentStyleProps>) => {
@@ -37,8 +44,36 @@ export function useStyleUpdate(component: BuilderComponent) {
 				},
 			};
 
-			// Update the current component in the store
+			// Update the current component selection in the store for sidebar sync
 			setCurrentComponent(updatedComponent);
+
+			// Determine if the node lives in header or footer, and route updates
+			try {
+				if (pageId && headerEditor.containsNode(updatedComponent.id)) {
+					headerEditor.pasteStyle(
+						updatedComponent.id,
+						(updatedComponent.props.style || {}) as Record<
+							string,
+							unknown
+						>,
+					);
+					return;
+				}
+				if (pageId && footerEditor.containsNode(updatedComponent.id)) {
+					footerEditor.pasteStyle(
+						updatedComponent.id,
+						(updatedComponent.props.style || {}) as Record<
+							string,
+							unknown
+						>,
+					);
+					return;
+				}
+			} catch {
+				// Intentionally ignore errors from header/footer editors
+			}
+
+			// Otherwise update the page body content tree
 			const newPageContent = updatePageContent(
 				currentPage.content,
 				component.id,

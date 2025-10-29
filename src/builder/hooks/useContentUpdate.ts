@@ -5,6 +5,8 @@ import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent"
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
 import { BuilderComponent } from "@/builder/types/components/components";
 import { ComponentContentProps } from "@/builder/types/components/properties/componentContentPropsType";
+import { useFooterEditor } from "@/feature/page/_footer/hooks/useFooterEditor";
+import { useHeaderEditor } from "@/feature/page/_header/hooks/useHeaderEditor";
 
 /**
  * Hook to handle content property updates in the builder store
@@ -15,6 +17,11 @@ export function useContentUpdate(component: BuilderComponent) {
 	);
 	const currentPage = useCurrentPageStore((state) => state.currentPage);
 	const setCurrentPage = useCurrentPageStore((state) => state.setCurrentPage);
+
+	const pageId =
+		currentPage?.id && currentPage.id > 0 ? currentPage.id : undefined;
+	const headerEditor = useHeaderEditor(pageId);
+	const footerEditor = useFooterEditor(pageId);
 
 	const updateContent = useCallback(
 		(updates: Partial<ComponentContentProps>) => {
@@ -32,6 +39,26 @@ export function useContentUpdate(component: BuilderComponent) {
 
 			// Update the current component in the store
 			setCurrentComponent(updatedComponent);
+
+			// Route updates for header/footer via their editors
+			try {
+				if (pageId && headerEditor.containsNode(updatedComponent.id)) {
+					headerEditor.pasteContent(
+						updatedComponent.id,
+						updates as Record<string, unknown>,
+					);
+					return;
+				}
+				if (pageId && footerEditor.containsNode(updatedComponent.id)) {
+					footerEditor.pasteContent(
+						updatedComponent.id,
+						updates as Record<string, unknown>,
+					);
+					return;
+				}
+			} catch {
+				// Intentionally ignore errors from header/footer editors
+			}
 
 			// Update page content tree (no-op if id not in page body)
 			const newPageContent = updatePageContent(
