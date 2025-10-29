@@ -1,6 +1,12 @@
 "use client";
 
 import {
+	AlignHorizontalDistributeCenter,
+	AlignHorizontalJustifyCenter,
+	AlignHorizontalJustifyEnd,
+	AlignHorizontalSpaceAround,
+	AlignHorizontalSpaceBetween,
+	AlignStartHorizontal,
 	AlignStartVertical,
 	AlignVerticalDistributeCenter,
 	AlignVerticalJustifyCenter,
@@ -59,18 +65,46 @@ export default function BuilderStyleLayout({
 		{ icon: MoveHorizontal, value: "row" as const },
 	];
 
-	// Justify Content options
-	const justifyContentOptions = [
-		{ icon: AlignStartVertical, value: "start" as const },
-		{ icon: AlignVerticalJustifyCenter, value: "center" as const },
-		{ icon: AlignVerticalJustifyEnd, value: "end" as const },
-		{ icon: AlignVerticalSpaceBetween, value: "space-between" as const },
-		{ icon: AlignVerticalSpaceAround, value: "space-around" as const },
-		{
-			icon: AlignVerticalDistributeCenter,
-			value: "space-evenly" as const,
-		},
-	];
+	// Justify Content options (switch icons based on flex direction)
+	const isRowDirection = (layoutStyles.flex?.direction || "row") === "row";
+	const justifyContentOptions = isRowDirection
+		? [
+				{ icon: AlignStartVertical, value: "start" as const },
+				{
+					icon: AlignHorizontalJustifyCenter,
+					value: "center" as const,
+				},
+				{ icon: AlignHorizontalJustifyEnd, value: "end" as const },
+				{
+					icon: AlignHorizontalSpaceBetween,
+					value: "space-between" as const,
+				},
+				{
+					icon: AlignHorizontalSpaceAround,
+					value: "space-around" as const,
+				},
+				{
+					icon: AlignHorizontalDistributeCenter,
+					value: "space-evenly" as const,
+				},
+			]
+		: [
+				{ icon: AlignStartHorizontal, value: "start" as const },
+				{ icon: AlignVerticalJustifyCenter, value: "center" as const },
+				{ icon: AlignVerticalJustifyEnd, value: "end" as const },
+				{
+					icon: AlignVerticalSpaceBetween,
+					value: "space-between" as const,
+				},
+				{
+					icon: AlignVerticalSpaceAround,
+					value: "space-around" as const,
+				},
+				{
+					icon: AlignVerticalDistributeCenter,
+					value: "space-evenly" as const,
+				},
+			];
 
 	return (
 		<div className="flex flex-col gap-3 pt-3">
