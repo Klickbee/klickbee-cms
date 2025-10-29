@@ -10,8 +10,10 @@ async function main() {
 	if (!builderBreakpoints) {
 		const breakpoints = [
 			{ icon: "Monitor", name: "Desktop", width: 1440 },
+			{ icon: "Laptop", name: "Laptop", width: 1024 },
 			{ icon: "Tablet", name: "Tablet", width: 768 },
-			{ icon: "Mobile", name: "Mobile", width: 390 },
+			{ icon: "Mobile", name: "Mobile L", width: 430 },
+			{ icon: "Mobile", name: "Mobile", width: 375 },
 		];
 		await prisma.settings.create({
 			data: {
