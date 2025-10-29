@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { Button } from "@/builder/components/ui/Button";
 import { Checkbox } from "@/builder/components/ui/Checkbox";
@@ -102,12 +104,16 @@ const componentMap: Record<
 	navigationmenu: NavigationMenu,
 };
 
+import { useFooterEditor } from "@/feature/page/_footer/hooks/useFooterEditor";
+import { useHeaderEditor } from "@/feature/page/_header/hooks/useHeaderEditor";
+
 interface ComponentRendererProps {
 	component: BuilderComponent;
 	onDragOver?: (e: React.DragEvent<HTMLDivElement>) => void;
 	onDragLeave?: () => void;
 	isDropTarget?: boolean;
 	isRoot?: boolean;
+	region?: "header" | "content" | "footer";
 }
 
 function updateStyleInTree(
@@ -143,6 +149,7 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 	onDragLeave,
 	isDropTarget,
 	isRoot,
+	region = "content",
 }) => {
 	const currentComponent = useCurrentComponentStore(
 		(state) => state.currentComponent,
@@ -154,6 +161,10 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 	const { duplicateComponent } = useDuplicateComponent();
 	const { clipboard, copy } = useStyleClipboardStore();
 	const { currentPage, setCurrentPage } = useCurrentPageStore();
+	const pageId =
+		currentPage?.id && currentPage.id > 0 ? currentPage.id : undefined;
+	const headerEditor = useHeaderEditor(pageId);
+	const footerEditor = useFooterEditor(pageId);
 
 	// Get the component from the registry or use the default component
 	const ComponentToRender = componentMap[component.type] || DefaultComponent;
@@ -189,6 +200,7 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 						<SectionBuilder
 							component={component}
 							isRoot={!!isRoot}
+							region={region}
 						/>
 					) : (
 						<ComponentToRender component={component} />
@@ -199,7 +211,13 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 				<ContextMenuItem
 					onClick={(e) => {
 						e.stopPropagation();
-						duplicateComponent(component.id);
+						if (region === "header") {
+							headerEditor.duplicateComponent(component.id);
+						} else if (region === "footer") {
+							footerEditor.duplicateComponent(component.id);
+						} else {
+							duplicateComponent(component.id);
+						}
 					}}
 				>
 					Duplicate (Ctrl+D)
@@ -216,6 +234,13 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 					onClick={(e) => {
 						e.stopPropagation();
 						if (!clipboard) return;
+						if (region === "header") {
+							headerEditor.pasteStyle(component.id, clipboard);
+							return;
+						} else if (region === "footer") {
+							footerEditor.pasteStyle(component.id, clipboard);
+							return;
+						}
 						const working = Array.isArray(currentPage.content)
 							? (JSON.parse(
 									JSON.stringify(currentPage.content),
@@ -237,7 +262,13 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 					className={"text-destructive"}
 					onClick={(e) => {
 						e.stopPropagation();
-						confirmDelete(component.id, null, component.type);
+						if (region === "header") {
+							headerEditor.deleteComponent(component.id);
+						} else if (region === "footer") {
+							footerEditor.deleteComponent(component.id);
+						} else {
+							confirmDelete(component.id, null, component.type);
+						}
 					}}
 				>
 					Delete
