@@ -1,3 +1,5 @@
+"use client";
+
 import { ComponentRenderer } from "@/builder/lib/renderers/ComponentRenderer";
 import {
 	BuilderComponent,
@@ -9,11 +11,13 @@ export default function ComponentRendering({
 	targetComponent,
 	setTargetComponent,
 	isRoot = false,
+	region = "content",
 }: {
 	content: BuilderComponent[];
 	targetComponent: string | null;
 	setTargetComponent: (id: string | null) => void;
 	isRoot?: boolean;
+	region?: "header" | "content" | "footer";
 }) {
 	if (!Array.isArray(content) || content.length === 0) {
 		return null;
@@ -40,6 +44,7 @@ export default function ComponentRendering({
 									setTargetComponent(component.id);
 								}
 							}}
+							region={region}
 						/>
 					</div>
 				))}
