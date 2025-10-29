@@ -7,7 +7,10 @@ export const DividerBC: DividerBCI = {
 	id: "divider",
 	label: "Divider",
 	props: {
-		content: {},
+		content: {
+			orientation: "horizontal",
+			size: "md",
+		},
 		style: {
 			bordersAndCorners: {},
 			effects: {},

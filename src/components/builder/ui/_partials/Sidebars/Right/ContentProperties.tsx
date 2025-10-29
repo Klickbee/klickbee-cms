@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent";
 import TextAreaContent from "@/components/builder/ui/_partials/Sidebars/Right/_partials/content/TextAreaContent";
 import {
@@ -11,6 +12,7 @@ import {
 import ButtonContent from "./_partials/content/ButtonContent";
 import CheckboxContent from "./_partials/content/CheckboxContent";
 import CMSTemplateContent from "./_partials/content/CMSTemplateContent";
+import DividerContent from "./_partials/content/DividerContent";
 import DropdownContent from "./_partials/content/DropdownContent";
 import EmbedContent from "./_partials/content/EmbedContent";
 import FileUploadContent from "./_partials/content/FileUploadContent";
@@ -19,6 +21,7 @@ import HeadingContent from "./_partials/content/HeadingContent";
 import ImageContent from "./_partials/content/ImageContent";
 import LinkContent from "./_partials/content/LinkContent";
 import ListContent from "./_partials/content/ListContent";
+import NavigationMenuContent from "./_partials/content/NavigationMenuContent";
 import ParagraphContent from "./_partials/content/ParagraphContent";
 import RadioGroupContent from "./_partials/content/RadioGroupContent";
 import RichTextContent from "./_partials/content/RichTextContent";
@@ -30,6 +33,7 @@ export default function BuilderContentProperties() {
 	const currentComponent = useCurrentComponentStore(
 		(state) => state.currentComponent,
 	);
+	const t = useTranslations("Builder.RightSidebar.Content");
 
 	// Don't render if no component is selected
 	if (!currentComponent || currentComponent.id === "none") {
@@ -74,24 +78,29 @@ export default function BuilderContentProperties() {
 				return <RadioGroupContent component={currentComponent} />;
 			case "submitbutton":
 				return <SubmitButtonContent component={currentComponent} />;
+			case "navigationmenu":
+				return <NavigationMenuContent component={currentComponent} />;
+			case "divider":
+				return <DividerContent component={currentComponent} />;
 			default:
-				return (
-					<div className="text-sm text-gray-500 py-4">
-						No content properties available for{" "}
-						{currentComponent.type}
-					</div>
-				);
+				return null;
 		}
 	};
+
+	const content = renderContentComponent();
+
+	if (!content) {
+		return null;
+	}
 
 	return (
 		<Accordion defaultValue={["content"]} type="multiple">
 			<AccordionItem value="content">
 				<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 data-[state=open]:border-b">
-					Content
+					{t("title")}
 				</AccordionTrigger>
-				<AccordionContent className="px-4 py-3 border-b border-zinc-200">
-					{renderContentComponent()}
+				<AccordionContent className="px-4 py-3 border-b border-zinc-200 w-full">
+					{content}
 				</AccordionContent>
 			</AccordionItem>
 		</Accordion>

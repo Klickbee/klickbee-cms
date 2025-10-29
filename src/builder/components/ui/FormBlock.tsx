@@ -1,4 +1,5 @@
 import React from "react";
+import { mapStylePropsToCss } from "@/builder/lib/style/mapStylePropsToCss";
 import {
 	BuilderComponent,
 	canHaveChildren,
@@ -20,10 +21,10 @@ export const FormBlock: React.FC<FormBlockProps> = ({
 
 	return (
 		<div
-			className="relative bg-white"
+			className="relative"
 			style={{
 				order: component.order || 0, // Use order property for positioning
-				...((component.props?.style as Record<string, unknown>) || {}),
+				...mapStylePropsToCss(component.props?.style),
 			}}
 		>
 			<form

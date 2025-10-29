@@ -48,3 +48,4 @@ next-env.d.ts
 src/generated
 public/builder/uploads/logo/*
 WARP.md
+/public/uploads/media/*

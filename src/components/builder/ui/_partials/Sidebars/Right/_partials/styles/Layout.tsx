@@ -1,6 +1,12 @@
 "use client";
 
 import {
+	AlignHorizontalDistributeCenter,
+	AlignHorizontalJustifyCenter,
+	AlignHorizontalJustifyEnd,
+	AlignHorizontalSpaceAround,
+	AlignHorizontalSpaceBetween,
+	AlignStartHorizontal,
 	AlignStartVertical,
 	AlignVerticalDistributeCenter,
 	AlignVerticalJustifyCenter,
@@ -24,16 +30,12 @@ import {
 } from "@/builder/types/components/properties/componentStylePropsType";
 import { type SizeUnit } from "@/builder/types/settings/FluidSize";
 import DualInput from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/DualInput";
+import UnitSelector from "@/components/builder/ui/_partials/Sidebars/Right/_partials/inputs/UnitSelector";
 import PropertyColumn from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyColumn";
 import PropertyNumber from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyNumber";
 import PropertySelect from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertySelect";
 import PropertyToggle from "@/components/builder/ui/_partials/Sidebars/Right/_partials/layout/PropertyToggle";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectTrigger } from "@/components/ui/select";
 
 export default function BuilderStyleLayout({
 	component,
@@ -63,18 +65,46 @@ export default function BuilderStyleLayout({
 		{ icon: MoveHorizontal, value: "row" as const },
 	];
 
-	// Justify Content options
-	const justifyContentOptions = [
-		{ icon: AlignStartVertical, value: "start" as const },
-		{ icon: AlignVerticalJustifyCenter, value: "center" as const },
-		{ icon: AlignVerticalJustifyEnd, value: "end" as const },
-		{ icon: AlignVerticalSpaceBetween, value: "space-between" as const },
-		{ icon: AlignVerticalSpaceAround, value: "space-around" as const },
-		{
-			icon: AlignVerticalDistributeCenter,
-			value: "space-evenly" as const,
-		},
-	];
+	// Justify Content options (switch icons based on flex direction)
+	const isRowDirection = (layoutStyles.flex?.direction || "row") === "row";
+	const justifyContentOptions = isRowDirection
+		? [
+				{ icon: AlignStartVertical, value: "start" as const },
+				{
+					icon: AlignHorizontalJustifyCenter,
+					value: "center" as const,
+				},
+				{ icon: AlignHorizontalJustifyEnd, value: "end" as const },
+				{
+					icon: AlignHorizontalSpaceBetween,
+					value: "space-between" as const,
+				},
+				{
+					icon: AlignHorizontalSpaceAround,
+					value: "space-around" as const,
+				},
+				{
+					icon: AlignHorizontalDistributeCenter,
+					value: "space-evenly" as const,
+				},
+			]
+		: [
+				{ icon: AlignStartHorizontal, value: "start" as const },
+				{ icon: AlignVerticalJustifyCenter, value: "center" as const },
+				{ icon: AlignVerticalJustifyEnd, value: "end" as const },
+				{
+					icon: AlignVerticalSpaceBetween,
+					value: "space-between" as const,
+				},
+				{
+					icon: AlignVerticalSpaceAround,
+					value: "space-around" as const,
+				},
+				{
+					icon: AlignVerticalDistributeCenter,
+					value: "space-evenly" as const,
+				},
+			];
 
 	return (
 		<div className="flex flex-col gap-3 pt-3">
@@ -95,7 +125,7 @@ export default function BuilderStyleLayout({
 					{ label: "Grid", value: "grid" },
 					{ label: "Inline Grid", value: "inline-grid" },
 				]}
-				value={layoutStyles.display || "flex"}
+				value={layoutStyles.display || "block"}
 			/>
 
 			{/* Flex Layout Controls */}
@@ -192,9 +222,14 @@ export default function BuilderStyleLayout({
 									)
 								</SelectTrigger>
 								<SelectContent>
-									<SelectItem value="px">px</SelectItem>
-									<SelectItem value="rem">rem</SelectItem>
-									<SelectItem value="em">em</SelectItem>
+									<UnitSelector
+										onUnitChange={() => "test"}
+										unit={
+											layoutStyles.flex?.gap?.column
+												.sizeUnit || "px"
+										}
+										variant={"no-wrap"}
+									/>
 								</SelectContent>
 							</Select>
 						}
@@ -403,9 +438,13 @@ export default function BuilderStyleLayout({
 									)
 								</SelectTrigger>
 								<SelectContent>
-									<SelectItem value="px">px</SelectItem>
-									<SelectItem value="rem">rem</SelectItem>
-									<SelectItem value="em">em</SelectItem>
+									<UnitSelector
+										onUnitChange={() => "test"}
+										unit={
+											layoutStyles.flex?.gap?.column
+												.sizeUnit || "px"
+										}
+									/>
 								</SelectContent>
 							</Select>
 						}

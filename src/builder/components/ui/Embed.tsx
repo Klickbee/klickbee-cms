@@ -1,4 +1,5 @@
 import React from "react";
+import { mapStylePropsToCss } from "@/builder/lib/style/mapStylePropsToCss";
 import { BuilderComponent } from "../../types/components/components";
 
 interface EmbedProps {
@@ -15,19 +16,13 @@ export const Embed: React.FC<EmbedProps> = ({ component }) => {
 
 	return (
 		<div
-			className="relative   bg-white"
+			className="embed-container"
+			dangerouslySetInnerHTML={{ __html: embedCode }}
 			style={{
 				order: component.order || 0, // Use order property for positioning
-				...((component.props?.style as Record<string, unknown>) || {}),
+				...mapStylePropsToCss(component.props?.style),
 			}}
-		>
-			<div className="">
-				<div
-					className="embed-container"
-					dangerouslySetInnerHTML={{ __html: embedCode }}
-					title={title}
-				/>
-			</div>
-		</div>
+			title={title}
+		/>
 	);
 };

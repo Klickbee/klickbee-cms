@@ -28,81 +28,101 @@ export default function BuilderStyleProperties() {
 		return null;
 	}
 
+	const style = currentComponent.props?.style ?? {};
+
 	return (
-		<Accordion defaultValue={["layout"]} type="multiple">
-			<AccordionItem value="layout">
-				<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 data-[state=open]:border-b">
-					{t("Layout.Layout")}
-				</AccordionTrigger>
-				<AccordionContent className="px-4 py-3 border-b border-zinc-200">
-					<BuilderStyleLayout component={currentComponent} />
-				</AccordionContent>
-			</AccordionItem>
+		<Accordion collapsible type="single">
+			{style.layout && (
+				<AccordionItem value="layout">
+					<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 data-[state=open]:border-b">
+						{t("Layout.Layout")}
+					</AccordionTrigger>
+					<AccordionContent className="px-4 py-3 border-b border-zinc-200">
+						<BuilderStyleLayout component={currentComponent} />
+					</AccordionContent>
+				</AccordionItem>
+			)}
 
-			<AccordionItem value="position">
-				<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 data-[state=open]:border-b">
-					{t("Position.title")}
-				</AccordionTrigger>
-				<AccordionContent className="px-4 py-3 border-b border-zinc-200">
-					<BuilderStylePosition component={currentComponent} />
-				</AccordionContent>
-			</AccordionItem>
+			{style.position && (
+				<AccordionItem value="position">
+					<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 data-[state=open]:border-b">
+						{t("Position.title")}
+					</AccordionTrigger>
+					<AccordionContent className="px-4 py-3 border-b border-zinc-200">
+						<BuilderStylePosition component={currentComponent} />
+					</AccordionContent>
+				</AccordionItem>
+			)}
 
-			<AccordionItem value="size-spacing">
-				<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 data-[state=open]:border-b">
-					{t("SizeAndSpacing.title")}
-				</AccordionTrigger>
-				<AccordionContent className="px-4 py-3 border-b border-zinc-200">
-					<BuilderStyleSizeAndSpacing component={currentComponent} />
-				</AccordionContent>
-			</AccordionItem>
+			{style.sizeAndSpacing && (
+				<AccordionItem value="size-spacing">
+					<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 data-[state=open]:border-b">
+						{t("SizeAndSpacing.title")}
+					</AccordionTrigger>
+					<AccordionContent className="px-4 py-3 border-b border-zinc-200">
+						<BuilderStyleSizeAndSpacing
+							component={currentComponent}
+						/>
+					</AccordionContent>
+				</AccordionItem>
+			)}
 
-			<AccordionItem value="typography">
-				<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 data-[state=open]:border-b">
-					{t("Typography.title")}
-				</AccordionTrigger>
-				<AccordionContent className="px-4 py-3 border-b border-zinc-200">
-					<BuilderStyleTypography component={currentComponent} />
-				</AccordionContent>
-			</AccordionItem>
+			{style.typography && (
+				<AccordionItem value="typography">
+					<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 data-[state=open]:border-b">
+						{t("Typography.title")}
+					</AccordionTrigger>
+					<AccordionContent className="px-4 py-3 border-b border-zinc-200">
+						<BuilderStyleTypography component={currentComponent} />
+					</AccordionContent>
+				</AccordionItem>
+			)}
 
-			<AccordionItem value="background">
-				<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 data-[state=open]:border-b">
-					{t("Background.title")}
-				</AccordionTrigger>
-				<AccordionContent className="px-4 py-3 border-b border-zinc-200">
-					<BuilderStyleBackground component={currentComponent} />
-				</AccordionContent>
-			</AccordionItem>
+			{style.background && (
+				<AccordionItem value="background">
+					<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 data-[state=open]:border-b">
+						{t("Background.title")}
+					</AccordionTrigger>
+					<AccordionContent className="px-4 py-3 border-b border-zinc-200">
+						<BuilderStyleBackground component={currentComponent} />
+					</AccordionContent>
+				</AccordionItem>
+			)}
 
-			<AccordionItem value="borders">
-				<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 data-[state=open]:border-b">
-					{t("BordersAndCorners.title")}
-				</AccordionTrigger>
-				<AccordionContent className="px-4 py-3 border-b border-zinc-200">
-					<BuilderStyleBordersAndCorners
-						component={currentComponent}
-					/>
-				</AccordionContent>
-			</AccordionItem>
+			{style.bordersAndCorners && (
+				<AccordionItem value="borders">
+					<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 data-[state=open]:border-b">
+						{t("BordersAndCorners.title")}
+					</AccordionTrigger>
+					<AccordionContent className="px-4 py-3 border-b border-zinc-200">
+						<BuilderStyleBordersAndCorners
+							component={currentComponent}
+						/>
+					</AccordionContent>
+				</AccordionItem>
+			)}
 
-			<AccordionItem value="effects">
-				<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 data-[state=open]:border-b">
-					{t("Effects.title")}
-				</AccordionTrigger>
-				<AccordionContent className="px-4 py-3 border-b border-zinc-200">
-					<BuilderStyleEffects component={currentComponent} />
-				</AccordionContent>
-			</AccordionItem>
+			{style.effects && (
+				<AccordionItem value="effects">
+					<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 data-[state=open]:border-b">
+						{t("Effects.title")}
+					</AccordionTrigger>
+					<AccordionContent className="px-4 py-3 border-b border-zinc-200">
+						<BuilderStyleEffects component={currentComponent} />
+					</AccordionContent>
+				</AccordionItem>
+			)}
 
-			<AccordionItem value="advanced">
-				<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 border-b">
-					{t("Advanced.title")}
-				</AccordionTrigger>
-				<AccordionContent className="px-4 py-3 border-b border-zinc-200">
-					<BuilderStyleAdvanced component={currentComponent} />
-				</AccordionContent>
-			</AccordionItem>
+			{style.advanced && (
+				<AccordionItem value="advanced">
+					<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 border-b">
+						{t("Advanced.title")}
+					</AccordionTrigger>
+					<AccordionContent className="px-4 py-3 border-b border-zinc-200">
+						<BuilderStyleAdvanced component={currentComponent} />
+					</AccordionContent>
+				</AccordionItem>
+			)}
 		</Accordion>
 	);
 }

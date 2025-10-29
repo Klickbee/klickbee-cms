@@ -1,4 +1,5 @@
 import React from "react";
+import { mapStylePropsToCss } from "@/builder/lib/style/mapStylePropsToCss";
 import { BuilderComponent } from "../../types/components/components";
 
 interface TextFieldProps {
@@ -18,34 +19,27 @@ export const TextField: React.FC<TextFieldProps> = ({ component }) => {
 
 	return (
 		<div
-			className="relative   bg-white"
+			className="flex flex-col space-y-2"
 			style={{
 				order: component.order || 0, // Use order property for positioning
-				...((component.props?.style as Record<string, unknown>) || {}),
+				...mapStylePropsToCss(component.props?.style),
 			}}
 		>
-			<div className="">
-				<div className="flex flex-col space-y-2">
-					<label
-						className="text-sm font-medium text-gray-700"
-						htmlFor={name}
-					>
-						{label}
-						{required && <span className="text-red-500 ">*</span>}
-					</label>
-					<input
-						className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-						id={name}
-						name={name}
-						placeholder={placeholder}
-						required={required}
-						type={type}
-					/>
-					{helperText && (
-						<p className="text-xs text-gray-500">{helperText}</p>
-					)}
-				</div>
-			</div>
+			<label className="text-sm font-medium text-gray-700" htmlFor={name}>
+				{label}
+				{required && <span className="text-red-500 ">*</span>}
+			</label>
+			<input
+				className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+				id={name}
+				name={name}
+				placeholder={placeholder}
+				required={required}
+				type={type}
+			/>
+			{helperText && (
+				<p className="text-xs text-gray-500">{helperText}</p>
+			)}
 		</div>
 	);
 };

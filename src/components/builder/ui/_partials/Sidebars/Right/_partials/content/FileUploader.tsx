@@ -1,7 +1,9 @@
 "use client";
 
 import { useRef, useState } from "react";
+import MediaLibrary from "@/components/builder/ui/_partials/Sidebars/Right/_partials/content/_partials/MediaLibrary";
 import { Button } from "@/components/ui/button";
+import type { MediaFile } from "@/feature/media/types/media";
 
 type PreviewMode = "icon" | "image";
 
@@ -13,21 +15,31 @@ interface FileUploaderProps {
 	placeholder?: string;
 	label?: string;
 	mode?: PreviewMode;
+	openMediaLibrary?: boolean;
 }
 
 export default function FileUploader({
 	initialFile,
 	onFileChange,
-	maxSize = 2,
+	maxSize = 10,
 	acceptedTypes = ["svg"],
-	placeholder = "http://localhost:3845/assets/91210b31ffb7440374c0375c1a8959abf348506c.png",
+	placeholder = "https://placehold.co/1024",
 	label = "Icon",
 	mode = "icon",
+	openMediaLibrary = false,
 }: FileUploaderProps) {
 	const [fileUrl, setFileUrl] = useState<string | null>(
 		typeof initialFile === "string" ? initialFile : null,
 	);
 	const fileInputRef = useRef<HTMLInputElement>(null);
+	const [isMediaLibraryOpen, setIsMediaLibraryOpen] = useState(false);
+
+	const handleMediaSelect = (media: MediaFile) => {
+		const url = media?.url ?? null;
+		setFileUrl(url);
+		onFileChange?.(url);
+		setIsMediaLibraryOpen(false);
+	};
 
 	const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0];
@@ -61,10 +73,15 @@ export default function FileUploader({
 	};
 
 	const triggerFileInput = () => {
+		if (openMediaLibrary) {
+			setIsMediaLibraryOpen(true);
+			return;
+		}
 		fileInputRef.current?.click();
 	};
 
-	const displayFile = fileUrl || placeholder;
+	const displayFile =
+		fileUrl ?? "https://placehold.co/1024?text=Upload+or+select+an+image";
 
 	// Icon mode (60x60px, side by side layout)
 	if (mode === "icon") {
@@ -88,7 +105,9 @@ export default function FileUploader({
 							onClick={triggerFileInput}
 							variant="outline"
 						>
-							Upload from computer
+							{openMediaLibrary
+								? "Upload or select"
+								: "Upload from computer"}
 						</Button>
 
 						<div className="text-xs font-medium text-zinc-500 leading-4">
@@ -108,6 +127,13 @@ export default function FileUploader({
 						type="file"
 					/>
 				</div>
+
+				<MediaLibrary
+					initialTypeFilter={"all"}
+					isOpen={isMediaLibraryOpen}
+					onClose={() => setIsMediaLibraryOpen(false)}
+					onSelect={handleMediaSelect}
+				/>
 			</div>
 		);
 	}
@@ -133,7 +159,7 @@ export default function FileUploader({
 						onClick={triggerFileInput}
 						variant="outline"
 					>
-						Upload from computer
+						Upload or select
 					</Button>
 
 					<div className="text-xs font-medium text-zinc-500 leading-4">
@@ -150,6 +176,14 @@ export default function FileUploader({
 					type="file"
 				/>
 			</div>
+
+			{/* Media library modal for selecting existing media */}
+			<MediaLibrary
+				initialTypeFilter={"IMAGE"}
+				isOpen={isMediaLibraryOpen}
+				onClose={() => setIsMediaLibraryOpen(false)}
+				onSelect={handleMediaSelect}
+			/>
 		</div>
 	);
 }

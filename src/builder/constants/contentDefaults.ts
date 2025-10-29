@@ -78,7 +78,10 @@ export const COMPONENT_DEFAULTS: Record<
 		templateFieldName: CONTENT_DEFAULTS.DEFAULT_TEMPLATE_FIELD,
 	},
 	container: {},
-	divider: {},
+	divider: {
+		orientation: "horizontal",
+		size: "md",
+	},
 	dropdown: {
 		items: CONTENT_DEFAULTS.DEFAULT_LIST_ITEMS,
 		label: CONTENT_DEFAULTS.FIELD_LABEL,
@@ -171,6 +174,8 @@ export const COMPONENT_DEFAULTS: Record<
 		required: CONTENT_DEFAULTS.FIELD_REQUIRED,
 		type: "text",
 	},
+	slider: {},
+	navigationmenu: {},
 	undefined: {},
 	video: {
 		autoplay: CONTENT_DEFAULTS.DEFAULT_AUTOPLAY,

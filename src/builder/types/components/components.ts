@@ -20,6 +20,7 @@ export type ComponentType =
 	| "video"
 	| "embed"
 	| "fileupload"
+	| "slider"
 	// Form components
 	| "input"
 	| "email"
@@ -31,6 +32,8 @@ export type ComponentType =
 	| "radiogroup"
 	| "dropdown"
 	| "submitbutton"
+	// Navigation components
+	| "navigationmenu"
 	// CMS components
 	| "cmstemplate"
 	| "undefined";

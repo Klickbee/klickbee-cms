@@ -154,6 +154,11 @@ model Page {
   isPublished Boolean   @default(false)
   publishedAt DateTime?
 
+  pageHeader   PageHeader? @relation(fields: [pageHeaderId], references: [id], onDelete: SetNull)
+  pageHeaderId Int?
+  PageFooter   PageFooter? @relation(fields: [pageFooterId], references: [id])
+  pageFooterId Int?
+
   @@map("page")
 }
 
@@ -206,6 +211,30 @@ model CollectionTemplate {
   collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
+}
+
+// === Global Components ===
+
+model PageHeader {
+  id        Int      @id @default(autoincrement())
+  /// [PageContentMetaType]
+  content   Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  pages     Page[]
+  isDefault Boolean @default(false)
+}
+
+model PageFooter {
+  id        Int      @id @default(autoincrement())
+  /// [PageContentMetaType]
+  content   Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  pages     Page[]
+  isDefault Boolean @default(false)
 }
 
 // === Media Models ===

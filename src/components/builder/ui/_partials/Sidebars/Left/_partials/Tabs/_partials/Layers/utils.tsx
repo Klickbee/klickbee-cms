@@ -24,8 +24,6 @@ export const mapContentToTree = (
 			icon: getComponentIcon(component),
 			id: component.id,
 			label: component.label || component.groupId,
-			order: component.order || 0,
-			props: component.props || {},
 			type: component.type || "undefined",
 		};
 		return {
@@ -35,6 +33,8 @@ export const mapContentToTree = (
 				: [],
 			groupId: component.groupId,
 			id: component.id,
+			props: component.props || {},
+			order: component.order || 0,
 			label: component.label || base.label,
 		};
 	});

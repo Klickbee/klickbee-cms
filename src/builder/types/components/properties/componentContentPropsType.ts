@@ -2,6 +2,17 @@ export type ListType = "bulleted" | "numbered";
 export type FieldType = "text" | "email" | "password";
 export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
 
+export type NavigationItem = {
+	label: string;
+	href: string;
+	target?: string; // _blank, _self, etc.
+	rel?: string;
+	ariaLabel?: string;
+	icon?: React.ReactNode | string;
+	activeMatch?: string; // regex or pathname startsWith
+	children?: NavigationItem[]; // sub-menu items
+};
+
 export interface ComponentContentProps {
 	text?: string; // General text content (buttons, links, labels, etc.)
 	content?: string; // Formatted text (rich text blocks)
@@ -9,6 +20,7 @@ export interface ComponentContentProps {
 	href?: string; // Link or action URL
 	openInNewTab?: boolean; // Open link in new tab
 	icon?: React.ReactNode | string; // Icon reference
+	iconColor?: string; // Hex or CSS color string for icon (applies to currentColor-based icons)
 	src?: string; // Media source (image/video)
 	alt?: string; // Alternative text for accessibility
 	autoplay?: boolean; // Autoplay for video
@@ -16,6 +28,10 @@ export interface ComponentContentProps {
 	code?: string; // Custom embed HTML or iframe
 	listType?: ListType; // List type (bulleted or numbered)
 	items?: string[]; // Array of text items
+	// Navigation-specific
+	navItems?: NavigationItem[]; // Structured navigation items
+	orientation?: "horizontal" | "vertical"; // Orientation of navigation (used by NavigationMenu)
+	size?: "sm" | "md" | "lg"; // Generic size scale for components that support it (e.g., Divider)
 	successMessage?: string; // Text after successful form submission
 	errorMessage?: string; // Text after failed submission
 	name?: string; // Field identifier

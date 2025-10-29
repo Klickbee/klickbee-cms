@@ -1,8 +1,6 @@
 "use client";
 
-import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { useRef, useState } from "react";
 import {
 	BackgroundAttachment,
 	ImagePosition,
@@ -10,7 +8,7 @@ import {
 	ImageSize,
 	SpacingValue,
 } from "@/builder/types/components/properties/componentStylePropsType";
-import { Button } from "@/components/ui/button";
+import FileUploader from "@/components/builder/ui/_partials/Sidebars/Right/_partials/content/FileUploader";
 import { Input } from "@/components/ui/input";
 import {
 	Select,
@@ -36,52 +34,6 @@ export default function ImagePickerContent({
 	onChange,
 }: ImagePickerContentProps) {
 	const t = useTranslations("Builder.RightSidebar.Background");
-	const fileInputRef = useRef<HTMLInputElement>(null);
-	const [dragActive, setDragActive] = useState(false);
-
-	const handleFileSelect = (file: File) => {
-		if (file && file.type.startsWith("image/")) {
-			const reader = new FileReader();
-			reader.onload = (e) => {
-				const base64Url = e.target?.result as string;
-
-				onChange({
-					...value,
-					position: value.position || "center",
-					size: value.size || "cover",
-					src: base64Url,
-				});
-			};
-
-			reader.readAsDataURL(file);
-		}
-	};
-
-	const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const file = e.target.files?.[0];
-		if (file) {
-			handleFileSelect(file);
-		}
-	};
-
-	const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-		e.preventDefault();
-		setDragActive(false);
-		const file = e.dataTransfer.files?.[0];
-		if (file) {
-			handleFileSelect(file);
-		}
-	};
-
-	const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-		e.preventDefault();
-		setDragActive(true);
-	};
-
-	const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
-		e.preventDefault();
-		setDragActive(false);
-	};
 
 	const handleUrlChange = (src: string) => {
 		onChange({
@@ -106,58 +58,21 @@ export default function ImagePickerContent({
 
 	return (
 		<div className="space-y-3">
-			<div
-				className={`relative h-[200px] w-full rounded border-2 border-dashed transition-colors ${
-					dragActive
-						? "border-blue-400 bg-blue-50"
-						: "border-zinc-200 bg-zinc-50"
-				}`}
-				onDragLeave={handleDragLeave}
-				onDragOver={handleDragOver}
-				onDrop={handleDrop}
-			>
-				{value.src ? (
-					<div className="h-full w-full rounded relative overflow-hidden group">
-						<Image
-							alt="Preview"
-							className="h-full w-full object-cover"
-							height={200}
-							src={value.src}
-							width={400}
-						/>
-						<div className="absolute inset-0 flex items-center justify-center transition-colors group-hover:backdrop-blur-sm">
-							<Button
-								className="opacity-0 group-hover:opacity-100 transition-opacity"
-								onClick={() => fileInputRef.current?.click()}
-								size="sm"
-								variant="secondary"
-							>
-								{t("changeImage")}
-							</Button>
-						</div>
-					</div>
-				) : (
-					<div className="flex h-full flex-col items-center justify-center gap-4">
-						<div className="text-center text-sm text-zinc-500">
-							{t("dragImageHere")}
-						</div>
-						<Button
-							onClick={() => fileInputRef.current?.click()}
-							size="sm"
-							variant="outline"
-						>
-							{t("uploadFromComputer")}
-						</Button>
-					</div>
-				)}
-			</div>
-
-			<Input
-				accept="image/*"
-				className="hidden"
-				onChange={handleFileInputChange}
-				ref={fileInputRef}
-				type="file"
+			<FileUploader
+				acceptedTypes={["png", "jpeg", "jpg", "svg"]}
+				initialFile={value.src}
+				label={t("image")}
+				maxSize={10}
+				mode="image"
+				onFileChange={(fileUrl) =>
+					onChange({
+						...value,
+						position: value.position || "center",
+						size: value.size || "cover",
+						src: fileUrl || "",
+					})
+				}
+				openMediaLibrary={true}
 			/>
 
 			<div className="space-y-1">

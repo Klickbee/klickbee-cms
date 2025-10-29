@@ -108,16 +108,19 @@ export function useDeleteComponent(options: UseDeleteComponentOptions = {}) {
 		}
 	};
 
-	// Function to open the confirmation dialog
+	// Function to initiate deletion immediately (no confirmation dialog)
 	const confirmDelete = (
 		componentId: string,
 		parentId: string | null = null,
-		componentType: string | null = null,
+		_componentType: string | null = null,
 	) => {
-		setComponentToDelete(componentId);
-		setComponentTypeToDelete(componentType);
-		setParentIdToDelete(parentId);
-		setIsConfirmDialogOpen(true);
+		// Perform deletion instantly without opening a dialog
+		deleteComponent(componentId, parentId);
+		// Ensure any previous dialog-related state is reset/closed
+		setIsConfirmDialogOpen(false);
+		setComponentToDelete(null);
+		setComponentTypeToDelete(null);
+		setParentIdToDelete(null);
 	};
 
 	// Function to cancel deletion

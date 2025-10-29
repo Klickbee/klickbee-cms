@@ -1,4 +1,5 @@
 import React from "react";
+import { mapStylePropsToCss } from "@/builder/lib/style/mapStylePropsToCss";
 import { BuilderComponent } from "../../types/components/components";
 
 interface ParagraphProps {
@@ -11,14 +12,13 @@ export const Paragraph: React.FC<ParagraphProps> = ({ component }) => {
 		(component.props?.content?.text as string) || "Paragraph content";
 
 	return (
-		<div
-			className="relative   bg-white"
+		<p
 			style={{
 				order: component.order || 0, // Use order property for positioning
-				...((component.props?.style as Record<string, unknown>) || {}),
+				...mapStylePropsToCss(component.props?.style),
 			}}
 		>
-			<p className=" text-gray-700 leading-relaxed">{content}</p>
-		</div>
+			{content}
+		</p>
 	);
 };

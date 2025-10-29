@@ -1,4 +1,5 @@
 import React from "react";
+import { mapStylePropsToCss } from "@/builder/lib/style/mapStylePropsToCss";
 import { BuilderComponent } from "../../types/components/components";
 
 interface RadioGroupProps {
@@ -24,52 +25,40 @@ export const RadioGroup: React.FC<RadioGroupProps> = ({ component }) => {
 	const helperText = (component.props?.content?.helperText as string) || "";
 
 	return (
-		<div
-			className="relative   bg-white"
+		<fieldset
 			style={{
 				order: component.order || 0, // Use order property for positioning
-				...((component.props?.style as Record<string, unknown>) || {}),
+				...mapStylePropsToCss(component.props?.style),
 			}}
 		>
-			<div className="">
-				<fieldset>
-					<legend className="text-sm font-medium text-gray-700">
-						{label}
-						{required && <span className="text-red-500 ">*</span>}
-					</legend>
-					<div className="mt-2 space-y-2">
-						{options.map((option) => (
-							<div
-								className="flex items-center"
-								key={option.value}
-							>
-								<input
-									className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-									defaultChecked={
-										option.value === defaultValue
-									}
-									id={`${name}-${option.value}`}
-									name={name}
-									required={required}
-									type="radio"
-									value={option.value}
-								/>
-								<label
-									className=" text-sm font-medium text-gray-700"
-									htmlFor={`${name}-${option.value}`}
-								>
-									{option.label}
-								</label>
-							</div>
-						))}
+			<legend className="text-sm font-medium text-gray-700">
+				{label}
+				{required && <span className="text-red-500 ">*</span>}
+			</legend>
+			<div className="mt-2 space-y-2">
+				{options.map((option) => (
+					<div className="flex items-center" key={option.value}>
+						<input
+							className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+							defaultChecked={option.value === defaultValue}
+							id={`${name}-${option.value}`}
+							name={name}
+							required={required}
+							type="radio"
+							value={option.value}
+						/>
+						<label
+							className=" text-sm font-medium text-gray-700"
+							htmlFor={`${name}-${option.value}`}
+						>
+							{option.label}
+						</label>
 					</div>
-					{helperText && (
-						<p className="mt-2 text-xs text-gray-500">
-							{helperText}
-						</p>
-					)}
-				</fieldset>
+				))}
 			</div>
-		</div>
+			{helperText && (
+				<p className="mt-2 text-xs text-gray-500">{helperText}</p>
+			)}
+		</fieldset>
 	);
 };

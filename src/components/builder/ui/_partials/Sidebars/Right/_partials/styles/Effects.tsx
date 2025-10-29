@@ -169,6 +169,7 @@ export default function BuilderStyleEffects({
 									}
 									unit={boxShadow.opacity.unit}
 									value={boxShadow.opacity.number}
+									variant="opacity"
 								/>
 
 								{/* X Offset */}

@@ -1,12 +1,17 @@
 "use client";
 
-import { Box, ChevronDown, ChevronUp, ComponentIcon } from "lucide-react";
+import { ChevronDown, ChevronUp, ComponentIcon } from "lucide-react";
 import { useState } from "react";
 import { useCurrentComponentStore } from "@/builder/store/storeCurrentComponent";
 import { useCurrentPageStore } from "@/builder/store/storeCurrentPage";
-import { BuilderComponent } from "@/builder/types/components/components";
+import {
+	BuilderComponent,
+	isParentComponent,
+} from "@/builder/types/components/components";
 import { componentsList } from "@/builder/types/components/ui/componentsList";
 import BuilderSearchComponent from "@/components/builder/ui/_partials/Sidebars/Left/Search";
+import { useFooterEditor } from "@/feature/page/_footer/hooks/useFooterEditor";
+import { useHeaderEditor } from "@/feature/page/_header/hooks/useHeaderEditor";
 
 type ComponentGroup = {
 	id: string;
@@ -15,10 +20,11 @@ type ComponentGroup = {
 };
 
 const groupLabels: Record<string, string> = {
-	form: "Form",
 	layout: "Layout",
-	media: "Media",
 	text: "Text & Content",
+	media: "Media",
+	form: "Form",
+	navigation: "Navigation",
 };
 
 const groups: ComponentGroup[] = Object.entries(groupLabels).map(
@@ -35,9 +41,17 @@ export default function BuilderTabComponents() {
 	});
 
 	const currentPage = useCurrentPageStore((state) => state.currentPage);
+	const setCurrentPage = useCurrentPageStore((state) => state.setCurrentPage);
+	const _setTargetComponent = useCurrentComponentStore(
+		(state) => state.setCurrentComponent,
+	);
 	const currentComponent = useCurrentComponentStore(
 		(state) => state.currentComponent,
 	);
+	const pageId =
+		currentPage?.id && currentPage.id > 0 ? currentPage.id : undefined;
+	const headerEditor = useHeaderEditor(pageId);
+	const footerEditor = useFooterEditor(pageId);
 
 	const toggleGroup = (id: string) => {
 		setOpenGroups((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -54,7 +68,6 @@ export default function BuilderTabComponents() {
 			// Create the new component using the selected item from componentsList
 			const newComponent: BuilderComponent = {
 				groupId: componentData.groupId,
-				icon: componentData.icon || <Box className="w-4 h-4" />,
 				id: `${componentData.type}-${Date.now()}`, // Generate a unique ID for the instance
 				label: componentData.label,
 				order: currentContent.length + 1, // Root-level order based on position
@@ -65,28 +78,48 @@ export default function BuilderTabComponents() {
 				type: componentData.type,
 			};
 
-			// If dropping onto a container component, add as a child
-			if (currentComponent) {
-				// Find the target component in the content array
+			// If a component is selected, try to add as a child of the selection
+			if (currentComponent && currentComponent.id !== "none") {
+				// If selected component belongs to header, delegate to header editor
+				if (headerEditor.containsNode(currentComponent.id)) {
+					headerEditor.addComponent(
+						newComponent,
+						currentComponent.id,
+					);
+					return;
+				}
+				// If selected component belongs to footer, delegate to footer editor
+				if (footerEditor.containsNode(currentComponent.id)) {
+					footerEditor.addComponent(
+						newComponent,
+						currentComponent.id,
+					);
+					return;
+				}
+
+				// Otherwise, operate on page body content
 				const findAndAddChild = (components: BuilderComponent[]) => {
 					for (let i = 0; i < components.length; i++) {
 						if (components[i].id === currentComponent.id) {
-							// Initialize children array if it doesn't exist
 							if (!components[i].children) {
 								components[i].children = [];
 							}
-							// Add the new component as a child
-							components[i].children?.push({
-								...newComponent,
-								order:
-									(components[i].children?.length || 0) + 1,
-							});
-							return true;
+							if (isParentComponent(components[i])) {
+								components[i].children?.push({
+									...newComponent,
+									order:
+										(components[i].children?.length || 0) +
+										1,
+								});
+								return true;
+							}
+							return false;
 						}
-						// Recursively check children
 						if (
 							components[i].children &&
-							findAndAddChild(components[i].children as [])
+							findAndAddChild(
+								components[i].children as BuilderComponent[],
+							)
 						) {
 							return true;
 						}
@@ -94,22 +127,20 @@ export default function BuilderTabComponents() {
 					return false;
 				};
 
-				// Try to add as a child, if not found add to root
 				if (!findAndAddChild(currentContent)) {
 					currentContent.push(newComponent);
 				}
 			} else {
-				// Add to root level
+				// No selection: add to root level of page body
 				currentContent.push(newComponent);
 			}
 
 			// Update the current page with the new content
-			// const updatedPage = {
-			// 	...currentPage,
-			// 	content: currentContent as unknown as JsonValue,
-			// };
-			// setCurrentPage(updatedPage);
-			// setTargetComponent(null);
+			const updatedPage = {
+				...currentPage,
+				content: currentContent,
+			};
+			setCurrentPage(updatedPage);
 		} catch (error) {
 			console.error("Error dropping component:", error);
 		}

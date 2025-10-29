@@ -1,10 +1,13 @@
+"use client";
+
 import React, { useContext } from "react";
 import EmptyChildrenPlaceholder from "@/builder/components/ui/_partials/EmptyChildrenPlaceholder";
+import { mapStylePropsToCss } from "@/builder/lib/style/mapStylePropsToCss";
 import {
 	BuilderComponent,
 	canHaveChildren,
 } from "@/builder/types/components/components";
-import { DragDropContext } from "../../../components/builder/_partials/DragAndDropContext";
+import { DragDropContext } from "@/components/builder/_partials/DragAndDropContext";
 import { ComponentRenderer } from "../../lib/renderers/ComponentRenderer";
 
 interface ContainerProps {
@@ -14,18 +17,17 @@ interface ContainerProps {
 export const Container: React.FC<ContainerProps> = ({ component }) => {
 	// Get the setTargetComponent function from context
 	const dragDropContext = useContext(DragDropContext);
-
 	return (
 		<div
-			className="relative   max-w-screen-lg mx-auto bg-white"
+			className="relative container"
 			style={{
 				order: component.order || 0, // Use order property for positioning
-				...((component.props?.style as Record<string, unknown>) || {}),
+				...mapStylePropsToCss(component.props?.style),
 			}}
 		>
 			{/* Render children if they exist */}
 			{component.children && component.children.length > 0 ? (
-				<div className="">
+				<>
 					{component.children
 						.slice() // Create a copy of the array to avoid mutating the original
 						.sort((a, b) => (a.order || 0) - (b.order || 0)) // Sort by order
@@ -59,7 +61,7 @@ export const Container: React.FC<ContainerProps> = ({ component }) => {
 								}}
 							/>
 						))}
-				</div>
+				</>
 			) : (
 				<EmptyChildrenPlaceholder />
 			)}

@@ -9,7 +9,7 @@ export const ImageBC: ImageBCI = {
 	props: {
 		content: {
 			alt: "Image",
-			src: "https://via.placeholder.com/150",
+			src: "https://placehold.co/1024?text=Upload+or+select+an+image",
 		},
 		style: {
 			bordersAndCorners: {},
