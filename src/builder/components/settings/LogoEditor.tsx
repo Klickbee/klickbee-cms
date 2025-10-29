@@ -1,10 +1,11 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import React, { useRef, useState } from "react";
-import { toast } from "sonner";
+import { useState } from "react";
 import type { LogoSettings } from "@/builder/types/settings/LogoSettings";
+import MediaLibrary from "@/components/builder/ui/_partials/Sidebars/Right/_partials/content/_partials/MediaLibrary";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import type { MediaFile } from "@/feature/media/types/media";
 
 type Props = {
 	logos: LogoSettings[];
@@ -19,8 +20,10 @@ const SIZES = {
 
 export default function LogoEditor({ logos, onChange }: Props) {
 	const t = useTranslations("LogoEditor");
-	const [loading, setLoading] = useState<LogoSettings["format"] | null>(null);
-	const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
+	const [isMediaLibraryOpen, setIsMediaLibraryOpen] = useState(false);
+	const [currentFormat, setCurrentFormat] = useState<
+		LogoSettings["format"] | null
+	>(null);
 
 	const LABELS = {
 		rectangle: t("RectangleLogo"),
@@ -30,34 +33,12 @@ export default function LogoEditor({ logos, onChange }: Props) {
 	const getLogoUrl = (format: LogoSettings["format"]) =>
 		logos.find((l) => l.format === format)?.url;
 
-	const handleFileChange = async (
-		e: React.ChangeEvent<HTMLInputElement>,
-		format: LogoSettings["format"],
-	) => {
-		const file = e.target.files?.[0];
-		if (!file) return;
-		if (!["image/png", "image/jpeg"].includes(file.type)) {
-			toast.error(t("FileTypeError"));
-			return;
-		}
-		setLoading(format);
-		const formData = new FormData();
-		formData.append("logo", file);
-		try {
-			const res = await fetch("/api/admin/builder/logo", {
-				body: formData,
-				method: "POST",
-			});
-			if (!res.ok) throw new Error();
-			const { url } = await res.json();
-			// Remplace ou ajoute le logo pour ce format
-			const next = logos.filter((l) => l.format !== format);
-			onChange([...next, { format, url }]);
-		} catch {
-			toast(t("UploadError"));
-		} finally {
-			setLoading(null);
-		}
+	const handleMediaSelect = (media: MediaFile) => {
+		if (!currentFormat) return;
+		const next = logos.filter((l) => l.format !== currentFormat);
+		onChange([...next, { format: currentFormat, url: media.url }]);
+		setIsMediaLibraryOpen(false);
+		setCurrentFormat(null);
 	};
 
 	return (
@@ -70,7 +51,6 @@ export default function LogoEditor({ logos, onChange }: Props) {
 					{FORMATS.map((format) => {
 						const { w, h } = SIZES[format];
 						const url = getLogoUrl(format);
-						const isLoading = loading === format;
 						return (
 							<div
 								className="flex flex-col items-center"
@@ -81,16 +61,14 @@ export default function LogoEditor({ logos, onChange }: Props) {
 									<div
 										aria-label={t("SelectLogo")}
 										className="border border-[#ccc] bg-[#fafafa] dark:border-[#444] dark:bg-[#222] transition-colors"
-										onClick={() =>
-											!isLoading &&
-											inputRefs.current[format]?.click()
-										}
+										onClick={() => {
+											setCurrentFormat(format);
+											setIsMediaLibraryOpen(true);
+										}}
 										style={{
 											alignItems: "center",
 											borderRadius: 8,
-											cursor: isLoading
-												? "not-allowed"
-												: "pointer",
+											cursor: "pointer",
 											display: "flex",
 											height: h,
 											justifyContent: "center",
@@ -124,29 +102,22 @@ export default function LogoEditor({ logos, onChange }: Props) {
 												{LABELS[format].toLowerCase()}
 											</span>
 										)}
-										<input
-											accept="image/png,image/jpeg"
-											disabled={isLoading}
-											onChange={(e) =>
-												handleFileChange(e, format)
-											}
-											ref={(el) => {
-												inputRefs.current[format] = el;
-											}}
-											style={{ display: "none" }}
-											type="file"
-										/>
 									</div>
-									{isLoading && (
-										<div className="mt-2 text-xs text-muted-foreground text-center">
-											{t("Uploading")}
-										</div>
-									)}
 								</div>
 							</div>
 						);
 					})}
 				</div>
+				<MediaLibrary
+					initialTypeFilter={"IMAGE"}
+					isOpen={isMediaLibraryOpen}
+					onClose={() => {
+						setIsMediaLibraryOpen(false);
+						setCurrentFormat(null);
+					}}
+					onSelect={handleMediaSelect}
+					title={t("Title")}
+				/>
 			</CardContent>
 		</Card>
 	);
