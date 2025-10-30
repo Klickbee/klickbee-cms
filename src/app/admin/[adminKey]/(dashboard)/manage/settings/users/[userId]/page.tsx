@@ -1,6 +1,6 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import DashboardTitle from "@/components/admin/_partials/dashboardTitle";
-import UserUpdateForm from "@/components/admin/settings/users/update/userUpdateForm";
+import UserUpdateForm from "@/feature/settings/components/users/update/userUpdateForm";
 import { userByIdForEditOptions } from "@/feature/user/options/userByIdOptions";
 import { getQueryClient } from "@/lib/getQueryClient";
 

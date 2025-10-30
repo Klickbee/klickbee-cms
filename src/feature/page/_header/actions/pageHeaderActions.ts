@@ -2,7 +2,7 @@
 import {
 	BuilderComponent,
 	ParentBuilderComponent,
-} from "@/builder/types/components/components";
+} from "@/feature/builder/types/components/components";
 import { prisma } from "@/lib/prisma";
 
 // Sanitize builder content before persisting: strip non-serializable fields like React nodes (icon) and functions

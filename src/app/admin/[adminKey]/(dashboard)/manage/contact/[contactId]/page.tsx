@@ -1,7 +1,7 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { redirect } from "next/navigation";
 import DashboardTitle from "@/components/admin/_partials/dashboardTitle";
-import ContactDetail from "@/components/admin/manage/contact/contactDetail";
+import ContactDetail from "@/feature/contact/components/contactDetail";
 import { contactByIdOptions } from "@/feature/contact/options/contactByIdOptions";
 import { Contact } from "@/feature/contact/types/contact";
 import { getQueryClient } from "@/lib/getQueryClient";

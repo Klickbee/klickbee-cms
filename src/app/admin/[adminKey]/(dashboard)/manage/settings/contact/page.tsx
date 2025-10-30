@@ -1,6 +1,6 @@
 import DashboardTitle from "@/components/admin/_partials/dashboardTitle";
-import ContactInformationForm from "@/components/admin/settings/contact/contactInformationForm";
-import ContactNotificationForm from "@/components/admin/settings/contact/contactNotificationForm";
+import ContactInformationForm from "@/feature/settings/components/contact/contactInformationForm";
+import ContactNotificationForm from "@/feature/settings/components/contact/contactNotificationForm";
 
 export default function ContactSettingsPage() {
 	return (

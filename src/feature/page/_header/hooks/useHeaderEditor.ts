@@ -4,9 +4,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import {
 	BuilderComponent,
 	canHaveChildren,
-} from "@/builder/types/components/components";
-import type { ComponentContentProps } from "@/builder/types/components/properties/componentContentPropsType";
-import type { ComponentStyleProps } from "@/builder/types/components/properties/componentStylePropsType";
+} from "@/feature/builder/types/components/components";
+import type { ComponentContentProps } from "@/feature/builder/types/components/properties/componentContentPropsType";
+import type { ComponentStyleProps } from "@/feature/builder/types/components/properties/componentStylePropsType";
 import { usePageHeaderByPage } from "@/feature/page/_header/queries/usePageHeader";
 
 export type DropPosition = "before" | "after" | "inside";

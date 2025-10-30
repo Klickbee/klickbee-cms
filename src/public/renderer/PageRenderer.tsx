@@ -1,34 +1,34 @@
 "use client";
 
 import React from "react";
-import { Button } from "@/builder/components/ui/Button";
+import { Button } from "@/feature/builder/components/builder_components/ui/Button";
 // Leaf UI components (do not rely on editor-only contexts)
-import { Checkbox } from "@/builder/components/ui/Checkbox";
-import { Divider } from "@/builder/components/ui/Divider";
-import { Dropdown } from "@/builder/components/ui/Dropdown";
-import { Embed } from "@/builder/components/ui/Embed";
-import { FileUpload } from "@/builder/components/ui/FileUpload";
-import { FormBlock } from "@/builder/components/ui/FormBlock";
-import { Heading } from "@/builder/components/ui/Heading";
-import { Image } from "@/builder/components/ui/Image";
-import { Link as LinkComp } from "@/builder/components/ui/Link";
-import { List } from "@/builder/components/ui/List";
-import { NavigationMenu } from "@/builder/components/ui/NavigationMenu";
-import { Paragraph } from "@/builder/components/ui/Paragraph";
-import { RadioGroup } from "@/builder/components/ui/RadioGroup";
-import { RichText } from "@/builder/components/ui/RichText";
-import { Slider } from "@/builder/components/ui/Slider";
-import { Spacer } from "@/builder/components/ui/Spacer";
-import { SubmitButton } from "@/builder/components/ui/SubmitButton";
-import { Text } from "@/builder/components/ui/Text";
-import { TextField } from "@/builder/components/ui/TextField";
-import { Video } from "@/builder/components/ui/Video";
-import { normalizeToComponents } from "@/builder/lib/content/normalize";
-import { mapStylePropsToCss } from "@/builder/lib/style/mapStylePropsToCss";
+import { Checkbox } from "@/feature/builder/components/builder_components/ui/Checkbox";
+import { Divider } from "@/feature/builder/components/builder_components/ui/Divider";
+import { Dropdown } from "@/feature/builder/components/builder_components/ui/Dropdown";
+import { Embed } from "@/feature/builder/components/builder_components/ui/Embed";
+import { FileUpload } from "@/feature/builder/components/builder_components/ui/FileUpload";
+import { FormBlock } from "@/feature/builder/components/builder_components/ui/FormBlock";
+import { Heading } from "@/feature/builder/components/builder_components/ui/Heading";
+import { Image } from "@/feature/builder/components/builder_components/ui/Image";
+import { Link as LinkComp } from "@/feature/builder/components/builder_components/ui/Link";
+import { List } from "@/feature/builder/components/builder_components/ui/List";
+import { NavigationMenu } from "@/feature/builder/components/builder_components/ui/NavigationMenu";
+import { Paragraph } from "@/feature/builder/components/builder_components/ui/Paragraph";
+import { RadioGroup } from "@/feature/builder/components/builder_components/ui/RadioGroup";
+import { RichText } from "@/feature/builder/components/builder_components/ui/RichText";
+import { Slider } from "@/feature/builder/components/builder_components/ui/Slider";
+import { Spacer } from "@/feature/builder/components/builder_components/ui/Spacer";
+import { SubmitButton } from "@/feature/builder/components/builder_components/ui/SubmitButton";
+import { Text } from "@/feature/builder/components/builder_components/ui/Text";
+import { TextField } from "@/feature/builder/components/builder_components/ui/TextField";
+import { Video } from "@/feature/builder/components/builder_components/ui/Video";
+import { normalizeToComponents } from "@/feature/builder/lib/content/normalize";
+import { mapStylePropsToCss } from "@/feature/builder/lib/style/mapStylePropsToCss";
 import type {
 	BuilderComponent,
 	ComponentType,
-} from "@/builder/types/components/components";
+} from "@/feature/builder/types/components/components";
 
 // Public-safe container components (no editor contexts, no placeholders)
 function PublicSection({

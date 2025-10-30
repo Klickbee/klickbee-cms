@@ -1,7 +1,7 @@
 "use server";
 
-import { BuilderComponent } from "@/builder/types/components/components";
 import { isAuthenticatedGuard } from "@/feature/auth/lib/session";
+import { BuilderComponent } from "@/feature/builder/types/components/components";
 import { prisma } from "@/lib/prisma";
 import { isHomepage } from "../lib/pages";
 

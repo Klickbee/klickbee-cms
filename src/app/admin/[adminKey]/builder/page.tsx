@@ -1,9 +1,9 @@
 import { dehydrate } from "@tanstack/query-core";
 import { HydrationBoundary } from "@tanstack/react-query";
-import { DeleteComponentProvider } from "@/builder/contexts/DeleteComponentContext";
-import BuilderComponent from "@/components/builder/Builder";
-import BuilderHeader from "@/components/builder/ui/BuilderHeader";
 import { Toaster } from "@/components/ui/sonner";
+import BuilderComponent from "@/feature/builder/components/Builder";
+import BuilderHeader from "@/feature/builder/components/ui/BuilderHeader";
+import { DeleteComponentProvider } from "@/feature/builder/contexts/DeleteComponentContext";
 import { lastPageIdOptions } from "@/feature/page/options/lastPageIdOptions";
 import { getQueryClient } from "@/lib/getQueryClient";
 

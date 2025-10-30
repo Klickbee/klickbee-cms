@@ -1,6 +1,6 @@
 import DashboardTitle from "@/components/admin/_partials/dashboardTitle";
-import AiContextForm from "@/components/admin/settings/ai/aiContextForm";
-import AiSettingsForm from "@/components/admin/settings/ai/aiSettingsForm";
+import AiContextForm from "@/feature/settings/components/ai/aiContextForm";
+import AiSettingsForm from "@/feature/settings/components/ai/aiSettingsForm";
 
 export default function AiSettingsPage() {
 	return (

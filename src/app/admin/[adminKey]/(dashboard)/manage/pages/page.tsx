@@ -7,10 +7,10 @@ import { useTranslations } from "next-intl";
 import DashboardTitle from "@/components/admin/_partials/dashboardTitle";
 import CardTitle from "@/components/admin/manage/CardTitle";
 import EmptyState from "@/components/admin/manage/EmptyState";
-import PagesTable from "@/components/admin/manage/Page/pagesTable";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useAdminKey } from "@/feature/admin-key/lib/utils";
+import PagesTable from "@/feature/page/components/admin/pagesTable";
 import { usePages } from "@/feature/page/queries/usePages";
 
 export default function AdminPagesPage() {
