@@ -1,9 +1,9 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { ContentRenderer } from "@/components/admin/_partials/content-renderer";
 import { useContactById } from "@/feature/contact/queries/useContactById";
 import { Contact } from "@/feature/contact/types/contact";
-import { ContentRenderer } from "../../../components/admin/_partials/content-renderer";
 
 interface ContactDetailProps {
 	contactId: string;
