@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
 	mapContentToTree,
 	PageTitle,
@@ -14,6 +15,7 @@ import { usePageHeaderByPage } from "@/feature/page/_header/queries/usePageHeade
 export default function BuilderTabLayers() {
 	const currentPage = useCurrentPageStore((state) => state.currentPage);
 	useBuilderShortcuts();
+	const [rootExpanded, setRootExpanded] = useState<boolean>(true);
 
 	// Map content (page body) to tree nodes
 	const contentNodes: BuilderComponent[] =
@@ -49,15 +51,40 @@ export default function BuilderTabLayers() {
 
 	return (
 		<div className={"divide-y"}>
-			<PageTitle title={currentPage.title} />
+			<div className="flex items-center justify-between px-4 py-2">
+				<PageTitle title={currentPage.title} />
+			</div>
 			{/* Content tree */}
 			<div className="flex flex-col px-4 py-2 text-sm gap-0">
+				<button
+					aria-label={
+						rootExpanded
+							? "Collapse all root elements"
+							: "Expand all root elements"
+					}
+					className="text-xs px-2 py-1 rounded bg-transparent border border-gray-200 hover:bg-gray-50"
+					onClick={() => setRootExpanded((v) => !v)}
+				>
+					{rootExpanded ? "Collapse all" : "Expand all"}
+				</button>
 				{headerNodes.length > 0 && (
-					<TreeView contentNodes={headerNodes} type={"header"} />
+					<TreeView
+						contentNodes={headerNodes}
+						rootExpand={rootExpanded}
+						type={"header"}
+					/>
 				)}
-				<TreeView contentNodes={contentNodes} type={"content"} />
+				<TreeView
+					contentNodes={contentNodes}
+					rootExpand={rootExpanded}
+					type={"content"}
+				/>
 				{footerNodes.length > 0 && (
-					<TreeView contentNodes={footerNodes} type={"footer"} />
+					<TreeView
+						contentNodes={footerNodes}
+						rootExpand={rootExpanded}
+						type={"footer"}
+					/>
 				)}
 			</div>
 		</div>

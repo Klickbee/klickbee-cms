@@ -22,9 +22,14 @@ import { TreeNode } from "./TreeNode";
 interface TreeViewProps {
 	contentNodes: BuilderComponent[];
 	type?: "header" | "footer" | "content";
+	rootExpand?: boolean;
 }
 
-export function TreeView({ contentNodes, type }: TreeViewProps) {
+export function TreeView({
+	contentNodes,
+	type,
+	rootExpand = true,
+}: TreeViewProps) {
 	const { confirmDelete } = useDeleteComponentContext();
 	const { duplicateComponent } = useDuplicateComponent();
 	const { clipboard, copy } = useStyleClipboardStore();
@@ -45,6 +50,7 @@ export function TreeView({ contentNodes, type }: TreeViewProps) {
 									id={contentNode.id}
 									node={contentNode}
 									parentId={null}
+									rootExpand={rootExpand}
 									type={type}
 								/>
 							</ContextMenuTrigger>
