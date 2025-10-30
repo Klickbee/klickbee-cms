@@ -7,19 +7,19 @@ import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
-import ColorPaletteEditor from "@/builder/components/settings/ColorEditor";
-import ColorPreview from "@/builder/components/settings/ColorPreview";
-import LogoEditor from "@/builder/components/settings/LogoEditor";
-import SpacingEditor from "@/builder/components/settings/SpacingEditor";
-import SpacingPreview from "@/builder/components/settings/SpacingPreview";
-import TypographyEditor from "@/builder/components/settings/TypographyEditor";
-import TypographyPreview from "@/builder/components/settings/TypographyPreview";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import ColorPaletteEditor from "@/feature/builder/components/settings/ColorEditor";
+import ColorPreview from "@/feature/builder/components/settings/ColorPreview";
+import LogoEditor from "@/feature/builder/components/settings/LogoEditor";
+import SpacingEditor from "@/feature/builder/components/settings/SpacingEditor";
+import SpacingPreview from "@/feature/builder/components/settings/SpacingPreview";
+import TypographyEditor from "@/feature/builder/components/settings/TypographyEditor";
+import TypographyPreview from "@/feature/builder/components/settings/TypographyPreview";
 import {
 	defaultGlobalSettings,
 	globalSettingsSchema,
-} from "@/builder/types/settings/GlobalSettingsData";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
+} from "@/feature/builder/types/settings/GlobalSettingsData";
 
 export type FormValues = z.output<typeof globalSettingsSchema>;
 

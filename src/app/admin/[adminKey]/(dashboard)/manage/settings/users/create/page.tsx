@@ -1,5 +1,5 @@
 import DashboardTitle from "@/components/admin/_partials/dashboardTitle";
-import UserCreateForm from "@/components/admin/settings/users/create/userCreateForm";
+import UserCreateForm from "@/feature/settings/components/users/create/userCreateForm";
 
 export default function Page() {
 	return (

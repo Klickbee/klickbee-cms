@@ -1,11 +1,11 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import DashboardTitle from "@/components/admin/_partials/dashboardTitle";
 import CardTitle from "@/components/admin/manage/CardTitle";
-import ContactActionButton from "@/components/admin/manage/contact/contactActionButton";
-import ContactSearchBar from "@/components/admin/manage/contact/contactSearchBar";
-import ContactsPagination from "@/components/admin/manage/contact/contactsPagination";
-import ContactsTable from "@/components/admin/manage/contact/contactsTable";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import ContactActionButton from "@/feature/contact/components/contactActionButton";
+import ContactSearchBar from "@/feature/contact/components/contactSearchBar";
+import ContactsPagination from "@/feature/contact/components/contactsPagination";
+import ContactsTable from "@/feature/contact/components/contactsTable";
 import { ContactsTableProvider } from "@/feature/contact/contexts/ContactsTableContext";
 import { allContactsOptions } from "@/feature/contact/options/allContactsOptions";
 import { getQueryClient } from "@/lib/getQueryClient";

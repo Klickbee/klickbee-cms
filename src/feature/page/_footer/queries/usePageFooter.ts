@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
 	BuilderComponent,
 	ParentBuilderComponent,
-} from "@/builder/types/components/components";
+} from "@/feature/builder/types/components/components";
 import {
 	createPageFooter,
 	getDefaultPageFooter,

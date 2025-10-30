@@ -1,0 +1,43 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+import { useDynamicItemsContent } from "@/feature/builder/hooks/useDynamicItemsContent";
+import { useFormFieldContent } from "@/feature/builder/hooks/useFormFieldContent";
+import { BuilderComponent } from "@/feature/builder/types/components/components";
+import DynamicItemsList from "../layout/DynamicItemsList";
+import FormFieldGroup from "../layout/FormFieldGroup";
+
+interface RadioGroupContentProps {
+	component: BuilderComponent;
+}
+
+export default function RadioGroupContent({
+	component,
+}: RadioGroupContentProps) {
+	const t = useTranslations("Builder.RightSidebar.Content");
+	const { formProps, updateFormField } = useFormFieldContent(component);
+	const { items, itemsActions } = useDynamicItemsContent(component);
+
+	return (
+		<div className="flex flex-col gap-3">
+			<FormFieldGroup
+				label={formProps.label}
+				name={formProps.name}
+				onLabelChange={updateFormField.updateLabel}
+				onNameChange={updateFormField.updateName}
+				onRequiredChange={updateFormField.updateRequired}
+				required={formProps.required}
+			/>
+
+			<DynamicItemsList
+				items={items}
+				label={t("items")}
+				minItems={1}
+				onAddItem={itemsActions.handleAddItem}
+				onItemChange={itemsActions.handleItemChange}
+				onRemoveItem={itemsActions.handleRemoveItem}
+				placeholderPrefix={t("listRadio")}
+			/>
+		</div>
+	);
+}

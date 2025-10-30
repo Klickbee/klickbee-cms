@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { BuilderComponent } from "@/builder/types/components/components";
+import { BuilderComponent } from "@/feature/builder/types/components/components";
 import {
 	deletePage,
 	duplicatePage,

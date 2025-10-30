@@ -7,8 +7,8 @@ import { Sidebar } from "@/components/admin/_partials/sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { userServerOptions } from "@/feature/user/options/userServerOptions";
+import { UserProvider } from "@/feature/user/providers/UserProvider";
 import { getQueryClient } from "@/lib/getQueryClient";
-import { UserProvider } from "@/providers/UserProvider";
 import { ZodTranslationProvider } from "@/providers/ZodTranslationProvider";
 
 export default async function AdminLayout({

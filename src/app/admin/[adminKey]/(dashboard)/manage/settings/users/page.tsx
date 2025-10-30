@@ -1,11 +1,11 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import DashboardTitle from "@/components/admin/_partials/dashboardTitle";
 import CardTitle from "@/components/admin/manage/CardTitle";
-import UserActionButton from "@/components/admin/settings/users/actionButton";
-import UsersPagination from "@/components/admin/settings/users/pagination";
-import UserSearchBar from "@/components/admin/settings/users/searchBar";
-import UsersTable from "@/components/admin/settings/users/usersTable";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import UserActionButton from "@/feature/settings/components/users/actionButton";
+import UsersPagination from "@/feature/settings/components/users/pagination";
+import UserSearchBar from "@/feature/settings/components/users/searchBar";
+import UsersTable from "@/feature/settings/components/users/usersTable";
 import { UsersTableProvider } from "@/feature/user/contexts/UsersTableContext";
 import { allUsersOptions } from "@/feature/user/options/allUsersOptions";
 import { getQueryClient } from "@/lib/getQueryClient";

@@ -1,5 +1,5 @@
 // biome-ignore-all lint: Prisma DOC
-import { BuilderComponent } from "@/builder/types/components/components";
+import { BuilderComponent } from "@/feature/builder/types/components/components";
 import type { Page } from "@/generated/prisma";
 
 export type { Page } from "@/generated/prisma";
