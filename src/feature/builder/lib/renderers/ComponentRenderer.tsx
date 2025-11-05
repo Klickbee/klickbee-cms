@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { MouseEventHandler } from "react";
 import {
 	ContextMenu,
 	ContextMenuContent,
@@ -63,7 +63,13 @@ const DefaultComponent: React.FC<{ component: BuilderComponent }> = ({
 // Component registry mapping component types to React components
 const componentMap: Record<
 	ComponentType,
-	React.FC<{ component: BuilderComponent }>
+	React.FC<{
+		component: BuilderComponent;
+		className: string;
+		onClick: MouseEventHandler;
+		onDragLeave: ((e: React.DragEvent<HTMLDivElement>) => void) | undefined;
+		onDragOver: ((e: React.DragEvent<HTMLDivElement>) => void) | undefined;
+	}>
 > = {
 	button: Button,
 	checkbox: Checkbox,
@@ -111,6 +117,7 @@ interface ComponentRendererProps {
 	component: BuilderComponent;
 	onDragOver?: (e: React.DragEvent<HTMLDivElement>) => void;
 	onDragLeave?: () => void;
+	onClick?: MouseEventHandler;
 	isDropTarget?: boolean;
 	isRoot?: boolean;
 	region?: "header" | "content" | "footer";
@@ -187,25 +194,37 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 	return (
 		<ContextMenu>
 			<ContextMenuTrigger>
-				<div
-					className={className}
-					onClick={(e) => {
-						e.stopPropagation(); // Stop event propagation to parent components
-						setCurrentComponent(component as BuilderComponent);
-					}}
-					onDragLeave={onDragLeave}
-					onDragOver={onDragOver}
-				>
+				<>
 					{component.type === "section" ? (
 						<SectionBuilder
+							className={className}
 							component={component}
 							isRoot={!!isRoot}
+							onClick={(e) => {
+								e.stopPropagation(); // Stop event propagation to parent components
+								setCurrentComponent(
+									component as BuilderComponent,
+								);
+							}}
+							onDragLeave={onDragLeave}
+							onDragOver={onDragOver}
 							region={region}
 						/>
 					) : (
-						<ComponentToRender component={component} />
+						<ComponentToRender
+							className={className}
+							component={component}
+							onClick={(e) => {
+								e.stopPropagation(); // Stop event propagation to parent components
+								setCurrentComponent(
+									component as BuilderComponent,
+								);
+							}}
+							onDragLeave={onDragLeave}
+							onDragOver={onDragOver}
+						/>
 					)}
-				</div>
+				</>
 			</ContextMenuTrigger>
 			<ContextMenuContent onClick={(e) => e.stopPropagation()}>
 				<ContextMenuItem
