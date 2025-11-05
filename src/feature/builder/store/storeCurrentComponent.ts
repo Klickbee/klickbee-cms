@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { ComponentName } from "@/feature/builder/types/components/componentMap";
 import { BuilderComponent } from "@/feature/builder/types/components/components";
 
 type CurrentComponentStore = {
@@ -12,6 +13,7 @@ export const useCurrentComponentStore = create<CurrentComponentStore>(
 		clearCurrentComponent: () =>
 			set({
 				currentComponent: {
+					name: "" as ComponentName,
 					children: [],
 					groupId: "",
 					id: "none",
@@ -24,6 +26,7 @@ export const useCurrentComponentStore = create<CurrentComponentStore>(
 				},
 			}),
 		currentComponent: {
+			name: "" as ComponentName,
 			children: [],
 			groupId: "",
 			id: "none",
