@@ -4,9 +4,19 @@ import { BuilderComponent } from "../../../types/components/components";
 
 interface HeadingProps {
 	component: BuilderComponent;
+	className?: string;
+	onClick?: React.MouseEventHandler<HTMLElement>;
+	onDragLeave?: React.DragEventHandler<HTMLElement>;
+	onDragOver?: React.DragEventHandler<HTMLElement>;
 }
 
-export const Heading: React.FC<HeadingProps> = ({ component }) => {
+export const Heading: React.FC<HeadingProps> = ({
+	component,
+	className,
+	onClick,
+	onDragLeave,
+	onDragOver,
+}) => {
 	const content = (component.props?.content?.text as string) || "Heading";
 	const level: number = (component.props?.content?.level as number) || 2;
 
@@ -17,5 +27,15 @@ export const Heading: React.FC<HeadingProps> = ({ component }) => {
 		...mapStylePropsToCss(component.props?.style),
 	};
 
-	return <Tag style={style}>{content}</Tag>;
+	return React.createElement(
+		Tag,
+		{
+			style,
+			className,
+			onClick: onClick,
+			onDragLeave: onDragLeave,
+			onDragOver: onDragOver,
+		},
+		content,
+	);
 };

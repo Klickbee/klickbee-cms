@@ -4,9 +4,19 @@ import { BuilderComponent } from "../../../types/components/components";
 
 interface CheckboxProps {
 	component: BuilderComponent;
+	className?: string;
+	onClick?: React.MouseEventHandler<HTMLElement>;
+	onDragLeave?: React.DragEventHandler<HTMLElement>;
+	onDragOver?: React.DragEventHandler<HTMLElement>;
 }
 
-export const Checkbox: React.FC<CheckboxProps> = ({ component }) => {
+export const Checkbox: React.FC<CheckboxProps> = ({
+	component,
+	className,
+	onClick,
+	onDragLeave,
+	onDragOver,
+}) => {
 	// Default checkbox properties if not provided
 	const label = (component.props?.content?.label as string) || "Checkbox";
 	const name =
@@ -18,7 +28,12 @@ export const Checkbox: React.FC<CheckboxProps> = ({ component }) => {
 
 	return (
 		<div
-			className="flex items-start"
+			className={["flex items-start", className]
+				.filter(Boolean)
+				.join(" ")}
+			onClick={onClick}
+			onDragLeave={onDragLeave}
+			onDragOver={onDragOver}
 			style={{
 				order: component.order || 0, // Use order property for positioning
 				...mapStylePropsToCss(component.props?.style),

@@ -4,9 +4,19 @@ import { BuilderComponent } from "../../../types/components/components";
 
 interface ListProps {
 	component: BuilderComponent;
+	className?: string;
+	onClick?: React.MouseEventHandler<HTMLElement>;
+	onDragLeave?: React.DragEventHandler<HTMLElement>;
+	onDragOver?: React.DragEventHandler<HTMLElement>;
 }
 
-export const List: React.FC<ListProps> = ({ component }) => {
+export const List: React.FC<ListProps> = ({
+	component,
+	className,
+	onClick,
+	onDragLeave,
+	onDragOver,
+}) => {
 	// Default list properties if not provided
 	const label = (component.props?.content?.label as string) || "List";
 	const items = (component.props?.content?.items as string[]) || [
@@ -18,7 +28,12 @@ export const List: React.FC<ListProps> = ({ component }) => {
 
 	return (
 		<div
-			className="flex flex-col space-y-2"
+			className={["flex flex-col space-y-2", className]
+				.filter(Boolean)
+				.join(" ")}
+			onClick={onClick}
+			onDragLeave={onDragLeave}
+			onDragOver={onDragOver}
 			style={{
 				order: component.order || 0, // Use order property for positioning
 				...mapStylePropsToCss(component.props?.style),

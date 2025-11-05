@@ -4,6 +4,10 @@ import { BuilderComponent } from "../../../types/components/components";
 
 interface SliderProps {
 	component: BuilderComponent;
+	className?: string;
+	onClick?: React.MouseEventHandler<HTMLElement>;
+	onDragLeave?: ((e: React.DragEvent<HTMLDivElement>) => void) | undefined;
+	onDragOver?: ((e: React.DragEvent<HTMLDivElement>) => void) | undefined;
 }
 
 /*
@@ -14,7 +18,13 @@ interface SliderProps {
   - showArrows?: boolean
   - showDots?: boolean
 */
-export const Slider: React.FC<SliderProps> = ({ component }) => {
+export const Slider: React.FC<SliderProps> = ({
+	component,
+	className,
+	onClick,
+	onDragLeave,
+	onDragOver,
+}) => {
 	const rawContent = component.props?.content ?? {};
 	type SliderItem = string | { src: string; alt?: string };
 	type SliderContent = {
@@ -73,7 +83,12 @@ export const Slider: React.FC<SliderProps> = ({ component }) => {
 
 	return (
 		<div
-			className="relative w-full overflow-hidden"
+			className={["relative w-full overflow-hidden", className]
+				.filter(Boolean)
+				.join(" ")}
+			onClick={onClick}
+			onDragLeave={onDragLeave}
+			onDragOver={onDragOver}
 			style={{
 				order: component.order || 0,
 				...mapStylePropsToCss(component.props?.style),

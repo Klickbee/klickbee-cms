@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext } from "react";
+import React, { MouseEventHandler, useContext } from "react";
 import { DragDropContext } from "@/feature/builder/components/_partials/DragAndDropContext";
 import EmptyChildrenPlaceholder from "@/feature/builder/components/builder_components/ui/_partials/EmptyChildrenPlaceholder";
 import { useBuilderMaxWidth } from "@/feature/builder/hooks/useBuilderMaxWidth";
@@ -15,12 +15,20 @@ interface SectionProps {
 	component: BuilderComponent;
 	isRoot?: boolean;
 	region?: "header" | "content" | "footer";
+	className: string;
+	onClick: MouseEventHandler;
+	onDragLeave: ((e: React.DragEvent<HTMLDivElement>) => void) | undefined;
+	onDragOver: ((e: React.DragEvent<HTMLDivElement>) => void) | undefined;
 }
 
 export const SectionBuilder: React.FC<SectionProps> = ({
 	component,
 	isRoot = false,
 	region = "content",
+	onClick,
+	onDragLeave,
+	onDragOver,
+	className,
 }) => {
 	// Initialize the builder max width cache from settings
 	useBuilderMaxWidth();
@@ -29,7 +37,10 @@ export const SectionBuilder: React.FC<SectionProps> = ({
 
 	return (
 		<section
-			className={`relative bg-white ${isRoot ? "w-full" : ""}`}
+			className={`relative bg-white ${isRoot ? "w-full" : ""} ${className}`}
+			onClick={onClick}
+			onDragLeave={onDragLeave}
+			onDragOver={onDragOver}
 			style={{
 				...mapStylePropsToCss(component.props?.style),
 			}}

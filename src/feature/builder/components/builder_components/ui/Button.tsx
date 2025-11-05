@@ -5,9 +5,19 @@ import { BuilderComponent } from "@/feature/builder/types/components/components"
 
 interface ButtonProps {
 	component: BuilderComponent;
+	className?: string;
+	onClick?: React.MouseEventHandler<HTMLElement>;
+	onDragLeave?: React.DragEventHandler<HTMLElement>;
+	onDragOver?: React.DragEventHandler<HTMLElement>;
 }
 
-export const Button: React.FC<ButtonProps> = ({ component }) => {
+export const Button: React.FC<ButtonProps> = ({
+	component,
+	className,
+	onClick,
+	onDragLeave,
+	onDragOver,
+}) => {
 	// Extract content with sensible fallbacks
 	const text = (component.props?.content?.text as string) || "Button";
 	const href = (component.props?.content?.href as string) || "";
@@ -79,8 +89,11 @@ export const Button: React.FC<ButtonProps> = ({ component }) => {
 		...mapStylePropsToCss(component.props?.style),
 	};
 
-	const className =
+	const classNameLocal =
 		"inline-flex items-center gap-2 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2";
+	const mergedClassName = [classNameLocal, className]
+		.filter(Boolean)
+		.join(" ");
 
 	const handleClick = React.useCallback(
 		(e?: React.MouseEvent) => {
@@ -103,9 +116,14 @@ export const Button: React.FC<ButtonProps> = ({ component }) => {
 
 	return (
 		<ButtonShadcn
-			className={className}
+			className={mergedClassName}
 			data-href={href || undefined}
-			onClick={handleClick}
+			onClick={(e) => {
+				handleClick(e);
+				if (onClick) onClick(e);
+			}}
+			onDragLeave={onDragLeave}
+			onDragOver={onDragOver}
 			style={commonStyle}
 			type="button"
 		>

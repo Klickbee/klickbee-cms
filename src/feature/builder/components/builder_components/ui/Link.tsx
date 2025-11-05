@@ -4,9 +4,19 @@ import { BuilderComponent } from "../../../types/components/components";
 
 interface LinkProps {
 	component: BuilderComponent;
+	className?: string;
+	onClick?: React.MouseEventHandler<HTMLElement>;
+	onDragLeave?: React.DragEventHandler<HTMLElement>;
+	onDragOver?: React.DragEventHandler<HTMLElement>;
 }
 
-export const Link: React.FC<LinkProps> = ({ component }) => {
+export const Link: React.FC<LinkProps> = ({
+	component,
+	className,
+	onClick,
+	onDragLeave,
+	onDragOver,
+}) => {
 	// Default link properties if not provided
 	const text = (component.props?.content?.text as string) || "Link text";
 	const href = (component.props?.content?.href as string) || "#";
@@ -15,8 +25,13 @@ export const Link: React.FC<LinkProps> = ({ component }) => {
 
 	return (
 		<a
-			className="text-blue-600 hover:underline"
+			className={["text-blue-600 hover:underline", className]
+				.filter(Boolean)
+				.join(" ")}
 			href={href}
+			onClick={onClick}
+			onDragLeave={onDragLeave}
+			onDragOver={onDragOver}
 			rel={rel}
 			style={{
 				order: component.order || 0, // Use order property for positioning

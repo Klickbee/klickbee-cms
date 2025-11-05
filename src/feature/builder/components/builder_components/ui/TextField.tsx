@@ -4,9 +4,19 @@ import { BuilderComponent } from "../../../types/components/components";
 
 interface TextFieldProps {
 	component: BuilderComponent;
+	className?: string;
+	onClick?: React.MouseEventHandler<HTMLElement>;
+	onDragLeave?: ((e: React.DragEvent<HTMLDivElement>) => void) | undefined;
+	onDragOver?: ((e: React.DragEvent<HTMLDivElement>) => void) | undefined;
 }
 
-export const TextField: React.FC<TextFieldProps> = ({ component }) => {
+export const TextField: React.FC<TextFieldProps> = ({
+	component,
+	className,
+	onClick,
+	onDragLeave,
+	onDragOver,
+}) => {
 	// Default text field properties if not provided
 	const label = (component.props?.content?.label as string) || "Text Field";
 	const placeholder = (component.props?.content?.placeholder as string) || "";
@@ -19,7 +29,12 @@ export const TextField: React.FC<TextFieldProps> = ({ component }) => {
 
 	return (
 		<div
-			className="flex flex-col space-y-2"
+			className={["flex flex-col space-y-2", className]
+				.filter(Boolean)
+				.join(" ")}
+			onClick={onClick}
+			onDragLeave={onDragLeave}
+			onDragOver={onDragOver}
 			style={{
 				order: component.order || 0, // Use order property for positioning
 				...mapStylePropsToCss(component.props?.style),
@@ -33,6 +48,9 @@ export const TextField: React.FC<TextFieldProps> = ({ component }) => {
 				className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
 				id={name}
 				name={name}
+				onClick={onClick}
+				onDragLeave={onDragLeave}
+				onDragOver={onDragOver}
 				placeholder={placeholder}
 				required={required}
 				type={type}

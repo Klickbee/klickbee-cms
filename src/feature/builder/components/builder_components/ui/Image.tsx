@@ -1,12 +1,23 @@
 import React from "react";
 import { mapStylePropsToCss } from "@/feature/builder/lib/style/mapStylePropsToCss";
+import { ComponentStyleProps } from "@/feature/builder/types/components/properties/componentStylePropsType";
 import { BuilderComponent } from "../../../types/components/components";
 
 interface ImageProps {
 	component: BuilderComponent;
+	className?: string;
+	onClick?: React.MouseEventHandler<HTMLElement>;
+	onDragLeave?: React.DragEventHandler<HTMLElement>;
+	onDragOver?: React.DragEventHandler<HTMLElement>;
 }
 
-export const Image: React.FC<ImageProps> = ({ component }) => {
+export const Image: React.FC<ImageProps> = ({
+	component,
+	className,
+	onClick,
+	onDragLeave,
+	onDragOver,
+}) => {
 	// Default image source and alt text if not provided
 	const src =
 		(component.props?.content?.src as string) ||
@@ -16,11 +27,13 @@ export const Image: React.FC<ImageProps> = ({ component }) => {
 	const openInNewTab =
 		(component.props?.content?.openInNewTab as boolean) || false;
 
-	const width = component.props?.style?.sizeAndSpacing?.width || {
+	const width = (component.props?.style as ComponentStyleProps)
+		?.sizeAndSpacing?.width || {
 		number: 400,
 		unit: "px",
 	};
-	const height = component.props?.style?.sizeAndSpacing?.height || {
+	const height = (component.props?.style as ComponentStyleProps)
+		?.sizeAndSpacing?.height || {
 		number: 300,
 		unit: "px",
 	};
@@ -33,9 +46,15 @@ export const Image: React.FC<ImageProps> = ({ component }) => {
 	const img = (
 		<img
 			alt={alt}
-			className="max-w-full h-auto"
+			className={["max-w-full h-auto", className]
+				.filter(Boolean)
+				.join(" ")}
 			height={height.number}
+			onClick={onClick}
+			onDragLeave={onDragLeave}
+			onDragOver={onDragOver}
 			src={src}
+			style={commonStyle}
 			width={width.number}
 		/>
 	);
@@ -45,8 +64,11 @@ export const Image: React.FC<ImageProps> = ({ component }) => {
 		const rel = openInNewTab ? "noopener noreferrer" : undefined;
 		return (
 			<a
-				className="inline-block"
+				className={className}
 				href={href}
+				onClick={onClick}
+				onDragLeave={onDragLeave}
+				onDragOver={onDragOver}
 				rel={rel}
 				style={commonStyle}
 				target={target}
@@ -56,5 +78,5 @@ export const Image: React.FC<ImageProps> = ({ component }) => {
 		);
 	}
 
-	return React.cloneElement(img, { style: commonStyle });
+	return img;
 };
