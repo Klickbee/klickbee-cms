@@ -1,5 +1,9 @@
+import { ComponentName } from "@/feature/builder/types/components/componentMap";
 import { ComponentContentProps } from "@/feature/builder/types/components/properties/componentContentPropsType";
-import { ComponentStyleProps } from "@/feature/builder/types/components/properties/componentStylePropsType";
+import {
+	BreakpointStyleProps,
+	ComponentStyleProps,
+} from "@/feature/builder/types/components/properties/componentStylePropsType";
 
 export type ComponentType =
 	// Layout components
@@ -41,12 +45,14 @@ export type ComponentType =
 export interface BuilderComponent {
 	id: string;
 	type: ComponentType;
+	name: ComponentName;
 	label: string;
 	groupId: string;
 	order?: number; // Order-based positioning
 	children?: BuilderComponent[];
 	props: {
-		style?: ComponentStyleProps;
+		// During migration, allow both legacy flat style and breakpoint map
+		style?: BreakpointStyleProps | ComponentStyleProps;
 		content?: ComponentContentProps;
 	};
 	icon?: React.ReactNode; // Optional icon for display
