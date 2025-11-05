@@ -1,9 +1,17 @@
 "use client";
 
-import { Play, Plus, Trash2 } from "lucide-react";
+import { Ellipsis, Play } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { DragDropContext } from "@/feature/builder/components/_partials/DragAndDropContext";
 import { BreakpointProvider } from "@/feature/builder/contexts/BreakpointContext";
 import { useBuilderShortcuts } from "@/feature/builder/hooks/useBuilderShortcuts";
@@ -98,27 +106,31 @@ export default function BuilderPreviewViewport({
 							</span>
 						</div>
 						<div className="flex items-center gap-1 text-xs text-muted-foreground">
-							<span>Breakpoint</span>
-							<Button
-								className={
-									"text-foreground bg-muted hover:text-background"
-								}
-								onClick={() => {
-									handleAddBreakpoint();
-								}}
-							>
-								<Plus className="w-4 h-4" />
-							</Button>
-							<Button
-								className={
-									"text-destructive bg-muted hover:bg-destructive hover:text-white"
-								}
-								onClick={() => {
-									handleRemoveBreakpoint(bp.name);
-								}}
-							>
-								<Trash2 className="w-4 h-4" />
-							</Button>
+							<DropdownMenu>
+								<DropdownMenuTrigger>
+									<Ellipsis />
+								</DropdownMenuTrigger>
+								<DropdownMenuContent>
+									<DropdownMenuLabel>
+										Breakpoints
+									</DropdownMenuLabel>
+									<DropdownMenuSeparator />
+									<DropdownMenuItem
+										onClick={() => {
+											handleAddBreakpoint();
+										}}
+									>
+										Add
+									</DropdownMenuItem>
+									<DropdownMenuItem
+										onClick={() => {
+											handleRemoveBreakpoint(bp.name);
+										}}
+									>
+										Remove
+									</DropdownMenuItem>
+								</DropdownMenuContent>
+							</DropdownMenu>
 						</div>
 					</div>
 
