@@ -67,6 +67,7 @@ export default function BuilderTabComponents() {
 
 			// Create the new component using the selected item from componentsList
 			const newComponent: BuilderComponent = {
+				name: componentData.name,
 				groupId: componentData.groupId,
 				id: `${componentData.type}-${Date.now()}`, // Generate a unique ID for the instance
 				label: componentData.label,

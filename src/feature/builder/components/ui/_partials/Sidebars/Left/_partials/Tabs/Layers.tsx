@@ -2,15 +2,65 @@
 
 import { useState } from "react";
 import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+import {
 	mapContentToTree,
 	PageTitle,
 	TreeView,
 } from "@/feature/builder/components/ui/_partials/Sidebars/Left/_partials/Tabs/_partials/Layers";
 import { useBuilderShortcuts } from "@/feature/builder/hooks/useBuilderShortcuts";
+import { useActiveBreakpointStore } from "@/feature/builder/store/storeActiveBreakpoint";
 import { useCurrentPageStore } from "@/feature/builder/store/storeCurrentPage";
 import { BuilderComponent } from "@/feature/builder/types/components/components";
 import { usePageFooterByPage } from "@/feature/page/_footer/queries/usePageFooter";
 import { usePageHeaderByPage } from "@/feature/page/_header/queries/usePageHeader";
+import { useSetting } from "@/feature/settings/queries/useSettings";
+
+function BreakpointSelector() {
+	const { data: breakpointsRaw } = useSetting("builder_breakpoints") || [];
+	const breakpoints: Array<{ name: string; width: number }> =
+		breakpointsRaw?.value ? JSON.parse(breakpointsRaw.value) : [];
+	const _widest = breakpoints.reduce(
+		(max, bp) => (bp && bp.width > (max?.width ?? 0) ? bp : max),
+		breakpoints[0] || { name: "default", width: 1920 },
+	);
+	const { active, setActive } = useActiveBreakpointStore();
+	const value = active ? String(active.width) : "default";
+	return (
+		<Select
+			onValueChange={(val) => {
+				if (val === "default") {
+					setActive(null);
+					return;
+				}
+				const width = Number(val);
+				const found = breakpoints.find((b) => b.width === width);
+				if (found) setActive(found);
+			}}
+			value={value}
+		>
+			<SelectTrigger size="sm">
+				<SelectValue placeholder="Breakpoint" />
+			</SelectTrigger>
+			<SelectContent>
+				<SelectItem value="default">Default</SelectItem>
+				{breakpoints
+					.slice()
+					.sort((a, b) => b.width - a.width)
+					.map((bp) => (
+						<SelectItem key={bp.width} value={String(bp.width)}>
+							{bp.name} ({bp.width}px)
+						</SelectItem>
+					))}
+			</SelectContent>
+		</Select>
+	);
+}
 
 export default function BuilderTabLayers() {
 	const currentPage = useCurrentPageStore((state) => state.currentPage);
@@ -51,8 +101,9 @@ export default function BuilderTabLayers() {
 
 	return (
 		<div className={"divide-y"}>
-			<div className="flex items-center justify-between px-4 py-2">
+			<div className="flex items-center justify-between px-4 py-2 gap-2">
 				<PageTitle title={currentPage.title} />
+				<BreakpointSelector />
 			</div>
 			{/* Content tree */}
 			<div className="flex flex-col px-4 py-2 text-sm gap-0">
@@ -62,7 +113,7 @@ export default function BuilderTabLayers() {
 							? "Collapse all root elements"
 							: "Expand all root elements"
 					}
-					className="text-xs px-2 py-1 rounded bg-transparent border border-gray-200 hover:bg-gray-50"
+					className="text-xs mb-2 px-2 py-1 rounded bg-transparent border border-gray-200 hover:bg-gray-50"
 					onClick={() => setRootExpanded((v) => !v)}
 				>
 					{rootExpanded ? "Collapse all" : "Expand all"}

@@ -10,6 +10,7 @@ import { useDeleteComponentContext } from "@/feature/builder/contexts/DeleteComp
 import { useDuplicateComponent } from "@/feature/builder/hooks/useDuplicateComponent";
 import { useCurrentPageStore } from "@/feature/builder/store/storeCurrentPage";
 import { useStyleClipboardStore } from "@/feature/builder/store/storeStyleClipboard";
+import { ComponentName } from "@/feature/builder/types/components/componentMap";
 import {
 	BuilderComponent,
 	canHaveChildren,
@@ -150,6 +151,7 @@ export function TreeView({
 													);
 												const newComponent: BuilderComponent =
 													{
+														name: listDef?.name as ComponentName,
 														groupId:
 															(listDef?.groupId as string) ||
 															"layout",
@@ -244,6 +246,7 @@ export function TreeView({
 													);
 												const newComponent: BuilderComponent =
 													{
+														name: listDef?.name as ComponentName,
 														groupId:
 															(listDef?.groupId as string) ||
 															"layout",

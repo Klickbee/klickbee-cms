@@ -15,6 +15,7 @@ import { useMoveComponent } from "@/feature/builder/hooks/useMoveComponent";
 import { useCurrentComponentStore } from "@/feature/builder/store/storeCurrentComponent";
 import { useCurrentPageStore } from "@/feature/builder/store/storeCurrentPage";
 import { useStyleClipboardStore } from "@/feature/builder/store/storeStyleClipboard";
+import { ComponentName } from "@/feature/builder/types/components/componentMap";
 import {
 	BuilderComponent,
 	canHaveChildren,
@@ -314,6 +315,7 @@ export function TreeNode({
 									(c) => c.type === "section",
 								);
 								const newComponent: BuilderComponent = {
+									name: listDef?.name as ComponentName,
 									groupId:
 										(listDef?.groupId as string) ||
 										"layout",
@@ -385,6 +387,7 @@ export function TreeNode({
 									(c) => c.type === "container",
 								);
 								const newComponent: BuilderComponent = {
+									name: listDef?.name as ComponentName,
 									groupId:
 										(listDef?.groupId as string) ||
 										"layout",
