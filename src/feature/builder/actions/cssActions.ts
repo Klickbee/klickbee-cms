@@ -20,7 +20,7 @@ export async function generateCssAction({
 		const cwd = process.cwd();
 		const appDir = path.join(cwd, "src", "app");
 		const generatedDir = path.join(appDir, "generated");
-		const globalsCssPath = path.join(appDir, "globals.css");
+		const generated = path.join(appDir, "generated.css");
 		const targetCssPath = path.join(generatedDir, fileName);
 
 		// Ensure generated directory exists
@@ -32,7 +32,7 @@ export async function generateCssAction({
 		// Update globals.css to import this CSS
 		let globals = "";
 		try {
-			globals = await fs.readFile(globalsCssPath, "utf8");
+			globals = await fs.readFile(generated, "utf8");
 		} catch (_e) {
 			// If globals.css doesn't exist, create it
 			globals = "";
@@ -61,7 +61,7 @@ export async function generateCssAction({
 			}
 			lines.splice(insertIndex, 0, newImport);
 			globals = lines.join("\n");
-			await fs.writeFile(globalsCssPath, globals, "utf8");
+			await fs.writeFile(generated, globals, "utf8");
 		}
 
 		return {
