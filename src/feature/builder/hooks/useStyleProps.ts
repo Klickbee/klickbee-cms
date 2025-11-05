@@ -1,8 +1,13 @@
 "use client";
 
 import { useMemo } from "react";
+import { useCurrentBreakpoint } from "@/feature/builder/contexts/BreakpointContext";
+import { resolveStyleAtWidth } from "@/feature/builder/lib/style/breakpointStyle";
 import { BuilderComponent } from "@/feature/builder/types/components/components";
-import { ComponentStyleProps } from "@/feature/builder/types/components/properties/componentStylePropsType";
+import {
+	BreakpointStyleProps,
+	ComponentStyleProps,
+} from "@/feature/builder/types/components/properties/componentStylePropsType";
 
 /**
  * Hook to extract style properties from a component with defaults
@@ -11,23 +16,33 @@ export function useStyleProps<T extends Partial<ComponentStyleProps>>(
 	component: BuilderComponent,
 	defaults: T,
 ): T & ComponentStyleProps {
-	return useMemo(() => {
-		const currentStyle = component.props.style || {};
+	const { width } = useCurrentBreakpoint();
 
-		// Merge defaults with current style properties
+	return useMemo(() => {
+		// Be defensive: component may not have props or style defined yet
+		const styleMap = (component.props?.style ?? {}) as BreakpointStyleProps;
+
+		// Resolve the style for the current breakpoint
+		const resolved = resolveStyleAtWidth(
+			styleMap,
+			width,
+		) as ComponentStyleProps;
+
+		// Start with provided defaults, then override with any resolved values
 		const mergedProps = { ...defaults } as T & ComponentStyleProps;
 
-		// Override with actual values from component
+		// Copy over any keys from defaults that are present in the resolved style
 		(Object.keys(defaults) as Array<keyof T>).forEach((key) => {
-			const styleKey = key as keyof ComponentStyleProps;
-			if (currentStyle[styleKey] !== undefined) {
-				(mergedProps as Record<keyof T, unknown>)[key] =
-					currentStyle[styleKey];
+			const propKey = key as unknown as keyof ComponentStyleProps;
+			const resolvedValue = resolved[propKey];
+			if (resolvedValue !== undefined) {
+				(mergedProps as Record<string, unknown>)[key as string] =
+					resolvedValue as unknown;
 			}
 		});
 
 		return mergedProps;
-	}, [component.props.style, defaults]);
+	}, [component.props?.style, defaults, width]);
 }
 
 /**
@@ -38,7 +53,13 @@ export function useStyleProperty<K extends keyof ComponentStyleProps>(
 	property: K,
 	defaultValue: ComponentStyleProps[K],
 ): ComponentStyleProps[K] {
+	const { width } = useCurrentBreakpoint();
 	return useMemo(() => {
-		return component.props.style?.[property] ?? defaultValue;
-	}, [component.props.style, property, defaultValue]);
+		const styleMap = (component.props?.style ?? {}) as BreakpointStyleProps;
+		const resolved = resolveStyleAtWidth(
+			styleMap,
+			width,
+		) as ComponentStyleProps;
+		return resolved[property] ?? defaultValue;
+	}, [component.props?.style, property, defaultValue, width]);
 }
