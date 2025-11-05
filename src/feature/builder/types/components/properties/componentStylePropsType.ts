@@ -210,3 +210,5 @@ export type ComponentStyleProps = {
 	effects?: EffectsStyle;
 	advanced?: AdvancedStyle;
 };
+
+export type BreakpointStyleProps = Record<number, ComponentStyleProps>;
