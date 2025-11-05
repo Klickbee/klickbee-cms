@@ -6,7 +6,7 @@ import {
 	canHaveChildren,
 } from "@/feature/builder/types/components/components";
 import type { ComponentContentProps } from "@/feature/builder/types/components/properties/componentContentPropsType";
-import type { ComponentStyleProps } from "@/feature/builder/types/components/properties/componentStylePropsType";
+import { BreakpointStyleProps } from "@/feature/builder/types/components/properties/componentStylePropsType";
 import { usePageHeaderByPage } from "@/feature/page/_header/queries/usePageHeader";
 
 export type DropPosition = "before" | "after" | "inside";
@@ -65,10 +65,11 @@ function updateStyleInTree(
 ): boolean {
 	for (const node of list) {
 		if (node.id === targetId) {
-			const nextStyle: ComponentStyleProps = {
-				...(newStyle as ComponentStyleProps),
+			// Preserve breakpoint map or flat style as provided
+			node.props = {
+				...node.props,
+				style: { ...(newStyle as BreakpointStyleProps) },
 			};
-			node.props = { ...node.props, style: nextStyle };
 			return true;
 		}
 		if (
