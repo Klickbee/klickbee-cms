@@ -6,6 +6,7 @@ export const EmbedBC: EmbedBCI = {
 	icon: <Embed size={16} />,
 	id: "embed",
 	label: "Embed",
+	name: "Embed",
 	props: {
 		content: {},
 		style: {

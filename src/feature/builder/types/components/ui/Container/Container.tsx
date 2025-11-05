@@ -6,6 +6,7 @@ export const ContainerBC: ContainerBCI = {
 	icon: <Box size={16} />,
 	id: "container",
 	label: "Container",
+	name: "Container",
 	props: {
 		content: {},
 		style: {
@@ -13,15 +14,7 @@ export const ContainerBC: ContainerBCI = {
 			bordersAndCorners: {},
 			effects: {},
 			layout: {},
-			sizeAndSpacing: {
-				padding: {
-					bottom: { max: 0, maxWidth: 1440, min: 0, sizeUnit: "px" },
-					key: "default-padding",
-					left: { max: 0, maxWidth: 1440, min: 0, sizeUnit: "px" },
-					right: { max: 0, maxWidth: 1440, min: 0, sizeUnit: "px" },
-					top: { max: 0, maxWidth: 1440, min: 0, sizeUnit: "px" },
-				},
-			},
+			sizeAndSpacing: {},
 		},
 	},
 	type: "container",

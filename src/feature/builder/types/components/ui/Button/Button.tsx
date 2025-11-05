@@ -6,6 +6,7 @@ export const ButtonBC: ButtonBCI = {
 	icon: <Rectangle size={16} />,
 	id: "button",
 	label: "Button",
+	name: "Button",
 	props: {
 		content: {
 			href: "#",
@@ -15,53 +16,7 @@ export const ButtonBC: ButtonBCI = {
 			iconColor: undefined,
 			text: "Button",
 		},
-		style: {
-			background: {
-				color: "#000000",
-			},
-			bordersAndCorners: {},
-			effects: {},
-			position: {},
-			sizeAndSpacing: {
-				padding: {
-					bottom: {
-						max: 1,
-						maxWidth: 1440,
-						min: 1,
-						sizeUnit: "rem",
-					},
-					key: "button-padding",
-					left: {
-						max: 2,
-						maxWidth: 1440,
-						min: 2,
-						sizeUnit: "rem",
-					},
-					right: {
-						max: 2,
-						maxWidth: 1440,
-						min: 2,
-						sizeUnit: "rem",
-					},
-					top: {
-						max: 1,
-						maxWidth: 1440,
-						min: 1,
-						sizeUnit: "rem",
-					},
-				},
-			},
-			typography: {
-				color: "#fff",
-				fontFamily: "Inter",
-				fontSize: {
-					max: 1.5,
-					maxWidth: 1440,
-					min: 1,
-					sizeUnit: "rem",
-				},
-			},
-		},
+		style: {},
 	},
 	type: "button",
 } satisfies ButtonBCI;

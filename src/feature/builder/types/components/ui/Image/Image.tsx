@@ -6,6 +6,7 @@ export const ImageBC: ImageBCI = {
 	icon: <Image size={16} />,
 	id: "image",
 	label: "Image",
+	name: "Image",
 	props: {
 		content: {
 			alt: "Image",

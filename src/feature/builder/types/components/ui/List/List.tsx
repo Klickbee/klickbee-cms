@@ -6,6 +6,7 @@ export const ListBC: ListBCI = {
 	icon: <ListIcon size={16} />,
 	id: "list",
 	label: "List",
+	name: "List",
 	props: {
 		content: {
 			items: ["Item 1"],

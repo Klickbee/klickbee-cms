@@ -6,6 +6,7 @@ export const VideoBC: VideoBCI = {
 	icon: <Video size={16} />,
 	id: "video",
 	label: "Video",
+	name: "Video",
 	props: {
 		content: {},
 		style: {

@@ -6,6 +6,7 @@ export const ParagraphBC: ParagraphBCI = {
 	icon: <Type size={16} />,
 	id: "paragraph",
 	label: "Paragraph",
+	name: "Paragraph",
 	props: {
 		content: {},
 		style: {

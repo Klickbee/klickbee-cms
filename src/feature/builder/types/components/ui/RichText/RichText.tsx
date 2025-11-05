@@ -6,6 +6,7 @@ export const RichTextBC: RichTextBCI = {
 	icon: <FileText size={16} />,
 	id: "richtext",
 	label: "Rich Text",
+	name: "RichText",
 	props: {
 		content: {
 			content: "<p>Rich Text</p>",

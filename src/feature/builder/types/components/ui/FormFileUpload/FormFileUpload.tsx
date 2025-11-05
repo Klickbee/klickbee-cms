@@ -6,6 +6,7 @@ export const FormFileUploadBC: FormFileUploadBCI = {
 	icon: <FileUp size={16} />,
 	id: "formfileupload",
 	label: "File Upload",
+	name: "FormFileUpload",
 	props: {
 		content: {
 			maxFileSize: 5,

@@ -6,6 +6,7 @@ export const CheckboxBC: CheckboxBCI = {
 	icon: <CheckSquare size={16} />,
 	id: "checkbox",
 	label: "Checkbox",
+	name: "Checkbox",
 	props: {
 		content: {},
 		style: {

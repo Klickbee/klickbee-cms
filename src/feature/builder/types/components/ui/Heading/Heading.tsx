@@ -6,6 +6,7 @@ export const HeadingBC: HeadingBCI = {
 	icon: <Heading size={16} />,
 	id: "heading",
 	label: "Heading",
+	name: "Heading",
 	props: {
 		content: {},
 		style: {

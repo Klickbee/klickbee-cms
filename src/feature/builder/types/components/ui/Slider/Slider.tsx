@@ -6,6 +6,7 @@ export const SliderBC: SliderBCI = {
 	icon: <Images size={16} />,
 	id: "slider",
 	label: "Slider",
+	name: "Slider",
 	props: {
 		content: {
 			autoplay: true,

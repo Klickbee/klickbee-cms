@@ -6,6 +6,7 @@ export const TextBC: TextBCI = {
 	icon: <TextIcon size={16} />,
 	id: "text",
 	label: "Text",
+	name: "Text",
 	props: {
 		content: {
 			text: "",

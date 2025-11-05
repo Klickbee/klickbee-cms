@@ -6,6 +6,7 @@ export const DividerBC: DividerBCI = {
 	icon: <Minus size={16} />,
 	id: "divider",
 	label: "Divider",
+	name: "Divider",
 	props: {
 		content: {
 			orientation: "horizontal",

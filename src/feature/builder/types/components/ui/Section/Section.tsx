@@ -6,6 +6,7 @@ export const SectionBC: SectionBCI = {
 	icon: <GalleryVertical size={16} />,
 	id: "section",
 	label: "Section",
+	name: "Section",
 	props: {
 		content: {},
 		style: {
