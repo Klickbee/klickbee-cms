@@ -1,4 +1,5 @@
 import React, { DragEventHandler } from "react";
+import { mapStylePropsToCss } from "@/feature/builder/lib/style/mapStylePropsToCss";
 import { BuilderComponent } from "../../../types/components/components";
 
 interface SubmitButtonProps {
@@ -36,7 +37,7 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({
 			}
 			style={{
 				order: component.order || 0, // Use order property for positioning
-				...((component.props?.style as Record<string, unknown>) || {}),
+				...mapStylePropsToCss(component.props?.style),
 			}}
 			type="submit"
 		>
