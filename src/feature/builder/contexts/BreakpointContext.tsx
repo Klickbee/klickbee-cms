@@ -27,7 +27,7 @@ export function useCurrentBreakpoint(): BreakpointInfo {
 	const ctx = useContext(BreakpointContext);
 	if (!ctx) {
 		// Fallback if provider not found; assume a large desktop width
-		return { name: "default", width: 1920 };
+		return { name: "default", width: 1440 };
 	}
 	return ctx;
 }
