@@ -1,4 +1,9 @@
+import { getBuilderMaxWidth } from "@/feature/builder/lib/breakpoints";
 import { toClamp } from "@/feature/builder/lib/clampCalculator";
+import {
+	isBreakpointStyleProps,
+	resolveStyleAtWidth,
+} from "@/feature/builder/lib/style/breakpointStyle";
 import {
 	BackgroundStyle,
 	BorderCornerStyle,
@@ -200,14 +205,14 @@ function applyTypography(typography?: TypographyStyle): React.CSSProperties {
 		const f = typography.font;
 		if (f.fontFamily) css.fontFamily = f.fontFamily;
 		if (f.fontSize) css.fontSize = fluidToCss(f.fontSize);
-		if (typeof f.lineHeight === "number") {
+		if (f.lineHeight !== undefined && f.lineHeight !== null) {
 			css.lineHeight = `${f.lineHeight}${f.lineHeightUnits}`;
 		}
 		if (f.fontWeight)
 			css.fontWeight = f.fontWeight as React.CSSProperties["fontWeight"];
 		if (f.fontStyle)
 			css.fontStyle = f.fontStyle as React.CSSProperties["fontStyle"];
-		if (typeof f.letterSpacing === "number") {
+		if (f.letterSpacing !== undefined && f.letterSpacing !== null) {
 			css.letterSpacing = `${f.letterSpacing}${f.letterSpacingUnits}`;
 		}
 		if (f.textTransform)
@@ -385,21 +390,40 @@ function applyEffects(e?: EffectsStyle): React.CSSProperties {
 }
 
 export function mapStylePropsToCss(
-	style?: ComponentStyleProps,
+	style?: ComponentStyleProps | Record<number, ComponentStyleProps>,
+	// Optional width (px) to resolve breakpoint styles. If omitted,
+	// falls back to the globally configured builder max width.
+	width?: number,
 ): React.CSSProperties {
 	const css: React.CSSProperties = {};
 	if (!style) return css;
+	// Prefer explicit width argument; otherwise use configured builder max width.
+	const resolvedWidth =
+		typeof width === "number" && width > 0
+			? width
+			: (getBuilderMaxWidth() ?? 1440);
 
-	// if (style.sizeAndSpacing?.padding) console.log(style.sizeAndSpacing);
+	let resolved: ComponentStyleProps | undefined;
+	if (isBreakpointStyleProps(style)) {
+		// If width is not provided, fall back to the smallest breakpoint defined
+		resolved = resolveStyleAtWidth(
+			style as Record<number, ComponentStyleProps>,
+			// pass resolvedWidth so resolution doesn't rely on hooks
+			resolvedWidth,
+		);
+	} else {
+		resolved = style as ComponentStyleProps;
+	}
 
-	Object.assign(css, applyLayout(style.layout));
-	Object.assign(css, applyPosition(style.position));
-	Object.assign(css, applySizeSpacing(style.sizeAndSpacing));
-	Object.assign(css, applyTypography(style.typography));
-	Object.assign(css, applyBackground(style.background));
-	Object.assign(css, applyBorders(style.bordersAndCorners));
-	Object.assign(css, applyEffects(style.effects));
+	if (!resolved) return css;
 
-	// Advanced custom CSS is intentionally not applied here.
+	Object.assign(css, applyLayout(resolved.layout));
+	Object.assign(css, applyPosition(resolved.position));
+	Object.assign(css, applySizeSpacing(resolved.sizeAndSpacing));
+	Object.assign(css, applyTypography(resolved.typography));
+	Object.assign(css, applyBackground(resolved.background));
+	Object.assign(css, applyBorders(resolved.bordersAndCorners));
+	Object.assign(css, applyEffects(resolved.effects));
+
 	return css;
 }
