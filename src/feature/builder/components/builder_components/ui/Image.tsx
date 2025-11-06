@@ -44,19 +44,19 @@ export const Image: React.FC<ImageProps> = ({
 	};
 
 	const img = (
-		<img
-			alt={alt}
-			className={["max-w-full h-auto", className]
-				.filter(Boolean)
-				.join(" ")}
-			height={height.number}
-			onClick={onClick}
-			onDragLeave={onDragLeave}
-			onDragOver={onDragOver}
-			src={src}
-			style={commonStyle}
-			width={width.number}
-		/>
+		<div className={className}>
+			<img
+				alt={alt}
+				className={["max-w-full h-auto"].filter(Boolean).join(" ")}
+				height={height.number}
+				onClick={onClick}
+				onDragLeave={onDragLeave}
+				onDragOver={onDragOver}
+				src={src}
+				style={commonStyle}
+				width={width.number}
+			/>
+		</div>
 	);
 
 	if (href) {
