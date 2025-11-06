@@ -75,9 +75,6 @@ export default function BuilderPreviewViewport({
 		return false;
 	}
 
-	// console.log(currentPage.content)
-	// console.log(headerComponents)
-
 	return (
 		<BreakpointProvider value={bp}>
 			<DragDropContext.Provider

@@ -110,6 +110,8 @@ const componentMap: Record<
 	navigationmenu: NavigationMenu,
 };
 
+import { useCurrentBreakpoint } from "@/feature/builder/contexts/BreakpointContext";
+import { useActiveBreakpointStore } from "@/feature/builder/store/storeActiveBreakpoint";
 import { useFooterEditor } from "@/feature/page/_footer/hooks/useFooterEditor";
 import { useHeaderEditor } from "@/feature/page/_header/hooks/useHeaderEditor";
 
@@ -164,6 +166,13 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 	const setCurrentComponent = useCurrentComponentStore(
 		(state) => state.setCurrentComponent,
 	);
+
+	const setActiveBreakpoint = useActiveBreakpointStore(
+		(state) => state.setActive,
+	);
+
+	const activeBreakpoint = useActiveBreakpointStore((state) => state.active);
+	const isDefaultBreakpoint = !activeBreakpoint;
 	const { confirmDelete } = useDeleteComponentContext();
 	const { duplicateComponent } = useDuplicateComponent();
 	const { clipboard, copy } = useStyleClipboardStore();
@@ -176,9 +185,18 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 	// Get the component from the registry or use the default component
 	const ComponentToRender = componentMap[component.type] || DefaultComponent;
 
+	const currentBreakpoint = useCurrentBreakpoint();
 	// Check if this component is the currently selected one
-	const isSelected = currentComponent.id === component.id;
 
+	const handleClick: MouseEventHandler = (e) => {
+		setActiveBreakpoint(currentBreakpoint);
+		e.stopPropagation(); // Stop event propagation to parent components
+		setCurrentComponent(component as BuilderComponent);
+	};
+
+	const isSelected =
+		currentComponent.id === component.id &&
+		(activeBreakpoint === currentBreakpoint || isDefaultBreakpoint);
 	// Determine the appropriate class based on component state
 	// Use a full-coverage after pseudo-element to avoid layout shifts from borders
 	let className =
@@ -200,12 +218,7 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 							className={className}
 							component={component}
 							isRoot={!!isRoot}
-							onClick={(e) => {
-								e.stopPropagation(); // Stop event propagation to parent components
-								setCurrentComponent(
-									component as BuilderComponent,
-								);
-							}}
+							onClick={handleClick}
 							onDragLeave={onDragLeave}
 							onDragOver={onDragOver}
 							region={region}
@@ -214,12 +227,7 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 						<ComponentToRender
 							className={className}
 							component={component}
-							onClick={(e) => {
-								e.stopPropagation(); // Stop event propagation to parent components
-								setCurrentComponent(
-									component as BuilderComponent,
-								);
-							}}
+							onClick={handleClick}
 							onDragLeave={onDragLeave}
 							onDragOver={onDragOver}
 						/>
