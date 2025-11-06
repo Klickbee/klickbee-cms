@@ -42,9 +42,6 @@ export default function BuilderTabComponents() {
 
 	const currentPage = useCurrentPageStore((state) => state.currentPage);
 	const setCurrentPage = useCurrentPageStore((state) => state.setCurrentPage);
-	const _setTargetComponent = useCurrentComponentStore(
-		(state) => state.setCurrentComponent,
-	);
 	const currentComponent = useCurrentComponentStore(
 		(state) => state.currentComponent,
 	);
@@ -198,6 +195,7 @@ export default function BuilderTabComponents() {
 											const componentData = {
 												groupId: group.id,
 												label: item.label,
+												name: item.name,
 												type: item.type, // use type from componentsList
 											};
 											e.dataTransfer.setData(

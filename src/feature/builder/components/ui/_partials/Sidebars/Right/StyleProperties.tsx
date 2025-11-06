@@ -32,6 +32,16 @@ export default function BuilderStyleProperties() {
 	}
 
 	const def = componentMap[currentComponent.name as ComponentName];
+
+	if (!def) {
+		return (
+			<p className={"p-4 text-sm text-red-600"}>
+				Their has been an error loading the style properties for this
+				component.
+			</p>
+		);
+	}
+
 	const defStyle = def.styleProps;
 
 	const triggerClass =
