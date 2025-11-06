@@ -88,6 +88,7 @@ export function useStyleUpdate(component: BuilderComponent) {
 				component.id,
 				updatedComponent,
 			);
+
 			if (newPageContent !== currentPage.content) {
 				setCurrentPage({ ...currentPage, content: newPageContent });
 			}

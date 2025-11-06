@@ -40,12 +40,16 @@ function generateCssForComponent(component: BuilderComponent): string {
 		if (entries.length > 0) {
 			// base = smallest breakpoint without media query
 			const [_baseWidth, baseStyle] = entries[0];
-			const baseDecls = cssObjToDecls(mapStylePropsToCss(baseStyle));
+			// base: resolve at the smallest breakpoint width
+			const baseWidth = Number(entries[0][0]) || undefined;
+			const baseDecls = cssObjToDecls(
+				mapStylePropsToCss(baseStyle, baseWidth),
+			);
 			if (baseDecls) blocks.push(`${selector}{ ${baseDecls} }`);
 			// remaining as min-width queries
 			for (let i = 1; i < entries.length; i++) {
 				const [width, s] = entries[i];
-				const decls = cssObjToDecls(mapStylePropsToCss(s));
+				const decls = cssObjToDecls(mapStylePropsToCss(s, width));
 				if (decls) {
 					blocks.push(
 						`@media (min-width: ${width}px){ ${selector}{ ${decls} } }`,
