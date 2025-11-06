@@ -30,25 +30,19 @@ function BreakpointSelector() {
 		breakpoints[0] || { name: "default", width: 1920 },
 	);
 	const { active, setActive } = useActiveBreakpointStore();
-	const value = active ? String(active.width) : "default";
 	return (
 		<Select
 			onValueChange={(val) => {
-				if (val === "default") {
-					setActive(null);
-					return;
-				}
 				const width = Number(val);
 				const found = breakpoints.find((b) => b.width === width);
 				if (found) setActive(found);
 			}}
-			value={value}
+			value={active?.width ? String(active.width) : "default"}
 		>
-			<SelectTrigger size="sm">
+			<SelectTrigger className={"w-full"} size="sm">
 				<SelectValue placeholder="Breakpoint" />
 			</SelectTrigger>
 			<SelectContent>
-				<SelectItem value="default">Default</SelectItem>
 				{breakpoints
 					.slice()
 					.sort((a, b) => b.width - a.width)
@@ -101,7 +95,7 @@ export default function BuilderTabLayers() {
 
 	return (
 		<div className={"divide-y"}>
-			<div className="flex items-center justify-between px-4 py-2 gap-2">
+			<div className="flex flex-col items-start justify-between px-4 py-2 gap-0">
 				<PageTitle title={currentPage.title} />
 				<BreakpointSelector />
 			</div>
