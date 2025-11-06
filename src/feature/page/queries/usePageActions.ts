@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useCssGeneration } from "@/feature/builder/hooks/useCssGeneration";
 import { BuilderComponent } from "@/feature/builder/types/components/components";
 import {
 	deletePage,
@@ -125,6 +126,7 @@ export function useUpdatePageParent() {
  */
 export function useUpdatePageContent() {
 	const queryClient = useQueryClient();
+	useCssGeneration();
 
 	return useMutation({
 		mutationFn: ({

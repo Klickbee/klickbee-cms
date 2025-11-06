@@ -1,5 +1,6 @@
 "use client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useCssGeneration } from "@/feature/builder/hooks/useCssGeneration";
 import {
 	BuilderComponent,
 	ParentBuilderComponent,
@@ -99,6 +100,7 @@ export function useDefaultPageHeader() {
 
 export function useUpdatePageHeader() {
 	const queryClient = useQueryClient();
+	useCssGeneration();
 	return useMutation({
 		mutationFn: async (data: {
 			pageHeaderId: number;

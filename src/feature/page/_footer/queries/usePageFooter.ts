@@ -1,5 +1,6 @@
 "use client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useCssGeneration } from "@/feature/builder/hooks/useCssGeneration";
 import {
 	BuilderComponent,
 	ParentBuilderComponent,
@@ -99,6 +100,7 @@ export function useDefaultPageFooter() {
 
 export function useUpdatePageFooter() {
 	const queryClient = useQueryClient();
+	useCssGeneration();
 	return useMutation({
 		mutationFn: async (data: {
 			pageFooterId: number;
