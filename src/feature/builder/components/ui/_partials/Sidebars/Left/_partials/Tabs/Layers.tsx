@@ -25,10 +25,6 @@ function BreakpointSelector() {
 	const { data: breakpointsRaw } = useSetting("builder_breakpoints") || [];
 	const breakpoints: Array<{ name: string; width: number }> =
 		breakpointsRaw?.value ? JSON.parse(breakpointsRaw.value) : [];
-	const _widest = breakpoints.reduce(
-		(max, bp) => (bp && bp.width > (max?.width ?? 0) ? bp : max),
-		breakpoints[0] || { name: "default", width: 1920 },
-	);
 	const { active, setActive } = useActiveBreakpointStore();
 	return (
 		<Select
