@@ -172,7 +172,6 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 	);
 
 	const activeBreakpoint = useActiveBreakpointStore((state) => state.active);
-	const isDefaultBreakpoint = !activeBreakpoint;
 	const { confirmDelete } = useDeleteComponentContext();
 	const { duplicateComponent } = useDuplicateComponent();
 	const { clipboard, copy } = useStyleClipboardStore();
@@ -196,17 +195,17 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 
 	const isSelected =
 		currentComponent.id === component.id &&
-		(activeBreakpoint === currentBreakpoint || isDefaultBreakpoint);
+		JSON.stringify(activeBreakpoint) === JSON.stringify(currentBreakpoint);
 	// Determine the appropriate class based on component state
 	// Use a full-coverage after pseudo-element to avoid layout shifts from borders
 	let className =
-		"relative after:content-[''] after:absolute after:inset-0 after:pointer-events-none after:z-10";
+		"relative after:content-[''] after:absolute after:inset-0 after:pointer-events-none after:z-10 ";
 	if (isSelected) {
-		className += " after:border-2 after:border-blue-500";
+		className += "after:border-4 after:border-blue-500";
 	} else if (isDropTarget) {
-		className += " after:border-2 after:border-green-500 bg-green-50";
+		className += " after:border-4 after:border-green-500 bg-green-50";
 	} else {
-		className += " hover:after:border-2 hover:after:border-blue-500";
+		className += " hover:after:border-4 hover:after:border-blue-500";
 	}
 
 	return (
