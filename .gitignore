@@ -50,3 +50,4 @@ public/builder/uploads/logo/*
 WARP.md
 /public/uploads/media/*
 /src/app/generated/*
+/src/app/generated.css
