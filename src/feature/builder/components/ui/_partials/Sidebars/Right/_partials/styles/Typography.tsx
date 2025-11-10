@@ -137,7 +137,7 @@ export default function BuilderStyleTypography({
 					updateNestedProperty("typography", (current) => ({
 						...current,
 						fontSize: {
-							...(typography.fontSize || {
+							...(current?.fontSize || {
 								max: 16,
 								maxWidth: 1440,
 								min: 16,
@@ -151,7 +151,7 @@ export default function BuilderStyleTypography({
 					updateNestedProperty("typography", (current) => ({
 						...current,
 						fontSize: {
-							...(typography.fontSize || {
+							...(current?.fontSize || {
 								max: 16,
 								maxWidth: 1440,
 								min: 16,
@@ -189,8 +189,8 @@ export default function BuilderStyleTypography({
 						...current,
 						lineHeight: {
 							number:
-								typeof typography.lineHeight === "object"
-									? typography.lineHeight.number
+								typeof current?.lineHeight === "object"
+									? current!.lineHeight.number
 									: 1.5,
 							unit,
 						},
@@ -202,8 +202,8 @@ export default function BuilderStyleTypography({
 						lineHeight: {
 							number,
 							unit:
-								typeof typography.lineHeight === "object"
-									? typography.lineHeight.unit
+								typeof current?.lineHeight === "object"
+									? current!.lineHeight.unit
 									: "em",
 						},
 					}))
@@ -228,7 +228,7 @@ export default function BuilderStyleTypography({
 					updateNestedProperty("typography", (current) => ({
 						...current,
 						letterSpacing: {
-							number: typography.letterSpacing?.number || 0,
+							number: current?.letterSpacing?.number || 0,
 							unit,
 						},
 					}))
@@ -238,7 +238,7 @@ export default function BuilderStyleTypography({
 						...current,
 						letterSpacing: {
 							number,
-							unit: typography.letterSpacing?.unit || "px",
+							unit: current?.letterSpacing?.unit || "px",
 						},
 					}))
 				}

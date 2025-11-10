@@ -7,7 +7,10 @@ import { isBreakpointStyleProps } from "@/feature/builder/lib/style/breakpointSt
 import { mapStylePropsToCss } from "@/feature/builder/lib/style/mapStylePropsToCss";
 import { useCurrentPageStore } from "@/feature/builder/store/storeCurrentPage";
 import { BuilderComponent } from "@/feature/builder/types/components/components";
-import { ComponentStyleProps } from "@/feature/builder/types/components/properties/componentStylePropsType";
+import {
+	BreakpointStyleProps,
+	ComponentStyleProps,
+} from "@/feature/builder/types/components/properties/componentStylePropsType";
 
 function toKebabCase(prop: string): string {
 	return prop
@@ -15,7 +18,9 @@ function toKebabCase(prop: string): string {
 		.replace(/^ms-/, "-ms-");
 }
 
-function cssObjToDecls(style: React.CSSProperties): string {
+function cssObjToDecls(
+	style: React.CSSProperties | Record<string, unknown>,
+): string {
 	const parts: string[] = [];
 	for (const [key, val] of Object.entries(style)) {
 		if (val === undefined || val === null || val === "") continue;
@@ -25,15 +30,56 @@ function cssObjToDecls(style: React.CSSProperties): string {
 	return parts.join(" ");
 }
 
+// Partition a style object into two objects: parent (default) and child (only specified keys)
+function partitionStyle(
+	style: React.CSSProperties | Record<string, unknown>,
+	childKeys: string[],
+): {
+	parent: Record<string, string | number | undefined>;
+	child: Record<string, string | number | undefined>;
+} {
+	const parent: Record<string, string | number | undefined> = {};
+	const child: Record<string, string | number | undefined> = {};
+	for (const [k, v] of Object.entries(style)) {
+		if (v === undefined || v === null || v === "") continue;
+		let value: string | number | undefined;
+		if (typeof v === "number") value = v;
+		else if (typeof v === "string") value = v;
+		else value = String(v);
+
+		if (childKeys.includes(k)) {
+			child[k] = value;
+		} else {
+			parent[k] = value;
+		}
+	}
+	return { parent, child };
+}
+
 function generateCssForComponent(component: BuilderComponent): string {
-	const style = component.props?.style as unknown;
+	const style = component.props?.style as
+		| ComponentStyleProps
+		| BreakpointStyleProps
+		| undefined;
 	const selector = `#${component.id}`;
 	const blocks: string[] = [];
 
+	// keys that are considered "typography" and should apply to links inside a nav menu
+	const TYPOGRAPHY_KEYS = [
+		"fontFamily",
+		"fontSize",
+		"lineHeight",
+		"letterSpacing",
+		"fontWeight",
+		"color",
+		"textAlign",
+		"textDecoration",
+		"fontStyle",
+		"textTransform",
+	];
+
 	if (style && isBreakpointStyleProps(style)) {
-		const entries = Object.entries(
-			style as Record<string, ComponentStyleProps>,
-		)
+		const entries = Object.entries(style as BreakpointStyleProps)
 			.map(([k, v]) => [Number(k), v] as [number, ComponentStyleProps])
 			.filter(([k]) => !Number.isNaN(k))
 			.sort((a, b) => a[0] - b[0]);
@@ -42,26 +88,65 @@ function generateCssForComponent(component: BuilderComponent): string {
 			const [_baseWidth, baseStyle] = entries[0];
 			// base: resolve at the smallest breakpoint width
 			const baseWidth = Number(entries[0][0]) || undefined;
-			const baseDecls = cssObjToDecls(
-				mapStylePropsToCss(baseStyle, baseWidth),
-			);
-			if (baseDecls) blocks.push(`${selector}{ ${baseDecls} }`);
+			const baseStyleObj = mapStylePropsToCss(baseStyle, baseWidth);
+
+			if (component.type === "navigationmenu") {
+				const { parent, child } = partitionStyle(
+					baseStyleObj,
+					TYPOGRAPHY_KEYS,
+				);
+				const parentDecls = cssObjToDecls(parent);
+				const childDecls = cssObjToDecls(child);
+				if (parentDecls) blocks.push(`${selector}{ ${parentDecls} }`);
+				if (childDecls) blocks.push(`${selector} a{ ${childDecls} }`);
+			} else {
+				const baseDecls = cssObjToDecls(baseStyleObj);
+				if (baseDecls) blocks.push(`${selector}{ ${baseDecls} }`);
+			}
+
 			// remaining as min-width queries
 			for (let i = 1; i < entries.length; i++) {
 				const [width, s] = entries[i];
-				const decls = cssObjToDecls(mapStylePropsToCss(s, width));
-				if (decls) {
-					blocks.push(
-						`@media (min-width: ${width}px){ ${selector}{ ${decls} } }`,
+				const styleObj = mapStylePropsToCss(s, width);
+				if (component.type === "navigationmenu") {
+					const { parent, child } = partitionStyle(
+						styleObj,
+						TYPOGRAPHY_KEYS,
 					);
+					const parentDecls = cssObjToDecls(parent);
+					const childDecls = cssObjToDecls(child);
+					if (parentDecls) {
+						blocks.push(
+							`@media (min-width: ${width}px){ ${selector}{ ${parentDecls} } }`,
+						);
+					}
+					if (childDecls) {
+						blocks.push(
+							`@media (min-width: ${width}px){ ${selector} a{ ${childDecls} } }`,
+						);
+					}
+				} else {
+					const decls = cssObjToDecls(styleObj);
+					if (decls) {
+						blocks.push(
+							`@media (min-width: ${width}px){ ${selector}{ ${decls} } }`,
+						);
+					}
 				}
 			}
 		}
 	} else if (style) {
-		const decls = cssObjToDecls(
-			mapStylePropsToCss(style as ComponentStyleProps),
-		);
-		if (decls) blocks.push(`${selector}{ ${decls} }`);
+		const styleObj = mapStylePropsToCss(style as ComponentStyleProps);
+		if (component.type === "navigationmenu") {
+			const { parent, child } = partitionStyle(styleObj, TYPOGRAPHY_KEYS);
+			const parentDecls = cssObjToDecls(parent);
+			const childDecls = cssObjToDecls(child);
+			if (parentDecls) blocks.push(`${selector}{ ${parentDecls} }`);
+			if (childDecls) blocks.push(`${selector} a{ ${childDecls} }`);
+		} else {
+			const decls = cssObjToDecls(styleObj);
+			if (decls) blocks.push(`${selector}{ ${decls} }`);
+		}
 	}
 
 	// Children
