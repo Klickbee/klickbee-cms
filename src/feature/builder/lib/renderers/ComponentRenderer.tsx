@@ -201,11 +201,11 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 	let className =
 		"relative after:content-[''] after:absolute after:inset-0 after:pointer-events-none after:z-10 ";
 	if (isSelected) {
-		className += "after:border-4 after:border-blue-500";
+		className += "after:border-2 after:border-blue-500";
 	} else if (isDropTarget) {
-		className += " after:border-4 after:border-green-500 bg-green-50";
+		className += " after:border-2 after:border-green-500 bg-green-50";
 	} else {
-		className += " hover:after:border-4 hover:after:border-blue-500";
+		className += " hover:after:border-2 hover:after:border-blue-500";
 	}
 
 	return (

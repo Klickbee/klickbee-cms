@@ -44,7 +44,7 @@ export const Image: React.FC<ImageProps> = ({
 	};
 
 	const img = (
-		<div className={className}>
+		<div className={`${className} w-fit`}>
 			<img
 				alt={alt}
 				className={["max-w-full h-auto"].filter(Boolean).join(" ")}
