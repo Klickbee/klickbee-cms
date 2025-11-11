@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const sizeUnits = ["px", "em", "rem", "%"] as const;
+export const sizeUnits = ["px", "em", "rem", "%", "vw", "vh"] as const;
 export type SizeUnit = (typeof sizeUnits)[number];
 
 /**
