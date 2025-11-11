@@ -94,7 +94,20 @@ export default function BuilderPreviewViewport({
 					{/* Header */}
 					<div className="flex items-center justify-between bg-white rounded-md border px-3 py-2 text-sm shadow-sm">
 						<div className="flex items-center gap-2 font-medium">
-							<Button className={"bg-foreground text-background"}>
+							{/* On click open in a new tab to admin/admin/builder/present/[pageId]/[breakpoint] */}
+							<Button
+								className={"bg-foreground text-background"}
+								onClick={() => {
+									const pageId =
+										currentPage?.id && currentPage.id > 0
+											? currentPage.id
+											: "new";
+									window.open(
+										`/admin/admin/builder/present/${pageId}/${bp.width}`,
+										"_blank",
+									);
+								}}
+							>
 								<Play className="w-4 h-4" />
 							</Button>
 							{bp.name}
