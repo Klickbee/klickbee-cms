@@ -217,7 +217,7 @@ function sanitizeTitle(input: string): string {
 
 async function generateCssForParentComponents() {
 	const maxWidth = getBuilderMaxWidth() ?? 1440;
-	const containerCss = `.builder-container,[id="container-*"] { max-width: ${maxWidth}px;width:100%;margin-left:auto;margin-right:auto; }`;
+	const containerCss = `.builder-container { max-width: ${maxWidth}px;margin-left:auto;margin-right:auto; }`;
 	const filename = `default-builder.css`;
 	try {
 		const res = await generateCssAction({
