@@ -7,11 +7,14 @@ import { SizeUnit } from "@/feature/builder/types/settings/FluidSize";
 import PropertyColumn from "./PropertyColumn";
 import PropertyRow from "./PropertyRow";
 
-interface PropertyUnitInputProps<T extends SizeUnit | PercentUnit | TimeUnit> {
+interface PropertyUnitInputProps<
+	T extends SizeUnit | PercentUnit | TimeUnit,
+	V = number,
+> {
 	label: string;
-	value: number;
+	value: V;
 	unit: T;
-	onValueChange: (value: number) => void;
+	onValueChange: (value: V) => void;
 	onUnitChange: (unit: T) => void;
 	layout?: "row" | "column";
 	placeholder?: string;
@@ -22,6 +25,7 @@ interface PropertyUnitInputProps<T extends SizeUnit | PercentUnit | TimeUnit> {
 
 export default function PropertyUnitInput<
 	T extends SizeUnit | PercentUnit | TimeUnit,
+	V = number,
 >({
 	label,
 	value,
@@ -33,7 +37,7 @@ export default function PropertyUnitInput<
 	className,
 	onEmpty,
 	variant = "embedded",
-}: PropertyUnitInputProps<T>) {
+}: PropertyUnitInputProps<T, V>) {
 	const unitInput = (
 		<SimpleUnitInput
 			className={className}

@@ -32,9 +32,12 @@ function fluidToCss(size?: FluidSize): string | undefined {
 
 // Helper: SpacingValue to CSS value
 function spacingToCss(
-	size?: { number: number; unit: string } | null,
+	size?: { number: number; unit: string; custom?: string } | null,
 ): string | undefined {
 	if (!size) return undefined;
+	if (size.custom) {
+		return size.custom;
+	}
 	return `${size.number}${size.unit}`;
 }
 

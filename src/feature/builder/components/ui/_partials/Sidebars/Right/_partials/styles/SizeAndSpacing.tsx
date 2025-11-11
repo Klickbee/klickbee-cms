@@ -50,17 +50,31 @@ export default function BuilderStyleSizeAndSpacing({
 						width: {
 							number: sizeSpacing.width?.number || 0,
 							unit,
+							custom: "",
 						},
 					}))
 				}
-				onValueChange={(number) =>
-					updateNestedProperty("sizeAndSpacing", (current) => ({
-						...current,
-						width: {
-							number,
-							unit: sizeSpacing.width?.unit || "px",
-						},
-					}))
+				onValueChange={(value) =>
+					updateNestedProperty("sizeAndSpacing", (current) => {
+						const curr = current || {};
+						if (sizeSpacing.width?.unit === "custom") {
+							return {
+								...curr,
+								width: {
+									custom: String(value),
+									unit: "custom",
+									number: 0,
+								},
+							} as SizeSpacingStyle;
+						}
+						return {
+							...curr,
+							width: {
+								number: Number(value),
+								unit: sizeSpacing.width?.unit || "px",
+							},
+						} as SizeSpacingStyle;
+					})
 				}
 				unit={sizeSpacing.width?.unit || "px"}
 				value={sizeSpacing.width?.number || 0}

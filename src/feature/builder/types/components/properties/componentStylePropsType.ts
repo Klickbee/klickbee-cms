@@ -89,8 +89,12 @@ export type PositionStyle = {
 	objectFit?: ObjectFitType;
 };
 
+interface SpacingValueWithCustom extends SpacingValue {
+	custom?: string;
+}
+
 export type SizeSpacingStyle = {
-	width?: SpacingValue;
+	width?: SpacingValueWithCustom;
 	height?: SpacingValue;
 	minWidth?: SpacingValue;
 	maxWidth?: SpacingValue;

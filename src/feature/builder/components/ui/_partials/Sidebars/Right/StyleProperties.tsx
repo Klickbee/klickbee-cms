@@ -129,16 +129,14 @@ export default function BuilderStyleProperties() {
 				</StyleSection>
 			)}
 
-			{defStyle.advanced && (
-				<StyleSection
-					contentClassName={contentClass}
-					title={t("Advanced.title")}
-					triggerClassName={triggerClass}
-					value="advanced"
-				>
-					<BuilderStyleAdvanced component={currentComponent} />
-				</StyleSection>
-			)}
+			<StyleSection
+				contentClassName={contentClass}
+				title={t("Advanced.title")}
+				triggerClassName={triggerClass}
+				value="advanced"
+			>
+				<BuilderStyleAdvanced component={currentComponent} />
+			</StyleSection>
 		</Accordion>
 	);
 }
