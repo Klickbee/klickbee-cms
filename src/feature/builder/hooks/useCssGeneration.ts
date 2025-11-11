@@ -82,11 +82,11 @@ function generateCssForComponent(component: BuilderComponent): string {
 		const entries = Object.entries(style as BreakpointStyleProps)
 			.map(([k, v]) => [Number(k), v] as [number, ComponentStyleProps])
 			.filter(([k]) => !Number.isNaN(k))
-			.sort((a, b) => a[0] - b[0]);
+			.sort((a, b) => b[0] - a[0]);
 		if (entries.length > 0) {
-			// base = smallest breakpoint without media query
+			// base = biggest breakpoint without media query
 			const [_baseWidth, baseStyle] = entries[0];
-			// base: resolve at the smallest breakpoint width
+			// base: resolve at the biggest breakpoint width
 			const baseWidth = Number(entries[0][0]) || undefined;
 			const baseStyleObj = mapStylePropsToCss(baseStyle, baseWidth);
 
@@ -117,19 +117,19 @@ function generateCssForComponent(component: BuilderComponent): string {
 					const childDecls = cssObjToDecls(child);
 					if (parentDecls) {
 						blocks.push(
-							`@media (min-width: ${width}px){ ${selector}{ ${parentDecls} } }`,
+							`@media (max-width: ${width}px){ ${selector}{ ${parentDecls} } }`,
 						);
 					}
 					if (childDecls) {
 						blocks.push(
-							`@media (min-width: ${width}px){ ${selector} a{ ${childDecls} } }`,
+							`@media (max-width: ${width}px){ ${selector} a{ ${childDecls} } }`,
 						);
 					}
 				} else {
 					const decls = cssObjToDecls(styleObj);
 					if (decls) {
 						blocks.push(
-							`@media (min-width: ${width}px){ ${selector}{ ${decls} } }`,
+							`@media (max-width: ${width}px){ ${selector}{ ${decls} } }`,
 						);
 					}
 				}
