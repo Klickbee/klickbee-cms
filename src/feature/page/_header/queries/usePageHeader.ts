@@ -1,6 +1,9 @@
 "use client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useCssGeneration } from "@/feature/builder/hooks/useCssGeneration";
+import {
+	generateCssForComponentTree,
+	useCssGeneration,
+} from "@/feature/builder/hooks/useCssGeneration";
 import {
 	BuilderComponent,
 	ParentBuilderComponent,
@@ -15,6 +18,14 @@ import {
 	updatePageHeader,
 } from "@/feature/page/_header/actions/pageHeaderActions";
 
+type HeaderType = {
+	id: number;
+	content: BuilderComponent[];
+	createdAt: Date;
+	updatedAt: Date;
+	isDefault: boolean;
+};
+
 export function useSetPageHeader() {
 	const queryClient = useQueryClient();
 	return useMutation({
@@ -27,7 +38,7 @@ export function useSetPageHeader() {
 			await setHeaderToPage(data.pageId, header.id);
 			return header;
 		},
-		onSuccess: (_data, variables) => {
+		onSuccess: async (data, variables) => {
 			queryClient.invalidateQueries({ queryKey: ["pages"] });
 			queryClient.invalidateQueries({
 				queryKey: ["page", variables.pageId],
@@ -36,6 +47,20 @@ export function useSetPageHeader() {
 				queryKey: ["pageHeaderByPage", variables.pageId],
 			});
 			queryClient.invalidateQueries({ queryKey: ["defaultPageHeader"] });
+
+			// Generate CSS for the newly created header
+			try {
+				const content = (data as HeaderType)?.content;
+				if (content) {
+					await generateCssForComponentTree(
+						content,
+						`header-${(data as HeaderType).id}`,
+						`header-${(data as HeaderType).id}.css`,
+					);
+				}
+			} catch (e) {
+				console.error("Header CSS generation failed", e);
+			}
 		},
 	});
 }
@@ -68,7 +93,7 @@ export function useUnlinkHeader() {
 			await setHeaderToPage(data.pageId, newHeader.id);
 			return newHeader;
 		},
-		onSuccess: (_data, variables) => {
+		onSuccess: async (data, variables) => {
 			queryClient.invalidateQueries({
 				queryKey: ["page", variables.pageId],
 			});
@@ -76,6 +101,20 @@ export function useUnlinkHeader() {
 				queryKey: ["pageHeaderByPage", variables.pageId],
 			});
 			queryClient.invalidateQueries({ queryKey: ["pages"] });
+
+			// Generate CSS for the newly created header
+			try {
+				const content = (data as HeaderType)?.content;
+				if (content) {
+					await generateCssForComponentTree(
+						content,
+						`header-${(data as HeaderType).id}`,
+						`header-${(data as HeaderType).id}.css`,
+					);
+				}
+			} catch (e) {
+				console.error("Header CSS generation failed", e);
+			}
 		},
 	});
 }
@@ -108,13 +147,27 @@ export function useUpdatePageHeader() {
 		}) => {
 			return updatePageHeader(data.pageHeaderId, data.content);
 		},
-		onSuccess: (data) => {
+		onSuccess: async (data) => {
 			queryClient.invalidateQueries({
 				queryKey: ["pageHeader", data.id],
 			});
 			// Invalidate all pageHeaderByPage queries so header re-renders wherever used
 			queryClient.invalidateQueries({ queryKey: ["pageHeaderByPage"] });
 			queryClient.invalidateQueries({ queryKey: ["defaultPageHeader"] });
+
+			// Generate CSS for the header content so public renderer has styles
+			try {
+				const content = data.content as
+					| BuilderComponent[]
+					| BuilderComponent;
+				await generateCssForComponentTree(
+					content,
+					`header-${data.id}`,
+					`header-${data.id}.css`,
+				);
+			} catch (e) {
+				console.error("Header CSS generation failed", e);
+			}
 		},
 	});
 }

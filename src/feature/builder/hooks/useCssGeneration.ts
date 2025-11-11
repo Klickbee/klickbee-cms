@@ -99,6 +99,15 @@ function generateCssForComponent(component: BuilderComponent): string {
 				const childDecls = cssObjToDecls(child);
 				if (parentDecls) blocks.push(`${selector}{ ${parentDecls} }`);
 				if (childDecls) blocks.push(`${selector} a{ ${childDecls} }`);
+			} else if (component.type === "list") {
+				const { parent, child } = partitionStyle(
+					baseStyleObj,
+					TYPOGRAPHY_KEYS,
+				);
+				const parentDecls = cssObjToDecls(parent);
+				const childDecls = cssObjToDecls(child);
+				if (parentDecls) blocks.push(`${selector}{ ${parentDecls} }`);
+				if (childDecls) blocks.push(`${selector} a{ ${childDecls} }`);
 			} else {
 				const baseDecls = cssObjToDecls(baseStyleObj);
 				if (baseDecls) blocks.push(`${selector}{ ${baseDecls} }`);
@@ -125,6 +134,23 @@ function generateCssForComponent(component: BuilderComponent): string {
 							`@media (max-width: ${width}px){ ${selector} a{ ${childDecls} } }`,
 						);
 					}
+				} else if (component.type === "list") {
+					const { parent, child } = partitionStyle(
+						styleObj,
+						TYPOGRAPHY_KEYS,
+					);
+					const parentDecls = cssObjToDecls(parent);
+					const childDecls = cssObjToDecls(child);
+					if (parentDecls) {
+						blocks.push(
+							`@media (max-width: ${width}px){ ${selector}{ ${parentDecls} } }`,
+						);
+					}
+					if (childDecls) {
+						blocks.push(
+							`@media (max-width: ${width}px){ ${selector} li{ ${childDecls} } }`,
+						);
+					}
 				} else {
 					const decls = cssObjToDecls(styleObj);
 					if (decls) {
@@ -143,6 +169,12 @@ function generateCssForComponent(component: BuilderComponent): string {
 			const childDecls = cssObjToDecls(child);
 			if (parentDecls) blocks.push(`${selector}{ ${parentDecls} }`);
 			if (childDecls) blocks.push(`${selector} a{ ${childDecls} }`);
+		} else if (component.type === "list") {
+			const { parent, child } = partitionStyle(styleObj, TYPOGRAPHY_KEYS);
+			const parentDecls = cssObjToDecls(parent);
+			const childDecls = cssObjToDecls(child);
+			if (parentDecls) blocks.push(`${selector}{ ${parentDecls} }`);
+			if (childDecls) blocks.push(`${selector} li{ ${childDecls} }`);
 		} else {
 			const decls = cssObjToDecls(styleObj);
 			if (decls) blocks.push(`${selector}{ ${decls} }`);
@@ -203,6 +235,41 @@ async function generateCssForParentComponents() {
 		console.error("CSS generation for parent components failed", e);
 	}
 	return true;
+}
+
+// Exported helper to generate CSS for an arbitrary component tree (header/footer or page)
+export async function generateCssForComponentTree(
+	components: BuilderComponent[] | BuilderComponent | undefined | null,
+	pageId: number | string,
+	fileName?: string,
+) {
+	try {
+		let css: string;
+		if (!components) css = "";
+		else if (Array.isArray(components))
+			css = generateCssForTree(components);
+		else css = generateCssForComponent(components as BuilderComponent);
+
+		const title = fileName
+			? fileName
+			: `page-${String(pageId)}-generated.css`;
+
+		const res = await generateCssAction({
+			css,
+			pageId,
+			fileName: title,
+		});
+		if (!res?.ok) {
+			console.error(
+				"CSS generation for provided components failed",
+				res?.error,
+			);
+		}
+		return res;
+	} catch (e) {
+		console.error("CSS generation for provided components failed", e);
+		return { ok: false, error: String(e) };
+	}
 }
 
 export function useCssGeneration(parentCssGeneration: boolean = false) {

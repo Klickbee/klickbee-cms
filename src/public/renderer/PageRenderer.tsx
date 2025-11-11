@@ -33,28 +33,58 @@ import type {
 function PublicSection({
 	component,
 	isRoot = false,
+	isHeader = false,
+	isFooter = false,
 }: {
 	component: BuilderComponent;
 	isRoot?: boolean;
+	isHeader?: boolean;
+	isFooter?: boolean;
 }) {
-	return (
-		<section
-			className={`${isRoot ? "relative w-full" : ""}`}
-			id={component.id}
-		>
-			{Array.isArray(component.children)
-				? component.children
-						.slice()
-						.sort((a, b) => (a.order || 0) - (b.order || 0))
-						.map((child) => (
-							<PublicComponentRenderer
-								component={child}
-								key={child.id}
-							/>
-						))
-				: null}
-		</section>
-	);
+	let wrapperElement;
+	if (isHeader) {
+		wrapperElement = (content: React.JSX.Element[] | null) => {
+			return (
+				<header
+					className={`${isRoot ? "relative w-full" : ""}`}
+					id={component.id}
+				>
+					{content}
+				</header>
+			);
+		};
+	} else if (isFooter) {
+		wrapperElement = (content: React.JSX.Element[] | null) => {
+			return (
+				<footer
+					className={`${isRoot ? "relative w-full" : ""}`}
+					id={component.id}
+				>
+					{content}
+				</footer>
+			);
+		};
+	} else {
+		wrapperElement = (content: React.JSX.Element[] | null) => {
+			return (
+				<section
+					className={`${isRoot ? "relative w-full" : ""}`}
+					id={component.id}
+				>
+					{content}
+				</section>
+			);
+		};
+	}
+	const content = Array.isArray(component.children)
+		? component.children
+				.slice()
+				.sort((a, b) => (a.order || 0) - (b.order || 0))
+				.map((child) => (
+					<PublicComponentRenderer component={child} key={child.id} />
+				))
+		: null;
+	return wrapperElement(content);
 }
 
 function PublicContainer({ component }: { component: BuilderComponent }) {
@@ -194,6 +224,7 @@ export function PageRenderer({
 					component.type === "section" ? (
 						<PublicSection
 							component={component}
+							isHeader={true}
 							isRoot
 							key={component.id}
 						/>
@@ -234,6 +265,7 @@ export function PageRenderer({
 					component.type === "section" ? (
 						<PublicSection
 							component={component}
+							isFooter={true}
 							isRoot
 							key={component.id}
 						/>

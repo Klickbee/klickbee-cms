@@ -1,6 +1,9 @@
 "use client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useCssGeneration } from "@/feature/builder/hooks/useCssGeneration";
+import {
+	generateCssForComponentTree,
+	useCssGeneration,
+} from "@/feature/builder/hooks/useCssGeneration";
 import {
 	BuilderComponent,
 	ParentBuilderComponent,
@@ -15,6 +18,14 @@ import {
 	updatePageFooter,
 } from "@/feature/page/_footer/actions/pageFooterActions";
 
+type FooterType = {
+	id: number;
+	content: BuilderComponent[];
+	createdAt: Date;
+	updatedAt: Date;
+	isDefault: boolean;
+};
+
 export function useSetPageFooter() {
 	const queryClient = useQueryClient();
 	return useMutation({
@@ -27,7 +38,7 @@ export function useSetPageFooter() {
 			await setFooterToPage(data.pageId, footer.id);
 			return footer;
 		},
-		onSuccess: (_data, variables) => {
+		onSuccess: async (data, variables) => {
 			queryClient.invalidateQueries({ queryKey: ["pages"] });
 			queryClient.invalidateQueries({
 				queryKey: ["page", variables.pageId],
@@ -36,6 +47,20 @@ export function useSetPageFooter() {
 				queryKey: ["pageFooterByPage", variables.pageId],
 			});
 			queryClient.invalidateQueries({ queryKey: ["defaultPageFooter"] });
+
+			// Generate CSS for the newly created footer
+			try {
+				const content = (data as FooterType).content;
+				if (content) {
+					await generateCssForComponentTree(
+						content,
+						`footer-${(data as FooterType).id}`,
+						`footer-${(data as FooterType).id}.css`,
+					);
+				}
+			} catch (e) {
+				console.error("Footer CSS generation failed", e);
+			}
 		},
 	});
 }
@@ -68,7 +93,7 @@ export function useUnlinkFooter() {
 			await setFooterToPage(data.pageId, newFooter.id);
 			return newFooter;
 		},
-		onSuccess: (_data, variables) => {
+		onSuccess: async (data, variables) => {
 			queryClient.invalidateQueries({
 				queryKey: ["page", variables.pageId],
 			});
@@ -76,6 +101,20 @@ export function useUnlinkFooter() {
 				queryKey: ["pageFooterByPage", variables.pageId],
 			});
 			queryClient.invalidateQueries({ queryKey: ["pages"] });
+
+			// Generate CSS for the newly created footer
+			try {
+				const content = (data as FooterType)?.content;
+				if (content) {
+					await generateCssForComponentTree(
+						content,
+						`footer-${(data as FooterType).id}`,
+						`footer-${(data as FooterType).id}.css`,
+					);
+				}
+			} catch (e) {
+				console.error("Footer CSS generation failed", e);
+			}
 		},
 	});
 }
@@ -108,11 +147,25 @@ export function useUpdatePageFooter() {
 		}) => {
 			return updatePageFooter(data.pageFooterId, data.content);
 		},
-		onSuccess: (data) => {
+		onSuccess: async (data) => {
 			queryClient.invalidateQueries({
 				queryKey: ["pageFooter", data.id],
 			});
 			queryClient.invalidateQueries({ queryKey: ["defaultPageFooter"] });
+
+			// Generate CSS for the footer content so public renderer has styles
+			try {
+				const content = data.content as
+					| BuilderComponent[]
+					| BuilderComponent;
+				await generateCssForComponentTree(
+					content,
+					`footer-${data.id}`,
+					`footer-${data.id}.css`,
+				);
+			} catch (e) {
+				console.error("Footer CSS generation failed", e);
+			}
 		},
 	});
 }
