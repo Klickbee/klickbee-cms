@@ -1,6 +1,8 @@
-<p align="center">
-<img src="https://i.ibb.co/rgvcjN4/Frame-17.png" alt="Logo" border="0" width="400">
-</p>
+<h1 align="center">
+  
+  Due to GitHub Politics and the fact that [my account](https://github.com/JMauclair) has been recently suspended for no reasons, all our projects will be only on [Stralya Gitea](https://git.stralya.com/Klickbee/klickbee-cms)
+
+  </h1>
 <h1 align="center">Klickbee CMS</h1>
 
 <p align="center"><strong>The open-source CMS we always wanted. Monolithic. Visual. Built for speed.</strong></p>
