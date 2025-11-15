@@ -4,9 +4,19 @@ import { BuilderComponent } from "../../../types/components/components";
 
 interface DropdownProps {
 	component: BuilderComponent;
+	className?: string;
+	onClick?: React.MouseEventHandler<HTMLElement>;
+	onDragLeave?: React.DragEventHandler<HTMLElement>;
+	onDragOver?: React.DragEventHandler<HTMLElement>;
 }
 
-export const Dropdown: React.FC<DropdownProps> = ({ component }) => {
+export const Dropdown: React.FC<DropdownProps> = ({
+	component,
+	className,
+	onClick,
+	onDragLeave,
+	onDragOver,
+}) => {
 	// Default dropdown properties if not provided
 	const label = (component.props?.content?.label as string) || "Dropdown";
 	const name =
@@ -28,7 +38,12 @@ export const Dropdown: React.FC<DropdownProps> = ({ component }) => {
 
 	return (
 		<div
-			className="flex flex-col space-y-2"
+			className={["flex flex-col space-y-2", className]
+				.filter(Boolean)
+				.join(" ")}
+			onClick={onClick}
+			onDragLeave={onDragLeave}
+			onDragOver={onDragOver}
 			style={{
 				order: component.order || 0, // Use order property for positioning
 				...mapStylePropsToCss(component.props?.style),

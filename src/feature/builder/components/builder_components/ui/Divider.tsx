@@ -2,15 +2,27 @@ import React from "react";
 import { mapStylePropsToCss } from "@/feature/builder/lib/style/mapStylePropsToCss";
 import type { BuilderComponent } from "@/feature/builder/types/components/components";
 import type { ComponentContentProps } from "@/feature/builder/types/components/properties/componentContentPropsType";
+import { ComponentStyleProps } from "@/feature/builder/types/components/properties/componentStylePropsType";
 
 interface DividerProps {
 	component: BuilderComponent;
+	className?: string;
+	onClick?: React.MouseEventHandler<HTMLElement>;
+	onDragLeave?: React.DragEventHandler<HTMLElement>;
+	onDragOver?: React.DragEventHandler<HTMLElement>;
 }
 
-export const Divider: React.FC<DividerProps> = ({ component }) => {
+export const Divider: React.FC<DividerProps> = ({
+	component,
+	className,
+	onClick,
+	onDragLeave,
+	onDragOver,
+}) => {
 	const baseStyle: React.CSSProperties = {};
 
-	const borders = component.props?.style?.bordersAndCorners;
+	const borders = (component.props?.style as ComponentStyleProps)
+		?.bordersAndCorners;
 	const hasCustomBorder = Boolean(
 		borders?.borderWidth || borders?.borderStyle || borders?.borderColor,
 	);
@@ -37,7 +49,8 @@ export const Divider: React.FC<DividerProps> = ({ component }) => {
 	// Sensible defaults per orientation (can be overridden by style props)
 	if (orientation === "vertical") {
 		// If no explicit height provided via style, give a small default height
-		const heightStyle = component.props?.style?.sizeAndSpacing?.height;
+		const heightStyle = (component.props?.style as ComponentStyleProps)
+			?.sizeAndSpacing?.height;
 		if (!heightStyle) {
 			baseStyle.height = "48px";
 		}
@@ -51,7 +64,10 @@ export const Divider: React.FC<DividerProps> = ({ component }) => {
 
 	return (
 		<div
-			className="relative"
+			className={["relative", className].filter(Boolean).join(" ")}
+			onClick={onClick}
+			onDragLeave={onDragLeave}
+			onDragOver={onDragOver}
 			style={{
 				order: component.order || 0,
 				...baseStyle,

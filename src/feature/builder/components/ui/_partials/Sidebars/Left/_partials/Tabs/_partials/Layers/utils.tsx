@@ -21,6 +21,7 @@ export const mapContentToTree = (
 	return content.map((component) => {
 		const base = componentsList.find((c) => c.type === component.type) || {
 			group: component.groupId || "",
+			name: component.name,
 			icon: getComponentIcon(component),
 			id: component.id,
 			label: component.label || component.groupId,

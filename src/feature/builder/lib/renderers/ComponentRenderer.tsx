@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { MouseEventHandler } from "react";
 import {
 	ContextMenu,
 	ContextMenuContent,
@@ -63,7 +63,13 @@ const DefaultComponent: React.FC<{ component: BuilderComponent }> = ({
 // Component registry mapping component types to React components
 const componentMap: Record<
 	ComponentType,
-	React.FC<{ component: BuilderComponent }>
+	React.FC<{
+		component: BuilderComponent;
+		className: string;
+		onClick: MouseEventHandler;
+		onDragLeave: ((e: React.DragEvent<HTMLDivElement>) => void) | undefined;
+		onDragOver: ((e: React.DragEvent<HTMLDivElement>) => void) | undefined;
+	}>
 > = {
 	button: Button,
 	checkbox: Checkbox,
@@ -104,6 +110,8 @@ const componentMap: Record<
 	navigationmenu: NavigationMenu,
 };
 
+import { useCurrentBreakpoint } from "@/feature/builder/contexts/BreakpointContext";
+import { useActiveBreakpointStore } from "@/feature/builder/store/storeActiveBreakpoint";
 import { useFooterEditor } from "@/feature/page/_footer/hooks/useFooterEditor";
 import { useHeaderEditor } from "@/feature/page/_header/hooks/useHeaderEditor";
 
@@ -111,6 +119,7 @@ interface ComponentRendererProps {
 	component: BuilderComponent;
 	onDragOver?: (e: React.DragEvent<HTMLDivElement>) => void;
 	onDragLeave?: () => void;
+	onClick?: MouseEventHandler;
 	isDropTarget?: boolean;
 	isRoot?: boolean;
 	region?: "header" | "content" | "footer";
@@ -157,6 +166,12 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 	const setCurrentComponent = useCurrentComponentStore(
 		(state) => state.setCurrentComponent,
 	);
+
+	const setActiveBreakpoint = useActiveBreakpointStore(
+		(state) => state.setActive,
+	);
+
+	const activeBreakpoint = useActiveBreakpointStore((state) => state.active);
 	const { confirmDelete } = useDeleteComponentContext();
 	const { duplicateComponent } = useDuplicateComponent();
 	const { clipboard, copy } = useStyleClipboardStore();
@@ -169,15 +184,24 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 	// Get the component from the registry or use the default component
 	const ComponentToRender = componentMap[component.type] || DefaultComponent;
 
+	const currentBreakpoint = useCurrentBreakpoint();
 	// Check if this component is the currently selected one
-	const isSelected = currentComponent.id === component.id;
 
+	const handleClick: MouseEventHandler = (e) => {
+		setActiveBreakpoint(currentBreakpoint);
+		e.stopPropagation(); // Stop event propagation to parent components
+		setCurrentComponent(component as BuilderComponent);
+	};
+
+	const isSelected =
+		currentComponent.id === component.id &&
+		JSON.stringify(activeBreakpoint) === JSON.stringify(currentBreakpoint);
 	// Determine the appropriate class based on component state
 	// Use a full-coverage after pseudo-element to avoid layout shifts from borders
 	let className =
-		"relative after:content-[''] after:absolute after:inset-0 after:pointer-events-none after:z-10";
+		"relative after:content-[''] after:absolute after:inset-0 after:pointer-events-none after:z-10 ";
 	if (isSelected) {
-		className += " after:border-2 after:border-blue-500";
+		className += "after:border-2 after:border-blue-500";
 	} else if (isDropTarget) {
 		className += " after:border-2 after:border-green-500 bg-green-50";
 	} else {
@@ -187,25 +211,27 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 	return (
 		<ContextMenu>
 			<ContextMenuTrigger>
-				<div
-					className={className}
-					onClick={(e) => {
-						e.stopPropagation(); // Stop event propagation to parent components
-						setCurrentComponent(component as BuilderComponent);
-					}}
-					onDragLeave={onDragLeave}
-					onDragOver={onDragOver}
-				>
+				<>
 					{component.type === "section" ? (
 						<SectionBuilder
+							className={className}
 							component={component}
 							isRoot={!!isRoot}
+							onClick={handleClick}
+							onDragLeave={onDragLeave}
+							onDragOver={onDragOver}
 							region={region}
 						/>
 					) : (
-						<ComponentToRender component={component} />
+						<ComponentToRender
+							className={className}
+							component={component}
+							onClick={handleClick}
+							onDragLeave={onDragLeave}
+							onDragOver={onDragOver}
+						/>
 					)}
-				</div>
+				</>
 			</ContextMenuTrigger>
 			<ContextMenuContent onClick={(e) => e.stopPropagation()}>
 				<ContextMenuItem

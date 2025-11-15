@@ -9,6 +9,7 @@ import {
 	SizeSpacingStyle,
 	TypographyStyle,
 } from "@/feature/builder/types/components/properties/componentStylePropsType";
+import { SizeUnit } from "@/feature/builder/types/settings/FluidSize";
 
 export const STYLE_DEFAULTS = {
 	// Advanced defaults
@@ -140,7 +141,7 @@ export const STYLE_DEFAULTS = {
 			right: { max: 0, maxWidth: 1440, min: 0, sizeUnit: "px" as const },
 			top: { max: 0, maxWidth: 1440, min: 0, sizeUnit: "px" as const },
 		},
-		width: { number: 0, unit: "px" as const },
+		width: { number: 0, unit: "px" as SizeUnit },
 	} satisfies SizeSpacingStyle,
 	// Typography defaults
 	TYPOGRAPHY: {

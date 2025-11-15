@@ -12,14 +12,29 @@ import { ComponentRenderer } from "../../../lib/renderers/ComponentRenderer";
 
 interface ContainerProps {
 	component: BuilderComponent;
+	className?: string;
+	onClick?: React.MouseEventHandler<HTMLElement>;
+	onDragLeave?: React.DragEventHandler<HTMLElement>;
+	onDragOver?: React.DragEventHandler<HTMLElement>;
 }
 
-export const Container: React.FC<ContainerProps> = ({ component }) => {
+export const Container: React.FC<ContainerProps> = ({
+	component,
+	className,
+	onClick,
+	onDragLeave,
+	onDragOver,
+}) => {
 	// Get the setTargetComponent function from context
 	const dragDropContext = useContext(DragDropContext);
 	return (
 		<div
-			className="relative container"
+			className={["relative builder-container", className]
+				.filter(Boolean)
+				.join(" ")}
+			onClick={onClick}
+			onDragLeave={onDragLeave}
+			onDragOver={onDragOver}
 			style={{
 				order: component.order || 0, // Use order property for positioning
 				...mapStylePropsToCss(component.props?.style),
@@ -59,6 +74,7 @@ export const Container: React.FC<ContainerProps> = ({ component }) => {
 										);
 									}
 								}}
+								region={"content"}
 							/>
 						))}
 				</>

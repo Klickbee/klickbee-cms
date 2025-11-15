@@ -6,6 +6,7 @@ export const SubmitButtonBC: SubmitButtonBCI = {
 	icon: <Send size={16} />,
 	id: "submitbutton",
 	label: "Submit Button",
+	name: "SubmitButton",
 	props: {
 		content: {},
 		style: {

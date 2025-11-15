@@ -6,6 +6,7 @@ export const SpacerBC: SpacerBCI = {
 	icon: <MoveVertical size={16} />,
 	id: "spacer",
 	label: "Spacer",
+	name: "Spacer",
 	props: {
 		content: {},
 		style: {

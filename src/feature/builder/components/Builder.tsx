@@ -6,7 +6,10 @@ import { useAdminKey } from "@/feature/admin-key/lib/utils";
 import BuilderLeftSidebar from "@/feature/builder/components/ui/BuilderLeftSidebar";
 import BuilderPreview from "@/feature/builder/components/ui/BuilderPreview";
 import BuilderRightSidebar from "@/feature/builder/components/ui/BuilderRightSidebar";
+import { useActiveBreakpointStore } from "@/feature/builder/store/storeActiveBreakpoint";
+import { Breakpoint } from "@/feature/builder/types/breakpoint";
 import { useAddPage } from "@/feature/page/hooks/useAddPage";
+import { useSetting } from "@/feature/settings/queries/useSettings";
 
 export default function BuilderComponent() {
 	const searchParams = useSearchParams();
@@ -15,6 +18,8 @@ export default function BuilderComponent() {
 	const action = searchParams.get("action");
 	const hasProcessedAction = useRef(false);
 	const { addPage } = useAddPage();
+	const { active: activeBreakpoint, setActive: setActiveBreakpoint } =
+		useActiveBreakpointStore();
 
 	// Function to clean up the URL after the action
 	const clearActionFromUrl = useCallback(() => {
@@ -50,11 +55,25 @@ export default function BuilderComponent() {
 		[addPage, clearActionFromUrl],
 	);
 
+	const breakPoints = useSetting("builder_breakpoints");
+
 	useEffect(() => {
 		if (action && !hasProcessedAction.current) {
 			executeAction(action);
 		}
-	}, [action, executeAction]);
+		if (!activeBreakpoint) {
+			const bps: Breakpoint[] = breakPoints?.data?.value
+				? JSON.parse(breakPoints.data.value)
+				: [];
+			if (bps.length > 0) {
+				// set the biggest breakpoint as active
+				const sortedBps = bps.sort(
+					(a, b) => (b.width || 0) - (a.width || 0),
+				);
+				setActiveBreakpoint(sortedBps[0]);
+			}
+		}
+	}, [action, executeAction, breakPoints]);
 
 	return (
 		<div className="flex-1 flex">

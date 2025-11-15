@@ -6,6 +6,7 @@ export const InputBC: InputBCI = {
 	icon: <InputIcon size={16} />,
 	id: "input",
 	label: "Input",
+	name: "Input",
 	props: {
 		content: {
 			name: "input",

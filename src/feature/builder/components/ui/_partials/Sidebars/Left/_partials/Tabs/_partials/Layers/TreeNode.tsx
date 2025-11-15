@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronDown, ChevronRight } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	ContextMenu,
 	ContextMenuContent,
@@ -15,6 +15,7 @@ import { useMoveComponent } from "@/feature/builder/hooks/useMoveComponent";
 import { useCurrentComponentStore } from "@/feature/builder/store/storeCurrentComponent";
 import { useCurrentPageStore } from "@/feature/builder/store/storeCurrentPage";
 import { useStyleClipboardStore } from "@/feature/builder/store/storeStyleClipboard";
+import { ComponentName } from "@/feature/builder/types/components/componentMap";
 import {
 	BuilderComponent,
 	canHaveChildren,
@@ -32,6 +33,7 @@ interface TreeNodeProps {
 	parentId?: string | null;
 	isDragging?: boolean;
 	type?: "header" | "footer" | "content";
+	rootExpand?: boolean;
 }
 
 export function TreeNode({
@@ -39,9 +41,9 @@ export function TreeNode({
 	level = 0,
 	parentId = null,
 	type,
+	rootExpand = true,
 }: TreeNodeProps) {
 	const { confirmDelete } = useDeleteComponentContext();
-	const [expanded, setExpanded] = useState(true);
 	const [overBefore, setOverBefore] = useState(false);
 	const [overInside, setOverInside] = useState(false);
 	const [overAfter, setOverAfter] = useState(false);
@@ -64,6 +66,23 @@ export function TreeNode({
 	const isCurrentComponent = (id: string) => {
 		return currentComponent.id === id;
 	};
+
+	// Initialize expanded so that when rootExpand is true we expand parent nodes
+	const [expanded, setExpanded] = useState<boolean>(() => {
+		if (rootExpand) return !!hasChildren;
+		return false;
+	});
+
+	useEffect(() => {
+		// If rootExpand is false -> force collapse every node (all descendants)
+		if (rootExpand === false) {
+			setExpanded(false);
+			return;
+		}
+
+		// If rootExpand is true -> expand every parent node (nodes that have children)
+		setExpanded(!!hasChildren);
+	}, [rootExpand, hasChildren]);
 
 	// DnD helpers
 	const onDragStart = (e: React.DragEvent) => {
@@ -211,6 +230,7 @@ export function TreeNode({
 									level={level + 1}
 									node={child}
 									parentId={node.id}
+									rootExpand={rootExpand}
 									type={type}
 								/>
 							))}
@@ -295,6 +315,7 @@ export function TreeNode({
 									(c) => c.type === "section",
 								);
 								const newComponent: BuilderComponent = {
+									name: listDef?.name as ComponentName,
 									groupId:
 										(listDef?.groupId as string) ||
 										"layout",
@@ -366,6 +387,7 @@ export function TreeNode({
 									(c) => c.type === "container",
 								);
 								const newComponent: BuilderComponent = {
+									name: listDef?.name as ComponentName,
 									groupId:
 										(listDef?.groupId as string) ||
 										"layout",

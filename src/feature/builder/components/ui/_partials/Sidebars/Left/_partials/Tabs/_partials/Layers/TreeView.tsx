@@ -10,6 +10,7 @@ import { useDeleteComponentContext } from "@/feature/builder/contexts/DeleteComp
 import { useDuplicateComponent } from "@/feature/builder/hooks/useDuplicateComponent";
 import { useCurrentPageStore } from "@/feature/builder/store/storeCurrentPage";
 import { useStyleClipboardStore } from "@/feature/builder/store/storeStyleClipboard";
+import { ComponentName } from "@/feature/builder/types/components/componentMap";
 import {
 	BuilderComponent,
 	canHaveChildren,
@@ -22,9 +23,14 @@ import { TreeNode } from "./TreeNode";
 interface TreeViewProps {
 	contentNodes: BuilderComponent[];
 	type?: "header" | "footer" | "content";
+	rootExpand?: boolean;
 }
 
-export function TreeView({ contentNodes, type }: TreeViewProps) {
+export function TreeView({
+	contentNodes,
+	type,
+	rootExpand = true,
+}: TreeViewProps) {
 	const { confirmDelete } = useDeleteComponentContext();
 	const { duplicateComponent } = useDuplicateComponent();
 	const { clipboard, copy } = useStyleClipboardStore();
@@ -45,6 +51,7 @@ export function TreeView({ contentNodes, type }: TreeViewProps) {
 									id={contentNode.id}
 									node={contentNode}
 									parentId={null}
+									rootExpand={rootExpand}
 									type={type}
 								/>
 							</ContextMenuTrigger>
@@ -144,6 +151,7 @@ export function TreeView({ contentNodes, type }: TreeViewProps) {
 													);
 												const newComponent: BuilderComponent =
 													{
+														name: listDef?.name as ComponentName,
 														groupId:
 															(listDef?.groupId as string) ||
 															"layout",
@@ -238,6 +246,7 @@ export function TreeView({ contentNodes, type }: TreeViewProps) {
 													);
 												const newComponent: BuilderComponent =
 													{
+														name: listDef?.name as ComponentName,
 														groupId:
 															(listDef?.groupId as string) ||
 															"layout",

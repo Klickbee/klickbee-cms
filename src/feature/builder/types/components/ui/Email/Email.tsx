@@ -6,6 +6,7 @@ export const EmailBC: EmailBCI = {
 	icon: <Mail size={16} />,
 	id: "email",
 	label: "Email",
+	name: "Email",
 	props: {
 		content: {
 			name: "email",

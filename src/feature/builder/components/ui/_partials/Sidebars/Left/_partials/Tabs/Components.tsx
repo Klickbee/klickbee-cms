@@ -1,5 +1,6 @@
 "use client";
 
+import { DragOverlay } from "@dnd-kit/core";
 import { ChevronDown, ChevronUp, ComponentIcon } from "lucide-react";
 import { useState } from "react";
 import BuilderSearchComponent from "@/feature/builder/components/ui/_partials/Sidebars/Left/Search";
@@ -40,11 +41,10 @@ export default function BuilderTabComponents() {
 		layout: true,
 	});
 
+	const [activeId, setActiveId] = useState<string>("");
+
 	const currentPage = useCurrentPageStore((state) => state.currentPage);
 	const setCurrentPage = useCurrentPageStore((state) => state.setCurrentPage);
-	const _setTargetComponent = useCurrentComponentStore(
-		(state) => state.setCurrentComponent,
-	);
 	const currentComponent = useCurrentComponentStore(
 		(state) => state.currentComponent,
 	);
@@ -67,6 +67,7 @@ export default function BuilderTabComponents() {
 
 			// Create the new component using the selected item from componentsList
 			const newComponent: BuilderComponent = {
+				name: componentData.name,
 				groupId: componentData.groupId,
 				id: `${componentData.type}-${Date.now()}`, // Generate a unique ID for the instance
 				label: componentData.label,
@@ -186,30 +187,44 @@ export default function BuilderTabComponents() {
 							{/* Items */}
 							{isOpen &&
 								group.items.map((item) => (
-									<div
-										className="border-l flex items-center gap-2 pl-6 py-1 text-primary hover:text-background hover:bg-foreground rounded-md cursor-pointer"
-										draggable
-										key={item.id}
-										onClick={(e) =>
-											handleAddComponent(e, item)
-										}
-										onDragStart={(e) => {
-											const componentData = {
-												groupId: group.id,
-												label: item.label,
-												type: item.type, // use type from componentsList
-											};
-											e.dataTransfer.setData(
-												"application/json",
-												JSON.stringify(componentData),
-											);
-											e.dataTransfer.effectAllowed =
-												"copy";
-										}}
-									>
-										{item.icon}
-										<span>{item.label}</span>
-									</div>
+									<>
+										<div
+											className="border-l flex items-center gap-2 pl-6 py-1 text-primary hover:text-background hover:bg-foreground rounded-md cursor-pointer"
+											draggable
+											key={item.id}
+											onClick={(e) =>
+												handleAddComponent(e, item)
+											}
+											onDragStart={(e) => {
+												setActiveId(item.id);
+												const componentData = {
+													groupId: group.id,
+													label: item.label,
+													name: item.name,
+													type: item.type, // use type from componentsList
+												};
+												e.dataTransfer.setData(
+													"application/json",
+													JSON.stringify(
+														componentData,
+													),
+												);
+												e.dataTransfer.effectAllowed =
+													"copy";
+											}}
+										>
+											{item.icon}
+											<span>{item.label}</span>
+										</div>
+										<DragOverlay>
+											{activeId === item.id ? (
+												<div>
+													{item.icon}
+													<span>{item.label}</span>
+												</div>
+											) : null}
+										</DragOverlay>
+									</>
 								))}
 						</div>
 					);

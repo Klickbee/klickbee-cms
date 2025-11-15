@@ -89,8 +89,12 @@ export type PositionStyle = {
 	objectFit?: ObjectFitType;
 };
 
+interface SpacingValueWithCustom extends SpacingValue {
+	custom?: string;
+}
+
 export type SizeSpacingStyle = {
-	width?: SpacingValue;
+	width?: SpacingValueWithCustom;
 	height?: SpacingValue;
 	minWidth?: SpacingValue;
 	maxWidth?: SpacingValue;
@@ -210,3 +214,5 @@ export type ComponentStyleProps = {
 	effects?: EffectsStyle;
 	advanced?: AdvancedStyle;
 };
+
+export type BreakpointStyleProps = Record<number, ComponentStyleProps>;

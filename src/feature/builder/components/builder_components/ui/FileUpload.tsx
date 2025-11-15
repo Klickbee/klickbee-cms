@@ -5,9 +5,19 @@ import { BuilderComponent } from "../../../types/components/components";
 
 interface FileUploadProps {
 	component: BuilderComponent;
+	className?: string;
+	onClick?: React.MouseEventHandler<HTMLElement>;
+	onDragLeave?: ((e: React.DragEvent<HTMLDivElement>) => void) | undefined;
+	onDragOver?: ((e: React.DragEvent<HTMLDivElement>) => void) | undefined;
 }
 
-export const FileUpload: React.FC<FileUploadProps> = ({ component }) => {
+export const FileUpload: React.FC<FileUploadProps> = ({
+	component,
+	className,
+	onClick,
+	onDragLeave,
+	onDragOver,
+}) => {
 	// Default file properties if not provided
 	const label = (component.props?.content?.label as string) || "Upload File";
 	const accept = (component.props?.content?.mimeTypes as string) || "*/*";
@@ -15,7 +25,15 @@ export const FileUpload: React.FC<FileUploadProps> = ({ component }) => {
 
 	return (
 		<div
-			className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg"
+			className={[
+				"flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg",
+				className,
+			]
+				.filter(Boolean)
+				.join(" ")}
+			onClick={onClick}
+			onDragLeave={onDragLeave}
+			onDragOver={onDragOver}
 			style={{
 				order: component.order || 0, // Use order property for positioning
 				...mapStylePropsToCss(component.props?.style),
@@ -29,6 +47,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({ component }) => {
 			<p className="text-xs text-gray-500">Max file size: {maxSize}MB</p>
 			<button
 				className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+				onClick={onClick}
 				type="button"
 			>
 				Select File

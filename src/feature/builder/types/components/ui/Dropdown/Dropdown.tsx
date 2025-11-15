@@ -6,8 +6,13 @@ export const DropdownBC: DropdownBCI = {
 	icon: <Box size={16} />,
 	id: "dropdown",
 	label: "Dropdown",
+	name: "Dropdown",
 	props: {
-		content: {},
+		content: {
+			options: [],
+			name: "",
+			defaultText: "",
+		},
 		style: {
 			background: {},
 			bordersAndCorners: {},

@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "./generated.css";
 
 .dark {
 	--background: oklch(0.145 0 0);

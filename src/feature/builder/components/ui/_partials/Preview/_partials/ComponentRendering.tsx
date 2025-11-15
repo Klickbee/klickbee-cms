@@ -22,7 +22,6 @@ export default function ComponentRendering({
 	if (!Array.isArray(content) || content.length === 0) {
 		return null;
 	}
-
 	return (
 		<>
 			{content

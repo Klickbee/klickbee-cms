@@ -1,5 +1,6 @@
 "use client";
 
+import { Pencil } from "lucide-react";
 import {
 	Select,
 	SelectContent,
@@ -39,7 +40,7 @@ export default function UnitSelector<
 						? { onClick: () => onUnitChange(u as T) }
 						: {})}
 				>
-					{u}
+					{u == "custom" ? <Pencil /> : u}
 				</SelectItem>,
 			);
 		});

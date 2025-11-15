@@ -4,15 +4,16 @@ import { GridBCI } from "./GridType";
 export const GridBC: GridBCI = {
 	groupId: "layout",
 	icon: <LayoutGrid size={16} />,
-	id: "grid",
+	id: "Grid",
 	label: "Grid/Column",
+	name: "Grid",
 	props: {
 		content: {},
 		style: {
 			background: {},
 			bordersAndCorners: {},
 			effects: {},
-			layout: {},
+			layout: { grid: { columns: 2 } },
 			sizeAndSpacing: {},
 		},
 	},

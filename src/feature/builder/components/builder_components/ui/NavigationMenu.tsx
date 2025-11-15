@@ -8,6 +8,10 @@ import { BuilderComponent } from "../../../types/components/components";
 
 interface NavigationMenuProps {
 	component: BuilderComponent;
+	className?: string;
+	onClick?: React.MouseEventHandler<HTMLElement>;
+	onDragLeave?: React.DragEventHandler<HTMLElement>;
+	onDragOver?: React.DragEventHandler<HTMLElement>;
 }
 
 /*
@@ -17,6 +21,10 @@ interface NavigationMenuProps {
 */
 export const NavigationMenu: React.FC<NavigationMenuProps> = ({
 	component,
+	className,
+	onClick,
+	onDragLeave,
+	onDragOver,
 }) => {
 	const content = (component.props?.content || {}) as ComponentContentProps;
 	const rawItems =
@@ -44,7 +52,10 @@ export const NavigationMenu: React.FC<NavigationMenuProps> = ({
 
 	return (
 		<nav
-			className=""
+			className={className}
+			onClick={onClick}
+			onDragLeave={onDragLeave}
+			onDragOver={onDragOver}
 			style={{
 				order: component.order || 0,
 				...mapStylePropsToCss(component.props?.style),

@@ -6,6 +6,7 @@ export const TextAreaBC: TextAreaBCI = {
 	icon: <FormInput size={16} />,
 	id: "textarea",
 	label: "Text Area",
+	name: "TextArea",
 	props: {
 		content: {},
 		style: {

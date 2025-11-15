@@ -24,7 +24,6 @@ import { Text } from "@/feature/builder/components/builder_components/ui/Text";
 import { TextField } from "@/feature/builder/components/builder_components/ui/TextField";
 import { Video } from "@/feature/builder/components/builder_components/ui/Video";
 import { normalizeToComponents } from "@/feature/builder/lib/content/normalize";
-import { mapStylePropsToCss } from "@/feature/builder/lib/style/mapStylePropsToCss";
 import type {
 	BuilderComponent,
 	ComponentType,
@@ -34,39 +33,63 @@ import type {
 function PublicSection({
 	component,
 	isRoot = false,
+	isHeader = false,
+	isFooter = false,
 }: {
 	component: BuilderComponent;
 	isRoot?: boolean;
+	isHeader?: boolean;
+	isFooter?: boolean;
 }) {
-	const style: React.CSSProperties = {
-		// SectionBuilder in builder does not set order explicitly
-		...mapStylePropsToCss(component.props?.style),
-		containerType: "inline-size",
-	};
-	return (
-		<section className={`${isRoot ? "relative w-full" : ""}`} style={style}>
-			{Array.isArray(component.children)
-				? component.children
-						.slice()
-						.sort((a, b) => (a.order || 0) - (b.order || 0))
-						.map((child) => (
-							<PublicComponentRenderer
-								component={child}
-								key={child.id}
-							/>
-						))
-				: null}
-		</section>
-	);
+	let wrapperElement;
+	if (isHeader) {
+		wrapperElement = (content: React.JSX.Element[] | null) => {
+			return (
+				<header
+					className={`${isRoot ? "relative w-full" : ""}`}
+					id={component.id}
+				>
+					{content}
+				</header>
+			);
+		};
+	} else if (isFooter) {
+		wrapperElement = (content: React.JSX.Element[] | null) => {
+			return (
+				<footer
+					className={`${isRoot ? "relative w-full" : ""}`}
+					id={component.id}
+				>
+					{content}
+				</footer>
+			);
+		};
+	} else {
+		wrapperElement = (content: React.JSX.Element[] | null) => {
+			return (
+				<section
+					className={`${isRoot ? "relative w-full" : ""}`}
+					id={component.id}
+				>
+					{content}
+				</section>
+			);
+		};
+	}
+	const content = Array.isArray(component.children)
+		? component.children
+				.slice()
+				.sort((a, b) => (a.order || 0) - (b.order || 0))
+				.map((child) => (
+					<PublicComponentRenderer component={child} key={child.id} />
+				))
+		: null;
+	return wrapperElement(content);
 }
 
 function PublicContainer({ component }: { component: BuilderComponent }) {
-	const style: React.CSSProperties = {
-		order: component.order || 0,
-		...mapStylePropsToCss(component.props?.style),
-	};
 	return (
-		<div className="relative container mx-auto" style={style}>
+		<div className="relative builder-container" id={component.id}>
 			{Array.isArray(component.children)
 				? component.children
 						.slice()
@@ -83,14 +106,8 @@ function PublicContainer({ component }: { component: BuilderComponent }) {
 }
 
 function PublicGrid({ component }: { component: BuilderComponent }) {
-	const columns = component.props?.style?.layout?.grid?.columns || 2;
-	const style: React.CSSProperties = {
-		order: component.order || 0,
-		...mapStylePropsToCss(component.props?.style),
-		gridTemplateColumns: `repeat(${columns}, 1fr)`,
-	};
 	return (
-		<div className="grid" style={style}>
+		<div className="grid" id={component.id}>
 			{Array.isArray(component.children)
 				? component.children
 						.slice()
@@ -108,7 +125,11 @@ function PublicGrid({ component }: { component: BuilderComponent }) {
 // Fallback: render nothing for unsupported types in public mode
 function UnknownPublic({ component }: { component: BuilderComponent }) {
 	// Intentionally render nothing on public site for unknown components in public rendering
-	return null;
+	return (
+		<>
+			<h1>Undefined components</h1>
+		</>
+	);
 }
 
 const publicComponentMap: Record<
@@ -161,14 +182,22 @@ export function PublicComponentRenderer({
 	component: BuilderComponent;
 }) {
 	const Comp = publicComponentMap[component.type] || UnknownPublic;
-	return <Comp component={component} />;
+	const isSelfWrapping =
+		component.type === "section" ||
+		component.type === "container" ||
+		component.type === "grid";
+	if (isSelfWrapping) return <Comp component={component} />;
+	return (
+		<div id={component.id}>
+			<Comp component={component} />
+		</div>
+	);
 }
 
 export function PageRenderer({
 	content,
 	headerContent,
 	footerContent,
-	wrapperClassName,
 }: {
 	content: unknown;
 	headerContent?: unknown;
@@ -195,6 +224,7 @@ export function PageRenderer({
 					component.type === "section" ? (
 						<PublicSection
 							component={component}
+							isHeader={true}
 							isRoot
 							key={component.id}
 						/>
@@ -235,6 +265,7 @@ export function PageRenderer({
 					component.type === "section" ? (
 						<PublicSection
 							component={component}
+							isFooter={true}
 							isRoot
 							key={component.id}
 						/>

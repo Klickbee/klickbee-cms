@@ -6,6 +6,7 @@ export const FileUploadBC: FileUploadBCI = {
 	icon: <FileUp size={16} />,
 	id: "fileupload",
 	label: "File Upload",
+	name: "FileUpload",
 	props: {
 		content: {},
 		style: {

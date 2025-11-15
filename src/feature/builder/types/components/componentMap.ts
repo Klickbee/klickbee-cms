@@ -30,12 +30,14 @@ export type ComponentName =
 	| "RichText"
 	| "List"
 	| "Link"
+	| "Text"
 	// Interactive components
 	| "Button"
 	// Media components
 	| "Image"
 	| "Video"
 	| "Embed"
+	| "Slider"
 	// Form components
 	| "FormBlock"
 	| "TextField"
@@ -44,7 +46,12 @@ export type ComponentName =
 	| "RadioGroup"
 	| "Dropdown"
 	| "FileUpload"
-	| "SubmitButton";
+	| "SubmitButton"
+	| "Input"
+	| "Email"
+	| "FormFileUpload"
+	| "FormRichText"
+	| "NavigationMenu";
 
 /**
  * Base interface for all component entries in the component map
@@ -259,6 +266,10 @@ export const componentMap: Record<ComponentName, ComponentMapEntry> = {
 			bordersAndCorners: {},
 		},
 	),
+
+	// Added missing typography component 'Text'
+	Text: createTypographyComponent("A plain text element", { text: "" }),
+
 	// ===== LAYOUT COMPONENTS =====
 	Section: createLayoutComponent(
 		"A top-level container for organizing content sections",
@@ -291,6 +302,29 @@ export const componentMap: Record<ComponentName, ComponentMapEntry> = {
 		type: "text",
 	}),
 
+	// Added Input and Email form elements
+	Input: createFormElementComponent("A generic input field", {
+		name: "",
+		placeholder: "",
+		required: false,
+	}),
+
+	Email: createFormElementComponent("An email input field", {
+		name: "",
+		placeholder: "",
+		required: false,
+	}),
+
+	// Added FormFileUpload and FormRichText entries
+	FormFileUpload: createFormElementComponent(
+		"A file upload element for forms",
+		{ name: "", maxFileSize: 0, mimeTypes: "" },
+	),
+
+	FormRichText: createFormElementComponent("A rich text input for forms", {
+		content: "",
+	}),
+
 	Video: {
 		category: ComponentCategory.MEDIA,
 		contentProps: { autoplay: false, controls: false, src: "" },
@@ -302,6 +336,36 @@ export const componentMap: Record<ComponentName, ComponentMapEntry> = {
 			sizeAndSpacing: {},
 		},
 	},
+
+	// Added Slider media component
+	Slider: {
+		category: ComponentCategory.MEDIA,
+		contentProps: {
+			items: [],
+			autoplay: false,
+		},
+		description: "An image slider/carousel",
+		styleProps: {
+			bordersAndCorners: {},
+			effects: {},
+			layout: {},
+			sizeAndSpacing: {},
+		},
+	},
+
+	// Added NavigationMenu component
+	NavigationMenu: createTypographyComponent(
+		"A navigation menu with items",
+		{ navItems: [], orientation: "horizontal" },
+		{
+			bordersAndCorners: {},
+			effects: {},
+			layout: {},
+			sizeAndSpacing: {},
+			typography: {},
+			advanced: {},
+		},
+	),
 };
 
 /**

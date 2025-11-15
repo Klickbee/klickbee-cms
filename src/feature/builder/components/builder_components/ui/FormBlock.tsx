@@ -8,11 +8,19 @@ import {
 interface FormBlockProps {
 	component: BuilderComponent;
 	children?: React.ReactNode;
+	className?: string;
+	onClick?: React.MouseEventHandler<HTMLElement>;
+	onDragLeave?: ((e: React.DragEvent<HTMLDivElement>) => void) | undefined;
+	onDragOver?: ((e: React.DragEvent<HTMLDivElement>) => void) | undefined;
 }
 
 export const FormBlock: React.FC<FormBlockProps> = ({
 	component,
 	children,
+	className,
+	onClick,
+	onDragLeave,
+	onDragOver,
 }) => {
 	// Default form properties if not provided
 	const formId = "form-" + component.id;
@@ -21,7 +29,10 @@ export const FormBlock: React.FC<FormBlockProps> = ({
 
 	return (
 		<div
-			className="relative"
+			className={["relative", className].filter(Boolean).join(" ")}
+			onClick={onClick}
+			onDragLeave={onDragLeave}
+			onDragOver={onDragOver}
 			style={{
 				order: component.order || 0, // Use order property for positioning
 				...mapStylePropsToCss(component.props?.style),
@@ -32,6 +43,7 @@ export const FormBlock: React.FC<FormBlockProps> = ({
 				className=" space-y-4"
 				id={formId}
 				method={method}
+				onClick={onClick}
 			>
 				{/* Render children if this component can have children */}
 				{canHaveChildren(component.type) && children ? (

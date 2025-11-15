@@ -6,6 +6,7 @@ export const FormRichTextBC: FormRichTextBCI = {
 	icon: <FileText size={16} />,
 	id: "formrichtext",
 	label: "Rich Text",
+	name: "FormRichText",
 	props: {
 		content: {
 			content: "<p>Form Rich Text</p>",

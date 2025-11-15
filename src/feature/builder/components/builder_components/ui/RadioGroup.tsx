@@ -1,12 +1,22 @@
-import React from "react";
+import React, { DragEventHandler } from "react";
 import { mapStylePropsToCss } from "@/feature/builder/lib/style/mapStylePropsToCss";
 import { BuilderComponent } from "../../../types/components/components";
 
 interface RadioGroupProps {
 	component: BuilderComponent;
+	className?: string;
+	onClick?: React.MouseEventHandler<HTMLElement>;
+	onDragLeave?: ((e: React.DragEvent<HTMLDivElement>) => void) | undefined;
+	onDragOver?: ((e: React.DragEvent<HTMLDivElement>) => void) | undefined;
 }
 
-export const RadioGroup: React.FC<RadioGroupProps> = ({ component }) => {
+export const RadioGroup: React.FC<RadioGroupProps> = ({
+	component,
+	className,
+	onClick,
+	onDragLeave,
+	onDragOver,
+}) => {
 	// Default radio group properties if not provided
 	const label = (component.props?.content?.label as string) || "Radio Group";
 	const name =
@@ -26,6 +36,14 @@ export const RadioGroup: React.FC<RadioGroupProps> = ({ component }) => {
 
 	return (
 		<fieldset
+			className={className}
+			onClick={onClick}
+			onDragLeave={
+				onDragLeave as DragEventHandler<HTMLFieldSetElement> | undefined
+			}
+			onDragOver={
+				onDragOver as DragEventHandler<HTMLFieldSetElement> | undefined
+			}
 			style={{
 				order: component.order || 0, // Use order property for positioning
 				...mapStylePropsToCss(component.props?.style),

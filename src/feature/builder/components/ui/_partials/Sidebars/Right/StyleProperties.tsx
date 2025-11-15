@@ -1,25 +1,28 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { Accordion } from "@/components/ui/accordion";
 import {
-	Accordion,
-	AccordionContent,
-	AccordionItem,
-	AccordionTrigger,
-} from "@/components/ui/accordion";
-import BuilderStyleAdvanced from "@/feature/builder/components/ui/_partials/Sidebars/Right/_partials/styles/Advanced";
-import BuilderStyleBackground from "@/feature/builder/components/ui/_partials/Sidebars/Right/_partials/styles/Background";
-import BuilderStyleBordersAndCorners from "@/feature/builder/components/ui/_partials/Sidebars/Right/_partials/styles/BordersAndCorners";
-import BuilderStyleEffects from "@/feature/builder/components/ui/_partials/Sidebars/Right/_partials/styles/Effects";
-import BuilderStyleLayout from "@/feature/builder/components/ui/_partials/Sidebars/Right/_partials/styles/Layout";
-import BuilderStylePosition from "@/feature/builder/components/ui/_partials/Sidebars/Right/_partials/styles/Position";
-import BuilderStyleSizeAndSpacing from "@/feature/builder/components/ui/_partials/Sidebars/Right/_partials/styles/SizeAndSpacing";
-import BuilderStyleTypography from "@/feature/builder/components/ui/_partials/Sidebars/Right/_partials/styles/Typography";
+	BuilderStyleAdvanced,
+	BuilderStyleBackground,
+	BuilderStyleBordersAndCorners,
+	BuilderStyleEffects,
+	BuilderStyleLayout,
+	BuilderStylePosition,
+	BuilderStyleSizeAndSpacing,
+	BuilderStyleTypography,
+} from "@/feature/builder/components/ui/_partials/Sidebars/Right/_partials/styles";
 import { useCurrentComponentStore } from "@/feature/builder/store/storeCurrentComponent";
+import {
+	ComponentName,
+	componentMap,
+} from "@/feature/builder/types/components/componentMap";
+import { BuilderComponent } from "@/feature/builder/types/components/components";
+import StyleSection from "./StyleSection";
 
 export default function BuilderStyleProperties() {
 	const t = useTranslations("Builder.RightSidebar");
-	const currentComponent = useCurrentComponentStore(
+	const currentComponent: BuilderComponent = useCurrentComponentStore(
 		(state) => state.currentComponent,
 	);
 
@@ -28,101 +31,112 @@ export default function BuilderStyleProperties() {
 		return null;
 	}
 
-	const style = currentComponent.props?.style ?? {};
+	const def = componentMap[currentComponent.name as ComponentName];
+
+	if (!def) {
+		return (
+			<p className={"p-4 text-sm text-red-600"}>
+				Their has been an error loading the style properties for this
+				component.
+			</p>
+		);
+	}
+
+	const defStyle = def.styleProps;
+
+	const triggerClass =
+		"font-medium text-xs px-4 py-3 border-t border-zinc-200 data-[state=open]:border-b";
+	const contentClass = "px-4 py-3 border-b border-zinc-200";
 
 	return (
 		<Accordion collapsible type="single">
-			{style.layout && (
-				<AccordionItem value="layout">
-					<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 data-[state=open]:border-b">
-						{t("Layout.Layout")}
-					</AccordionTrigger>
-					<AccordionContent className="px-4 py-3 border-b border-zinc-200">
-						<BuilderStyleLayout component={currentComponent} />
-					</AccordionContent>
-				</AccordionItem>
+			{defStyle.layout && (
+				<StyleSection
+					contentClassName={contentClass}
+					title={t("Layout.Layout")}
+					triggerClassName={triggerClass}
+					value="layout"
+				>
+					<BuilderStyleLayout component={currentComponent} />
+				</StyleSection>
 			)}
 
-			{style.position && (
-				<AccordionItem value="position">
-					<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 data-[state=open]:border-b">
-						{t("Position.title")}
-					</AccordionTrigger>
-					<AccordionContent className="px-4 py-3 border-b border-zinc-200">
-						<BuilderStylePosition component={currentComponent} />
-					</AccordionContent>
-				</AccordionItem>
+			{defStyle.position && (
+				<StyleSection
+					contentClassName={contentClass}
+					title={t("Position.title")}
+					triggerClassName={triggerClass}
+					value="position"
+				>
+					<BuilderStylePosition component={currentComponent} />
+				</StyleSection>
 			)}
 
-			{style.sizeAndSpacing && (
-				<AccordionItem value="size-spacing">
-					<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 data-[state=open]:border-b">
-						{t("SizeAndSpacing.title")}
-					</AccordionTrigger>
-					<AccordionContent className="px-4 py-3 border-b border-zinc-200">
-						<BuilderStyleSizeAndSpacing
-							component={currentComponent}
-						/>
-					</AccordionContent>
-				</AccordionItem>
+			{defStyle.sizeAndSpacing && (
+				<StyleSection
+					contentClassName={contentClass}
+					title={t("SizeAndSpacing.title")}
+					triggerClassName={triggerClass}
+					value="size-spacing"
+				>
+					<BuilderStyleSizeAndSpacing component={currentComponent} />
+				</StyleSection>
 			)}
 
-			{style.typography && (
-				<AccordionItem value="typography">
-					<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 data-[state=open]:border-b">
-						{t("Typography.title")}
-					</AccordionTrigger>
-					<AccordionContent className="px-4 py-3 border-b border-zinc-200">
-						<BuilderStyleTypography component={currentComponent} />
-					</AccordionContent>
-				</AccordionItem>
+			{defStyle.typography && (
+				<StyleSection
+					contentClassName={contentClass}
+					title={t("Typography.title")}
+					triggerClassName={triggerClass}
+					value="typography"
+				>
+					<BuilderStyleTypography component={currentComponent} />
+				</StyleSection>
 			)}
 
-			{style.background && (
-				<AccordionItem value="background">
-					<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 data-[state=open]:border-b">
-						{t("Background.title")}
-					</AccordionTrigger>
-					<AccordionContent className="px-4 py-3 border-b border-zinc-200">
-						<BuilderStyleBackground component={currentComponent} />
-					</AccordionContent>
-				</AccordionItem>
+			{defStyle.background && (
+				<StyleSection
+					contentClassName={contentClass}
+					title={t("Background.title")}
+					triggerClassName={triggerClass}
+					value="background"
+				>
+					<BuilderStyleBackground component={currentComponent} />
+				</StyleSection>
 			)}
 
-			{style.bordersAndCorners && (
-				<AccordionItem value="borders">
-					<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 data-[state=open]:border-b">
-						{t("BordersAndCorners.title")}
-					</AccordionTrigger>
-					<AccordionContent className="px-4 py-3 border-b border-zinc-200">
-						<BuilderStyleBordersAndCorners
-							component={currentComponent}
-						/>
-					</AccordionContent>
-				</AccordionItem>
+			{defStyle.bordersAndCorners && (
+				<StyleSection
+					contentClassName={contentClass}
+					title={t("BordersAndCorners.title")}
+					triggerClassName={triggerClass}
+					value="borders"
+				>
+					<BuilderStyleBordersAndCorners
+						component={currentComponent}
+					/>
+				</StyleSection>
 			)}
 
-			{style.effects && (
-				<AccordionItem value="effects">
-					<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 data-[state=open]:border-b">
-						{t("Effects.title")}
-					</AccordionTrigger>
-					<AccordionContent className="px-4 py-3 border-b border-zinc-200">
-						<BuilderStyleEffects component={currentComponent} />
-					</AccordionContent>
-				</AccordionItem>
+			{defStyle.effects && (
+				<StyleSection
+					contentClassName={contentClass}
+					title={t("Effects.title")}
+					triggerClassName={triggerClass}
+					value="effects"
+				>
+					<BuilderStyleEffects component={currentComponent} />
+				</StyleSection>
 			)}
 
-			{style.advanced && (
-				<AccordionItem value="advanced">
-					<AccordionTrigger className="font-medium text-xs px-4 py-3 border-t border-zinc-200 border-b">
-						{t("Advanced.title")}
-					</AccordionTrigger>
-					<AccordionContent className="px-4 py-3 border-b border-zinc-200">
-						<BuilderStyleAdvanced component={currentComponent} />
-					</AccordionContent>
-				</AccordionItem>
-			)}
+			<StyleSection
+				contentClassName={contentClass}
+				title={t("Advanced.title")}
+				triggerClassName={triggerClass}
+				value="advanced"
+			>
+				<BuilderStyleAdvanced component={currentComponent} />
+			</StyleSection>
 		</Accordion>
 	);
 }

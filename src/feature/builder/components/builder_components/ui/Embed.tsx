@@ -4,9 +4,19 @@ import { BuilderComponent } from "../../../types/components/components";
 
 interface EmbedProps {
 	component: BuilderComponent;
+	className?: string;
+	onClick?: React.MouseEventHandler<HTMLElement>;
+	onDragLeave?: React.DragEventHandler<HTMLElement>;
+	onDragOver?: React.DragEventHandler<HTMLElement>;
 }
 
-export const Embed: React.FC<EmbedProps> = ({ component }) => {
+export const Embed: React.FC<EmbedProps> = ({
+	component,
+	className,
+	onClick,
+	onDragLeave,
+	onDragOver,
+}) => {
 	// Default embed code if not provided
 	const embedCode =
 		(component.props?.content?.content as string) ||
@@ -16,8 +26,11 @@ export const Embed: React.FC<EmbedProps> = ({ component }) => {
 
 	return (
 		<div
-			className="embed-container"
+			className={["embed-container", className].filter(Boolean).join(" ")}
 			dangerouslySetInnerHTML={{ __html: embedCode }}
+			onClick={onClick}
+			onDragLeave={onDragLeave}
+			onDragOver={onDragOver}
 			style={{
 				order: component.order || 0, // Use order property for positioning
 				...mapStylePropsToCss(component.props?.style),

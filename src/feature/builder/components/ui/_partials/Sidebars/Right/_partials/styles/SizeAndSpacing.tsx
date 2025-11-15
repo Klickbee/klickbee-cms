@@ -50,17 +50,31 @@ export default function BuilderStyleSizeAndSpacing({
 						width: {
 							number: sizeSpacing.width?.number || 0,
 							unit,
+							custom: "",
 						},
 					}))
 				}
-				onValueChange={(number) =>
-					updateNestedProperty("sizeAndSpacing", (current) => ({
-						...current,
-						width: {
-							number,
-							unit: sizeSpacing.width?.unit || "px",
-						},
-					}))
+				onValueChange={(value) =>
+					updateNestedProperty("sizeAndSpacing", (current) => {
+						const curr = current || {};
+						if (sizeSpacing.width?.unit === "custom") {
+							return {
+								...curr,
+								width: {
+									custom: String(value),
+									unit: "custom",
+									number: 0,
+								},
+							} as SizeSpacingStyle;
+						}
+						return {
+							...curr,
+							width: {
+								number: Number(value),
+								unit: sizeSpacing.width?.unit || "px",
+							},
+						} as SizeSpacingStyle;
+					})
 				}
 				unit={sizeSpacing.width?.unit || "px"}
 				value={sizeSpacing.width?.number || 0}
@@ -300,71 +314,98 @@ export default function BuilderStyleSizeAndSpacing({
 				}}
 				label={t("padding")}
 				onUnitChange={(unit) =>
-					updateNestedProperty("sizeAndSpacing", (current) => ({
-						...current,
-						padding: current?.padding
-							? {
-									...current.padding,
-									bottom: {
-										...current.padding.bottom,
-										sizeUnit: unit,
-									},
-									left: {
-										...current.padding.left,
-										sizeUnit: unit,
-									},
-									right: {
-										...current.padding.right,
-										sizeUnit: unit,
-									},
-									top: {
-										...current.padding.top,
-										sizeUnit: unit,
-									},
-								}
-							: undefined,
-					}))
+					updateNestedProperty("sizeAndSpacing", (current) => {
+						const currPadding = current?.padding;
+						const defaultPadding =
+							STYLE_DEFAULTS.SIZE_AND_SPACING.padding;
+						return {
+							...current,
+							padding: {
+								key: currPadding?.key ?? defaultPadding.key,
+								top: {
+									...(currPadding?.top ?? defaultPadding.top),
+									sizeUnit: unit,
+								},
+								right: {
+									...(currPadding?.right ??
+										defaultPadding.right),
+									sizeUnit: unit,
+								},
+								bottom: {
+									...(currPadding?.bottom ??
+										defaultPadding.bottom),
+									sizeUnit: unit,
+								},
+								left: {
+									...(currPadding?.left ??
+										defaultPadding.left),
+									sizeUnit: unit,
+								},
+							},
+						};
+					})
 				}
 				onValuesChange={({ top, right, bottom, left }) => {
-					updateNestedProperty("sizeAndSpacing", (current) => ({
-						...current,
-						padding: current?.padding
-							? {
-									...current.padding,
-									...(top !== undefined && {
-										top: {
-											...current.padding.top,
-											max: top,
-										},
-									}),
-									...(right !== undefined && {
-										right: {
-											...current.padding.right,
-											max: right,
-										},
-									}),
-									...(bottom !== undefined && {
-										bottom: {
-											...current.padding.bottom,
-											max: bottom,
-										},
-									}),
-									...(left !== undefined && {
-										left: {
-											...current.padding.left,
-											max: left,
-										},
-									}),
-								}
-							: undefined,
-					}));
+					updateNestedProperty("sizeAndSpacing", (current) => {
+						const currPadding = current?.padding;
+						const defaultPadding =
+							STYLE_DEFAULTS.SIZE_AND_SPACING.padding;
+						return {
+							...current,
+							padding: {
+								key: currPadding?.key ?? defaultPadding.key,
+								top: {
+									...(currPadding?.top ?? defaultPadding.top),
+									max:
+										top ??
+										currPadding?.top?.max ??
+										defaultPadding.top.max,
+								},
+								right: {
+									...(currPadding?.right ??
+										defaultPadding.right),
+									max:
+										right ??
+										currPadding?.right?.max ??
+										defaultPadding.right.max,
+								},
+								bottom: {
+									...(currPadding?.bottom ??
+										defaultPadding.bottom),
+									max:
+										bottom ??
+										currPadding?.bottom?.max ??
+										defaultPadding.bottom.max,
+								},
+								left: {
+									...(currPadding?.left ??
+										defaultPadding.left),
+									max:
+										left ??
+										currPadding?.left?.max ??
+										defaultPadding.left.max,
+								},
+							},
+						};
+					});
 				}}
-				unit={sizeSpacing.padding?.top.sizeUnit || "px"}
+				unit={
+					sizeSpacing.padding?.top.sizeUnit ||
+					STYLE_DEFAULTS.SIZE_AND_SPACING.padding.top.sizeUnit
+				}
 				values={{
-					bottom: sizeSpacing.padding?.bottom.max || 0,
-					left: sizeSpacing.padding?.left.max || 0,
-					right: sizeSpacing.padding?.right.max || 0,
-					top: sizeSpacing.padding?.top.max || 0,
+					bottom:
+						sizeSpacing.padding?.bottom.max ??
+						STYLE_DEFAULTS.SIZE_AND_SPACING.padding.bottom.max,
+					left:
+						sizeSpacing.padding?.left.max ??
+						STYLE_DEFAULTS.SIZE_AND_SPACING.padding.left.max,
+					right:
+						sizeSpacing.padding?.right.max ??
+						STYLE_DEFAULTS.SIZE_AND_SPACING.padding.right.max,
+					top:
+						sizeSpacing.padding?.top.max ??
+						STYLE_DEFAULTS.SIZE_AND_SPACING.padding.top.max,
 				}}
 			/>
 
@@ -378,71 +419,96 @@ export default function BuilderStyleSizeAndSpacing({
 				}}
 				label={t("margin")}
 				onUnitChange={(unit) =>
-					updateNestedProperty("sizeAndSpacing", (current) => ({
-						...current,
-						margin: current?.margin
-							? {
-									...current.margin,
-									bottom: {
-										...current.margin.bottom,
-										sizeUnit: unit,
-									},
-									left: {
-										...current.margin.left,
-										sizeUnit: unit,
-									},
-									right: {
-										...current.margin.right,
-										sizeUnit: unit,
-									},
-									top: {
-										...current.margin.top,
-										sizeUnit: unit,
-									},
-								}
-							: undefined,
-					}))
+					updateNestedProperty("sizeAndSpacing", (current) => {
+						const currMargin = current?.margin;
+						const defaultMargin =
+							STYLE_DEFAULTS.SIZE_AND_SPACING.margin;
+						return {
+							...current,
+							margin: {
+								key: currMargin?.key ?? defaultMargin.key,
+								top: {
+									...(currMargin?.top ?? defaultMargin.top),
+									sizeUnit: unit,
+								},
+								right: {
+									...(currMargin?.right ??
+										defaultMargin.right),
+									sizeUnit: unit,
+								},
+								bottom: {
+									...(currMargin?.bottom ??
+										defaultMargin.bottom),
+									sizeUnit: unit,
+								},
+								left: {
+									...(currMargin?.left ?? defaultMargin.left),
+									sizeUnit: unit,
+								},
+							},
+						};
+					})
 				}
 				onValuesChange={({ top, right, bottom, left }) => {
-					updateNestedProperty("sizeAndSpacing", (current) => ({
-						...current,
-						margin: current?.margin
-							? {
-									...current.margin,
-									...(top !== undefined && {
-										top: {
-											...current.margin.top,
-											max: top,
-										},
-									}),
-									...(right !== undefined && {
-										right: {
-											...current.margin.right,
-											max: right,
-										},
-									}),
-									...(bottom !== undefined && {
-										bottom: {
-											...current.margin.bottom,
-											max: bottom,
-										},
-									}),
-									...(left !== undefined && {
-										left: {
-											...current.margin.left,
-											max: left,
-										},
-									}),
-								}
-							: undefined,
-					}));
+					updateNestedProperty("sizeAndSpacing", (current) => {
+						const currMargin = current?.margin;
+						const defaultMargin =
+							STYLE_DEFAULTS.SIZE_AND_SPACING.margin;
+						return {
+							...current,
+							margin: {
+								key: currMargin?.key ?? defaultMargin.key,
+								top: {
+									...(currMargin?.top ?? defaultMargin.top),
+									max:
+										top ??
+										currMargin?.top?.max ??
+										defaultMargin.top.max,
+								},
+								right: {
+									...(currMargin?.right ??
+										defaultMargin.right),
+									max:
+										right ??
+										currMargin?.right?.max ??
+										defaultMargin.right.max,
+								},
+								bottom: {
+									...(currMargin?.bottom ??
+										defaultMargin.bottom),
+									max:
+										bottom ??
+										currMargin?.bottom?.max ??
+										defaultMargin.bottom.max,
+								},
+								left: {
+									...(currMargin?.left ?? defaultMargin.left),
+									max:
+										left ??
+										currMargin?.left?.max ??
+										defaultMargin.left.max,
+								},
+							},
+						};
+					});
 				}}
-				unit={sizeSpacing.margin?.top.sizeUnit || "px"}
+				unit={
+					sizeSpacing.margin?.top.sizeUnit ||
+					STYLE_DEFAULTS.SIZE_AND_SPACING.margin.top.sizeUnit
+				}
 				values={{
-					bottom: sizeSpacing.margin?.bottom.max || 0,
-					left: sizeSpacing.margin?.left.max || 0,
-					right: sizeSpacing.margin?.right.max || 0,
-					top: sizeSpacing.margin?.top.max || 0,
+					bottom:
+						sizeSpacing.margin?.bottom.max ??
+						STYLE_DEFAULTS.SIZE_AND_SPACING.margin.bottom.max,
+					left:
+						sizeSpacing.margin?.left.max ??
+						STYLE_DEFAULTS.SIZE_AND_SPACING.margin.left.max,
+					right:
+						sizeSpacing.margin?.right.max ??
+						STYLE_DEFAULTS.SIZE_AND_SPACING.margin.right.max,
+					top:
+						sizeSpacing.margin?.top.max ??
+						STYLE_DEFAULTS.SIZE_AND_SPACING.margin.top.max,
 				}}
 			/>
 		</div>

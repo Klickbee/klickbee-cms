@@ -6,15 +6,10 @@ export const LinkBC: LinkBCI = {
 	icon: <LinkIcon size={16} />,
 	id: "link",
 	label: "Link",
+	name: "Link",
 	props: {
-		content: {},
-		style: {
-			background: {},
-			bordersAndCorners: {},
-			effects: {},
-
-			typography: {},
-		},
+		content: { href: "", openInNewTab: false, text: "Link" },
+		style: {},
 	},
 	type: "link",
 } satisfies LinkBCI;

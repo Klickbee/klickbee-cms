@@ -1,11 +1,17 @@
 "use client";
 
 import { useCallback } from "react";
+import { useCurrentBreakpoint } from "@/feature/builder/contexts/BreakpointContext";
+import {
+	resolveStyleAtWidth,
+	setStyleAtWidth,
+} from "@/feature/builder/lib/style/breakpointStyle";
 import { useCurrentComponentStore } from "@/feature/builder/store/storeCurrentComponent";
 import { useCurrentPageStore } from "@/feature/builder/store/storeCurrentPage";
 import { BuilderComponent } from "@/feature/builder/types/components/components";
 import {
 	BoxShadowStyle,
+	BreakpointStyleProps,
 	ComponentStyleProps,
 	EffectsStyle,
 	TextShadowStyle,
@@ -18,6 +24,7 @@ import { useHeaderEditor } from "@/feature/page/_header/hooks/useHeaderEditor";
  */
 
 export function useStyleUpdate(component: BuilderComponent) {
+	const { width } = useCurrentBreakpoint();
 	const setCurrentComponent = useCurrentComponentStore(
 		(state) => state.setCurrentComponent,
 	);
@@ -32,15 +39,17 @@ export function useStyleUpdate(component: BuilderComponent) {
 
 	const updateStyle = useCallback(
 		(updates: Partial<ComponentStyleProps>) => {
-			// Update the component's style properties
+			// Resolve and set updates for the current breakpoint
+			const nextStyleMap = setStyleAtWidth(
+				component.props.style as BreakpointStyleProps,
+				width,
+				updates,
+			);
 			const updatedComponent: BuilderComponent = {
 				...component,
 				props: {
 					...component.props,
-					style: {
-						...component.props.style,
-						...updates,
-					},
+					style: nextStyleMap as BreakpointStyleProps,
 				},
 			};
 
@@ -79,6 +88,7 @@ export function useStyleUpdate(component: BuilderComponent) {
 				component.id,
 				updatedComponent,
 			);
+
 			if (newPageContent !== currentPage.content) {
 				setCurrentPage({ ...currentPage, content: newPageContent });
 			}
@@ -105,11 +115,17 @@ export function useStyleUpdate(component: BuilderComponent) {
 				current: ComponentStyleProps[K],
 			) => ComponentStyleProps[K],
 		) => {
-			const currentValue = component.props.style?.[field];
+			const resolved = resolveStyleAtWidth(
+				component.props.style as BreakpointStyleProps,
+				width,
+			);
+			const currentValue = (resolved as ComponentStyleProps)[
+				field
+			] as ComponentStyleProps[K];
 			const updatedValue = nestedUpdate(currentValue);
 			updateSingleField(field, updatedValue);
 		},
-		[component.props.style, updateSingleField],
+		[component.props.style, updateSingleField, width],
 	);
 
 	// Helper function for adding an item to an array property within effects

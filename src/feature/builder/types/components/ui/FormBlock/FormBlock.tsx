@@ -6,6 +6,7 @@ export const FormBlockBC: FormBlockBCI = {
 	icon: <Box size={16} />,
 	id: "formblock",
 	label: "Form Block",
+	name: "FormBlock",
 	props: {
 		content: {},
 		style: {

@@ -6,6 +6,7 @@ export const TextFieldBC: TextFieldBCI = {
 	icon: <FormInput size={16} />,
 	id: "textfield",
 	label: "Text Field",
+	name: "TextField",
 	props: {
 		content: {},
 		style: {

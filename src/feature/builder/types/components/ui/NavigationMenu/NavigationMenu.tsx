@@ -6,6 +6,7 @@ export const NavigationMenuBC: NavigationMenuBCI = {
 	icon: <Menu size={16} />,
 	id: "navigationmenu",
 	label: "Navigation Menu",
+	name: "NavigationMenu",
 	props: {
 		content: {
 			orientation: "horizontal",

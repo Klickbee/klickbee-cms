@@ -5,10 +5,18 @@ import { BuilderComponent } from "../../../types/components/components";
 
 interface FormFileUploadProps {
 	component: BuilderComponent;
+	className?: string;
+	onClick?: React.MouseEventHandler<HTMLElement>;
+	onDragLeave?: ((e: React.DragEvent<HTMLDivElement>) => void) | undefined;
+	onDragOver?: ((e: React.DragEvent<HTMLDivElement>) => void) | undefined;
 }
 
 export const FormFileUpload: React.FC<FormFileUploadProps> = ({
 	component,
+	className,
+	onClick,
+	onDragLeave,
+	onDragOver,
 }) => {
 	// Default file upload properties if not provided
 	const label = (component.props?.content?.label as string) || "File Upload";
@@ -22,7 +30,12 @@ export const FormFileUpload: React.FC<FormFileUploadProps> = ({
 
 	return (
 		<div
-			className="flex flex-col space-y-2"
+			className={["flex flex-col space-y-2", className]
+				.filter(Boolean)
+				.join(" ")}
+			onClick={onClick}
+			onDragLeave={onDragLeave}
+			onDragOver={onDragOver}
 			style={{
 				order: component.order || 0, // Use order property for positioning
 				...mapStylePropsToCss(component.props?.style),
@@ -47,6 +60,9 @@ export const FormFileUpload: React.FC<FormFileUploadProps> = ({
 								id={name}
 								multiple={multiple}
 								name={name}
+								onClick={onClick}
+								onDragLeave={onDragLeave}
+								onDragOver={onDragOver}
 								required={required}
 								type="file"
 							/>

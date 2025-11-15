@@ -6,6 +6,7 @@ export const RadioGroupBC: RadioGroupBCI = {
 	icon: <CircleCheck size={16} />,
 	id: "radiogroup",
 	label: "Radio Group",
+	name: "RadioGroup",
 	props: {
 		content: {},
 		style: {

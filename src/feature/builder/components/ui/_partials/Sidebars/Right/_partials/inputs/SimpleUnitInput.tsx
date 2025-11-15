@@ -1,6 +1,7 @@
 "use client";
 
 import NumberInput from "@/feature/builder/components/ui/_partials/Sidebars/Right/_partials/inputs/NumberInput";
+import TextInput from "@/feature/builder/components/ui/_partials/Sidebars/Right/_partials/inputs/TextInput";
 import UnitSelector from "@/feature/builder/components/ui/_partials/Sidebars/Right/_partials/inputs/UnitSelector";
 import {
 	PercentUnit,
@@ -9,9 +10,12 @@ import {
 import { SizeUnit } from "@/feature/builder/types/settings/FluidSize";
 import { cn } from "@/lib/utils";
 
-interface SimpleUnitInputProps<T extends SizeUnit | PercentUnit | TimeUnit> {
-	value: number;
-	onValueChange: (value: number) => void;
+interface SimpleUnitInputProps<
+	T extends SizeUnit | PercentUnit | TimeUnit,
+	V = number,
+> {
+	value: V;
+	onValueChange: (value: V) => void;
 	unit: T;
 	onUnitChange: (unit: T) => void;
 	placeholder?: string;
@@ -22,6 +26,7 @@ interface SimpleUnitInputProps<T extends SizeUnit | PercentUnit | TimeUnit> {
 
 export default function SimpleUnitInput<
 	T extends SizeUnit | PercentUnit | TimeUnit,
+	V = number,
 >({
 	value,
 	onValueChange,
@@ -31,7 +36,7 @@ export default function SimpleUnitInput<
 	className,
 	onEmpty,
 	variant = "embedded",
-}: SimpleUnitInputProps<T>) {
+}: SimpleUnitInputProps<T, V>) {
 	return (
 		<div
 			className={cn(
@@ -41,14 +46,25 @@ export default function SimpleUnitInput<
 		>
 			{/* Input section */}
 			<div className="flex-1 flex items-center">
-				<NumberInput
-					className="border-none shadow-none bg-transparent h-auto flex-1 [&>div]:pl-3 [&>div]:pr-2 [&>div]:py-2"
-					hideIcon
-					onEmpty={onEmpty}
-					onValueChange={onValueChange}
-					placeholder={placeholder}
-					value={value}
-				/>
+				{unit === "custom" ? (
+					<TextInput
+						className="border-none shadow-none bg-transparent h-auto flex-1 [&>div]:pl-3 [&>div]:pr-2 [&>div]:py-2"
+						hideIcon
+						onEmpty={onEmpty}
+						onValueChange={onValueChange as (value: string) => void}
+						placeholder={placeholder}
+						value={value as string}
+					/>
+				) : (
+					<NumberInput
+						className="border-none shadow-none bg-transparent h-auto flex-1 [&>div]:pl-3 [&>div]:pr-2 [&>div]:py-2"
+						hideIcon
+						onEmpty={onEmpty}
+						onValueChange={onValueChange as (value: number) => void}
+						placeholder={placeholder}
+						value={value as number}
+					/>
+				)}
 			</div>
 
 			{/* Separator border */}
